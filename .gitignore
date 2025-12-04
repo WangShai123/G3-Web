@@ -25,7 +25,7 @@ wp-config.php
 
 # Local files in plugin g3
 /wp-content/plugins/g3/backup/
-/wp-content/plugins/g3/dist/
+#/wp-content/plugins/g3/dist/
 /wp-content/plugins/g3/documents/
 /wp-content/plugins/g3/tests/
 /wp-content/plugins/g3/extensions/jl.php

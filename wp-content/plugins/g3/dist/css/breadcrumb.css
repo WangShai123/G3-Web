@@ -1,0 +1,33 @@
+/**
+ * Breadcrumb
+ * @since 1.0.0
+ * @author Wang Shai
+ */
+.j-breadcrumb {
+    font-size: 1.4rem;
+    color: inherit;
+}
+.j-breadcrumb .breadcrumb-item:not(:last-child)::after {
+    content: "/";
+    color: var(--neutral60);
+    margin: 0 .4rem;
+}
+.is-dark .j-breadcrumb .breadcrumb-item:not(:last-child)::after {
+    color: var(--neutral40);
+}
+.breadcrumb-item-inner {
+    font-weight: bold;
+}
+.breadcrumb-item-inner a {
+    font-weight: normal;
+    text-decoration: none;
+}
+.j-breadcrumb.with-arrow .breadcrumb-item:not(:last-child)::after {
+    content: "\203A";
+}
+.j-breadcrumb.with-hyphen .breadcrumb-item:not(:last-child)::after {
+    content: "\2043";
+}
+.j-breadcrumb.with-bullet .breadcrumb-item:not(:last-child)::after {
+    content: "\2023";
+}
