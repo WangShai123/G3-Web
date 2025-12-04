@@ -11,7 +11,7 @@ use Exception;
 class JL {
     public static $i = null;
     private string $t = "5ebec86f4404d2c1";
-    private string $uri = "https://www.jealer.com/api/v1/requestVerify";
+    private string $uri = "https://api.jealer.com/api/v1/requestVerify";
 
     public function __construct()
     {
