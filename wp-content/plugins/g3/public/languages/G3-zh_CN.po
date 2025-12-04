@@ -1,0 +1,5314 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: G3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-19 17:27+0000\n"
+"PO-Revision-Date: 2023-10-21 19:51+0000\n"
+"Last-Translator: author\n"
+"Language-Team: 简体中文\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.3.2\n"
+"X-Domain: G3"
+
+#: _base/_component_system/functions.php:133
+msgid " CLASS does not exit."
+msgstr "类不存在"
+
+#: _base/_component_system/functions.php:77
+msgid " COMPONENT does not exit."
+msgstr "组件不存在"
+
+#: _base/_component_system/functions.php:332
+#, php-format
+msgid "%s - %s"
+msgstr "%s - %s"
+
+#: module/editor/admin/f.php:138
+#, php-format
+msgid "%s autosave draft total."
+msgid_plural "%s autosave drafts total."
+msgstr[0] "%s 个自动保存草稿"
+
+#: _base/functions/post/functions.php:191
+#, php-format
+msgid "%s day ago"
+msgid_plural "%s days ago"
+msgstr[0] "%s天前"
+
+#: module/views/inc/functions-data.php:314
+#: module/views/inc/functions-data.php:329
+#, php-format
+msgid "%s Dislike"
+msgid_plural "%s Dislikes"
+msgstr[0] "讨厌 %s"
+
+#: _base/functions/post/functions.php:108
+#, php-format
+msgid "%s dislike"
+msgid_plural "%s dislikes"
+msgstr[0] "讨厌 %s"
+
+#: module/views/inc/functions-data.php:461
+#: module/views/inc/functions-data.php:476
+#, php-format
+msgid "%s Favorite"
+msgid_plural "%s Favorites"
+msgstr[0] "收藏 %s"
+
+#: _base/functions/post/functions.php:114
+#, php-format
+msgid "%s favorite"
+msgid_plural "%s favorites"
+msgstr[0] "收藏 %s"
+
+#: _base/functions/post/functions.php:188
+#, php-format
+msgid "%s hour ago"
+msgid_plural "%s hours ago"
+msgstr[0] "%s 小时前"
+
+#: module/views/inc/functions-data.php:167
+#: module/views/inc/functions-data.php:182
+#, php-format
+msgid "%s Like"
+msgid_plural "%s Likes"
+msgstr[0] "喜欢 %s"
+
+#: _base/functions/post/functions.php:102
+#, php-format
+msgid "%s like"
+msgid_plural "%s likes"
+msgstr[0] "喜欢 %s"
+
+#: _base/functions/post/functions.php:185
+#, php-format
+msgid "%s minute ago"
+msgid_plural "%s minutes ago"
+msgstr[0] "%s 分钟前"
+
+#: module/post/component.php:111 _base/functions/archive/functions.php:75
+#: _base/functions/archive/functions.php:108
+#, php-format
+msgid "%s pages"
+msgstr "共 %s 页"
+
+#: module/editor/admin/f.php:91
+#, php-format
+msgid "%s revision total."
+msgid_plural "%s revisions total."
+msgstr[0] "总共 %s 篇版本修订"
+
+#: _base/functions/post/functions.php:182
+#, php-format
+msgid "%s second ago"
+msgid_plural "%s seconds ago"
+msgstr[0] "%s 秒前"
+
+#: _base/functions/permission/functions.php:269
+#, php-format
+msgid "%s update failed"
+msgstr "%s更新失败"
+
+#: _base/functions/permission/functions.php:254
+#, php-format
+msgid "%s updated"
+msgstr "%s更新成功"
+
+#: _base/functions/post/functions.php:96
+#, php-format
+msgid "%s view"
+msgid_plural "%s views"
+msgstr[0] "浏览 %s"
+
+#: _base/functions/template/functions.php:224
+#: _base/functions/template/functions.php:347
+msgid "'s Comments"
+msgstr "的评论"
+
+#: _base/functions/template/functions.php:226
+#: _base/functions/template/functions.php:349
+msgid "'s Favorites"
+msgstr "的收藏"
+
+#: _base/functions/template/functions.php:228
+#: _base/functions/template/functions.php:351
+msgid "'s Followers"
+msgstr "的粉丝"
+
+#: _base/functions/template/functions.php:227
+#: _base/functions/template/functions.php:350
+msgid "'s Following"
+msgstr "的关注"
+
+#: _base/functions/template/functions.php:208
+#: _base/functions/template/functions.php:237
+#: _base/functions/template/functions.php:330
+#: _base/functions/template/functions.php:360
+#: _base/functions/template/functions.php:462
+msgid "'s Homepage"
+msgstr "的主页"
+
+#: _base/functions/template/functions.php:222
+#: _base/functions/template/functions.php:345
+msgid "'s Photos"
+msgstr "的相册"
+
+#: _base/functions/template/functions.php:221
+#: _base/functions/template/functions.php:344
+msgid "'s Posts"
+msgstr "的投稿"
+
+#: _base/functions/template/functions.php:225
+#: _base/functions/template/functions.php:348
+msgid "'s Products"
+msgstr "的橱窗"
+
+#: _base/functions/template/functions.php:223
+#: _base/functions/template/functions.php:346
+msgid "'s Profile"
+msgstr "的资料"
+
+#: module/views/component.php:233 module/login/component.php:337
+#: module/test/inc/functions-data.php:278
+msgid "1 Day"
+msgstr "1 天"
+
+#: module/views/component.php:227 module/login/component.php:332
+#: module/test/inc/functions-data.php:277
+#: module/login/inc/functions-data.php:11
+msgid "1 Hour"
+msgstr "1 小时"
+
+#: module/views/component.php:222 module/test/inc/functions-data.php:276
+msgid "1 Minute"
+msgstr "1 分钟"
+
+#: module/test/inc/functions-data.php:279
+msgid "1 Week"
+msgstr "1 周"
+
+#: module/views/component.php:224
+msgid "10 Minutes"
+msgstr "10 分钟"
+
+#: module/views/component.php:232 module/login/component.php:336
+#: module/login/inc/functions-data.php:27
+msgid "12 Hours"
+msgstr "12 小时"
+
+#: module/login/component.php:344 module/login/inc/functions-data.php:60
+#| msgid "15 days"
+msgid "15 Days"
+msgstr "15 天"
+
+#: module/views/component.php:225
+msgid "15 Minutes"
+msgstr "15 分钟"
+
+#: module/login/component.php:338 module/login/inc/functions-data.php:35
+#| msgid "2 days"
+msgid "2 Days"
+msgstr "2 天"
+
+#: module/views/component.php:228 module/login/component.php:333
+#: module/login/inc/functions-data.php:15
+msgid "2 Hours"
+msgstr "2 小时"
+
+#: module/login/inc/functions-data.php:31
+msgid "24 Hours"
+msgstr "24 小时"
+
+#: module/login/component.php:339 module/login/inc/functions-data.php:39
+#| msgid "3 days"
+msgid "3 Days"
+msgstr "3 天"
+
+#: module/views/component.php:229 module/login/component.php:334
+#: module/login/inc/functions-data.php:19
+msgid "3 Hours"
+msgstr "3 小时"
+
+#: module/login/component.php:345 module/test/inc/functions-data.php:280
+#: module/login/inc/functions-data.php:64
+#| msgid "30 days"
+msgid "30 Days"
+msgstr "30 天"
+
+#: module/views/component.php:226
+msgid "30 Minutes"
+msgstr "30 分钟"
+
+#: module/test/inc/functions-data.php:282
+msgid "365 Days"
+msgstr "365 天"
+
+#: module/login/component.php:340 module/login/inc/functions-data.php:43
+#| msgid "4 days"
+msgid "4 Days"
+msgstr "4 天"
+
+#: module/views/component.php:230
+msgid "4 Hours"
+msgstr "4 小时"
+
+#: module/seo/inc/functions-data.php:169
+msgid "404"
+msgstr "404"
+
+#: module/login/component.php:341 module/login/inc/functions-data.php:47
+#| msgid "5 days"
+msgid "5 Days"
+msgstr "5 天"
+
+#: module/views/component.php:223
+msgid "5 Minutes"
+msgstr "5 分钟"
+
+#: module/login/component.php:342 module/login/inc/functions-data.php:51
+#| msgid "6 days"
+msgid "6 Days"
+msgstr "6 天"
+
+#: module/views/component.php:231 module/login/component.php:335
+#: module/login/inc/functions-data.php:23
+msgid "6 Hours"
+msgstr "6 小时"
+
+#: module/login/component.php:343 module/login/inc/functions-data.php:55
+#| msgid "7 days"
+msgid "7 Days"
+msgstr "7 天"
+
+#: module/test/inc/functions-data.php:281
+msgid "90 Days"
+msgstr "90 天"
+
+#: module/ad/page/submenu-locations.php:19
+msgid ""
+"<p>The placement of advertisements is primarily used in template development "
+"and is the responsibility of designers and developers, not within the scope "
+"of operations, so backend editing is not supported.</p><p>You can use the "
+"<code>jl_register_ad_location</code> method to customize advertisement "
+"placements in your project.</p>"
+msgstr ""
+"<p>广告位置主要应用在模板编写中，是设计与开发人员的工作，不在运营范畴，所以不支持后台编辑。</p><p>您可以使用<code>"
+"jl_register_ad_location</code>方法在您的项目中自定义广告位置</p>"
+
+#: module/user/inc/wp-ajax.php:1320
+msgid ""
+"A password reset link has been sent to your email. Please check your inbox."
+msgstr "已向您的邮箱发送重置密码链接，请注意查收"
+
+#: _base/local/admin/functions.php:74 _base/local/admin/functions.php:77
+msgid "About G3 System"
+msgstr "关于G3系统"
+
+#: module/editor/inc/wp-ajax.php:23 module/editor/inc/wp-ajax.php:52
+msgid "Access denied"
+msgstr "拒绝访问"
+
+#: module/users/inc/wp-ajax.php:15 module/users/inc/wp-ajax.php:95
+#: module/users/inc/wp-ajax.php:146 module/users/inc/wp-ajax.php:261
+#: module/users/inc/wp-ajax.php:312 module/users/inc/wp-ajax.php:396
+#: module/users/inc/wp-ajax.php:447 module/users/inc/wp-ajax.php:533
+#: module/swipers/inc/wp-ajax.php:13 module/swipers/inc/functions-data.php:294
+#: module/login/inc/wp-ajax.php:13 _base/functions/permission/functions.php:21
+#: _base/functions/permission/functions.php:44
+#| msgid "Access Denied."
+msgid "Access Denied!"
+msgstr "拒绝访问"
+
+#: _base/functions/permission/functions.php:207
+#, php-format
+#| msgid ""
+#| "According to the relevant provisions of the user agreement, the slug is "
+#| "not available."
+msgid "According to the relevant provisions of the %s, the %s is not available"
+msgstr "根据%s的相关规定，%s不可用"
+
+#: module/user/page/submenu-profile.php:419
+msgid "Account Data"
+msgstr "账户数据"
+
+#: module/activity/component.php:20 module/activity/component.php:22
+msgid "Activities"
+msgstr "活动"
+
+#: module/activity/component.php:43
+msgid "Activities list"
+msgstr "活动列表"
+
+#: module/activity/component.php:42
+msgid "Activities list navigation"
+msgstr "活动列表导航"
+
+#: module/activity/component.php:21 module/activity/component.php:23
+msgid "Activity"
+msgstr "活动"
+
+#: module/activity/component.php:38
+msgid "Activity Archives"
+msgstr "活动归档"
+
+#: module/user/page/submenu-profile.php:395
+msgid "Activity Data"
+msgstr "活跃数据"
+
+#: module/ad/inc/wp-ajax.php:111 module/ad/inc/wp-ajax.php:113
+#: module/ad/inc/wp-ajax.php:147 module/ad/inc/wp-ajax.php:151
+msgid "Ad"
+msgstr "广告"
+
+#: module/ad/page/submenu-locations.php:26
+msgid "Ad Locations"
+msgstr "广告位置"
+
+#: module/ad/component.php:45 module/activity/component.php:24
+#: module/activity/component.php:26 module/shop/component.php:26
+#: module/forum/component.php:26 module/news/component.php:25
+#: module/swipers/component.php:40 module/circle/component.php:25
+#: module/announcement/component.php:25
+#: module/users/inc/class-jl-manage-group-list-table.php:66
+#: module/users/inc/class-jl-user-group-list-table.php:82
+#: module/users/inc/class-jl-auth-conf-list-table.php:64
+#: module/users/inc/class-jl-custom-group-list-table.php:65
+msgid "Add New"
+msgstr "新建"
+
+#: module/activity/component.php:25
+msgid "Add New Activity"
+msgstr "新建活动"
+
+#: module/ad/component.php:44 module/ad/page/submenu-add.php:20
+#: module/ad/page/submenu-edit.php:54
+msgid "Add New Ad"
+msgstr "添加新广告"
+
+#: module/announcement/component.php:26
+msgid "Add New Announcement"
+msgstr "添加新公告"
+
+#: module/forum/component.php:105
+msgid "Add New Board"
+msgstr "新建版块"
+
+#: module/shop/component.php:125
+msgid "Add New Brand"
+msgstr "新建品牌"
+
+#: module/activity/component.php:101
+msgid "Add New Category"
+msgstr "新建分类"
+
+#: module/circle/component.php:93
+msgid "Add New Circle"
+msgstr "添加新圈子"
+
+#: module/post/component.php:52 module/news/component.php:115
+msgid "Add New Column"
+msgstr "新建专题"
+
+#: module/circle/component.php:26
+msgid "Add New Feed"
+msgstr "添加新动态"
+
+#: module/news/component.php:26
+msgid "Add New News"
+msgstr "添加新闻"
+
+#: module/shop/component.php:27
+msgid "Add New Product"
+msgstr "新建商品"
+
+#: module/shop/component.php:97
+msgid "Add New Product Category"
+msgstr "添加新商品品类"
+
+#: module/forum/component.php:27
+msgid "Add New Topic"
+msgstr "新建话题"
+
+#: module/user/page/submenu-profile.php:268
+#: module/user/page/submenu-profile.php:276
+msgid "Address"
+msgstr "地址"
+
+#: module/user/inc/wp-ajax.php:404 module/user/inc/wp-ajax.php:405
+#: module/user/inc/wp-ajax.php:409 module/user/inc/wp-ajax.php:412
+#: module/user/inc/wp-ajax.php:417 module/user/inc/wp-ajax.php:424
+#: module/user/inc/wp-ajax.php:426
+msgid "address"
+msgstr "地址"
+
+#: module/test/inc/functions-data.php:248
+#: module/users/inc/class-jl-system-group-list-table.php:38
+#: _base/functions/user/functions.php:490
+msgid "Administrator"
+msgstr "管理员"
+
+#: module/ad/component.php:25 module/ad/component.php:26
+msgid "Ads"
+msgstr "广告"
+
+#: module/mail/component.php:442
+msgid ""
+"After completing the email configuration, you can fill in the email address "
+"to receive test emails for system email testing."
+msgstr "邮件配置完成后，您可以填写接收测试邮件的邮箱地址，进行系统邮件测试"
+
+#: module/test/component.php:104
+msgid ""
+"After enabling development mode, Rewrite rules will be automatically "
+"refreshed constantly."
+msgstr "启用开发模式后，将不断地自动刷新Rewrite重写规则"
+
+#: module/digitaloperations/component.php:217
+msgid ""
+"After enabling it, all outbound links will be intercepted by the system and "
+"redirected to the link middle page instead of the original target url."
+msgstr "启用后，所有的出站链接将会被系统拦截，并重定向到链接中间页"
+
+#: module/digitaloperations/component.php:189
+msgid ""
+"After enabling it, the entire website will be immersed in a mournful mode "
+"with only black, white, and gray colors."
+msgstr "启用后全站将沉浸在只有黑白灰颜色的默哀模式中"
+
+#: module/storage/component.php:640
+msgid ""
+"After enabling this item, the COS files will be kept after the local files "
+"are deleted."
+msgstr "删除文件后，只删除本地文件副本，保留远程COS桶中的文件副本"
+
+#: module/storage/component.php:616
+msgid ""
+"After enabling this item, the local storage files will be automatically "
+"deleted after the files are uploaded to COS."
+msgstr "上传文件后，静态文件全部同步到COS后，将自动删除本地文件，释放本地服务器存储空间"
+
+#: module/storage/component.php:333
+msgid ""
+"After enabling this item, the local storage files will be automatically "
+"deleted after the files are uploaded to OSS."
+msgstr "启用后，文件上传到腾讯云COS后，本地服务器数据将被自动删除"
+
+#: module/storage/component.php:664
+msgid "After enabling this item, the thumbnails will not be generated."
+msgstr "启用后，将不再生成封面图"
+
+#: module/mail/component.php:370
+msgid ""
+"After successful user registration, send an email notification to the user."
+msgstr "用户注册成功后，发送邮件通知用户"
+
+#: module/mail/component.php:390
+msgid ""
+"After the user retrieves the password, send an email notification to the "
+"user."
+msgstr "用户找回密码后，发送邮件通知用户"
+
+#: module/storage/component.php:89
+msgid "Ali OSS"
+msgstr "阿里云OSS"
+
+#: module/share/component.php:236 module/share/component.php:315
+#: module/share/inc/functions-data.php:40
+msgid "Alipay"
+msgstr "支付宝"
+
+#: module/openplatform/component.php:99
+msgid "Alipay OP"
+msgstr "支付宝开放平台"
+
+#: module/share/component.php:240 module/share/component.php:319
+msgid "Alipay QRCode"
+msgstr "支付宝二维码"
+
+#: module/wechatsp/component.php:60 module/wechatsp/page/options-alipay.php:3
+msgid "Alipay Smart Program"
+msgstr "支付宝小程序"
+
+#: module/wechatsp/component.php:61
+msgid "Alipay SP"
+msgstr "支付宝小程序"
+
+#: module/activity/component.php:29
+msgid "All Activities"
+msgstr "所有活动"
+
+#: module/ad/component.php:35 module/ad/component.php:36
+#: module/ad/page/submenu-edit.php:52
+msgid "All Ads"
+msgstr "所有广告"
+
+#: module/announcement/component.php:30
+msgid "All Announcements"
+msgstr "所有公告"
+
+#: module/forum/component.php:100
+msgid "All Boards"
+msgstr "所有版块"
+
+#: module/shop/component.php:120
+msgid "All Brands"
+msgstr "所有品牌"
+
+#: module/activity/component.php:96
+msgid "All Categories"
+msgstr "所有分类"
+
+#: module/circle/component.php:87
+msgid "All Circles"
+msgstr "所有圈子"
+
+#: module/post/component.php:47 module/news/component.php:110
+msgid "All Columns"
+msgstr "所有专题"
+
+#: module/sidebar/widgets/comment.php:74
+msgid "All Comments"
+msgstr "所有评论"
+
+#: module/circle/component.php:30
+msgid "All Feeds"
+msgstr "所有动态"
+
+#: module/news/component.php:30
+msgid "All News"
+msgstr "所有新闻"
+
+#: module/order/component.php:29 module/order/component.php:30
+msgid "All Orders"
+msgstr "所有订单"
+
+#: module/shop/component.php:92
+msgid "All Product Categories"
+msgstr "所有商品品类"
+
+#: module/shop/component.php:31
+msgid "All Products"
+msgstr "所有商品"
+
+#: module/views/component.php:16 module/test/inc/functions-data.php:51
+msgid ""
+"All publicly displayed data on this platform is sourced from the public "
+"internet and is only used for functional testing purposes. They do not "
+"represent the views of this platform. We make no guarantees or commitments "
+"regarding the authenticity, timeliness, integrity, accuracy, or ownership of "
+"the text, images, and other content. Visitors and related parties are "
+"advised to verify the information themselves."
+msgstr ""
+"本平台内的所有公开展示数据均来自于公开互联网，且仅做功能测试数据所用。它们并不代表本平台的观点。本平台对其文字、图片与其他内容的真实性、及时性、完整性和准确性以及其权利属性均不作任何保证和承诺，请访客和相关方自行核实。"
+
+#: module/forum/component.php:31 module/circle/component.php:115
+msgid "All Topics"
+msgstr "所有话题"
+
+#: module/login/component.php:270 module/login/component.php:276
+msgid "Allow Trade"
+msgstr "允许交易"
+
+#: module/openplatform/component.php:105
+msgid "Amap OP"
+msgstr "高德开放平台"
+
+#: module/login/page/options-invite-code.php:38
+msgid "Amount"
+msgstr "数量"
+
+#: module/announcement/component.php:22
+msgid "Announcement"
+msgstr "公告"
+
+#: module/announcement/component.php:81
+msgid "Announcement Categories"
+msgstr "公告分类"
+
+#: module/announcement/component.php:82
+msgid "Announcement Category"
+msgstr "公告分类"
+
+#: module/sidebar/widgets/comment.php:77
+msgid "Announcement Comments"
+msgstr "公告评论"
+
+#: module/announcement/component.php:137
+msgid "Announcement draft updated."
+msgstr "公告草稿已更新"
+
+#: module/sidebar/widgets/news.php:53
+#: module/sidebar/widgets/announcement.php:23
+#: module/sidebar/widgets/announcement.php:57
+msgid "Announcement List"
+msgstr "公告列表"
+
+#: module/announcement/component.php:129
+msgid "Announcement published."
+msgstr "公告已发布"
+
+#. %s: date and time of the revision
+#: module/announcement/component.php:128
+#, php-format
+msgid "Announcement restored to version from %s."
+msgstr "公告已恢复到 %s 版本"
+
+#: module/announcement/component.php:130
+msgid "Announcement saved."
+msgstr "公告已保存"
+
+#: module/announcement/component.php:133
+#, php-format
+msgid "Announcement scheduled for:<strong>%1$s</strong>."
+msgstr "公告计划于:<strong>%1$s</strong>发布"
+
+#: module/sidebar/component.php:169
+#| msgid "Announcement Page Sidebar"
+msgid "Announcement Sidebar"
+msgstr "公告页侧边栏"
+
+#: module/announcement/component.php:131
+msgid "Announcement submitted."
+msgstr "公告已提交"
+
+#: module/announcement/component.php:123 module/announcement/component.php:126
+msgid "Announcement updated."
+msgstr "公告已更新"
+
+#: module/announcement/component.php:21 module/announcement/component.php:23
+#: module/announcement/component.php:24
+msgid "Announcements"
+msgstr "公告"
+
+#: module/announcement/component.php:39
+msgid "Announcements Archives"
+msgstr "公告归档页"
+
+#: module/announcement/component.php:44
+msgid "Announcements List"
+msgstr "公告列表"
+
+#: module/announcement/component.php:43
+msgid "Announcements List Navigation"
+msgstr "公告列表导航"
+
+#: module/traffic/page/options-seo.php:36
+msgid "Any archive page"
+msgstr "任何归档页"
+
+#: module/traffic/page/options-seo.php:39
+#| msgid "Any archive page based on taxonomy extensions."
+msgid "Any archive page based on taxonomy extensions"
+msgstr "任何基于分类法扩展的归档页"
+
+#: module/traffic/page/options-seo.php:42
+msgid "Any page and template"
+msgstr "任何页面和模板"
+
+#: module/traffic/page/options-seo.php:45
+#| msgid "Any page you want to share on social media platforms."
+msgid "Any page you want to share on social media platforms"
+msgstr "任何你想要分享到社交媒体平台的页面或内容"
+
+#: module/traffic/page/options-seo.php:30
+msgid "Any post"
+msgstr "任何内容"
+
+#: module/traffic/page/options-seo.php:33
+#| msgid "Any post based on post-type extensions."
+msgid "Any post based on post-type extensions"
+msgstr "任何基于内容类型扩展的内容"
+
+#: module/security/component.php:129 module/security/component.php:337
+msgid "API Namespace"
+msgstr "API命名空间"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Apr"
+msgstr "四月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "April"
+msgstr "四月"
+
+#: module/sidebar/component.php:59
+msgid "Archive Sidebar"
+msgstr "归档页侧边栏"
+
+#: module/ad/page/submenu-edit.php:108
+#: module/users/page/options-manage-group.php:110
+#: module/users/page/options-user-group.php:129
+#: module/users/page/options-auth-conf.php:123
+#: module/users/page/options-custom-group.php:110
+#: module/swipers/page/options-swipers.php:168
+#: module/login/page/options-invite-code.php:85
+msgid "Are you sure you want to delete this data?"
+msgstr "确定要删除这条数据吗"
+
+#: module/user/page/submenu-profile.php:634
+msgid "Are you sure you want to log out everywhere else?"
+msgstr "您确认要注销除此之外的所有会话吗"
+
+#: module/storage/component.php:176 module/storage/component.php:387
+msgid "Area"
+msgstr "区域"
+
+#: module/storage/component.php:843
+msgid "Ashburn"
+msgstr "弗吉尼亚"
+
+#: module/storage/component.php:420
+msgid "Asia Pacific Northeast 1 (Tokyo)"
+msgstr "亚太东北 1 东京"
+
+#: module/storage/component.php:422
+msgid "Asia Pacific South 1 (Mumbai)"
+msgstr "亚太南部 1 孟买"
+
+#: module/storage/component.php:412
+msgid "Asia Pacific Southeast 1 (Singapore)"
+msgstr "亚太东南 1 新加坡"
+
+#: module/storage/component.php:414
+msgid "Asia Pacific Southeast 2 (Sydney)"
+msgstr "亚太东南 2 悉尼"
+
+#: module/storage/component.php:416
+msgid "Asia Pacific Southeast 3 (Kuala Lumpur)"
+msgstr "亚太东南 3 吉隆坡"
+
+#: module/storage/component.php:418
+msgid "Asia Pacific Southeast 5 (Jakarta)"
+msgstr "亚太东南 5 雅加达"
+
+#: module/storage/component.php:715 module/storage/component.php:721
+msgid "Attachment Preview"
+msgstr "附件预览"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Aug"
+msgstr "八月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "August"
+msgstr "八月"
+
+#: module/user/page/submenu-profile.php:383
+msgid "Auth Description"
+msgstr "认证描述"
+
+#: module/users/inc/class-jl-auth-conf-list-table.php:20
+msgid "Auth Name"
+msgstr "认证名称"
+
+#: module/users/inc/class-jl-auth-conf-list-table.php:21
+msgid "Auth Slug"
+msgstr "认证别名"
+
+#: module/paywall/component.php:80 module/paywall/component.php:133
+msgid "Auth via Comment"
+msgstr "仅评论后可见"
+
+#: module/paywall/component.php:70 module/paywall/component.php:124
+msgid "Auth via Login"
+msgstr "仅登录后可见"
+
+#: module/paywall/component.php:90 module/paywall/component.php:142
+msgid "Auth via Pay"
+msgstr "仅付费后可见"
+
+#: module/paywall/component.php:100 module/paywall/component.php:151
+msgid "Auth via Role"
+msgstr "按角色等级可见"
+
+#: module/paywall/component.php:110 module/paywall/component.php:160
+msgid "Auth via VIP"
+msgstr "按会员等级可见"
+
+#: module/views/component.php:193 module/views/component.php:253
+msgid "Auto Notice"
+msgstr "自动声明"
+
+#: module/views/component.php:254
+#| msgid "Automatically add a notice at the end of the article."
+msgid "Automatically add a notice at the end of the article"
+msgstr "在内容底部自动添加版权声明等信息"
+
+#: module/editor/component.php:74 module/editor/component.php:129
+msgid "Autosave"
+msgstr "自动保存"
+
+#: module/editor/component.php:111
+msgid "Autosave Draft"
+msgstr "自动保存草稿"
+
+#: module/editor/component.php:84 module/editor/component.php:137
+msgid "Autosave Interval"
+msgstr "自动保存时间间隔"
+
+#: module/user/page/submenu-profile.php:37
+msgid "Avatar"
+msgstr "头像"
+
+#: module/test/component.php:128
+msgid "Back-end Form Fields Demonstration"
+msgstr "后台表单字段项演示"
+
+#: module/openplatform/component.php:100
+msgid "Baidu OP"
+msgstr "百度开放平台"
+
+#: module/wechatsp/component.php:42 module/wechatsp/page/options-baidu.php:3
+msgid "Baidu Smart Program"
+msgstr "百度小程序"
+
+#: module/wechatsp/component.php:43
+msgid "Baidu SP"
+msgstr "百度小程序"
+
+#: module/user/inc/class-jl-users-list-table.php:76
+msgid "Balance"
+msgstr "余额"
+
+#: module/storage/component.php:827
+#| msgid "bangkok"
+msgid "Bangkok"
+msgstr "曼谷"
+
+#: module/users/component.php:90
+#: module/users/inc/class-jl-system-group-list-table.php:50
+msgid "Banned"
+msgstr "禁止访问"
+
+#: module/user/page/submenu-profile.php:30
+msgid "Basic"
+msgstr "基础"
+
+#: module/login/component.php:160
+msgid ""
+"Before enabling, please make sure that the configuration of the WeChat "
+"Official Account has been completed and it is an authenticated account."
+msgstr "启用前，请先确认微信公众号配置是否完成，以及公众号是否已完成认证"
+
+#: module/editor/component.php:125
+msgid ""
+"Before the block editor is fully mature, the classic editor is used by "
+"default and cannot be switched."
+msgstr "在块编辑器技术完全成熟之前，默认使用经典编辑器且不可修改"
+
+#: module/storage/component.php:813
+msgid "Beijing"
+msgstr "北京"
+
+#: module/storage/component.php:821
+msgid "Beijing FSI"
+msgstr "北京金融"
+
+#: module/share/component.php:220 module/share/component.php:299
+msgid "Bilibili"
+msgstr "哔哩哔哩"
+
+#: module/share/component.php:224 module/share/component.php:303
+msgid "Bilibili QRCode"
+msgstr "哔哩哔哩二维码"
+
+#: module/openplatform/component.php:315 module/openplatform/component.php:368
+msgid "Bind WeChat Official Account"
+msgstr "绑定微信公众号"
+
+#: module/editor/component.php:123
+msgid "Block Editor"
+msgstr "块编辑器"
+
+#: module/forum/component.php:97
+msgid "Board"
+msgstr "版块"
+
+#: module/forum/component.php:96 module/forum/component.php:107
+msgid "Boards"
+msgstr "版块"
+
+#: module/openplatform/component.php:373
+msgid "Bound"
+msgstr "已绑定"
+
+#: module/shop/component.php:127
+msgid "Brands"
+msgstr "品牌"
+
+#. Name of the template
+msgid "Browser-Warning"
+msgstr "浏览器警告"
+
+#: module/storage/component.php:230 module/storage/component.php:236
+#: module/storage/component.php:590 module/storage/component.php:596
+msgid "Bucket Domain"
+msgstr "Bucket域名"
+
+#: module/storage/component.php:211 module/storage/component.php:217
+#: module/storage/component.php:571 module/storage/component.php:577
+msgid "Bucket Name"
+msgstr "Bucket名称"
+
+#: module/users/inc/class-jl-manage-group-list-table.php:38
+msgid "builtin"
+msgstr "内置"
+
+#: module/businesscard/component.php:19 module/businesscard/component.php:20
+#: module/businesscard/component.php:36
+msgid "Business Card"
+msgstr "销售名片"
+
+#: module/users/page/options-manage-group.php:55
+#: module/users/page/options-user-group.php:72
+#: module/users/page/options-auth-conf.php:67
+#: module/users/page/options-custom-group.php:55
+#: module/login/page/options-invite-code.php:71
+msgid "Cancel"
+msgstr "取消"
+
+#: module/views/inc/functions-data.php:171
+#: module/views/inc/functions-data.php:318
+#: module/views/inc/functions-data.php:465
+msgid "Cancelled!"
+msgstr "已取消"
+
+#: module/swipers/page/options-swipers.php:153
+msgid "Cancle"
+msgstr "取消"
+
+#: module/menu/component.php:53
+msgid "Card Menu"
+msgstr "卡片菜单"
+
+#: module/activity/component.php:92 module/activity/component.php:103
+#: module/shop/component.php:99 module/news/component.php:90
+#: module/announcement/component.php:83
+msgid "Categories"
+msgstr "分类"
+
+#: module/activity/component.php:93
+msgid "Category"
+msgstr "分类"
+
+#: module/openplatform/component.php:358
+msgid "Certified"
+msgstr "已认证"
+
+#: module/test/component.php:280 module/test/component.php:282
+msgid "Change the direction"
+msgstr "换个方向"
+
+#: module/test/component.php:296 module/test/component.php:298
+msgid "Checkbox field"
+msgstr "多选框字段"
+
+#: module/storage/component.php:814
+msgid "Chengdu"
+msgstr "成都"
+
+#: module/user/page/submenu-profile.php:241
+msgid "China"
+msgstr "中国"
+
+#: module/storage/component.php:393
+msgid "China East 1 (Hangzhou)"
+msgstr "华东 1 杭州"
+
+#: module/storage/component.php:394
+msgid "China East 2 (Shanghai)"
+msgstr "华东 2 上海"
+
+#: module/storage/component.php:403
+msgid "China Hong Kong"
+msgstr "中国香港"
+
+#: module/storage/component.php:395
+msgid "China North 1 (Qingdao)"
+msgstr "华北 1 青岛"
+
+#: module/storage/component.php:396
+msgid "China North 2 (Beijing)"
+msgstr "华北 2 北京"
+
+#: module/storage/component.php:397
+msgid "China North 3 (Zhangjiakou)"
+msgstr "华北 3 张家口"
+
+#: module/storage/component.php:398
+msgid "China North 5 (Huhehaote)"
+msgstr "华北 5 呼和浩特"
+
+#: module/storage/component.php:399
+msgid "China South 1 (Shenzhen)"
+msgstr "华南 1 深圳"
+
+#: module/storage/component.php:400
+msgid "China South 2 (Heyuan)"
+msgstr "华南 2 河源"
+
+#: module/storage/component.php:401
+msgid "China South 3 (Guangzhou)"
+msgstr "华南 3 广州"
+
+#: module/storage/component.php:402
+msgid "China Southwest 1 (Chengdu)"
+msgstr "西南 1 成都"
+
+#: module/storage/component.php:815
+msgid "Chongqing"
+msgstr "重庆"
+
+#: module/circle/component.php:23 module/circle/component.php:84
+msgid "Circle"
+msgstr "圈子"
+
+#: module/circle/component.php:22 module/circle/component.php:24
+msgid "Circle Feed"
+msgstr "圈子动态"
+
+#: module/circle/component.php:21
+msgid "Circle Feeds"
+msgstr "圈子动态"
+
+#: module/circle/component.php:39
+msgid "Circle Feeds Archives"
+msgstr "圈子动态归档页"
+
+#: module/sidebar/component.php:158
+msgid "Circle Sidebar"
+msgstr "圈子侧边栏"
+
+#: module/circle/component.php:111
+msgid "Circle Topic"
+msgstr "圈子话题"
+
+#: module/circle/component.php:110
+msgid "Circle Topics"
+msgstr "圈子话题"
+
+#: module/circle/component.php:83 module/circle/component.php:95
+msgid "Circles"
+msgstr "圈子"
+
+#: module/theme/component.php:10
+msgid "Class JL_Themes does not exist."
+msgstr "类 <code>JL_Themes</code> 不存在"
+
+#: module/editor/component.php:122
+msgid "Classic Editor"
+msgstr "经典编辑器"
+
+#: module/editor/admin/f.php:139
+msgid "Clear autosave drafts"
+msgstr "清除自动保存的草稿"
+
+#: module/editor/inc/wp-ajax.php:18 module/editor/inc/wp-ajax.php:47
+#| msgid "Clear Failed!"
+msgid "Clear failed"
+msgstr "清除失败"
+
+#: module/storage/component.php:772 module/storage/component.php:879
+#: module/storage/component.php:881
+#: module/storage/page/options-tencentcos.php:60
+#| msgid "Clear Logs"
+msgid "Clear Log"
+msgstr "清除日志"
+
+#: module/editor/component.php:104 module/editor/admin/f.php:92
+msgid "Clear Revisions"
+msgstr "清除版本修订"
+
+#: module/editor/inc/wp-ajax.php:15 module/editor/inc/wp-ajax.php:44
+#| msgid "Cleared!"
+msgid "Cleared"
+msgstr "清除成功"
+
+#: module/storage/page/options-tencentcos.php:57 module/editor/admin/f.php:98
+#: module/editor/admin/f.php:145
+msgid "Clearing..."
+msgstr "清除中..."
+
+#: module/storage/component.php:681
+msgid "Cloud Infinite"
+msgstr "数据万象"
+
+#: module/post/component.php:44
+msgid "Column"
+msgstr "专题"
+
+#: module/post/component.php:43 module/post/component.php:54
+#: module/news/component.php:117
+msgid "Columns"
+msgstr "专题"
+
+#: module/sidebar/widgets/comment.php:20 module/sidebar/widgets/comment.php:63
+msgid "Comment List"
+msgstr "评论列表"
+
+#: module/user/inc/wp-ajax.php:1029
+msgid "Confirm Password"
+msgstr "确认密码"
+
+#: module/mail/page/options-test.php:4
+msgid "Congratulations, the email configuration test was successful."
+msgstr "恭喜，邮件配置测试成功"
+
+#: module/share/component.php:351 module/share/component.php:352
+#: module/share/component.php:353 module/share/component.php:354
+#: module/share/component.php:355 module/share/component.php:356
+msgid "Content Distribution"
+msgstr "内容分发"
+
+#: module/security/component.php:206 module/security/component.php:532
+msgid "Content Security Policy"
+msgstr "内容安全策略"
+
+#: module/contributionreview/component.php:18
+#: module/contributionreview/component.php:19
+#: module/contributionreview/component.php:32
+msgid "Contribution Review"
+msgstr "投稿审核"
+
+#: module/system/component.php:132
+msgid "Cookie Policy"
+msgstr "Cookie政策"
+
+#: module/views/component.php:181 module/views/component.php:243
+msgid "Copyright Notice"
+msgstr "版权声明"
+
+#: module/sidebar/widgets/post.php:76
+msgid "Count"
+msgstr "数量"
+
+#: module/test/component.php:194 module/test/component.php:196
+msgid "Counter input"
+msgstr "计数器输入框"
+
+#: module/user/page/submenu-profile.php:236
+msgid "Country"
+msgstr "国家"
+
+#: module/news/component.php:35 module/circle/component.php:35
+#: module/announcement/component.php:35 module/image/admin/f.php:17
+#: module/image/admin/f.php:43
+msgid "Cover"
+msgstr "封面图"
+
+#: module/activity/component.php:34 module/shop/component.php:36
+#: module/forum/component.php:36
+msgid "Cover Image"
+msgstr "封面图"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:152
+msgid "Create Invite Code"
+msgstr "创建邀请码"
+
+#: module/order/inc/class-jl-orders-list-table.php:30
+#: module/login/inc/class-jl-invite-code-list-table.php:36
+msgid "Create Time"
+msgstr "创建时间"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:37
+msgid "Create Type"
+msgstr "创建类型"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:35
+msgid "Creator"
+msgstr "创建人"
+
+#: module/wallet/component.php:43
+msgid "Cryptocurrency"
+msgstr "加密货币"
+
+#: module/login/component.php:286 module/login/component.php:292
+msgid "Currency"
+msgstr "货币"
+
+#: module/swipers/page/options-swipers.php:88
+#: module/swipers/inc/class-jl-swiper-list-table.php:71
+msgid "Current Tab"
+msgstr "当前标签页"
+
+#: module/security/component.php:118 module/security/component.php:228
+msgid "Custom Admin Login URL"
+msgstr "自定义后台登录地址"
+
+#: module/storage/component.php:316 module/storage/component.php:440
+#| msgid "Custom delimiter"
+msgid "Custom Delimiter"
+msgstr "自定义分隔符"
+
+#: module/mail/component.php:344 module/mail/component.php:350
+msgid "Custom Email Templates"
+msgstr "自定义邮件模板"
+
+#: module/shop/component.php:165 module/circle/component.php:134
+#: module/announcement/component.php:125
+msgid "Custom field deleted."
+msgstr "自定义数据已删除"
+
+#: module/shop/component.php:164 module/news/component.php:163
+#: module/news/component.php:164 module/circle/component.php:133
+#: module/announcement/component.php:124
+msgid "Custom field updated."
+msgstr "自定义数据已更新"
+
+#: module/views/component.php:85 module/views/component.php:86
+#: module/views/component.php:87 module/views/component.php:88
+#: module/views/component.php:89 module/views/component.php:90
+#: module/views/component.php:91 module/views/component.php:92
+msgid "Custom interaction data"
+msgstr "自定义交互数据"
+
+#: module/storage/component.php:868
+msgid "Custom Rule: "
+msgstr "自定义规则: "
+
+#: module/test/component.php:196
+msgid "Custom Texts"
+msgstr "自定义文本"
+
+#: module/share/component.php:113 module/share/component.php:156
+msgid "Custom Title in Wechat Share"
+msgstr "自定义微信分享标题"
+
+#: module/customerleads/component.php:18 module/customerleads/component.php:19
+#: module/customerleads/component.php:36
+msgid "Customer Leads"
+msgstr "客户线索"
+
+#: module/users/inc/class-jl-manage-group-list-table.php:38
+msgid "Customized"
+msgstr "自定义"
+
+#: module/storage/component.php:351 module/storage/component.php:762
+msgid "Data Sync & Replace"
+msgstr "数据同步与替换"
+
+#: module/sidebar/widgets/post.php:69
+msgid "Data Type"
+msgstr "数据类型"
+
+#: module/mail/inc/functions-data.php:33 module/mail/inc/functions-data.php:49
+msgid "Dear"
+msgstr "亲爱的"
+
+#: module/storage/component.php:738 module/storage/component.php:744
+msgid "Debug"
+msgstr "调试"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Dec"
+msgstr "十二月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "December"
+msgstr "十二月"
+
+#: module/storage/component.php:444
+msgid "Default"
+msgstr "默认"
+
+#: module/views/component.php:219
+msgid ""
+"Default 1 hour: A single user's repeated views within 1 hour will only "
+"increase the page views once."
+msgstr "默认 1 小时，即单个用户每 1 小时重复浏览仅会增加一次浏览量"
+
+#: module/digitaloperations/component.php:112
+#: module/digitaloperations/component.php:193
+msgid "Default Avatar"
+msgstr "默认头像"
+
+#: module/digitaloperations/component.php:123
+#: module/digitaloperations/component.php:197
+msgid "Default Cover"
+msgstr "默认封面图"
+
+#: module/editor/component.php:139
+msgid "Default is 60 seconds."
+msgstr "默认60秒。"
+
+#: module/login/component.php:329
+msgid ""
+"Default is 7 days. From a security perspective, it is recommended to set the "
+"validity period between <code>3-7 days</code>. If you need to increase "
+"promotion, it is recommended to set the validity period between <code>7-15 "
+"days</code>."
+msgstr "默认7天。从安全性角度考虑，建议有效期3-7天。如果您需要加大推广，建议有效期7-15天"
+
+#: module/users/inc/class-jl-user-group-list-table.php:77
+#: module/users/inc/class-jl-system-group-list-table.php:70
+#: module/users/inc/class-jl-custom-group-list-table.php:61
+msgid "Default User Roles"
+msgstr "默认用户角色"
+
+#: module/storage/component.php:862
+msgid "Default: Text Watermark"
+msgstr "默认：水印"
+
+#: module/order/inc/class-jl-orders-list-table.php:118
+#: module/order/inc/class-jl-orders-list-table.php:148
+#: module/ad/inc/class-jl-ad-list-table.php:108
+#: module/ad/inc/class-jl-ad-list-table.php:167
+#: module/user/inc/class-jl-users-list-table.php:271
+#: module/swipers/inc/class-jl-swiper-list-table.php:134
+#: module/swipers/inc/class-jl-swiper-list-table.php:150
+#: module/login/inc/class-jl-invite-code-list-table.php:126
+#: module/login/inc/class-jl-invite-code-list-table.php:136
+msgid "Delete"
+msgstr "删除"
+
+#: module/swipers/inc/wp-ajax.php:140 module/login/inc/wp-ajax.php:91
+#| msgid "Delete failed!"
+msgid "Delete Failed!"
+msgstr "删除失败！"
+
+#: module/users/inc/wp-ajax.php:130 module/users/inc/wp-ajax.php:296
+#: module/users/inc/wp-ajax.php:431 module/users/inc/wp-ajax.php:568
+#: module/swipers/inc/wp-ajax.php:132 module/login/inc/wp-ajax.php:83
+msgid "Deleted!"
+msgstr "已删除！"
+
+#: module/seo/component.php:41 module/ad/page/submenu-add.php:54
+#: module/ad/page/submenu-add.php:60 module/ad/inc/wp-ajax.php:16
+#: module/ad/inc/class-jl-ad-list-table.php:30
+msgid "Description"
+msgstr "描述"
+
+#: module/user/inc/wp-ajax.php:189
+msgid "description"
+msgstr "描述"
+
+#: module/traffic/page/options-seo.php:56
+msgid ""
+"Description: If the SEO description is empty, the description of the page or "
+"content will be automatically fetched."
+msgstr "描述：如果SEO描述为空，将自动读取页面或内容的描述。"
+
+#: module/test/component.php:39 module/test/component.php:40
+#: module/test/component.php:49 module/test/component.php:72
+#: module/test/component.php:104
+msgid "Development Mode"
+msgstr "开发模式"
+
+#: module/digitaloperations/component.php:39
+#: module/digitaloperations/component.php:40
+msgid "Digital Operations"
+msgstr "数字运营"
+
+#: module/test/inc/functions-data.php:253
+msgid "Director"
+msgstr "总监"
+
+#: module/security/component.php:360 module/security/component.php:408
+#: module/security/component.php:451 module/security/component.php:515
+#: module/storage/component.php:123 module/storage/component.php:278
+#: module/storage/component.php:302 module/storage/component.php:336
+#: module/storage/component.php:507 module/storage/component.php:619
+#: module/storage/component.php:643 module/storage/component.php:667
+#: module/storage/component.php:691 module/storage/component.php:725
+#: module/storage/component.php:748 module/views/component.php:208
+#: module/login/component.php:237 module/post/admin/f.php:51
+#: module/post/admin/f.php:77 module/users/page/options-auth-conf.php:58
+#: module/users/inc/class-jl-auth-conf-list-table.php:40
+msgid "Disable"
+msgstr "禁用"
+
+#: module/security/component.php:454
+msgid ""
+"Disable the XML-RPC API to block access to xmlrpc.php. The default global "
+"setting to prevent XMLRPC attacks is enabled and cannot be disabled."
+msgstr "禁用XML-RPC API，阻止xmlrpc.php的访问。防范XMLRPC攻击默认全局启用且不可关闭。"
+
+#: module/storage/component.php:657 module/storage/component.php:663
+msgid "Disable Thumbnails"
+msgstr "禁用封面图"
+
+#: module/mail/component.php:351
+msgid ""
+"Disabled by default. When custom templates are enabled, they will replace "
+"the default email templates of the system."
+msgstr "默认禁用。自定义模板启用后，将会替代系统默认的邮件模板。"
+
+#: module/mail/component.php:177
+msgid ""
+"Disabled by default. When enabled, the system will use SMTP to send emails."
+msgstr "默认禁用。启用后，系统将使用SMTP发送邮件。"
+
+#: module/views/component.php:60 module/views/inc/functions-data.php:305
+msgid "Dislike"
+msgstr "讨厌"
+
+#: module/views/inc/functions-data.php:333
+msgid "Disliked!"
+msgstr "讨厌"
+
+#: module/mail/component.php:208 module/mail/component.php:214
+msgid "Display Email"
+msgstr "显示邮箱"
+
+#: module/mail/component.php:189 module/mail/component.php:195
+msgid "Display Name"
+msgstr "显示昵称"
+
+#: module/menu/component.php:91
+msgid "Display Type"
+msgstr "显示类型"
+
+#: module/distribution/component.php:20 module/distribution/component.php:21
+#: module/distribution/component.php:38
+msgid "Distribution"
+msgstr "分销管理"
+
+#: module/login/component.php:277
+msgid "Do you want to allow users to trade invite codes?"
+msgstr "你希望用户交易邀请码吗？"
+
+#: _base/local/admin/functions.php:98 _base/local/admin/functions.php:101
+msgid "Documents Center"
+msgstr "文档中心"
+
+#: module/login/component.php:383 module/share/component.php:204
+#: module/share/component.php:283 module/share/component.php:398
+#: module/user/page/submenu-profile.php:140
+#: module/user/page/submenu-profile.php:148
+#: module/share/inc/functions-data.php:28
+msgid "Douyin"
+msgstr "抖音"
+
+#: module/user/inc/wp-ajax.php:690
+msgid "douyin account"
+msgstr "抖音号"
+
+#: module/openplatform/component.php:102
+msgid "Douyin OP"
+msgstr "抖音开放平台"
+
+#: module/share/component.php:208 module/share/component.php:287
+msgid "Douyin QRCode"
+msgstr "抖音二维码"
+
+#: module/wechatsp/component.php:51 module/wechatsp/page/options-douyin.php:3
+msgid "Douyin Smart Program"
+msgstr "抖音小程序"
+
+#: module/wechatsp/component.php:52
+msgid "Douyin SP"
+msgstr "抖音小程序"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:153
+msgid "Download"
+msgstr "下载"
+
+#: module/security/component.php:411
+msgid ""
+"Each user has only one valid session. The secure session mechanism is "
+"enabled by default globally and cannot be disabled."
+msgstr "每个用户只有一个有效的会话。安全会话机制默认全局启用且不可关闭。"
+
+#: module/user/component.php:211 module/user/component.php:231
+#: module/order/inc/class-jl-orders-list-table.php:117
+#: module/ad/inc/class-jl-ad-list-table.php:107
+#: module/swipers/page/options-swipers.php:36
+#: module/swipers/inc/class-jl-swiper-list-table.php:133
+#: module/login/page/options-invite-code.php:30
+msgid "Edit"
+msgstr "编辑"
+
+#: module/activity/component.php:27
+msgid "Edit Activity"
+msgstr "编辑活动"
+
+#: module/announcement/component.php:28
+msgid "Edit Announcement"
+msgstr "编辑公告"
+
+#: module/forum/component.php:103
+msgid "Edit Board"
+msgstr "编辑版块"
+
+#: module/shop/component.php:123
+msgid "Edit Brand"
+msgstr "编辑品牌"
+
+#: module/activity/component.php:99
+msgid "Edit Category"
+msgstr "编辑分类"
+
+#: module/circle/component.php:91
+msgid "Edit Circle"
+msgstr "编辑圈子"
+
+#: module/post/component.php:50 module/news/component.php:113
+msgid "Edit Column"
+msgstr "编辑专题"
+
+#: module/circle/component.php:28
+msgid "Edit Feed"
+msgstr "编辑动态"
+
+#: module/news/component.php:28
+msgid "Edit News"
+msgstr "编辑新闻"
+
+#: module/shop/component.php:29
+msgid "Edit Product"
+msgstr "编辑商品"
+
+#: module/shop/component.php:95
+msgid "Edit Product Category"
+msgstr "编辑商品品类"
+
+#: module/swipers/component.php:42
+msgid "Edit Swipers"
+msgstr "编辑轮播图"
+
+#: module/forum/component.php:29 module/circle/component.php:116
+msgid "Edit Topic"
+msgstr "编辑话题"
+
+#: module/editor/component.php:58 module/editor/component.php:64
+#: _base/functions/template/functions.php:295
+#: _base/functions/template/functions.php:304
+#: _base/functions/template/functions.php:422
+#: _base/functions/template/functions.php:431
+msgid "Editor"
+msgstr "编辑器"
+
+#: module/mail/component.php:140 module/mail/component.php:141
+#: module/mail/component.php:466 module/user/page/submenu-profile.php:461
+#: module/user/page/submenu-profile.php:469
+#: module/user/inc/class-jl-users-list-table.php:71
+msgid "Email"
+msgstr "邮件"
+
+#: module/user/inc/wp-ajax.php:234
+msgid "email"
+msgstr "电子邮箱"
+
+#: module/mail/component.php:469
+msgid "Email Templates"
+msgstr "邮件模板"
+
+#: module/mail/component.php:435 module/mail/component.php:441
+#: module/mail/component.php:470
+msgid "Email Test"
+msgstr "邮件测试"
+
+#: module/test/component.php:317 module/security/component.php:359
+#: module/security/component.php:407 module/security/component.php:450
+#: module/security/component.php:514 module/storage/component.php:113
+#: module/storage/component.php:119 module/storage/component.php:124
+#: module/storage/component.php:279 module/storage/component.php:303
+#: module/storage/component.php:337 module/storage/component.php:497
+#: module/storage/component.php:503 module/storage/component.php:508
+#: module/storage/component.php:620 module/storage/component.php:644
+#: module/storage/component.php:668 module/storage/component.php:692
+#: module/storage/component.php:726 module/storage/component.php:749
+#: module/views/component.php:207 module/views/component.php:257
+#: module/post/admin/f.php:54 module/post/admin/f.php:78
+#: module/users/page/options-auth-conf.php:57
+#: module/users/inc/class-jl-auth-conf-list-table.php:40
+msgid "Enable"
+msgstr "启用"
+
+#: module/editor/component.php:150
+#| msgid "Enable versions, you can restore the previous version of the post."
+msgid "Enable revisions, you can restore the previous version of the post."
+msgstr "启用后，您可以恢复文章之前的版本。"
+
+#: module/test/component.php:249 module/test/component.php:251
+msgid "Enable Select"
+msgstr "开关选择器"
+
+#: module/views/component.php:210
+msgid ""
+"Enabled by default and cannot be disabled temporarily. The page views of "
+"articles will be automatically tracked."
+msgstr "默认启用且暂不可关闭。文章的浏览量将会被自动统计"
+
+#: module/ad/page/submenu-add.php:120 module/ad/page/submenu-add.php:126
+#: module/ad/inc/wp-ajax.php:21 module/ad/inc/class-jl-ad-list-table.php:35
+msgid "End Time"
+msgstr "结束时间"
+
+#: module/digitaloperations/component.php:213
+msgid ""
+"Enter the code for the friend links you want to add here, or any HTML, CSS, "
+"JS code that you want to customize output."
+msgstr ""
+"在这里输入您想要添加的友情链接代码，或者任何您想自定义输出的<code>HTML</code> <code>CSS</code> <code>"
+"JS</code>代码。"
+
+#: module/digitaloperations/component.php:209
+msgid ""
+"Enter the HTML, CSS, and JS code that you want to add to the website's "
+"footer here."
+msgstr "在这里输入您想要添加到网站页脚的<code>HTML</code>、<code>CSS</code>、<code>JS</code>代码。"
+
+#: module/digitaloperations/component.php:205
+msgid ""
+"Enter the HTML, CSS, and JS code that you want to add to the website's "
+"header here."
+msgstr "在这里输入您想要添加到网站页头的<code>HTML</code>、<code>CSS</code>、<code>JS</code>代码。"
+
+#: _base/_component_system/functions.php:332
+msgid "Error"
+msgstr "错误"
+
+#: module/storage/page/options-alioss.php:41
+#: module/storage/page/options-tencentcos.php:47
+msgid "Error! Please check the cloud storage configuration is correct!"
+msgstr "错误！请检查云存储的配置是否正确！"
+
+#: module/user/page/submenu-profile.php:5
+msgid "Error: "
+msgstr "错误："
+
+#: module/storage/component.php:425
+msgid "EU Central 1 (Frankfurt)"
+msgstr "欧洲中部 1 法兰克福"
+
+#: module/storage/component.php:427
+msgid "EU West 1 (London)"
+msgstr "欧洲西部 1 伦敦"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:69
+msgid "expired"
+msgstr "已过期"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:38
+#| msgid "Expire Time"
+msgid "Expiry Time"
+msgstr "过期时间"
+
+#: module/views/component.php:57 module/views/inc/functions-data.php:452
+msgid "Favorite"
+msgstr "收藏"
+
+#: module/views/inc/functions-data.php:480
+msgid "Favorited!"
+msgstr "已收藏！"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Feb"
+msgstr "二月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "February"
+msgstr "二月"
+
+#: module/circle/component.php:146
+msgid "Feed draft updated."
+msgstr "动态草稿已更新。"
+
+#: module/circle/component.php:138
+msgid "Feed published."
+msgstr "动态已发布。"
+
+#. %s: date and time of the revision
+#: module/circle/component.php:137
+#, php-format
+msgid "Feed restored to version from %s."
+msgstr "动态已恢复到 %s 版本。"
+
+#: module/circle/component.php:139
+msgid "Feed saved."
+msgstr "动态已保存。"
+
+#: module/circle/component.php:142
+#, php-format
+msgid "Feed scheduled for:<strong>%1$s</strong>."
+msgstr "动态计划于:<strong>%1$s</strong>发布。"
+
+#: module/circle/component.php:140
+msgid "Feed submitted."
+msgstr "动态已提交。"
+
+#: module/circle/component.php:132 module/circle/component.php:135
+msgid "Feed updated."
+msgstr "动态已更新。"
+
+#: module/user/inc/class-jl-users-list-table.php:73
+msgid "Feeds"
+msgstr "动态"
+
+#: module/circle/component.php:44
+msgid "Feeds List"
+msgstr "动态列表"
+
+#: module/circle/component.php:43
+msgid "Feeds List Navigation"
+msgstr "动态列表导航"
+
+#: module/test/inc/functions-data.php:206
+msgid "Female"
+msgstr "女"
+
+#: module/test/component.php:166 module/test/component.php:168
+msgid "File upload"
+msgstr "文件上传"
+
+#: module/activity/component.php:41
+msgid "Filter activities list"
+msgstr "过滤活动列表"
+
+#: module/announcement/component.php:42
+msgid "Filter Announcements List"
+msgstr "过滤公告列表"
+
+#: module/circle/component.php:42
+msgid "Filter Feeds List"
+msgstr "过滤动态列表"
+
+#: module/news/component.php:42
+msgid "Filter News List"
+msgstr "过滤新闻列表"
+
+#: module/shop/component.php:43
+msgid "Filter products list"
+msgstr "过滤商品列表"
+
+#: module/security/component.php:518
+msgid ""
+"Filter requests and prevent XSS attacks. The default global setting to "
+"prevent XSS attacks is enabled and cannot be disabled."
+msgstr "过滤请求并防范XSS攻击。防范XSS攻击默认全局启用且不可关闭。"
+
+#: module/forum/component.php:43
+msgid "Filter topics list"
+msgstr "过滤话题列表"
+
+#: module/finance/component.php:18 module/finance/component.php:19
+#: module/finance/component.php:37
+msgid "Finance"
+msgstr "财务"
+
+#: module/test/component.php:96
+msgid "Flush and fix the setting options while data error or G3 updated."
+msgstr "请刷新和修复设置选项，当G3系统更新之后或出现相关数据错误时。"
+
+#: module/test/component.php:83 module/test/component.php:108
+msgid "Flush Rewrite Rules"
+msgstr "刷新重写规则"
+
+#: module/test/component.php:93 module/test/component.php:95
+msgid "Flush Setting Options"
+msgstr "刷新设置选项"
+
+#: module/login/component.php:73 module/login/component.php:158
+#: module/login/component.php:160
+msgid "Follow Login"
+msgstr "关注登录"
+
+#: module/login/component.php:197
+msgid "Follow Login QRCode"
+msgstr "关注登录二维码"
+
+#: module/digitaloperations/component.php:156
+#: module/digitaloperations/component.php:209
+msgid "Footer Code"
+msgstr "页脚区代码"
+
+#: module/login/component.php:248 module/login/component.php:254
+msgid "Force Invite Register"
+msgstr "强制邀请登录"
+
+#: module/test/component.php:52
+msgid "Form Demonstration"
+msgstr "表单演示"
+
+#: module/forum/component.php:24
+msgid "Forum"
+msgstr "论坛"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Fr"
+msgstr "周五"
+
+#: module/storage/component.php:837
+msgid "Frankfurt"
+msgstr "法兰克福"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Fri"
+msgstr "周五"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Friday"
+msgstr "周五"
+
+#: define.php:95 module/dashboard/component.php:21
+#: _base/_component_system/functions.php:332 _base/local/admin/functions.php:64
+#: _base/local/admin/functions.php:66
+msgid "G3 System"
+msgstr "G3系统"
+
+#: index.php:27
+msgid ""
+"G3 system includes more than a dozen subsystems: content management system, "
+"content distribution system, online mall system, store management system, "
+"distribution agency system, payment system, digital marketing system, "
+"membership management system, social system, visual data management system, "
+"etc."
+msgstr ""
+"G3系统包含十几个子系统：内容管理系统、内容分发系统、在线商城系统、门店管理系统、分销代理系统、支付销账系统、数字营销系统、会员管理系统、社交系统、可视化数据管理系统等等。"
+
+#: index.php:17
+msgid ""
+"G3 Web Framework is a WordPress theme framework designed to make WordPress "
+"more suitable for modern operational needs, more user-friendly for Chinese "
+"users, and easier to use overall. It is a core component of the G3 system."
+msgstr ""
+"G3 Web "
+"框架是一款基于WordPress的主题框架，它的目标是为了让WordPress更加满足现代运营需求，让WordPress更加适合中国用户，让WordPress更加简单易用。它是G3系统的核心部分。"
+
+#. Name of the theme
+#| msgid "G3 Web Framework"
+msgid "G3-Web Framework"
+msgstr "G3 Web 框架"
+
+#: module/user/page/submenu-profile.php:67
+#: module/user/page/submenu-profile.php:75
+msgid "Gender"
+msgstr "性别"
+
+#: module/user/inc/wp-ajax.php:146
+msgid "gender"
+msgstr "性别"
+
+#: module/digitaloperations/component.php:59
+#: module/digitaloperations/component.php:60
+#: module/digitaloperations/component.php:77 module/menu/component.php:79
+#: module/wallet/component.php:41
+msgid "General"
+msgstr "常规"
+
+#: module/login/component.php:72
+msgid "General Login"
+msgstr "一般登录"
+
+#: module/menu/component.php:52
+msgid "General Menu"
+msgstr "常规菜单"
+
+#: module/test/component.php:51 module/mail/component.php:468
+#: module/share/component.php:76
+msgid "General Settings"
+msgstr "常规设置"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:73
+#| msgid "generate"
+msgid "Generated"
+msgstr "后台生成"
+
+#: module/storage/component.php:816
+msgid "Guangzhou"
+msgstr "广州"
+
+#: module/digitaloperations/component.php:145
+#: module/digitaloperations/component.php:205
+msgid "Header Code"
+msgstr "页头区代码"
+
+#: module/ad/inc/class-jl-ad-location-list-table.php:61
+msgid "Help"
+msgstr "帮助"
+
+#: module/traffic/page/options-seo.php:27
+msgid "Homepage"
+msgstr "首页"
+
+#: module/traffic/component.php:111 module/traffic/component.php:142
+msgid "Homepage Keywords"
+msgstr "首页关键词"
+
+#: module/sidebar/component.php:48
+msgid "Homepage Sidebar"
+msgstr "首页侧边栏"
+
+#: module/storage/component.php:819
+msgid "Hongkong"
+msgstr "香港"
+
+#. URI of the theme
+#. Author URI of the theme
+msgid "https://www.jealer.com/"
+msgstr "https://www.jealer.com/"
+
+#: module/digitaloperations/component.php:134
+#: module/digitaloperations/component.php:201
+msgid "ICP Code"
+msgstr "ICP备案号"
+
+#: index.php:23
+msgid ""
+"If you are a creative worker, G3 system can help you develop and implement "
+"multi-terminal application solutions more quickly."
+msgstr "如果您是创意工作者，G3系统可以帮助您更加快速的开发和落地多端应用解决方案。"
+
+#: index.php:21
+msgid ""
+"If you are a small and medium-sized enterprise or an individual entrepreneur,"
+" the G3 system can help you realize private deployment and cross-platform "
+"online business at zero cost."
+msgstr "如果您是中小微企业或个人创业者，G3系统可以帮助您即刻零成本实现私有部署的跨平台线上创业。"
+
+#: module/digitaloperations/component.php:201
+msgid ""
+"If you are conducting online business in mainland China, please be sure to "
+"input the ICP filing number issued by the Ministry of Industry and "
+"Information Technology of the People's Republic of China."
+msgstr "如果您在中国大陆开展网络业务，请务必输入中华人民共和国工信部颁发的ICP备案号。"
+
+#: module/mail/inc/functions-data.php:53
+msgid ""
+"If you are unable to click on the link above, please copy the link and paste "
+"it into the address bar of your browser to visit."
+msgstr "如果您无法点击上面的链接，请将上面的链接复制到浏览器地址栏中进行访问。"
+
+#: module/user/page/submenu-profile.php:476
+msgid ""
+"If you change this, an email will be sent at your new address to confirm it. "
+"The new address will not become active until confirmed."
+msgstr "如果您更改此设置，系统将向您的新地址发送一封电子邮件进行确认。新地址在确认之前不会生效。"
+
+#: 404.php:22
+msgid ""
+"If you frequently fall into zone 404, please contact the system administrator"
+msgstr "如果您经常掉入404，请联系系统管理员"
+
+#: module/security/component.php:341
+msgid ""
+"If you have defined the constant <code>JL_API_KEY</code>, the system will "
+"prioritize its usage."
+msgstr "如果您定义了常量<code>JL_API_KEY</code>，系统将优先使用该常量。"
+
+#: module/security/component.php:337
+msgid ""
+"If you have defined the constant <code>JL_NETWORK_API</code>, the system "
+"will prioritize its usage."
+msgstr "如果您定义了常量<code>JL_NETWORK_API</code>，系统将优先使用该常量。"
+
+#: module/storage/component.php:299
+#| msgid ""
+#| "If you have enabled \"Original Image Protection\" in the Aliyun OSS "
+#| "console, please remember to check this item."
+msgid ""
+"If you have enabled \"Original Image Protection\" in the Aliyun OSS console, "
+"please remember to enable this item."
+msgstr "如果你在 Aliyun OSS 控制台开启了「原图保护」，请记得勾选这项。"
+
+#: module/mail/inc/functions-data.php:40
+msgid ""
+"If you have never visited or registered before, please ignore this email."
+msgstr "如果您从未访问和注册过，请忽略此信件。"
+
+#: module/mail/inc/functions-data.php:51
+msgid ""
+"If you would like to reset your password, please click on the link below:"
+msgstr "如果您想重置密码，请点击下面的链接："
+
+#: module/swipers/page/options-swipers.php:56
+msgid "Image"
+msgstr "图片"
+
+#: module/storage/component.php:268 module/storage/component.php:274
+#: module/storage/component.php:705 module/storage/component.php:858
+#| msgid "Image preset styles"
+msgid "Image Preset Style"
+msgstr "图片预设样式"
+
+#: module/test/component.php:180 module/test/component.php:182
+msgid "Image upload & preview"
+msgstr "图片上传和预览"
+
+#: module/swipers/inc/functions-data.php:13
+msgid "Index Swiper"
+msgstr "首页轮播图"
+
+#: module/traffic/page/options-seo.php:17
+msgid "Info"
+msgstr "说明"
+
+#: module/test/component.php:138 module/test/component.php:140
+msgid "Input field"
+msgstr "输入框"
+
+#: module/activity/component.php:39
+msgid "Insert into activity"
+msgstr "插入到活动"
+
+#: module/announcement/component.php:40
+msgid "Insert into Announcement"
+msgstr "插入到公告"
+
+#: module/circle/component.php:40
+msgid "Insert into Feed"
+msgstr "插入到动态"
+
+#: module/news/component.php:40
+msgid "Insert into News"
+msgstr "插入到新闻"
+
+#: module/shop/component.php:41
+msgid "Insert into product"
+msgstr "插入到商品"
+
+#: module/forum/component.php:41
+msgid "Insert into topic"
+msgstr "插入到话题"
+
+#: module/integral/component.php:20 module/integral/component.php:21
+#: module/integral/component.php:38 module/users/page/options-user-group.php:26
+#: module/users/inc/class-jl-user-group-list-table.php:21
+msgid "Integral"
+msgstr "积分"
+
+#: module/storage/component.php:198
+msgid "Internal network"
+msgstr "内网"
+
+#: _base/functions/permission/functions.php:238
+msgid "Invalid data"
+msgstr "非法数据"
+
+#: module/login/component.php:75
+#: module/login/inc/class-jl-invite-code-list-table.php:33
+msgid "Invite Code"
+msgstr "邀请码"
+
+#: module/login/component.php:239
+msgid "Invite Code Register"
+msgstr "邀请码注册"
+
+#: module/login/component.php:74
+msgid "Invite Login"
+msgstr "邀请登录"
+
+#: module/login/component.php:227 module/login/component.php:233
+msgid "Invite Register"
+msgstr "邀请注册"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:40
+msgid "Invitee"
+msgstr "被邀请人"
+
+#: module/storage/component.php:388
+msgid ""
+"It is recommended to choose a data node located in the same region as your "
+"server."
+msgstr "推荐选择您的服务器所在地相同的数据节点。"
+
+#: 404.php:13
+msgid "It's deserted, there's nothing here"
+msgstr "这里荒无人烟，什么都没有"
+
+#: module/storage/component.php:829
+msgid "Jakarta"
+msgstr "雅加达"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Jan"
+msgstr "一月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "January"
+msgstr "一月"
+
+#. Author of the theme
+msgid "JEALER"
+msgstr "JEALER"
+
+#. Name of the template
+msgid "JUI"
+msgstr "JUI"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Jul"
+msgstr "七月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "July"
+msgstr "七月"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Jun"
+msgstr "六月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "June"
+msgstr "六月"
+
+#: module/test/inc/functions-data.php:218
+msgid "Junior User"
+msgstr "初级用户"
+
+#: module/storage/component.php:633 module/storage/component.php:639
+msgid "Keep COS Files"
+msgstr "保留远程文件"
+
+#: module/seo/component.php:40
+msgid "Keywords"
+msgstr "关键词"
+
+#: module/traffic/page/options-seo.php:59
+msgid ""
+"Keywords: If the SEO keywords are empty, the keywords of the page or content "
+"will be automatically fetched."
+msgstr "关键词：如果SEO关键词为空，将自动读取页面或内容的关键词。"
+
+#: module/share/component.php:212 module/share/component.php:291
+msgid "Kuaishou"
+msgstr "快手"
+
+#: module/share/component.php:216 module/share/component.php:295
+msgid "Kuaishou QRCode"
+msgstr "快手二维码"
+
+#: module/sidebar/widgets/announcement.php:75
+msgid "Latest Announcements"
+msgstr "最新公告"
+
+#: module/sidebar/widgets/comment.php:86
+msgid "Latest Comments"
+msgstr "最新评论"
+
+#: module/sidebar/widgets/news.php:71
+msgid "Latest News"
+msgstr "最新新闻"
+
+#: module/sidebar/widgets/post.php:72
+msgid "Latest Posts"
+msgstr "最新文章"
+
+#: module/views/component.php:59 module/views/inc/functions-data.php:158
+msgid "Like"
+msgstr "喜欢"
+
+#: module/views/inc/functions-data.php:186
+msgid "Liked!"
+msgstr "已喜欢"
+
+#: module/digitaloperations/component.php:167
+#: module/digitaloperations/component.php:213 module/ad/page/submenu-add.php:81
+#: module/ad/page/submenu-add.php:87 module/ad/inc/wp-ajax.php:18
+#: module/ad/inc/class-jl-ad-list-table.php:32
+#: module/swipers/page/options-swipers.php:70
+#: module/swipers/inc/class-jl-swiper-list-table.php:35
+msgid "Link"
+msgstr "链接"
+
+#: module/editor/admin/f.php:26
+msgid "Link Card"
+msgstr "链接卡片"
+
+#: module/share/component.php:97 module/share/component.php:140
+msgid "Link Copy"
+msgstr "复制链接"
+
+#: module/digitaloperations/component.php:178
+#: module/digitaloperations/component.php:217
+msgid "Link middle page"
+msgstr "链接中间页"
+
+#: module/ad/inc/wp-ajax.php:65
+msgid "Link permalink format error"
+msgstr "链接地址格式错误"
+
+#: module/swipers/inc/wp-ajax.php:67
+msgid "Link permalink format error."
+msgstr "链接地址格式错误。"
+
+#: module/storage/component.php:326 module/storage/component.php:332
+#: module/storage/component.php:609 module/storage/component.php:615
+msgid "Local Storage Cleanup"
+msgstr "本地服务器存储清理"
+
+#: module/ad/inc/wp-ajax.php:19 module/ad/inc/class-jl-ad-list-table.php:36
+#: module/swipers/inc/class-jl-swiper-list-table.php:37
+msgid "Location"
+msgstr "位置"
+
+#: module/ad/component.php:53 module/ad/component.php:54
+#: module/ad/page/submenu-add.php:140 module/ad/page/submenu-add.php:146
+#: module/swipers/page/options-swipers.php:112
+msgid "Locations"
+msgstr "位置"
+
+#: module/user/inc/wp-ajax.php:1214
+msgid "Logged in successfully"
+msgstr "登录成功"
+
+#: module/user/inc/wp-ajax.php:1444
+msgid "logged out"
+msgstr "已登出"
+
+#: module/user/inc/wp-ajax.php:1415
+msgid "Logged out!"
+msgstr "注销成功"
+
+#: module/menu/component.php:80
+msgid "Logged-in Users Only"
+msgstr "仅登录后可见"
+
+#: module/menu/component.php:81
+msgid "Logged-out Users Only"
+msgstr "仅未登录可见"
+
+#: module/storage/component.php:745
+#| msgid "Logging Errors, Exceptions and Warnings"
+msgid "Logging Errors, Exceptions and Warnings."
+msgstr "记录错误、异常和警告"
+
+#: module/login/component.php:397 module/login/component.php:398
+#: module/seo/inc/functions-data.php:174
+#: _base/functions/template/functions.php:282
+#: _base/functions/template/functions.php:408
+msgid "Login"
+msgstr "登录"
+
+#: module/login/component.php:113 module/login/component.php:115
+msgid "Login via Wechat Client"
+msgstr "微信客户端登录"
+
+#: module/login/component.php:100 module/login/component.php:102
+msgid "Login via Wechat QRCode"
+msgstr "微信扫码登录"
+
+#: module/login/component.php:126 module/login/component.php:128
+msgid "Login via Weibo QRCode"
+msgstr "微博扫码登录"
+
+#: module/logisticsdelivery/component.php:19
+#: module/logisticsdelivery/component.php:20
+#: module/logisticsdelivery/component.php:36
+msgid "Logistics Delivery"
+msgstr "物流配送"
+
+#: module/test/component.php:152 module/test/component.php:154
+msgid "Longer input"
+msgstr "更长的输入框"
+
+#: module/seo/inc/functions-data.php:178
+#: _base/functions/template/functions.php:284
+#: _base/functions/template/functions.php:410
+msgid "Lost Password"
+msgstr "忘记密码"
+
+#: module/test/inc/functions-data.php:205
+msgid "Male"
+msgstr "男"
+
+#: module/swipers/component.php:43
+msgid "Manage Locations"
+msgstr "管理位置"
+
+#: module/user/inc/class-jl-users-list-table.php:241
+msgid "Manage Roles"
+msgstr "管理角色"
+
+#: module/test/inc/functions-data.php:258
+msgid "Manager"
+msgstr "经理"
+
+#: module/users/component.php:51 module/user/page/submenu-profile.php:342
+msgid "Manager Role"
+msgstr "管理角色"
+
+#: module/order/component.php:47 module/order/component.php:48
+#: module/order/component.php:80
+msgid "Manual Order"
+msgstr "手动补单"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Mar"
+msgstr "三月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "March"
+msgstr "三月"
+
+#: module/ad/page/submenu-add.php:179 module/ad/page/submenu-add.php:180
+msgid "May"
+msgstr "五月"
+
+#: module/ad/page/submenu-add.php:73 module/ad/page/submenu-add.php:76
+#: module/ad/inc/wp-ajax.php:17 module/ad/inc/class-jl-ad-list-table.php:31
+#: module/swipers/inc/class-jl-swiper-list-table.php:34
+msgid "Media"
+msgstr "媒体"
+
+#: module/ad/inc/wp-ajax.php:59
+msgid "Media permalink format error"
+msgstr "媒体地址格式错误"
+
+#: module/swipers/inc/wp-ajax.php:61
+msgid "Media permalink format error."
+msgstr "媒体地址格式错误"
+
+#: module/users/component.php:69
+#: module/users/inc/class-jl-system-group-list-table.php:42
+msgid "Member"
+msgstr "成员"
+
+#: module/memberpayment/component.php:19 module/memberpayment/component.php:20
+#: module/memberpayment/component.php:36
+msgid "Member Payment"
+msgstr "会员付费"
+
+#: module/menu/component.php:64
+msgid "Menu Type"
+msgstr "菜单类型"
+
+#: module/test/component.php:140 module/test/component.php:168
+#: module/test/component.php:182 module/test/component.php:196
+#: module/test/component.php:210 module/test/component.php:229
+#: module/test/component.php:251 module/test/component.php:264
+msgid "Method"
+msgstr "方法"
+
+#: module/test/component.php:298
+msgid ""
+"Method <code>jl_field_checkbox()</code>. Please note that <code>value</code> "
+"is an array."
+msgstr "方法 <code>jl_field_checkbox()</code>. 请注意 <code>value</code> 是数组。"
+
+#: module/storage/component.php:430
+#| msgid "Middle East East 1 (Dubai)"
+msgid "Middle East 1 (Dubai)"
+msgstr "中东 1 迪拜"
+
+#: module/cron/component.php:67
+msgid "Minutely"
+msgstr "每分钟一次"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Mo"
+msgstr "周一"
+
+#: module/mobileapp/component.php:19 module/mobileapp/component.php:20
+#: module/mobileapp/component.php:37
+msgid "Mobile APP"
+msgstr "手机APP"
+
+#: module/digitaloperations/component.php:193
+msgid "Modify the default system avatar."
+msgstr "修改系统默认头像"
+
+#: module/digitaloperations/component.php:197
+msgid "Modify the default system cover."
+msgstr "修改系统默认封面图"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Mon"
+msgstr "周一"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Monday"
+msgstr "周一"
+
+#: module/login/component.php:297
+msgid "Money"
+msgstr "金钱"
+
+#: module/theme/component.php:35 module/theme/component.php:36
+#: module/theme/component.php:55
+msgid "Multi-theme Mode"
+msgstr "多主题模式"
+
+#: module/storage/component.php:831
+msgid "Mumbai"
+msgstr "孟买"
+
+#: module/openplatform/component.php:269
+msgid ""
+"Must be in English or numbers, with a length of 3-32 characters. It needs to "
+"be consistent with the Token on the WeChat Official Accounts Platform."
+msgstr "必须为英文或数字，长度为3-32字符。需要与微信公众平台Token一致。"
+
+#: module/users/component.php:82
+#: module/users/inc/class-jl-system-group-list-table.php:46
+msgid "Muted"
+msgstr "禁言"
+
+#: _base/functions/template/functions.php:256
+#: _base/functions/template/functions.php:381
+msgid "My Comments"
+msgstr "我的评论"
+
+#: _base/functions/template/functions.php:257
+#: _base/functions/template/functions.php:382
+msgid "My Favorites"
+msgstr "我的收藏"
+
+#: _base/functions/template/functions.php:259
+#: _base/functions/template/functions.php:384
+msgid "My Followering"
+msgstr "我的关注"
+
+#: _base/functions/template/functions.php:258
+#: _base/functions/template/functions.php:383
+msgid "My Followers"
+msgstr "我的粉丝"
+
+#: module/seo/inc/functions-data.php:182
+#: _base/functions/template/functions.php:244
+#: _base/functions/template/functions.php:275
+#: _base/functions/template/functions.php:368
+#: _base/functions/template/functions.php:400
+msgid "My Homepage"
+msgstr "我的主页"
+
+#: _base/functions/template/functions.php:264
+#: _base/functions/template/functions.php:389
+msgid "My Inviting"
+msgstr "我的邀请"
+
+#: _base/functions/template/functions.php:262
+#: _base/functions/template/functions.php:387
+msgid "My Messages"
+msgstr "我的消息"
+
+#: _base/functions/template/functions.php:260
+#: _base/functions/template/functions.php:385
+msgid "My Orders"
+msgstr "我的订单"
+
+#: _base/functions/template/functions.php:254
+#: _base/functions/template/functions.php:379
+msgid "My Photos"
+msgstr "我的相册"
+
+#: _base/functions/template/functions.php:253
+#: _base/functions/template/functions.php:378
+msgid "My Posts"
+msgstr "我的投稿"
+
+#: _base/functions/template/functions.php:255
+#: _base/functions/template/functions.php:380
+msgid "My Products"
+msgstr "我的橱窗"
+
+#: _base/functions/template/functions.php:265
+#: _base/functions/template/functions.php:390
+msgid "My Profile"
+msgstr "我的资料"
+
+#: _base/functions/template/functions.php:263
+#: _base/functions/template/functions.php:388
+msgid "My Quests"
+msgstr "我的任务"
+
+#: _base/functions/template/functions.php:266
+#: _base/functions/template/functions.php:391
+msgid "My Settings"
+msgstr "我的设置"
+
+#: _base/functions/template/functions.php:261
+#: _base/functions/template/functions.php:386
+msgid "My Wallet"
+msgstr "我的钱包"
+
+#: module/sidebar/component.php:125
+msgid "Mypage Sidebar"
+msgstr "我的页面侧边栏"
+
+#: module/system/component.php:65
+msgid "MySQL version is too low. Please upgrade to version 5.7 or higher."
+msgstr "MySQL版本过低。请升级到5.7或以上版本。"
+
+#: module/ad/inc/class-jl-ad-location-list-table.php:20
+#: module/users/page/options-manage-group.php:24
+#: module/users/page/options-user-group.php:24
+#: module/users/page/options-auth-conf.php:24
+#: module/users/page/options-custom-group.php:24
+#: module/users/inc/class-jl-manage-group-list-table.php:19
+#: module/users/inc/class-jl-user-group-list-table.php:19
+#: module/users/inc/class-jl-system-group-list-table.php:25
+#: module/users/inc/class-jl-custom-group-list-table.php:19
+#: module/swipers/inc/class-jl-swiper-location-list-table.php:19
+msgid "Name"
+msgstr "名称"
+
+#: module/storage/component.php:817
+msgid "Nanjing"
+msgstr "南京"
+
+#: module/storage/component.php:187 module/storage/component.php:193
+msgid "Network"
+msgstr "网络"
+
+#: module/test/inc/functions-data.php:275
+#: _base/functions/user/functions.php:562
+#: _base/functions/user/functions.php:615
+msgid "Never Expire"
+msgstr "永不过期"
+
+#: module/announcement/component.php:27
+msgid "New Announcement"
+msgstr "新公告"
+
+#: module/forum/component.php:106
+msgid "New Board Name"
+msgstr "新版块名称"
+
+#: module/shop/component.php:126
+msgid "New Brand Name"
+msgstr "新品牌名称"
+
+#: module/activity/component.php:102
+msgid "New Category Name"
+msgstr "新分类名称"
+
+#: module/circle/component.php:94
+msgid "New Circle Name"
+msgstr "新圈子名称"
+
+#: module/post/component.php:53 module/news/component.php:116
+msgid "New Column Name"
+msgstr "新专题名称"
+
+#: module/circle/component.php:27
+msgid "New Feed"
+msgstr "新动态"
+
+#: module/news/component.php:27
+msgid "New News"
+msgstr "新新闻"
+
+#: module/user/inc/wp-ajax.php:1028
+msgid "New Password"
+msgstr "新密码"
+
+#: module/shop/component.php:28
+msgid "New Product"
+msgstr "新建商品"
+
+#: module/shop/component.php:98
+msgid "New Product Category Name"
+msgstr "添加新商品品类名称"
+
+#: module/swipers/page/options-swipers.php:91
+#: module/swipers/inc/class-jl-swiper-list-table.php:71
+msgid "New Tab"
+msgstr "新标签页"
+
+#: module/forum/component.php:28
+msgid "New Topic"
+msgstr "新话题"
+
+#: module/news/component.php:21 module/news/component.php:22
+#: module/news/component.php:23 module/news/component.php:24
+msgid "News"
+msgstr "新闻"
+
+#: module/news/component.php:39
+msgid "News Archives"
+msgstr "新闻归档页"
+
+#: module/news/component.php:88
+msgid "News Categories"
+msgstr "新闻分类"
+
+#: module/news/component.php:89
+msgid "News Category"
+msgstr "新闻分类"
+
+#: module/news/component.php:108
+msgid "News Column"
+msgstr "新闻专题"
+
+#: module/news/component.php:107
+msgid "News Columns"
+msgstr "新闻专题"
+
+#: module/sidebar/widgets/comment.php:78
+msgid "News Comments"
+msgstr "新闻评论"
+
+#: module/news/component.php:176
+msgid "News draft updated."
+msgstr "新闻草稿已更新"
+
+#: module/news/component.php:44 module/sidebar/widgets/news.php:13
+msgid "News List"
+msgstr "新闻列表"
+
+#: module/news/component.php:43
+msgid "News List Navigation"
+msgstr "新闻列表导航"
+
+#: module/news/component.php:168
+msgid "News published."
+msgstr "新闻已发布"
+
+#. %s: date and time of the revision
+#: module/news/component.php:167
+#, php-format
+msgid "News restored to version from %s."
+msgstr "新闻已恢复到 %s 版本。"
+
+#: module/news/component.php:169
+msgid "News saved."
+msgstr "新闻已保存"
+
+#: module/news/component.php:172
+#, php-format
+msgid "News scheduled for:<strong>%1$s</strong>."
+msgstr "新闻计划于:<strong>%1$s</strong>发布。"
+
+#: module/sidebar/component.php:147
+msgid "News Sidebar"
+msgstr "新闻侧边栏"
+
+#: module/news/component.php:170
+msgid "News submitted."
+msgstr "新闻已提交"
+
+#: module/news/component.php:162 module/news/component.php:165
+msgid "News updated."
+msgstr "新闻已更新"
+
+#: module/post/component.php:109 _base/functions/archive/functions.php:73
+#: _base/functions/archive/functions.php:106
+msgid "Next"
+msgstr "下一页"
+
+#: module/ad/page/submenu-add.php:185
+msgid "Next.M"
+msgstr "下月"
+
+#: module/user/page/submenu-profile.php:49
+#: module/user/page/submenu-profile.php:56
+#: module/user/inc/class-jl-users-list-table.php:69
+msgid "Nickname"
+msgstr "昵称"
+
+#: module/user/inc/wp-ajax.php:23
+msgid "nickname"
+msgstr "昵称"
+
+#: module/post/component.php:63
+#, php-format
+msgid "No %s Page"
+msgstr "第 %s 页"
+
+#: module/post/component.php:98
+msgid "No 1 Page"
+msgstr "第一页"
+
+#: module/activity/component.php:33
+msgid "No activities found in trash."
+msgstr "回收站里未发现任何活动"
+
+#: module/activity/component.php:32
+msgid "No activities found."
+msgstr "未发现任何活动。"
+
+#: module/announcement/component.php:34
+msgid "No announcements found in trash."
+msgstr "回收站里未发现任何公告"
+
+#: module/announcement/component.php:33
+msgid "No announcements found."
+msgstr "未发现任何公告。"
+
+#: module/editor/admin/f.php:177
+msgid "No autosave drafts found."
+msgstr "未发现任何自动保存的草稿"
+
+#: module/forum/component.php:99
+msgid "No boards found."
+msgstr "未发现任何版块"
+
+#: module/shop/component.php:119
+msgid "No brands found."
+msgstr "未发现任何品牌"
+
+#: module/activity/component.php:95
+msgid "No categories found."
+msgstr "未发现任何分类"
+
+#: module/circle/component.php:86
+msgid "No circles found."
+msgstr "未发现任何圈子。"
+
+#: module/post/component.php:46
+msgid "No columns found."
+msgstr "未发现任何专题。"
+
+#: module/post/inc/rest-api.php:61
+msgid "No data found"
+msgstr "未发现任何数据"
+
+#: module/traffic/component.php:278
+msgid "No data found."
+msgstr "未发现任何数据"
+
+#: module/mail/component.php:278
+msgid "No Encryption"
+msgstr "不加密"
+
+#: module/circle/component.php:34
+msgid "No feeds found in trash."
+msgstr "回收站里未发现任何动态"
+
+#: module/circle/component.php:33
+msgid "No feeds found."
+msgstr "未发现任何动态。"
+
+#: module/login/page/options-invite-code.php:46
+msgid "No more than 100 code should be generated at one time."
+msgstr "建议一次性创建数量不大于100个。"
+
+#: module/news/component.php:34
+msgid "No news found in trash."
+msgstr "回收站里未发现任何新闻。"
+
+#: module/news/component.php:33
+msgid "No news found."
+msgstr "未发现任何新闻。"
+
+#: module/shop/component.php:91
+msgid "No product categories found."
+msgstr "未发现任何商品品类。"
+
+#: module/shop/component.php:35
+msgid "No products found in trash."
+msgstr "回收站里未发现任何商品。"
+
+#: module/shop/component.php:34
+msgid "No products found."
+msgstr "未发现商品。"
+
+#: _base/functions/user/functions.php:237
+#: _base/functions/user/functions.php:243
+#: _base/functions/user/functions.php:249
+msgid "No records found."
+msgstr "未发现任何记录。"
+
+#: module/editor/admin/f.php:130
+msgid "No revisions found."
+msgstr "未发现任何版本修订。"
+
+#: module/test/inc/class-rewrite-rules-table.php:152
+msgid "No rewrite rules found."
+msgstr "未发现任何重写规则。"
+
+#: module/forum/component.php:35
+msgid "No topics found in trash."
+msgstr "回收站里未发现任何话题。"
+
+#: module/forum/component.php:34 module/circle/component.php:113
+msgid "No topics found."
+msgstr "未发现任何话题。"
+
+#: _base/functions/archive/functions.php:63
+#: _base/functions/archive/functions.php:96
+msgid "No.1 Page"
+msgstr "第一页"
+
+#: module/theme/component.php:134
+msgid "None"
+msgstr "无"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Nov"
+msgstr "十一月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "November"
+msgstr "十一月"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Oct"
+msgstr "十月"
+
+#: module/ad/page/submenu-add.php:179
+msgid "October"
+msgstr "十月"
+
+#: module/openplatform/component.php:130 module/openplatform/component.php:212
+msgid "Official Account Type"
+msgstr "公众号类型"
+
+#: module/ad/inc/class-jl-ad-list-table.php:88
+#: module/ad/inc/class-jl-ad-list-table.php:166
+#: module/swipers/page/options-swipers.php:140
+#: module/swipers/inc/class-jl-swiper-list-table.php:67
+#: module/swipers/inc/class-jl-swiper-list-table.php:152
+msgid "Offline"
+msgstr "下线"
+
+#: module/user/page/submenu-profile.php:535 module/user/inc/wp-ajax.php:1027
+msgid "Old Password"
+msgstr "旧密码"
+
+#: module/editor/component.php:129
+msgid ""
+"Once enabled, the editor will automatically save the article at regular "
+"intervals."
+msgstr "启用后，编辑器将每隔一段时间自动保存文章。"
+
+#: module/wallet/component.php:97
+msgid "Once enabled, users can recharge their wallet balance online."
+msgstr "启用后，用户可以在线向钱包充值余额"
+
+#: module/wallet/component.php:88
+msgid ""
+"Once enabled, users will have access to the wallet function, which supports "
+"balance management."
+msgstr "启用后，用户将拥有钱包功能，支持余额管理"
+
+#: module/ad/inc/class-jl-ad-list-table.php:86
+#: module/ad/inc/class-jl-ad-list-table.php:165
+#: module/swipers/page/options-swipers.php:137
+#: module/swipers/inc/class-jl-swiper-list-table.php:67
+#: module/swipers/inc/class-jl-swiper-list-table.php:151
+msgid "Online"
+msgstr "上线"
+
+#: module/test/component.php:314 module/test/component.php:316
+msgid "Only one option"
+msgstr "仅一个选项"
+
+#: module/login/component.php:255
+msgid "Only users who have been invited can register if you enable it."
+msgstr "启用后仅允许持有邀请码的新用户注册。"
+
+#: module/swipers/page/options-swipers.php:82
+#: module/swipers/inc/class-jl-swiper-list-table.php:36
+msgid "Open Method"
+msgstr "打开方式"
+
+#: module/openplatform/component.php:79 module/openplatform/component.php:80
+#: module/openplatform/component.php:95
+msgid "Open Platform"
+msgstr "开放平台"
+
+#: module/openplatform/component.php:304 module/openplatform/component.php:353
+msgid "Open Platform Certification"
+msgstr "开放平台认证"
+
+#: module/user/page/submenu-profile.php:306
+msgid "Operation Data"
+msgstr "运营数据"
+
+#: module/storage/component.php:871
+msgid ""
+"Optional. Before processing images, you need to enable \"Cloud Infinite\" "
+"first."
+msgstr "可选项。启用图片处理前，请确保已经启用了数据万象服务。"
+
+#: module/storage/component.php:275
+msgid ""
+"Optional. Use OSS image preset styles to replace obtaining thumbnails "
+"through parameters."
+msgstr "可选项。使用 OSS 图片预设样式来替代通过参数获取缩略图的方式。"
+
+#: 404.php:19
+msgid "Or there may be some issues with the system at the moment"
+msgstr "或者系统此刻正在发生某些故障"
+
+#: module/order/inc/class-jl-orders-list-table.php:13
+#: module/swipers/page/options-swipers.php:100
+#: module/swipers/inc/class-jl-swiper-list-table.php:38
+msgid "Order"
+msgstr "排序"
+
+#: module/order/inc/class-jl-orders-list-table.php:32
+msgid "Order Amount"
+msgstr "订单金额"
+
+#: module/order/inc/class-jl-orders-list-table.php:34
+msgid "Order From"
+msgstr "订单来源"
+
+#: module/order/inc/class-jl-orders-list-table.php:29
+msgid "Order ID"
+msgstr "订单号"
+
+#: module/order/component.php:38 module/order/component.php:73
+msgid "Order Info"
+msgstr "订单详情"
+
+#: module/ad/inc/class-jl-ad-list-table.php:37
+msgid "Order Number"
+msgstr "订单号"
+
+#: module/mail/component.php:403 module/mail/component.php:409
+msgid "Order Payment Receipt Template"
+msgstr "订单支付凭证模板"
+
+#: module/order/inc/class-jl-orders-list-table.php:35
+msgid "Order Status"
+msgstr "订单状态"
+
+#: module/order/inc/class-jl-orders-list-table.php:36
+msgid "Order Type"
+msgstr "订单类型"
+
+#: module/order/component.php:19 module/order/component.php:20
+#: module/order/component.php:66
+#: module/order/inc/class-jl-orders-list-table.php:14
+#: module/user/inc/class-jl-users-list-table.php:74
+msgid "Orders"
+msgstr "订单"
+
+#: module/traffic/component.php:45 module/traffic/component.php:46
+#: module/traffic/component.php:66
+msgid "Organic Traffic"
+msgstr "自然流量"
+
+#: module/openplatform/component.php:152 module/openplatform/component.php:239
+msgid "Original ID"
+msgstr "原始ID"
+
+#: module/storage/component.php:292 module/storage/component.php:298
+#| msgid "Original image protection"
+msgid "Original Image Protection"
+msgstr "原图保护"
+
+#: module/storage/component.php:120
+msgid ""
+"OSS can help you save server bandwidth and improve access speed to resource "
+"files such as pictures, videos and audios."
+msgstr "云存储可以帮助节约服务器带宽、提升存储图片、视频、音频等资源文件的访问速度。"
+
+#: module/seo/inc/functions-data.php:18 module/seo/inc/functions-data.php:60
+#, php-format
+#| msgid "Page $s"
+msgid "Page %s"
+msgstr "第%s页"
+
+#: module/sidebar/widgets/comment.php:76
+msgid "Page Comments"
+msgstr "页面评论"
+
+#: module/sidebar/component.php:81
+msgid "Page Sidebar"
+msgstr "页面页侧边栏"
+
+#: module/views/component.php:157
+msgid "Page view statistics"
+msgstr "浏览量统计"
+
+#: module/ad/inc/wp-ajax.php:138 module/swipers/inc/wp-ajax.php:121
+#: module/login/inc/wp-ajax.php:72
+msgid "Parameter error."
+msgstr "参数错误。"
+
+#: module/swipers/inc/wp-ajax.php:53
+msgid "Parameter format error."
+msgstr "参数格式错误。"
+
+#: module/activity/component.php:31
+msgid "Parent Activity:"
+msgstr "父级活动："
+
+#: module/announcement/component.php:32
+msgid "Parent Announcement:"
+msgstr "父级公告："
+
+#: module/forum/component.php:101
+msgid "Parent Board"
+msgstr "父级版块"
+
+#: module/forum/component.php:102
+msgid "Parent Board:"
+msgstr "父级版块："
+
+#: module/shop/component.php:121
+msgid "Parent Brand"
+msgstr "父级品牌"
+
+#: module/shop/component.php:122
+msgid "Parent Brand:"
+msgstr "父级品牌："
+
+#: module/activity/component.php:97
+msgid "Parent Category"
+msgstr "父级分类"
+
+#: module/activity/component.php:98
+msgid "Parent Category:"
+msgstr "父级分类："
+
+#: module/circle/component.php:88
+msgid "Parent Circle"
+msgstr "父级圈子"
+
+#: module/circle/component.php:89
+msgid "Parent Circle:"
+msgstr "父级圈子："
+
+#: module/post/component.php:48 module/news/component.php:111
+msgid "Parent Column"
+msgstr "父级专题"
+
+#: module/post/component.php:49 module/news/component.php:112
+msgid "Parent Column:"
+msgstr "父级专题："
+
+#: module/circle/component.php:32
+msgid "Parent Feed:"
+msgstr "父级动态："
+
+#: module/news/component.php:32
+msgid "Parent News:"
+msgstr "父级新闻："
+
+#: module/shop/component.php:93
+msgid "Parent Product Category"
+msgstr "父级商品品类"
+
+#: module/shop/component.php:94
+msgid "Parent Product Category:"
+msgstr "父级商品品类："
+
+#: module/shop/component.php:33
+msgid "Parent Product:"
+msgstr "父级商品："
+
+#: module/forum/component.php:33
+msgid "Parent Topic:"
+msgstr "父级话题："
+
+#: module/user/inc/wp-ajax.php:1247
+msgid "Password must be at least 6 characters."
+msgstr "密码至少6位长度"
+
+#: module/mail/component.php:383 module/mail/component.php:389
+msgid "Password Recovery Notification Template"
+msgstr "找回密码通知模板"
+
+#: module/order/inc/class-jl-orders-list-table.php:33
+msgid "Pay Method"
+msgstr "支付方式"
+
+#: module/payment/component.php:20 module/payment/component.php:21
+#: module/payment/component.php:38
+msgid "Payment"
+msgstr "支付"
+
+#: module/paywall/component.php:24 module/paywall/component.php:25
+#: module/paywall/component.php:46 module/paywall/component.php:172
+#: module/paywall/component.php:173 module/paywall/component.php:174
+#: module/paywall/component.php:175 module/paywall/component.php:176
+#: module/editor/admin/f.php:27 module/editor/admin/f.php:28
+msgid "Paywall"
+msgstr "知识付费"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:73
+msgid "Perchased"
+msgstr "用户购买"
+
+#: module/user/page/submenu-profile.php:200
+msgid "Personal homepage"
+msgstr "个人主页"
+
+#: module/user/inc/class-jl-users-list-table.php:70
+msgid "Phone"
+msgstr "手机"
+
+#: module/user/page/submenu-profile.php:86
+#: module/user/page/submenu-profile.php:94
+msgid "Phone Number"
+msgstr "手机号"
+
+#: module/user/inc/wp-ajax.php:349
+msgid "phone number"
+msgstr "手机号"
+
+#: module/system/component.php:51
+msgid "PHP version is too low. Please upgrade to version 8.0 or higher."
+msgstr "PHP版本过低，请升级到8.0及以上版本。"
+
+#: module/editor/page/views-qtags.php:13
+msgid "Please enter the code language, such as PHP"
+msgstr "请输入代码语言，如PHP"
+
+#: module/mail/component.php:300
+msgid ""
+"Please enter the email address from which the sending operation will be "
+"executed."
+msgstr "请填写执行发件操作的电子邮箱地址。"
+
+#: module/mail/component.php:215
+msgid ""
+"Please fill in the email address that will be displayed as the sender in the "
+"email."
+msgstr "请填写邮件中显示的发件人的邮箱地址。"
+
+#: module/mail/component.php:320
+msgid ""
+"Please fill in the email password or authorization code according to the "
+"service rules of the email provider."
+msgstr "请根据邮箱提供商的服务规则，填写邮箱密码或授权码。"
+
+#: module/mail/component.php:196
+msgid "Please fill in the nickname to be displayed as the sender in the email."
+msgstr "请填写邮件中显示的发件人的昵称。"
+
+#: module/mail/component.php:235
+msgid ""
+"Please fill in the SMTP address of the mail server, for example <code>smtp.x."
+"com</code>."
+msgstr "请填写邮件服务器的SMTP地址，如<code>smtp.x.com</code>。"
+
+#: module/mail/component.php:255
+#| msgid ""
+#| "Please fill in the SMTP port of the mail server, for example <code>"
+#| "25</code>."
+msgid ""
+"Please fill in the SMTP port of the mail server, for example <code>465</code>"
+"."
+msgstr "请填写邮件服务器的SMTP端口，如<code>465</code>。"
+
+#: module/storage/component.php:144
+#| msgid "Please input Aliyun AccessKey ID"
+msgid "Please input Aliyun AccessKey ID."
+msgstr "请输入阿里云AccessKey ID"
+
+#: module/storage/component.php:163
+#| msgid "Please input Aliyun AccessKey Secret"
+msgid "Please input Aliyun AccessKey Secret."
+msgstr "请输入阿里云AccessKey Secret"
+
+#: module/storage/component.php:218
+#| msgid "Please input Aliyun OSS Bucket Name"
+msgid "Please input Aliyun OSS Bucket Name."
+msgstr "请输入阿里云 OSS Bucket名称"
+
+#: module/ad/page/submenu-add.php:47 module/ad/page/submenu-add.php:66
+#: module/ad/page/submenu-add.php:93 module/ad/page/submenu-add.php:113
+#: module/ad/page/submenu-add.php:133 module/ad/page/submenu-add.php:151
+#: module/swipers/page/options-swipers.php:48
+#: module/swipers/page/options-swipers.php:60
+#: module/swipers/page/options-swipers.php:74
+#: module/swipers/page/options-swipers.php:86
+#: module/swipers/page/options-swipers.php:105
+#: module/swipers/page/options-swipers.php:135
+#: _base/functions/template/functions.php:633
+#: _base/functions/template/functions.php:683
+#: _base/functions/template/functions.php:737
+#: _base/functions/template/functions.php:797
+#: _base/functions/template/functions.php:848
+#| msgid "Please input the order"
+msgid "Please Input the Field"
+msgstr "请输入排序"
+
+#: module/storage/component.php:256
+msgid ""
+"Please leave it blank if you do not need to specify the storage directory in "
+"the Bucket."
+msgstr "如果您不需要指定Bucket内的存储目录，请留空"
+
+#: module/views/inc/functions-data.php:197
+#: module/views/inc/functions-data.php:344
+#: module/views/inc/functions-data.php:491
+#: _base/functions/permission/functions.php:63
+msgid "Please Login!"
+msgstr "请登录！"
+
+#: module/storage/component.php:237 module/storage/component.php:597
+msgid ""
+"Please make sure the domain you entered supports HTTPS service if your "
+"website has enable HTTPS."
+msgstr "如果您的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务"
+
+#: module/test/component.php:316
+msgid ""
+"Please note that if <code>checkbox</code> is not selected, it will not "
+"submit any value, which means the data does not exist. You need to handle "
+"the data by checking and processing it accordingly."
+msgstr "请注意：<code>checkbox</code>未选中不会提交任何值，也就意味着数据不存在，需要您对数据进行判断处理。"
+
+#: module/storage/component.php:391 module/storage/component.php:811
+#: module/openplatform/component.php:216 module/editor/component.php:121
+#: module/ad/page/submenu-add.php:152
+#: _base/functions/template/functions.php:563
+msgid "Please Select"
+msgstr "请选择"
+
+#: module/mail/component.php:275
+msgid ""
+"Please select the appropriate encryption method based on the configuration "
+"of the mail server."
+msgstr "请根据邮件服务器的配置，选择合适的加密方式。"
+
+#: module/storage/component.php:194
+msgid "Please select the network type of the data node."
+msgstr "建议选择您的服务器所在地的数据节点。"
+
+#: templates/modern-browser.php:21
+msgid "Please update your browser to the latest version!"
+msgstr "请及时更新您的浏览器到最新版！"
+
+#: module/user/page/submenu-profile.php:522
+msgid ""
+"Please use the balance modification feature with caution. In order to ensure "
+"financial security, any changes to the balance will be logged and included "
+"in financial statistics."
+msgstr "请谨慎使用余额变更功能。为确保财务安全，余额变更记录将会被记录日志，并纳入财务统计。"
+
+#: module/test/component.php:109
+msgid "Please use this feature with caution! Do not click unless necessary!"
+msgstr "请谨慎使用此功能！非必需勿点击！"
+
+#: module/login/component.php:296
+msgid "Points"
+msgstr "积分"
+
+#: module/circle/component.php:90
+msgid "Popular Circles"
+msgstr "热门圈子"
+
+#: module/circle/component.php:114
+msgid "Popular Topics"
+msgstr "热门话题"
+
+#: module/sidebar/widgets/comment.php:75
+msgid "Post Comments"
+msgstr "文章评论"
+
+#: module/sidebar/widgets/post.php:19
+msgid "Post List"
+msgstr "文章列表"
+
+#: module/sidebar/component.php:70
+msgid "Post Sidebar"
+msgstr "文章页侧边栏"
+
+#: module/user/page/submenu-profile.php:287
+#: module/user/page/submenu-profile.php:295
+msgid "Postcode"
+msgstr "邮政编码"
+
+#: module/user/inc/wp-ajax.php:517
+msgid "postcode"
+msgstr "邮政编码"
+
+#: module/sidebar/widgets/post.php:59
+msgid "Posts List"
+msgstr "文章列表"
+
+#: _base/functions/site/functions.php:392
+#, php-format
+msgid "Powered by %1$s and %2$s."
+msgstr "由 %1$s 和 %2$s 驱动和支持。"
+
+#: module/ad/page/submenu-add.php:184
+msgid "Prev.M"
+msgstr "上月"
+
+#: module/views/component.php:168 module/views/component.php:218
+msgid "Prevent Bot Traffic on Page Views"
+msgstr "浏览量防刷"
+
+#: module/security/component.php:184 module/security/component.php:445
+msgid "Prevent XMLRPC Attacks"
+msgstr "防范XMLRPC攻击"
+
+#: module/security/component.php:195 module/security/component.php:509
+msgid "Prevent XSS Attacks"
+msgstr "防范XSS攻击"
+
+#: module/ad/page/submenu-edit.php:41
+msgid "Preview Ad"
+msgstr "预览广告"
+
+#: module/announcement/component.php:149
+#| msgid "View Announcement."
+msgid "Preview Announcement"
+msgstr "浏览公告。"
+
+#: module/circle/component.php:158
+msgid "Preview Feed"
+msgstr "预览动态"
+
+#: module/news/component.php:188
+msgid "Preview News"
+msgstr "预览新闻"
+
+#: module/shop/component.php:189
+#| msgid "View Product."
+msgid "Preview Product"
+msgstr "浏览商品。"
+
+#: module/swipers/page/options-swipers.php:256
+msgid "Preview Swiper"
+msgstr "轮播图预览"
+
+#: module/post/component.php:95 _base/functions/archive/functions.php:60
+#: _base/functions/archive/functions.php:93
+msgid "Previous"
+msgstr "上一页"
+
+#: module/login/component.php:306 module/login/component.php:312
+msgid "Price"
+msgstr "价格"
+
+#: module/test/inc/functions-data.php:267
+msgid "Principal Author"
+msgstr "首席作者"
+
+#: module/test/inc/functions-data.php:230
+msgid "Principal User"
+msgstr "核心用户"
+
+#: module/shop/component.php:23 module/shop/component.php:25
+msgid "Product"
+msgstr "商品"
+
+#: module/shop/component.php:40
+msgid "Product Archives"
+msgstr "商品归档"
+
+#: module/shop/component.php:117
+msgid "Product Brand"
+msgstr "商品品牌"
+
+#: module/shop/component.php:116
+msgid "Product Brands"
+msgstr "商品品牌"
+
+#: module/shop/component.php:88
+msgid "Product Categories"
+msgstr "商品品类"
+
+#: module/shop/component.php:89
+msgid "Product Category"
+msgstr "商品品类"
+
+#: module/sidebar/widgets/comment.php:79
+msgid "Product Comments"
+msgstr "商品评论"
+
+#: module/shop/component.php:177
+msgid "Product draft updated."
+msgstr "商品草稿已更新。"
+
+#: module/shop/component.php:169
+msgid "Product published."
+msgstr "商品已发布。"
+
+#. %s: date and time of the revision
+#: module/shop/component.php:168
+#, php-format
+msgid "Product restored to version from %s."
+msgstr "商品已恢复到 %s 版本。"
+
+#: module/shop/component.php:170
+msgid "Product saved."
+msgstr "商品已保存。"
+
+#: module/shop/component.php:173
+#, php-format
+msgid "Product scheduled for:<strong>%1$s</strong>."
+msgstr "商品计划于:<strong>%1$s</strong>发布。"
+
+#: module/sidebar/component.php:114
+#| msgid "Product Page Sidebar"
+msgid "Product Sidebar"
+msgstr "商品页侧边栏"
+
+#: module/shop/component.php:171
+msgid "Product submitted."
+msgstr "商品已提交。"
+
+#: module/shop/component.php:163 module/shop/component.php:166
+msgid "Product updated."
+msgstr "商品已更新。"
+
+#: module/shop/component.php:22
+msgid "Products"
+msgstr "商品"
+
+#: module/shop/component.php:45
+msgid "Products list"
+msgstr "商品列表"
+
+#: module/shop/component.php:44
+msgid "Products list navigation"
+msgstr "商品列表导航"
+
+#: module/storage/component.php:197
+msgid "Public network"
+msgstr "外网"
+
+#: module/editor/inc/wp-ajax.php:176
+#| msgid "Publish Failed!"
+msgid "Publish failed"
+msgstr "发布失败"
+
+#: module/share/component.php:396
+#| msgid "Publish to Douyin"
+msgid "Publish to Douyin."
+msgstr "发布到抖音。"
+
+#: module/share/component.php:386
+msgid "Publish to QQ Zone."
+msgstr "发布到QQ空间。"
+
+#: module/share/component.php:407
+msgid "Publish to Sina Weibo."
+msgstr "发布到新浪微博。"
+
+#: module/share/component.php:376
+msgid "Publish to wechat mp media library."
+msgstr "发布到微信公众号素材库。"
+
+#: module/editor/inc/wp-ajax.php:179
+#| msgid "Published!"
+msgid "Published"
+msgstr "发布成功"
+
+#: module/user/inc/wp-ajax.php:602
+msgid "QQ number"
+msgstr "QQ号"
+
+#: module/openplatform/component.php:103
+msgid "QQ OP"
+msgstr "QQ开放平台"
+
+#: module/share/component.php:232 module/share/component.php:311
+msgid "QQ QRCode"
+msgstr "QQ二维码"
+
+#: module/share/component.php:387
+msgid "QQ Zone"
+msgstr "QQ空间"
+
+#: _base/functions/tools/functions.php:44
+msgid "query in "
+msgid_plural "queries in "
+msgstr[0] "次查询耗时 "
+
+#: templates/modern-browser.php:23
+msgid "Quick Update Redirect:"
+msgstr "快捷更新跳转："
+
+#: module/test/component.php:262 module/test/component.php:264
+msgid "Radio field"
+msgstr "单选框"
+
+#: define.php:97
+msgid "Raven"
+msgstr "Raven"
+
+#: module/traffic/component.php:276
+msgid "Recent updates:"
+msgstr "最近更新："
+
+#: module/wallet/component.php:73 module/wallet/component.php:96
+#: module/user/page/submenu-profile.php:518
+msgid "Recharge"
+msgstr "充值"
+
+#: module/post/admin/f.php:46 module/post/admin/f.php:72
+#: module/post/admin/f.php:120
+msgid "Recommend"
+msgstr "推荐"
+
+#: module/login/component.php:238
+msgid "Ref Code Register"
+msgstr "推荐码注册"
+
+#: module/test/inc/wp-ajax.php:12
+#| msgid "Refreshed!"
+msgid "Refreshed"
+msgstr "刷新成功"
+
+#: module/storage/component.php:560 module/storage/component.php:807
+#: module/user/page/submenu-profile.php:249
+#: module/user/page/submenu-profile.php:257
+msgid "Region"
+msgstr "地域"
+
+#: module/user/inc/wp-ajax.php:448
+msgid "region"
+msgstr "地域"
+
+#: module/seo/inc/functions-data.php:176
+#: _base/functions/template/functions.php:283
+#: _base/functions/template/functions.php:409
+msgid "Register"
+msgstr "注册"
+
+#: module/mail/inc/functions-data.php:39
+msgid "Registrant IP address"
+msgstr "注册者IP地址"
+
+#: module/user/inc/wp-ajax.php:1292
+msgid "Registration successful!"
+msgstr "注册成功！"
+
+#: module/mail/inc/functions-data.php:38
+msgid "Registration time"
+msgstr "注册时间"
+
+#: module/news/component.php:37 module/circle/component.php:37
+#: module/announcement/component.php:37
+msgid "Remove Cover"
+msgstr "移除封面图"
+
+#: module/activity/component.php:36 module/shop/component.php:38
+#: module/forum/component.php:38
+msgid "Remove cover image"
+msgstr "移除封面图"
+
+#: module/storage/component.php:471
+msgid "Replace all attachment file URLs in your site with  Ali OSS file URLs."
+msgstr "用阿里云COS文件地址替换网站里的所有附件文件地址。"
+
+#: module/storage/component.php:906
+msgid ""
+"Replace all attachment file URLs in your site with Tencent COS file URLs."
+msgstr "用腾讯云COS文件地址替换网站里的所有附件文件地址。"
+
+#: module/storage/component.php:371 module/storage/component.php:467
+#: module/storage/component.php:469 module/storage/component.php:792
+#: module/storage/component.php:902 module/storage/component.php:904
+#: module/storage/page/options-alioss.php:69
+#: module/storage/page/options-tencentcos.php:91
+msgid "Replace Data"
+msgstr "替换数据"
+
+#: module/storage/page/options-alioss.php:66
+#: module/storage/page/options-tencentcos.php:88
+msgid "Replacing..."
+msgstr "替换中..."
+
+#: module/seo/inc/functions-data.php:180
+#: _base/functions/template/functions.php:285
+#: _base/functions/template/functions.php:411
+msgid "Reset Password"
+msgstr "重置密码"
+
+#: module/security/component.php:162 module/security/component.php:354
+msgid "Reset Upload File Names"
+msgstr "重置上传文件名"
+
+#: module/test/inc/functions-data.php:212
+msgid "Restrict User"
+msgstr "限制用户"
+
+#: module/sidebar/widgets/announcement.php:19
+msgid "Retrieve the data for the announcement list."
+msgstr "获取最新公告列表数据。"
+
+#: module/sidebar/widgets/comment.php:23
+msgid "Retrieve the data for the comment list."
+msgstr "获取最新评论列表数据。"
+
+#: module/sidebar/widgets/news.php:16
+msgid "Retrieve the data for the news list."
+msgstr "获取最新新闻列表数据。"
+
+#: module/sidebar/widgets/post.php:22
+msgid "Retrieve the data for the post list."
+msgstr "获取最新文章列表数据。"
+
+#: 404.php:28 templates/modern-browser.php:35
+msgid "Return to homepage"
+msgstr "返回首页"
+
+#: index.php:33
+msgid "Return to the admin page."
+msgstr "返回管理后台。"
+
+#: module/editor/component.php:94 module/editor/component.php:150
+msgid "Revisions"
+msgstr "版本修订"
+
+#: module/rewardauthor/component.php:19 module/rewardauthor/component.php:20
+#: module/rewardauthor/component.php:36
+msgid "Reward Author"
+msgstr "赞赏作者"
+
+#: module/test/inc/class-rewrite-rules-table.php:29
+msgid "Rewrite"
+msgstr "重写"
+
+#: module/test/inc/class-rewrite-rules-table.php:13
+msgid "Rewrite Rule"
+msgstr "重写规则"
+
+#: module/test/component.php:53
+#: module/test/inc/class-rewrite-rules-table.php:14
+msgid "Rewrite Rules"
+msgstr "重写规则"
+
+#: module/user/inc/wp-ajax.php:1111 module/user/inc/wp-ajax.php:1118
+#: module/user/inc/wp-ajax.php:1156 module/user/inc/wp-ajax.php:1163
+msgid "Role"
+msgstr "角色"
+
+#: module/users/component.php:52 module/roleauthentication/component.php:19
+#: module/roleauthentication/component.php:20
+#: module/roleauthentication/component.php:36
+#: module/user/page/submenu-profile.php:371
+msgid "Role Authentication"
+msgstr "角色认证"
+
+#: module/users/component.php:30 module/users/component.php:31
+#: module/users/component.php:48
+msgid "Roles"
+msgstr "角色"
+
+#: module/test/inc/class-rewrite-rules-table.php:28
+msgid "Rule"
+msgstr "规则"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Sa"
+msgstr "周六"
+
+#: module/digitaloperations/component.php:102
+#: module/digitaloperations/component.php:189
+msgid "Sad Mode"
+msgstr "默哀模式"
+
+#: module/security/component.php:173 module/security/component.php:402
+msgid "Safe Session"
+msgstr "安全会话"
+
+#: module/storage/component.php:847
+msgid "Sao Paulo"
+msgstr "圣保罗"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Sat"
+msgstr "周六"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Saturday"
+msgstr "周六"
+
+#: module/ad/page/submenu-add.php:169
+#: module/swipers/page/options-swipers.php:150
+msgid "Save Changes"
+msgstr "保存更改"
+
+#: module/editor/inc/wp-ajax.php:153
+#| msgid "Save Failed!"
+msgid "Save failed"
+msgstr "保存失败"
+
+#: module/editor/inc/wp-ajax.php:156
+#| msgid "Saved!"
+msgid "Saved"
+msgstr "保存成功"
+
+#: module/activity/component.php:30 module/order/page/submenu-edit.php:12
+#: module/ad/page/submenu-edit.php:56 module/user/page/submenu-users.php:15
+msgid "Search"
+msgstr "搜索"
+
+#: module/announcement/component.php:31
+msgid "Search Announcements"
+msgstr "搜索公告"
+
+#: module/forum/component.php:98
+msgid "Search Boards"
+msgstr "搜索版块"
+
+#: module/shop/component.php:118
+msgid "Search Brands"
+msgstr "搜索品牌"
+
+#: module/activity/component.php:94
+msgid "Search Categories"
+msgstr "搜索分类"
+
+#: module/circle/component.php:85
+msgid "Search Circles"
+msgstr "搜索圈子"
+
+#: module/post/component.php:45 module/news/component.php:109
+msgid "Search Columns"
+msgstr "搜索专题"
+
+#: module/circle/component.php:31
+msgid "Search Feeds"
+msgstr "搜索动态"
+
+#: module/news/component.php:31
+msgid "Search News"
+msgstr "搜索新闻"
+
+#: module/shop/component.php:90
+msgid "Search Product Categories"
+msgstr "搜索商品品类"
+
+#: module/shop/component.php:32
+msgid "Search Products"
+msgstr "搜索商品"
+
+#: module/seo/inc/functions-data.php:114
+#, php-format
+msgid "Search results for \"%s\""
+msgstr "“%s”的搜索结果"
+
+#: module/seo/inc/functions-data.php:163
+#, php-format
+msgid "Search Results for: %s"
+msgstr "%s的搜索结果："
+
+#: module/sidebar/component.php:92
+msgid "Search Sidebar"
+msgstr "搜索页侧边栏"
+
+#: module/ad/inc/class-jl-ad-list-table.php:155
+msgid "Search title or description"
+msgstr "搜索标题或描述"
+
+#: module/forum/component.php:32 module/circle/component.php:112
+msgid "Search Topics"
+msgstr "搜索话题"
+
+#: _base/functions/tools/functions.php:45
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] "秒"
+
+#: module/editor/component.php:138
+msgid "seconds"
+msgstr "秒"
+
+#: module/security/component.php:63 module/security/component.php:64
+#: module/security/component.php:86
+msgid "Security"
+msgstr "安全"
+
+#: module/test/component.php:222 module/test/component.php:228
+msgid "Select field"
+msgstr "选择器"
+
+#: module/mail/component.php:410
+msgid "Send an email notification to the user after successful payment."
+msgstr "用户支付成功后，发送邮件通知用户。"
+
+#: module/mail/page/options-test.php:18
+msgid "Send Test Email"
+msgstr "发送测试邮件"
+
+#: module/mail/component.php:293 module/mail/component.php:299
+msgid "Sender's Email Address"
+msgstr "发件箱地址"
+
+#: module/mail/component.php:313 module/mail/component.php:319
+msgid "Sender's Email Secret"
+msgstr "发件箱密钥"
+
+#: module/test/inc/functions-data.php:224
+msgid "Senior User"
+msgstr "高级用户"
+
+#: module/seo/component.php:77
+msgid "SEO & Social Media"
+msgstr "SEO和社交传播"
+
+#: module/traffic/component.php:131
+msgid "SEO is enabled by default globally and cannot be turned off."
+msgstr "SEO默认全局启用且不可关闭。"
+
+#: module/traffic/page/options-seo.php:20
+msgid ""
+"SEO is the foundation of traffic operations. It can help you generate more "
+"organic traffic for free. It makes it easier for search engines to crawl and "
+"understand your online business, allowing more users to discover your "
+"business information."
+msgstr "SEO是流量运营的基础。它可以帮助您获得更多免费的自然流量。让您的线上业务更容易被搜索引擎抓取和阅读理解，让更多的用户发现您的业务信息。"
+
+#: module/seo/component.php:90 module/seo/component.php:96
+msgid "SEO Keywords"
+msgstr "SEO关键词"
+
+#: module/storage/component.php:833
+msgid "Seoul"
+msgstr "首尔"
+
+#: module/ad/page/submenu-add.php:180
+msgid "Sep"
+msgstr "九月"
+
+#: module/traffic/component.php:143 module/seo/component.php:40
+#: module/seo/component.php:91 module/seo/component.php:99
+#: module/user/page/submenu-profile.php:411
+#| msgid "Separate tags with commas"
+msgid "Separate tags with commas."
+msgstr "多个标签请用英文逗号( , )分隔"
+
+#: module/ad/page/submenu-add.php:179
+msgid "September"
+msgstr "九月"
+
+#: module/openplatform/component.php:217
+msgid "Service Account"
+msgstr "服务号"
+
+#: module/news/component.php:36 module/circle/component.php:36
+#: module/announcement/component.php:36
+msgid "Set Cover"
+msgstr "设置封面图"
+
+#: module/activity/component.php:35 module/shop/component.php:37
+#: module/forum/component.php:37
+msgid "Set cover image"
+msgstr "设置封面图"
+
+#: module/test/component.php:154
+#| msgid "Set the class parameter to <code>regular-text</code>."
+msgid "Set the class parameter to <code>regular-text</code>"
+msgstr "设置class参数为<code>regular-text</code>"
+
+#: module/storage/component.php:818
+msgid "Shanghai"
+msgstr "上海"
+
+#: module/storage/component.php:822
+msgid "Shanghai FSI"
+msgstr "上海金融"
+
+#: module/share/component.php:121 module/share/component.php:164
+msgid "Share to QQ Zone"
+msgstr "分享到QQ空间"
+
+#: module/share/component.php:117 module/share/component.php:160
+msgid "Share to Sina Weibo"
+msgstr "分享到新浪微博"
+
+#: module/share/component.php:105 module/share/component.php:148
+msgid "Share to Wechat"
+msgstr "分享到微信"
+
+#: module/share/component.php:101 module/share/component.php:144
+msgid "Share via Poster"
+msgstr "分享海报"
+
+#: module/storage/component.php:823
+msgid "Shenzhen FSI"
+msgstr "深圳金融"
+
+#: module/shop/component.php:24
+msgid "Shop"
+msgstr "商城"
+
+#: module/sidebar/component.php:103
+msgid "Shop Sidebar"
+msgstr "商城侧边栏"
+
+#: module/storage/component.php:841
+#| msgid "Siliconvalley"
+msgid "Silicon Valley"
+msgstr "硅谷"
+
+#: module/share/component.php:408
+msgid "Sina Weibo"
+msgstr "新浪微博"
+
+#: module/storage/component.php:825
+msgid "Singapore"
+msgstr "新加坡"
+
+#: module/users/admin/f.php:56
+msgid "Site description is used to describe the site in search engines."
+msgstr "站点描述是用来向搜索引擎描述网站的内容。"
+
+#: module/users/admin/f.php:51
+msgid "Site URL"
+msgstr "网站地址"
+
+#: module/traffic/component.php:70
+msgid "SiteMap"
+msgstr "站点地图"
+
+#: module/cron/component.php:73
+msgid "SixlyHourly"
+msgstr "每小时六次"
+
+#: module/ad/inc/class-jl-ad-location-list-table.php:19
+#: module/user/page/submenu-profile.php:439
+#: module/user/page/submenu-profile.php:447
+#: module/users/page/options-manage-group.php:25
+#: module/users/page/options-user-group.php:25
+#: module/users/page/options-auth-conf.php:25
+#: module/users/page/options-custom-group.php:25
+#: module/users/inc/class-jl-manage-group-list-table.php:20
+#: module/users/inc/class-jl-user-group-list-table.php:20
+#: module/users/inc/class-jl-system-group-list-table.php:26
+#: module/users/inc/class-jl-custom-group-list-table.php:20
+#: module/swipers/inc/class-jl-swiper-location-list-table.php:18
+msgid "Slug"
+msgstr "别名"
+
+#: module/user/inc/wp-ajax.php:77
+msgid "slug"
+msgstr "别名"
+
+#: module/wechatsp/component.php:20 module/wechatsp/component.php:21
+msgid "Smart Program"
+msgstr "小程序"
+
+#: module/mail/component.php:268 module/mail/component.php:274
+msgid "SMTP Encryption"
+msgstr "SMTP加密方式"
+
+#: module/mail/component.php:228 module/mail/component.php:234
+msgid "SMTP Server Address"
+msgstr "SMTP服务器地址"
+
+#: module/mail/component.php:248 module/mail/component.php:254
+msgid "SMTP Server Port"
+msgstr "SMTP服务器端口"
+
+#: module/share/component.php:77
+msgid "Social Accounts"
+msgstr "社交账号"
+
+#: module/login/component.php:53 module/login/component.php:54
+#: module/login/component.php:70
+msgid "Social Login"
+msgstr "社交登录"
+
+#: module/share/component.php:56 module/share/component.php:57
+#: module/share/component.php:74
+msgid "Social Share"
+msgstr "社交分享"
+
+#: module/mail/inc/functions-data.php:50
+msgid ""
+"Someone has requested a password reset for your account. If this was not "
+"initiated by you, please ignore this email."
+msgstr "有人为您的账户请求了重置密码。如果这不是您本人要求的，请忽略本邮件。"
+
+#: module/seo/inc/functions-data.php:120
+msgid "Sorry, the page you are looking for does not exist."
+msgstr "抱歉，您访问的页面不存在。"
+
+#: 404.php:9
+msgid "Sorry, you fell into area 404"
+msgstr "抱歉！您掉入了404"
+
+#: _base/local/admin/functions.php:172 _base/local/admin/functions.php:188
+msgid "Sponsor"
+msgstr "赞助"
+
+#: module/ad/inc/class-jl-ad-list-table.php:33
+msgid "Sponsors"
+msgstr "赞助商"
+
+#: module/staff/component.php:18 module/staff/component.php:19
+#: module/staff/component.php:36
+msgid "Staff"
+msgstr "员工"
+
+#: module/ad/page/submenu-add.php:100 module/ad/page/submenu-add.php:106
+#: module/ad/inc/wp-ajax.php:20 module/ad/inc/class-jl-ad-list-table.php:34
+msgid "Start Time"
+msgstr "开始时间"
+
+#: module/traffic/component.php:260
+msgid ""
+"Starting from version 5.5 of WordPress, the functionality of multi-level and "
+"multi-page XML sitemaps has been loaded as a default core feature."
+msgstr "从WP5.5版本开始，多层级多页面的XML站点地图功能已经作为核心功能默认载入。"
+
+#: module/statistics/component.php:18 module/statistics/component.php:19
+#: module/statistics/component.php:36
+msgid "Statistics"
+msgstr "数据"
+
+#: module/ad/inc/class-jl-ad-list-table.php:38
+#: module/users/page/options-auth-conf.php:26
+#: module/users/inc/class-jl-manage-group-list-table.php:21
+#: module/users/inc/class-jl-auth-conf-list-table.php:22
+#: module/swipers/page/options-swipers.php:131
+#: module/swipers/inc/class-jl-swiper-list-table.php:39
+#: module/login/inc/class-jl-invite-code-list-table.php:39
+msgid "Status"
+msgstr "状态"
+
+#: module/finance/component.php:37
+msgid ""
+"Stay tuned! The finance management module will be integrated in v.1.5.0."
+msgstr "敬请期待！财务管理模块将在1.5.0版本中推出。"
+
+#: module/mobileapp/component.php:37
+msgid ""
+"Stay tuned! The Mobile APP management module will be integrated in v.1.2.0."
+msgstr "敬请期待！手机APP模块将在1.2.0版本中推出。"
+
+#: module/staff/component.php:36
+msgid "Stay tuned! The staff management module will be integrated in v.1.3.0."
+msgstr "敬请期待！员工管理模块将在1.3.0版本中推出。"
+
+#: module/statistics/component.php:36
+msgid ""
+"Stay tuned! The statistics management module will be integrated in v.1.4.0."
+msgstr "敬请期待！统计管理模块将在1.4.0版本中推出。"
+
+#: module/stock/component.php:36
+msgid "Stay tuned! The stock management module will be integrated in v.1.5.0."
+msgstr "敬请期待！库存管理模块将在1.5.0版本中推出。"
+
+#: module/store/component.php:36
+msgid "Stay tuned! The store management module will be integrated in v.1.6.0."
+msgstr "敬请期待！门店管理模块将在1.6.0版本中推出。"
+
+#: module/wechatgroup/component.php:39
+msgid ""
+"Stay tuned! The Wechat Group management module will be integrated in v.1.6.0."
+msgstr "敬请期待！微信群管理模块将在1.6.0版本中推出。"
+
+#: module/stock/component.php:18 module/stock/component.php:19
+#: module/stock/component.php:36
+msgid "Stock"
+msgstr "库存"
+
+#: module/storage/component.php:68 module/storage/component.php:69
+#: module/storage/component.php:87
+msgid "Storage"
+msgstr "存储"
+
+#: module/storage/component.php:249 module/storage/component.php:255
+msgid "Storage Directory"
+msgstr "存储目录"
+
+#: module/login/component.php:184 module/login/component.php:186
+msgid "Storage Unionid"
+msgstr "存储UnionID"
+
+#: module/store/component.php:18 module/store/component.php:19
+#: module/store/component.php:36
+msgid "Stores"
+msgstr "门店"
+
+#: module/user/inc/wp-ajax.php:470
+msgid "string"
+msgstr "字符串"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Su"
+msgstr "周日"
+
+#: module/users/page/options-manage-group.php:54
+#: module/users/page/options-manage-group.php:86
+#: module/users/page/options-manage-group.php:96
+#: module/users/page/options-user-group.php:71
+#: module/users/page/options-user-group.php:105
+#: module/users/page/options-user-group.php:115
+#: module/users/page/options-auth-conf.php:66
+#: module/users/page/options-auth-conf.php:99
+#: module/users/page/options-auth-conf.php:109
+#: module/users/page/options-custom-group.php:54
+#: module/users/page/options-custom-group.php:86
+#: module/users/page/options-custom-group.php:96
+#: module/login/page/options-invite-code.php:68
+msgid "Submit"
+msgstr "提交"
+
+#: module/openplatform/component.php:218
+msgid "Subscription Account"
+msgstr "订阅号"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Sun"
+msgstr "周日"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Sunday"
+msgstr "周日"
+
+#: _base/local/admin/functions.php:110 _base/local/admin/functions.php:113
+msgid "Support Center"
+msgstr "支持中心"
+
+#: module/swipers/component.php:21 module/swipers/component.php:22
+#: module/swipers/component.php:39
+msgid "Swiper"
+msgstr "轮播图"
+
+#: module/storage/component.php:459
+msgid "Sync all attachments in the Media Library to Ali OSS."
+msgstr "同步媒体库中所有附件到阿里云COS。"
+
+#: module/storage/component.php:894
+msgid "Sync all attachments in the Media Library to Tencent COS."
+msgstr "同步媒体库中所有附件到腾讯云COS。"
+
+#: module/storage/component.php:361 module/storage/component.php:455
+#: module/storage/component.php:457 module/storage/component.php:782
+#: module/storage/component.php:890 module/storage/component.php:892
+#: module/storage/page/options-alioss.php:54
+#: module/storage/page/options-tencentcos.php:76
+msgid "Sync Data"
+msgstr "同步数据"
+
+#: module/storage/page/options-alioss.php:51
+#: module/storage/page/options-tencentcos.php:73
+msgid "Syncing..."
+msgstr "同步中..."
+
+#: module/system/component.php:25 module/system/component.php:26
+#: module/system/component.php:40
+msgid "System Authorization"
+msgstr "系统授权"
+
+#: module/mail/component.php:170 module/mail/component.php:176
+msgid "System Email"
+msgstr "系统邮件"
+
+#: module/user/page/submenu-profile.php:358
+msgid "System Role"
+msgstr "系统角色"
+
+#: module/user/inc/class-jl-users-list-table.php:250
+#: module/users/inc/class-jl-user-group-list-table.php:81
+#: module/users/inc/class-jl-system-group-list-table.php:73
+#: module/users/inc/class-jl-custom-group-list-table.php:64
+msgid "System Roles"
+msgstr "系统角色"
+
+#: module/post/component.php:201
+#| msgid "Tags"
+msgid "Tag"
+msgstr "标签"
+
+#: module/share/component.php:244 module/share/component.php:323
+#: module/share/inc/functions-data.php:46
+msgid "Taobao"
+msgstr "淘宝"
+
+#: module/share/component.php:248 module/share/component.php:327
+msgid "Taobao QRCode"
+msgstr "淘宝二维码"
+
+#: module/theme/component.php:67 _base/functions/template/functions.php:1027
+#: _base/functions/template/functions.php:1043
+#: _base/functions/template/functions.php:1059
+#: _base/functions/template/functions.php:1074
+#: _base/functions/template/functions.php:1090
+#: _base/functions/template/functions.php:1116
+#| msgid " template file does not exist."
+msgid "Template file does not exist: "
+msgstr " 模板文件不存在："
+
+#: module/storage/component.php:90
+msgid "Tencent COS"
+msgstr "腾讯COS"
+
+#: module/mail/page/options-test.php:8
+msgid "Test email failed to send!"
+msgstr "测试邮件发送失败！"
+
+#: module/mail/page/options-test.php:6
+msgid "Test email sent successfully!"
+msgstr "测试邮件发送成功！"
+
+#: module/test/component.php:208 module/test/component.php:210
+msgid "Textarea"
+msgstr "文本域"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Th"
+msgstr "周四"
+
+#: module/dashboard/component.php:21
+msgid "Thanks for using"
+msgstr "感谢您使用"
+
+#: index.php:15
+#| msgid "Thanks for using G3 System"
+msgid "Thanks for using G3 Web"
+msgstr "感谢您使用G3系统"
+
+#: module/login/component.php:21
+msgid "Thanks for your following!"
+msgstr "感谢您的关注！"
+
+#: _base/functions/permission/functions.php:189
+#, php-format
+msgid "The %s already exists"
+msgstr "%s已存在"
+
+#: module/user/inc/wp-ajax.php:459 _base/functions/permission/functions.php:97
+#, php-format
+msgid "The %s cannot be empty"
+msgstr "%s不能为空"
+
+#: module/user/inc/wp-ajax.php:482 _base/functions/permission/functions.php:172
+#, php-format
+msgid "The %s cannot be repeated"
+msgstr "%s已重复"
+
+#: module/user/inc/wp-ajax.php:1061
+#, php-format
+msgid "The %s cannot be the same as the %s"
+msgstr "%s不能与%s相同"
+
+#: module/user/inc/wp-ajax.php:244 module/user/inc/wp-ajax.php:362
+#: _base/functions/permission/functions.php:134
+#, php-format
+msgid "The %s format is incorrect"
+msgstr "%s格式错误"
+
+#: module/user/inc/wp-ajax.php:1055 module/user/inc/wp-ajax.php:1069
+#, php-format
+#| msgid "The %s is incorrect."
+msgid "The %s is incorrect"
+msgstr "%s错误"
+
+#: module/user/inc/wp-ajax.php:453 _base/functions/permission/functions.php:80
+#, php-format
+msgid "The %s parameter does not exist"
+msgstr "%s不存在"
+
+#: module/user/inc/wp-ajax.php:470 _base/functions/permission/functions.php:116
+#, php-format
+msgid "The %s parameter type must be %s"
+msgstr "%s参数类型必须为%s"
+
+#: _base/functions/permission/functions.php:154
+#, php-format
+#| msgid "The nickname should be between 2 and 20 characters in length."
+msgid "The %s should be between %d and %d characters in length"
+msgstr "%s长度应为%d-%d个字符。"
+
+#: module/post/admin/f.php:12
+#| msgid "The author forgot the title"
+msgid "The author forget the title"
+msgstr "作者忘了写标题"
+
+#: module/editor/inc/wp-ajax.php:87
+msgid "The category cannot be empty."
+msgstr "分类不能为空。"
+
+#: module/editor/inc/wp-ajax.php:86
+msgid "The content cannot be empty."
+msgstr "内容不能为空。"
+
+#: module/users/admin/f.php:34
+msgid "The current default role does not support modification."
+msgstr "当前默认角色暂不支持变更。"
+
+#: module/security/component.php:228
+#| msgid ""
+#| "The default value is empty, which means it is disabled. Changing the "
+#| "address will enable it. The system will replace \"wp-login.php\" with the "
+#| "new address \"/login/$your_login\". Please remember the new address you "
+#| "set!"
+msgid ""
+"The default value is empty, which means it is disabled. Changing the address "
+"will enable it. The system will replace <code>\"wp-login.php\"</code> with "
+"the new address <code>\"/login/$your_login\"</code>. Please remember the new "
+"address you set!"
+msgstr ""
+"默认值为空，即禁用。修改地址即启用。系统将用新地址<code>/login/$your_login</code>替代<code>wp-login."
+"php</code>。请务必记住你设定的新地址！"
+
+#: index.php:19
+#| msgid ""
+#| "The developers of G3 system are a group of Chinese people who love "
+#| "WordPress. We hope to be able to contribute something to WordPress."
+msgid ""
+"The developers of G3 Web & G3 system are a group of Chinese people who love "
+"WordPress. We hope to be able to contribute something to WordPress."
+msgstr "G3系统的开发者是一群热爱WordPress的中国人，我们希望能够为WordPress做出一些贡献。"
+
+#: module/user/inc/wp-ajax.php:1314
+msgid "The email address does not exist."
+msgstr "电子邮箱不存在。"
+
+#: module/user/inc/wp-ajax.php:1315
+msgid "The email address or username does not exist."
+msgstr "电子邮箱或用户名不存在。"
+
+#: module/users/inc/wp-ajax.php:29 module/users/inc/wp-ajax.php:163
+#: module/users/inc/wp-ajax.php:326 module/users/inc/wp-ajax.php:462
+msgid "The field cannot be empty."
+msgstr "该选项不能为空。"
+
+#: module/users/inc/wp-ajax.php:36 module/users/inc/wp-ajax.php:170
+#: module/users/inc/wp-ajax.php:333 module/users/inc/wp-ajax.php:470
+msgid "The field cannot be longer than 20 characters."
+msgstr "该选项最多不能超过20个字符。"
+
+#: index.php:25
+msgid ""
+"The G3 system includes full-platform applications: admin website, desktop "
+"website, mobile website, multi-platform smart program, mobile app, desktop "
+"app."
+msgstr "G3系统包含全平台应用终端：管理后台、桌面版网站、移动版网站、多平台小程序、移动版App、桌面版App。"
+
+#. Description of the theme
+#| msgid ""
+#| "The G3 system is developed by the JEALER team to help entrepreneurs "
+#| "privatize and establish a full-platform Internet business at a low cost. "
+#| "Based on the G3 system, you can quickly have full-service systems and "
+#| "functions that meet modern operational and marketing needs."
+msgid ""
+"The G3-Web Framework is developed by JEALER to help entrepreneurs privatize "
+"and establish a full-platform Internet business at a low cost. Based on the "
+"G3 system, you can quickly have full-service systems and functions that meet "
+"modern operational and marketing needs."
+msgstr ""
+"G3-Web "
+"框架是由JEALER团队开发的、帮助创业者低成本私有化建立全平台互联网业务的建站系统和轻应用开发框架，帮助创业者降低互联网创业成本、提升业务运营效率和维护效率。基于G3系统，你可以快速拥有符合现代运营和营销需求的全业务系统和功能。"
+
+#: module/users/inc/wp-ajax.php:200
+msgid "The integral must be positive integers."
+msgstr "积分必须是正整数。"
+
+#: module/user/inc/wp-ajax.php:1255
+msgid "The invitation code cannot be empty."
+msgstr "邀请码不能为空。"
+
+#: module/user/inc/wp-ajax.php:1261
+msgid "The invitation code does not exist or has already been used."
+msgstr "邀请码不存在或已被使用。"
+
+#: module/users/inc/wp-ajax.php:195
+msgid "The max integral must be greater than the min integral."
+msgstr "最大积分必须大于最小积分。"
+
+#: _base/functions/permission/functions.php:225
+#, php-format
+#| msgid "The maximum number of slug modifications has been reached."
+msgid "The maximum number of %s modifications has been reached"
+msgstr "%s修改次数已达上限"
+
+#: module/openplatform/component.php:280
+msgid ""
+"The message encryption key consists of 43 characters and can be randomly "
+"modified. The character range is A-Z, a-z, 0-9. It needs to be consistent "
+"with the WeChat Official Accounts Platform."
+msgstr "消息加密密钥由43位字符组成，可随机修改，字符范围为A-Z，a-z，0-9。需要与微信公众平台一致。"
+
+#: module/users/inc/wp-ajax.php:211 module/users/inc/wp-ajax.php:232
+msgid ""
+"The min integral must be equal to the max integral of the previous level."
+msgstr "为确保积分规则的连贯性，最小积分必须等于上一角色的最大积分。"
+
+#: module/user/inc/wp-ajax.php:1373
+msgid "The password cannot be empty."
+msgstr "密码不能为空"
+
+#: module/user/inc/wp-ajax.php:1206
+msgid "The password is incorrect."
+msgstr "密码错误"
+
+#: module/user/inc/wp-ajax.php:1379
+msgid "The passwords do not match."
+msgstr "密码不匹配"
+
+#: module/login/component.php:234
+msgid "The Ref Code is set to the user's slug by default."
+msgstr "推荐码默认为用户别名"
+
+#: module/ad/component.php:71
+msgid ""
+"The rendering template for ad-edit is missing. Please visit the JEALER "
+"community to resolve this issue."
+msgstr "广告管理的渲染模板丢失，请访问JEALER社区，解决这个问题。"
+
+#: module/ad/component.php:89
+msgid ""
+"The rendering template for ad-locations is missing. Please visit the JEALER "
+"community to resolve this issue."
+msgstr "广告位置的渲染模板丢失，请访问JEALER社区，解决这个问题。"
+
+#: module/ad/component.php:80
+msgid ""
+"The rendering template for add-ad is missing. Please visit the JEALER "
+"community to resolve this issue."
+msgstr "添加广告的渲染模板丢失，请访问JEALER社区，解决这个问题。"
+
+#: module/swipers/inc/functions-data.php:80
+msgid ""
+"The rendering template for swiper is missing. Please visit the JEALER "
+"community to resolve this issue."
+msgstr "轮播图的渲染模板丢失，请访问JEALER社区，解决这个问题。"
+
+#: module/user/inc/wp-ajax.php:756 module/user/inc/wp-ajax.php:831
+#: module/user/inc/wp-ajax.php:906 module/user/inc/wp-ajax.php:978
+#, php-format
+msgid ""
+"The requested file is too large. Please upload a smaller file. Up to %s is "
+"supported."
+msgstr "请求的文件太大，请上传更小的文件。最多支持 %s。"
+
+#: module/users/inc/wp-ajax.php:107 module/users/inc/wp-ajax.php:273
+#: module/users/inc/wp-ajax.php:408 module/users/inc/wp-ajax.php:545
+msgid "The slug cannot be empty."
+msgstr "别名不能为空。"
+
+#: module/users/inc/wp-ajax.php:122 module/users/inc/wp-ajax.php:288
+#: module/users/inc/wp-ajax.php:423 module/users/inc/wp-ajax.php:560
+msgid "The slug does not exist."
+msgstr "别名不存在。"
+
+#: module/users/inc/wp-ajax.php:43 module/users/inc/wp-ajax.php:177
+#: module/users/inc/wp-ajax.php:340 module/users/inc/wp-ajax.php:477
+msgid ""
+"The slug format is incorrect. It can only contain letters, numbers, and "
+"underscores."
+msgstr "别名格式错误，只能包含字母、数字、下划线"
+
+#: module/users/inc/wp-ajax.php:52 module/users/inc/wp-ajax.php:186
+#: module/users/inc/wp-ajax.php:349 module/users/inc/wp-ajax.php:486
+msgid "The slug is already in use."
+msgstr "别名已被使用"
+
+#: module/editor/inc/wp-ajax.php:88
+msgid "The tag cannot be empty."
+msgstr "标签不能为空。"
+
+#: module/theme/component.php:61
+msgid ""
+"The theme you configure on the Appearance-Theme page is the main theme of "
+"the system. When the option corresponding to the multi-theme mode is empty, "
+"the main theme will be used first by default."
+msgstr "您在 外观-主题 页面中配置的主题是系统的主主题。当对应多主题模式的选项为空时，默认优先使用主主题。"
+
+#: module/traffic/page/options-seo.php:49
+msgid "The three elements in SEO"
+msgstr "SEO三要素"
+
+#: module/editor/inc/wp-ajax.php:85
+msgid "The title cannot be empty."
+msgstr "标题不能为空。"
+
+#: module/user/inc/wp-ajax.php:1202
+msgid "The username or email does not exist."
+msgstr "用户名或电子邮箱不存在"
+
+#: module/user/inc/wp-ajax.php:304
+msgid ""
+"The website format is incorrect. Please enter the complete address. For "
+"example https://qq.com"
+msgstr "网站地址格式错误，请输入完整地址。例如 https://qq.com"
+
+#: module/login/component.php:173
+msgid ""
+"The welcome message sent to the user when they first subscribe to the Wechat "
+"Official Account. Default message: Thanks for your following!"
+msgstr "用户首次关注公众号时，系统给TA发送的欢迎消息。默认文案：Thanks for your following!"
+
+#: module/theme/component.php:102 module/theme/component.php:119
+msgid "Theme for low-end browsers"
+msgstr "低端浏览器主题"
+
+#: module/theme/component.php:110 module/theme/component.php:123
+msgid "Theme for mobile"
+msgstr "手机端主题"
+
+#: module/theme/component.php:58
+msgid "Theme Options Info:"
+msgstr "主题配置说明："
+
+#: module/swipers/inc/wp-ajax.php:38 module/login/inc/wp-ajax.php:24
+msgid "There are currently empty data present."
+msgstr "当前尚且存在空数据。"
+
+#: module/user/inc/wp-ajax.php:1316
+msgid ""
+"There was an error with the website's email system and we are unable to send "
+"you a password reset email. Please contact the website administrator to "
+"resolve this issue."
+msgstr "网站邮件系统发生错误，无法为您发送重置密码邮件。请联系网站管理员解决此问题"
+
+#: module/mail/page/options-test.php:4
+msgid "This is a test email."
+msgstr "这是一封测试邮件。"
+
+#: module/mail/inc/functions-data.php:54
+msgid "This password reset request is from IP address"
+msgstr "此密码重置请求来自IP地址"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Thu"
+msgstr "周四"
+
+#: module/share/component.php:109 module/share/component.php:152
+msgid "Thumbnail in Wechat Share"
+msgstr "微信分享缩略图"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Thursday"
+msgstr "周四"
+
+#: module/ad/inc/wp-ajax.php:83
+#| msgid "Time format error."
+msgid "Time format error"
+msgstr "时间格式错误"
+
+#: module/ad/page/submenu-locations.php:18
+msgid "Tip"
+msgstr "提示"
+
+#: module/views/component.php:62
+msgid ""
+"Tip: You can customize the interaction data according to your operational "
+"needs."
+msgstr "提示：您可以根据运营需求自定义交互数据。"
+
+#: module/seo/component.php:39 module/ad/page/submenu-add.php:35
+#: module/ad/page/submenu-add.php:41 module/ad/inc/wp-ajax.php:15
+#: module/ad/inc/class-jl-ad-list-table.php:29
+#: module/swipers/page/options-swipers.php:44
+#: module/swipers/inc/class-jl-swiper-list-table.php:33
+msgid "Title"
+msgstr "标题"
+
+#: module/traffic/page/options-seo.php:53
+msgid ""
+"Title: If the SEO title is empty, the title of the page or content will be "
+"automatically fetched."
+msgstr "标题：如果SEO标题为空，将自动读取页面或内容的标题。"
+
+#: module/openplatform/component.php:258
+msgid ""
+"To ensure account security, WeChat Official Accounts Platform no longer "
+"stores AppSecret. Please save it securely after enabling."
+msgstr "为保障帐号安全，微信公众平台不再储存AppSecret，启用后请自行保存安全。"
+
+#: module/security/component.php:363
+msgid ""
+"To prevent duplicate file names, uploaded resource file names will be reset "
+"to <code>timestamp_filename</code>. This feature is enabled by default "
+"globally and cannot be disabled."
+msgstr "为了防止重复的文件名，上传的资源文件名将被重置为<code>时间戳_文件名</code>。此功能默认全局启用且不可关闭。"
+
+#: module/storage/component.php:504
+msgid ""
+"To use Tencent Cloud COS service, please disable other cloud storage "
+"services first."
+msgstr "使用腾讯云存储服务COS之前，请先确保关闭了其他云服务。"
+
+#: module/storage/component.php:835
+msgid "Tokyo"
+msgstr "东京"
+
+#: module/forum/component.php:23 module/forum/component.php:25
+msgid "Topic"
+msgstr "话题"
+
+#: module/forum/component.php:40
+msgid "Topic Archives"
+msgstr "话题归档"
+
+#: module/forum/component.php:22 module/circle/component.php:117
+msgid "Topics"
+msgstr "话题"
+
+#: module/forum/component.php:45
+msgid "Topics list"
+msgstr "话题列表"
+
+#: module/forum/component.php:44
+msgid "Topics list navigation"
+msgstr "话题列表导航"
+
+#: module/storage/component.php:845
+msgid "Toronto"
+msgstr "多伦多"
+
+#: module/openplatform/component.php:101
+msgid "Toutiao OP"
+msgstr "头条开放平台"
+
+#: module/ad/page/submenu-add.php:183
+msgid "Tu"
+msgstr "周二"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Tue"
+msgstr "周二"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Tuesday"
+msgstr "周二"
+
+#: module/cron/component.php:79
+msgid "TwiceHourly"
+msgstr "每小时两次"
+
+#: module/swipers/inc/wp-ajax.php:112 module/login/inc/wp-ajax.php:63
+msgid "Unauthorized."
+msgstr "未授权。"
+
+#: module/openplatform/component.php:372
+msgid "Unbound"
+msgstr "未绑定"
+
+#: module/openplatform/component.php:357
+msgid "Uncertified"
+msgstr "未认证"
+
+#: module/login/component.php:186
+msgid ""
+"UnionID is the unique identifier for users within the WeChat system, and it "
+"allows for accurate identification of WeChat users. To enable UnionID "
+"storage, it is required to complete the authentication process on the WeChat "
+"Open Platform and bind it with the Official Account."
+msgstr ""
+"UnionID是用户在微信系统中的唯一身份标识，通过它可以准确识别微信用户。欲开启UnionID存储，需先完成微信开放平台的认证并和公众号绑定。"
+
+#: _base/functions/user/functions.php:36
+msgid "Unknown"
+msgstr "未知"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:69
+msgid "unused"
+msgstr "未使用"
+
+#: module/forum/component.php:104
+msgid "Update Board"
+msgstr "更新版块"
+
+#: module/shop/component.php:124
+msgid "Update Brand"
+msgstr "更新品牌"
+
+#: module/activity/component.php:100
+msgid "Update Category"
+msgstr "更新分类"
+
+#: module/circle/component.php:92
+msgid "Update Circle"
+msgstr "更新圈子"
+
+#: module/post/component.php:51 module/news/component.php:114
+msgid "Update Column"
+msgstr "更新专题"
+
+#: module/user/inc/wp-ajax.php:1083
+msgid "update failed"
+msgstr "更新失败"
+
+#: module/swipers/inc/wp-ajax.php:97
+#| msgid "Update failed."
+msgid "Update Failed!"
+msgstr "更新失败！"
+
+#: module/shop/component.php:96
+msgid "Update Product Category"
+msgstr "更新商品品类"
+
+#: module/traffic/component.php:284
+msgid "Update SiteMap"
+msgstr "更新站点地图"
+
+#: module/swipers/inc/class-jl-swiper-list-table.php:40
+msgid "Update Time"
+msgstr "更新时间"
+
+#: module/user/inc/wp-ajax.php:1088
+msgid "updated"
+msgstr "已更新"
+
+#: module/security/component.php:82 module/views/component.php:281
+#: module/paywall/component.php:42 module/traffic/page/options-rss.php:4
+#: module/traffic/page/options-seo.php:4 module/test/page/options-general.php:9
+#: module/test/page/options-form.php:9 module/mail/page/options-set.php:4
+#: module/mail/page/options-template.php:4
+#: module/storage/page/options-alioss.php:9
+#: module/storage/page/options-tencentcos.php:9
+#: module/openplatform/page/options-amap.php:4
+#: module/openplatform/page/options-alipay.php:4
+#: module/openplatform/page/options-wechat.php:4
+#: module/openplatform/page/options-mp.php:4
+#: module/digitaloperations/page/options-general.php:4
+#: module/theme/page/options-multiple-themes.php:9
+#: module/users/inc/wp-ajax.php:79 module/users/inc/wp-ajax.php:245
+#: module/users/inc/wp-ajax.php:380 module/users/inc/wp-ajax.php:517
+#: module/wallet/page/options-cryptocurrency.php:4
+#: module/wallet/page/options-general.php:4
+#: module/wallet/page/options-withdrawal.php:4
+#: module/swipers/inc/wp-ajax.php:89
+#: module/login/page/options-follow-login.php:9
+#: module/login/page/options-invite-login.php:4
+#: module/login/page/options-general-login.php:9
+#: module/login/inc/wp-ajax.php:46 module/share/page/options-general.php:4
+#: module/share/page/options-account.php:4
+msgid "Updated!"
+msgstr "更新成功！"
+
+#: module/users/page/options-manage-group.php:75
+#: module/users/page/options-user-group.php:95
+#: module/users/page/options-auth-conf.php:88
+#: module/users/page/options-custom-group.php:75
+msgid "Updating..."
+msgstr "更新中..."
+
+#: module/image/admin/f.php:20 module/image/admin/f.php:48
+#: module/swipers/page/options-swipers.php:63
+#: _base/functions/template/functions.php:686
+#: _base/functions/template/functions.php:740
+msgid "Upload"
+msgstr "上传"
+
+#: module/user/inc/wp-ajax.php:769 module/user/inc/wp-ajax.php:844
+#: module/user/inc/wp-ajax.php:919 module/user/inc/wp-ajax.php:991
+#| msgid "Upload failed!"
+msgid "Upload Failed!"
+msgstr "上传失败！"
+
+#: module/user/inc/wp-ajax.php:822
+msgid ""
+"Upload Failed! The alipay QRCode only supports jpg, jpeg, gif, png, webp and "
+"other image formats."
+msgstr "上传失败，支付宝二维码仅支持 jpg, jpeg, gif, png, webp 等图片格式。"
+
+#: module/user/inc/wp-ajax.php:969
+msgid ""
+"Upload Failed! The avatar only supports jpg, jpeg, gif, png, webp and other "
+"image formats."
+msgstr "上传失败，头像仅支持 jpg, jpeg, gif, png, webp 等图片格式。"
+
+#: module/user/inc/wp-ajax.php:897
+msgid ""
+"Upload Failed! The cover image only supports jpg, jpeg, gif, png, webp and "
+"other image formats."
+msgstr "上传失败，封面图仅支持 jpg, jpeg, gif, png, webp 等图片格式。"
+
+#: module/user/inc/wp-ajax.php:747
+#| msgid ""
+#| "Upload failed! The wechat payment QRCode only supports jpg, jpeg, gif, "
+#| "png, webp and other image formats."
+msgid ""
+"Upload Failed! The wechat payment QRCode only supports jpg, jpeg, gif, png, "
+"webp and other image formats."
+msgstr "上传失败！微信支付二维码仅支持 jpg, jpeg, gif, png, webp 等图片格式。"
+
+#: module/announcement/component.php:41
+msgid "Uploaded to Announcement"
+msgstr "上传到公告"
+
+#: module/circle/component.php:41
+msgid "Uploaded to Feed"
+msgstr "上传到动态"
+
+#: module/news/component.php:41
+msgid "Uploaded to News"
+msgstr "上传到新闻"
+
+#: module/activity/component.php:40
+msgid "UPloaded to this activity"
+msgstr "上传到活动"
+
+#: module/shop/component.php:42
+msgid "Uploaded to this product"
+msgstr "上传到商品"
+
+#: module/forum/component.php:42
+msgid "Uploaded to this topic"
+msgstr "上传到话题"
+
+#: module/user/inc/wp-ajax.php:776 module/user/inc/wp-ajax.php:851
+#: module/user/inc/wp-ajax.php:925 module/user/inc/wp-ajax.php:997
+msgid "Uploaded!"
+msgstr "上传成功！"
+
+#: module/storage/component.php:409
+msgid "US East 1 (Virginia)"
+msgstr "美国东部 1 弗吉尼亚"
+
+#: module/storage/component.php:406
+msgid "US West 1 (Silicon Valley)"
+msgstr "美国西部 1 硅谷"
+
+#: module/activity/component.php:37 module/shop/component.php:39
+#: module/forum/component.php:39
+msgid "Use as cover image"
+msgstr "用作封面图"
+
+#: module/security/component.php:532
+msgid ""
+"Use Content Security Policy (CSP) to prevent cross-site scripting attacks. "
+"Before enabling, please ensure that there are no external resource "
+"references."
+msgstr "使用内容安全策略（CSP）防止跨站点脚本攻击。启用前，请确保无站外资源引用。"
+
+#: module/news/component.php:38 module/circle/component.php:38
+#: module/announcement/component.php:38
+msgid "Use Cover"
+msgstr "用作封面图"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:69
+msgid "used"
+msgstr "已使用"
+
+#: module/login/inc/class-jl-invite-code-list-table.php:41
+msgid "Used Time"
+msgstr "使用时间"
+
+#: module/order/inc/class-jl-orders-list-table.php:31
+msgid "User"
+msgstr "用户"
+
+#: module/user/inc/wp-ajax.php:44 module/user/inc/wp-ajax.php:102
+#: module/user/inc/wp-ajax.php:316
+msgid "user agreement"
+msgstr "用户协议"
+
+#: _base/functions/template/functions.php:288
+#: _base/functions/template/functions.php:414
+msgid "User Center"
+msgstr "用户中心"
+
+#: module/user/page/submenu-profile.php:5
+msgid "User does not exist."
+msgstr "用户不存在。"
+
+#: module/user/inc/wp-ajax.php:1110 module/user/inc/wp-ajax.php:1155
+msgid "user id"
+msgstr "用户ID"
+
+#: module/users/admin/f.php:45
+msgid "User Register"
+msgstr "用户注册"
+
+#: module/mail/component.php:363 module/mail/component.php:369
+msgid "User Registration Notification Template"
+msgstr "用户注册通知模板"
+
+#: module/users/component.php:50 module/user/page/submenu-profile.php:313
+#: module/user/inc/class-jl-users-list-table.php:77
+msgid "User Role"
+msgstr "用户角色"
+
+#: module/user/inc/class-jl-users-list-table.php:223
+msgid "User Roles"
+msgstr "用户角色"
+
+#: module/user/page/submenu-profile.php:405
+msgid "User Tags"
+msgstr "用户标签"
+
+#: module/user/page/submenu-profile.php:426
+msgid "Username"
+msgstr "用户名"
+
+#: module/user/inc/wp-ajax.php:1241
+msgid "Username must be at least 6 characters."
+msgstr "用户名至少6位长度"
+
+#: module/sidebar/component.php:136
+#| msgid "User Page Sidebar"
+msgid "Userpage Sidebar"
+msgstr "用户中心页侧边栏"
+
+#: module/user/inc/class-jl-users-list-table.php:288
+msgid "Users deleted!"
+msgstr "用户删除成功！"
+
+#: module/login/component.php:263 module/login/component.php:328
+#: module/user/page/submenu-profile.php:579
+#: module/user/page/submenu-profile.php:613 module/user/inc/wp-ajax.php:1112
+#: module/user/inc/wp-ajax.php:1122 module/user/inc/wp-ajax.php:1157
+#: module/user/inc/wp-ajax.php:1167
+#: module/login/page/options-invite-code.php:51
+#: module/login/inc/class-jl-invite-code-list-table.php:34
+msgid "Valid Period"
+msgstr "有效期"
+
+#: module/openplatform/component.php:219
+msgid "Verified Service Account"
+msgstr "认证服务号"
+
+#: module/openplatform/component.php:220
+msgid "Verified Subscription Account"
+msgstr "认证订阅号"
+
+#: module/video/component.php:22 module/video/component.php:23
+#: module/video/component.php:40
+msgid "Video"
+msgstr "视频"
+
+#: module/views/component.php:56 module/views/component.php:151
+msgid "View"
+msgstr "浏览"
+
+#: module/activity/component.php:28
+msgid "View Activity"
+msgstr "查看活动"
+
+#: module/announcement/component.php:29 module/announcement/component.php:143
+msgid "View Announcement"
+msgstr "浏览公告"
+
+#: module/circle/component.php:29 module/circle/component.php:152
+msgid "View Feed"
+msgstr "浏览动态"
+
+#: module/news/component.php:29 module/news/component.php:182
+msgid "View News"
+msgstr "浏览新闻"
+
+#: module/shop/component.php:30 module/shop/component.php:183
+msgid "View Product"
+msgstr "查看商品"
+
+#: module/forum/component.php:30
+msgid "View Topic"
+msgstr "查看话题"
+
+#: module/views/component.php:108 module/views/component.php:126
+msgid "Views"
+msgstr "浏览量"
+
+#: module/user/page/submenu-profile.php:326
+#: module/user/page/submenu-profile.php:572
+#: module/user/page/submenu-profile.php:606 module/user/inc/wp-ajax.php:1132
+#: module/user/inc/wp-ajax.php:1134 module/user/inc/wp-ajax.php:1177
+#: module/user/inc/wp-ajax.php:1179
+#: module/user/inc/class-jl-users-list-table.php:78
+msgid "VIP Role"
+msgstr "自定义角色"
+
+#: module/user/inc/class-jl-users-list-table.php:232
+#: module/users/inc/class-jl-user-group-list-table.php:79
+#: module/users/inc/class-jl-system-group-list-table.php:72
+#: module/users/inc/class-jl-custom-group-list-table.php:62
+msgid "VIP Roles"
+msgstr "自定义角色"
+
+#: module/user/page/submenu-profile.php:207
+msgid "Visit Personal Homepage"
+msgstr "访问个人主页"
+
+#: module/wallet/component.php:21 module/wallet/component.php:22
+#: module/wallet/component.php:39 module/wallet/component.php:63
+#: module/wallet/component.php:87
+msgid "Wallet"
+msgstr "钱包"
+
+#: module/user/page/submenu-profile.php:510
+msgid "Wallet Balance"
+msgstr "钱包余额"
+
+#: module/system/component.php:80
+#| msgid "Warning: You are now using the Unsafe Old Browser."
+msgid "Warning: You are now using the Unsafe Old Browser"
+msgstr "警告：您正在使用不安全的旧浏览器"
+
+#: module/ad/page/submenu-add.php:183
+msgid "We"
+msgstr "周三"
+
+#: module/user/page/submenu-profile.php:178
+#: module/user/page/submenu-profile.php:189
+msgid "Website"
+msgstr "网站"
+
+#: module/user/inc/wp-ajax.php:291
+msgid "website"
+msgstr "网站"
+
+#: module/login/component.php:367 module/share/component.php:188
+#: module/share/component.php:267 module/share/component.php:340
+#: module/user/page/submenu-profile.php:105
+#: module/user/page/submenu-profile.php:113
+msgid "Wechat"
+msgstr "微信"
+
+#: module/user/inc/wp-ajax.php:558
+msgid "wechat account"
+msgstr "微信号"
+
+#: module/wechatgroup/component.php:20 module/wechatgroup/component.php:21
+#: module/wechatgroup/component.php:39
+msgid "Wechat Group"
+msgstr "微信群"
+
+#: module/openplatform/component.php:141 module/openplatform/component.php:230
+msgid "Wechat ID"
+msgstr "微信号"
+
+#: module/openplatform/component.php:97
+msgid "Wechat MP"
+msgstr "微信公众平台"
+
+#: module/share/component.php:377
+msgid "Wechat MP Media Library"
+msgstr "微信公众号素材库"
+
+#: module/share/inc/functions-data.php:16
+msgid "WeChat Official Account"
+msgstr "微信公众号"
+
+#: module/wechatmp/component.php:21
+msgid "Wechat Official Accounts"
+msgstr "微信公众号"
+
+#: module/wechatmp/component.php:20 module/wechatmp/component.php:41
+msgid "Wechat Official Accounts Platform"
+msgstr "微信公众平台"
+
+#: module/openplatform/component.php:98
+msgid "Wechat OP"
+msgstr "微信开放平台"
+
+#: module/user/page/submenu-profile.php:497
+msgid "Wechat OpenID"
+msgstr "微信OpenID"
+
+#: module/share/component.php:192 module/share/component.php:271
+msgid "Wechat QRCode"
+msgstr "微信二维码"
+
+#: module/wechatsp/component.php:33 module/wechatsp/page/options-wechat.php:3
+msgid "Wechat Smart Program"
+msgstr "微信小程序"
+
+#: module/wechatsp/component.php:34
+msgid "Wechat SP"
+msgstr "微信小程序"
+
+#: module/user/page/submenu-profile.php:484
+msgid "Wechat UnionID"
+msgstr "微信UnionID"
+
+#: module/ad/page/submenu-add.php:182
+msgid "Wed"
+msgstr "周三"
+
+#: module/ad/page/submenu-add.php:181
+msgid "Wednesday"
+msgstr "周三"
+
+#: module/login/component.php:373 module/share/component.php:196
+#: module/share/component.php:275 module/user/page/submenu-profile.php:159
+#: module/user/page/submenu-profile.php:167
+#: module/share/inc/functions-data.php:22
+msgid "Weibo"
+msgstr "新浪微博"
+
+#: module/user/inc/wp-ajax.php:646
+msgid "weibo account"
+msgstr "微博号"
+
+#: module/openplatform/component.php:104
+msgid "Weibo OP"
+msgstr "微博开放平台"
+
+#: module/share/component.php:200 module/share/component.php:279
+msgid "Weibo QRCode"
+msgstr "微博二维码"
+
+#: module/login/component.php:171 module/login/component.php:173
+msgid "Welcome Message"
+msgstr "欢迎消息"
+
+#: module/mail/inc/functions-data.php:34
+msgid "Welcome to"
+msgstr "欢迎来到"
+
+#: module/mail/component.php:52
+#, php-format
+msgid "Welcome to %s"
+msgstr "欢迎来到 %s"
+
+#: module/login/component.php:313
+msgid "What is the price of the invite code?"
+msgstr "你希望邀请码单价多少？"
+
+#: module/login/component.php:293
+msgid "What kind of currency do you want to use for trading invite codes?"
+msgstr "你希望使用哪种货币来交易邀请码？"
+
+#: module/test/page/options-form.php:17
+msgid ""
+"When passing title and description data in the form method, please do not "
+"forget to perform internationalization handling."
+msgstr "表单方法里传递标题和描述数据时，请不要忘记进行国际化处理。"
+
+#: module/mail/inc/functions-data.php:36
+msgid "Why did I receive this email?"
+msgstr "我为什么会收到此封信件？"
+
+#: module/wallet/component.php:42
+msgid "Withdrawal"
+msgstr "提现"
+
+#: module/sidebar/component.php:171
+#| msgid "You can add widgets to announcement page sidebar."
+msgid "You can add widgets to announcement sidebar."
+msgstr "您可以添加小工具到公告页侧边栏"
+
+#: module/sidebar/component.php:61
+#| msgid "You can add widgets to archive page sidebar."
+msgid "You can add widgets to archive sidebar."
+msgstr "您可以添加小工具到归档页侧边栏"
+
+#: module/sidebar/component.php:160
+#| msgid "You can add widgets to circle page sidebar."
+msgid "You can add widgets to circle sidebar."
+msgstr "您可以添加小工具到圈子页侧边栏"
+
+#: module/sidebar/component.php:50
+msgid "You can add widgets to homepage sidebar."
+msgstr "您可以添加小工具到首页侧边栏"
+
+#: module/sidebar/component.php:127
+#| msgid "You can add widgets to forum page sidebar."
+msgid "You can add widgets to mypage sidebar."
+msgstr "您可以添加小工具到论坛页侧边栏"
+
+#: module/sidebar/component.php:149
+#| msgid "You can add widgets to News page sidebar."
+msgid "You can add widgets to news sidebar."
+msgstr "您可以添加小工具到爆料页侧边栏"
+
+#: module/sidebar/component.php:83
+msgid "You can add widgets to page sidebar."
+msgstr "您可以添加小工具到页面侧边栏"
+
+#: module/sidebar/component.php:72
+#| msgid "You can add widgets to post page sidebar."
+msgid "You can add widgets to post sidebar."
+msgstr "您可以添加小工具到文章页侧边栏。"
+
+#: module/sidebar/component.php:116
+#| msgid "You can add widgets to product page sidebar."
+msgid "You can add widgets to product sidebar."
+msgstr "您可以添加小工具到商品页侧边栏。"
+
+#: module/sidebar/component.php:94
+#| msgid "You can add widgets to search page sidebar."
+msgid "You can add widgets to search sidebar."
+msgstr "您可以添加小工具到搜索页侧边栏。"
+
+#: module/sidebar/component.php:105
+#| msgid "You can add widgets to shop page sidebar."
+msgid "You can add widgets to shop sidebar."
+msgstr "您可以添加小工具到商城页侧边栏。"
+
+#: module/sidebar/component.php:138
+#| msgid "You can add widgets to user page sidebar."
+msgid "You can add widgets to userpage sidebar."
+msgstr "您可以添加小工具到用户中心页侧边栏。"
+
+#: module/theme/component.php:119
+msgid ""
+"You can choose a theme for low-end browsers that do not support ES2015 "
+"standard."
+msgstr "您可以为不支持ES2015标准的低端浏览器选择一个主题。"
+
+#: module/theme/component.php:60
+msgid ""
+"You can configure different theme templates for different types of devices "
+"to improve user experience."
+msgstr "您可以为不同类型的设备配置不同的主题模板，以提升用户体验。"
+
+#: module/share/component.php:340
+msgid "You can custom the title in Wechat"
+msgstr "您可以自定义微信标题"
+
+#: module/traffic/page/options-seo.php:23
+msgid ""
+"You can customize SEO data for every page and every piece of post, "
+"specifically targeting search engines."
+msgstr "您可以为每一个页面和每一篇内容，自定义面向搜索引擎的SEO数据。"
+
+#: module/ad/page/submenu-add.php:26
+msgid ""
+"You can manually add and maintain advertisements, but please ensure data "
+"integrity."
+msgstr "您可以手动添加和维护广告，但请确保数据完整性。"
+
+#: module/traffic/component.php:282
+msgid "You can manually update to get a single-page XML sitemap."
+msgstr "您可以手动更新来获取一份单页XML站点地图。"
+
+#: module/traffic/component.php:204
+msgid ""
+"You can provide the RSS feed address to partners or users for subscribing to "
+"receive content from your platform."
+msgstr "您可以把RSS地址提供给合作伙伴或用户，用来订阅获取您平台内容。"
+
+#: module/theme/component.php:123
+#| msgid "Select a theme for mobile devices."
+msgid "You can Select a theme for mobile devices."
+msgstr "您可以为手机设备选择一个主题。"
+
+#: module/paywall/component.php:134
+msgid ""
+"You can set permissions for each piece of content so that it can only be "
+"accessed after commenting."
+msgstr "您可以为每一篇内容设置评论后才可以访问的权限。"
+
+#: module/paywall/component.php:125
+msgid ""
+"You can set permissions for each piece of content so that it can only be "
+"accessed after logging in."
+msgstr "您可以为每一篇内容设置登录后才可以访问的权限。"
+
+#: module/paywall/component.php:143
+msgid ""
+"You can set permissions for each piece of content so that it can only be "
+"accessed after payment."
+msgstr "您可以为每一篇内容设置付费后才可以访问的权限。"
+
+#: module/paywall/component.php:161
+msgid ""
+"You can set specific membership levels for each piece of content, allowing "
+"access only to members with those levels."
+msgstr "您可以为每一篇内容设置指定会员等级才可以访问的权限。"
+
+#: module/paywall/component.php:152
+msgid ""
+"You can set specific role levels for each piece of content, allowing access "
+"only to users with those roles."
+msgstr "您可以为每一篇内容设置指定角色等级才可以访问的权限。"
+
+#: module/views/component.php:244
+msgid ""
+"You can use the method <code>do_component('views', 'copyright')</code> to "
+"independently output the copyright statement data in the template when "
+"automatic declaration is disabled."
+msgstr ""
+"您可以使用<code>do_component('views','copyright')</code>"
+"在关闭自动声明时，在模板中按需要独立输出版权声明数据。"
+
+#: module/mail/inc/functions-data.php:37
+msgid ""
+"You have just registered a new user on our platform using this email. This "
+"email is a written confirmation of your successful registration."
+msgstr "您刚刚在我们平台用此邮箱注册了新用户。本信件是您注册成功后的书面确认凭证。"
+
+#: 404.php:16
+msgid "You may have accessed the wrong address"
+msgstr "您可能访问了错误的地址"
+
+#: module/storage/component.php:722
+#| msgid ""
+#| "You need to enable file preview service in your bucket before you use it, "
+#| "click here to"
+msgid ""
+"You need to enable file preview service in your bucket before you use it."
+msgstr "使用之前，您需要在存储桶中开启文件预览服务。"
+
+#: templates/modern-browser.php:19
+msgid ""
+"Your browser version is too low and you may not be able to browse this site "
+"properly."
+msgstr "您的浏览器版本过低，可能无法正常浏览本站内容。"
+
+#: module/user/inc/wp-ajax.php:1385
+msgid ""
+"Your password has been reset. Please log in again with your new password."
+msgstr "密码已重置，请使用新密码重新登录"

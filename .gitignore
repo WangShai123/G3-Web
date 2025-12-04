@@ -1,0 +1,59 @@
+# Wordpress - ignore core, configuration, examples, uploads and logs.
+#
+# Core
+#
+# Note: if you want to stage/commit WP core files
+# you can delete this whole section/until Configuration.
+/wp-admin/
+/wp-content/index.php
+/wp-content/languages
+/wp-content/plugins/index.php
+/wp-content/themes/index.php
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-*.php
+/xmlrpc.php
+
+# Configuration
+wp-config.php
+
+# Default themes
+/wp-content/themes
+#/wp-content/themes/twenty*/
+
+# Local files in plugin g3
+/wp-content/plugins/g3/backup/
+/wp-content/plugins/g3/dist/
+/wp-content/plugins/g3/documents/
+/wp-content/plugins/g3/tests/
+/wp-content/plugins/g3/extensions/jl.php
+/g3.php
+
+# Helpers
+/wp-content/backup-*.php
+/wp-content/object-cache.php
+/wp-content/object-cache.php.bak
+
+# Other plugins
+/wp-content/plugins/loco-translate/
+/wp-content/plugins/query-monitor/
+
+# Uploads
+/wp-content/uploads/
+
+# Tools
+/.vscode
+/.idea
+/.trae
+/.lingma
+
+# Log files
+*.log
+
+# htaccess
+/.htaccess
+
+# DS_Store
+.DS_Store

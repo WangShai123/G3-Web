@@ -1,0 +1,382 @@
+<?php
+namespace JEALER\G3\Components;
+use JEALER\G3\Components;
+use JEALER\G3\Utilities\Option;
+use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Session;
+
+class Security extends Components {
+    private string $optionKey = 'g3_option_securities';
+    public array $option = [];
+    private string $section = 'securitySection';
+    #[\Override]
+    protected function options(): void
+    {
+        $default      = Option::get($this->optionKey, [
+            'login'      => '0',
+            'url'        => 'admin',
+            'upload'     => '1',
+            'session'    => '0',
+            'xmlrpc'     => '0',
+            'xss'        => '0',
+            'csp'        => '0',
+            'header'     => '0',
+            'libredtail' => '1'
+        ]);
+        $this->option = Option::cache($this->optionKey, $default);
+    }
+    #[\Override]
+    protected function system(): void
+    {
+        add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
+        $this->libredtailHandle();
+    }
+    #[\Override]
+    protected function init(): void
+    {
+        $this->securityLoginHandle();
+        $this->destroyExtraSessions();
+        $this->xmlRpcHandle();
+        $this->xssHandle();
+        $this->cspHandle();
+        $this->headerHandle();
+    }
+    #[\Override]
+    protected function admin(): void
+    {
+        $this->settings();
+    }
+    #[\Override]
+    protected function adminMenu(): void
+    {
+        $this->submenu();
+    }
+
+    private function submenu()
+    {
+        add_submenu_page(
+            'options-general.php',
+            __('Security', 'G3'),
+            __('Security', 'G3'),
+            'manage_options',
+            'security',
+            [$this, 'render'],
+            18
+        );
+    }
+
+    public function render()
+    {
+        // @require_once __DIR__ . '/views/page-security.php';
+        echo '<div class="wrap">';
+        echo '<h1 class="wp-heading-inline">' . __('Security', 'G3') . '</h1>';
+        $args = [
+            'general' => __('General', 'G3'),
+            'nginx'   => 'Nginx',
+            'caddy'   => 'Caddy',
+        ];
+        Container::tab('Security', 'general', $args);
+        echo '</div>';
+    }
+
+    private function settings()
+    {
+        add_settings_section(
+            $this->section,
+            '',
+            '__return_false',
+            'security'
+        );
+        register_setting(
+            $this->section,
+            $this->optionKey
+        );
+        Container::settingFields(
+            'security',
+            $this->section,
+            [
+                [
+                    'id'       => 'login',
+                    'title'    => __('Custom Admin Login', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'login',
+                            __('Custom Admin Login', 'G3'),
+                            __('The system will replace <code>"wp-login.php"</code> with the new address <code>"/login/$url"</code> below.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'login',
+                        'class'     => 'security-field__login',
+                    ]
+                ],
+                [
+                    'id'       => 'url',
+                    'title'    => __('Admin Login URL', 'G3'),
+                    'callback' => function () {
+                        echo Container::input(
+                            $this->optionKey,
+                            $this->option,
+                            'url',
+                            __('Admin Login URL', 'G3'),
+                            __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('login/' . (isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : ''))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'),
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'url',
+                        'class'     => 'security-field__url',
+                    ]
+                ],
+                [
+                    'id'       => 'upload',
+                    'title'    => __('Reset Upload File Names', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'upload',
+                            __('Reset Upload File Name', 'G3'),
+                            __('To reset upload file names, please enable this option.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'upload',
+                        'class'     => 'security-field__upload',
+                    ]
+                ],
+                [
+                    'id'       => 'session',
+                    'title'    => __('Safe Session', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'session',
+                            __('Safe Session', 'G3'),
+                            __('To enable safe session, please enable this option.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'session',
+                        'class'     => 'security-field__session',
+                    ]
+                ],
+                [
+                    'id'       => 'xmlrpc',
+                    'title'    => __('Prevent XMLRPC Attacks', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'xmlrpc',
+                            __('Prevent XMLRPC Attacks', 'G3'),
+                            __('Disable the XML-RPC API to block access to xmlrpc.php.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'xmlrpc',
+                        'class'     => 'security-field__xmlrpc',
+                    ]
+                ],
+                [
+                    'id'       => 'xss',
+                    'title'    => __('Prevent XSS Attacks', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'xss',
+                            __('Prevent XSS Attacks', 'G3'),
+                            __('Filter requests and prevent XSS attacks.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'xss',
+                        'class'     => 'security-field__xss',
+                    ]
+                ],
+                [
+                    'id'       => 'csp',
+                    'title'    => __('Content Security Policy', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'csp',
+                            __('Content Security Policy', 'G3'),
+                            __('Use Content Security Policy (CSP) to prevent cross-site scripting attacks. Before enabling, please ensure that there are no external resource references.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'csp',
+                        'class'     => 'security-field__csp',
+                    ]
+                ],
+                [
+                    'id'       => 'header',
+                    'title'    => __('Prevent Data Leakage', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'header',
+                            __('Remove Header Response', 'G3'),
+                            __('Remove several data from header response to prevent information leakage.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'header',
+                        'class'     => 'security-field__header',
+                    ]
+                ],
+                [
+                    'id'       => 'libredtail',
+                    'title'    => 'Libredtail-HTTP',
+                    'callback' => function () {
+                        echo Container::enable(
+                            $this->optionKey,
+                            $this->option,
+                            'libredtail',
+                            'Libredtail-HTTP',
+                            __('Prevent requests from Libredtail-HTTP UA.', 'G3')
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'libredtail',
+                        'class'     => 'security-field__libredtail',
+                    ]
+                ]
+            ]
+        );
+    }
+
+    public function securityLoginHandle(): void
+    {
+        if (!isset($this->option['login']) || $this->option['login'] !== '1') {
+            return;
+        }
+        $this->registerLoginRule();
+        $this->disableWPLogin();
+    }
+    public function registerLoginRule(): void
+    {
+        add_rewrite_rule(
+            'login/([^/]+)/?$',
+            'index.php?custom_admin_login=$matches[1]',
+            'top'
+        );
+
+        add_filter('query_vars', function ($vars) {
+            $vars[] = 'custom_admin_login';
+            return $vars;
+        });
+
+        add_filter('template_include', function ($template) {
+            global $wp_query;
+            if (isset($wp_query->query_vars['custom_admin_login']) && $wp_query->query_vars['custom_admin_login'] === $this->option['url']) {
+                $template = WP_PLUGIN_DIR . '/g3/templates/admin/login.php';
+            }
+            return $template;
+        });
+    }
+    private function disableWPLogin(): void
+    {
+        if (str_contains($_SERVER['REQUEST_URI'], 'wp-login.php') && !str_contains($_SERVER['REQUEST_URI'], 'action=logout')) {
+            wp_safe_redirect(home_url(), 302, get_bloginfo('name'));
+            exit;
+        }
+    }
+    public function uploadFilenameHandle($file)
+    {
+        if (!isset($this->option['upload']) || $this->option['upload'] !== '1') {
+            return $file;
+        }
+        $file['name'] = time() . '_' . $file['name'];
+        return $file;
+    }
+    public function destroyExtraSessions(): void
+    {
+        if (!isset($this->option['session']) || $this->option['session'] !== '1') {
+            return;
+        }
+        $this->sessionHandle();
+    }
+    private function sessionHandle(): void
+    {
+        if (!current_user_can('manage_options')) {
+            if (!(is_user_logged_in() && count(wp_get_all_sessions()) > 1)) {
+                return;
+            }
+            $n       = max(wp_list_pluck(wp_get_all_sessions(), 'login'));
+            $session = Session::getCurrentSession();
+            if ($session['login'] === $n) {
+                wp_destroy_other_sessions();
+            } else {
+                wp_destroy_current_session();
+            }
+        }
+    }
+    private function xmlRpcHandle(): void
+    {
+        if (!isset($this->option['xmlrpc']) || $this->option['xmlrpc'] !== '1') {
+            return;
+        }
+        // Disable XML-RPC API
+        add_filter('xmlrpc_enabled', '__return_false');
+        // Block requests to xmlrpc.php
+        if (strpos($_SERVER['REQUEST_URI'], 'xmlrpc.php') !== false) {
+            $protocol = $_SERVER['SERVER_PROTOCOL'] ?? '';
+            if (!in_array($protocol, array('HTTP/1.1', 'HTTP/2', 'HTTP/2.0', 'HTTP/3'), true)) {
+                $protocol = 'HTTP/1.0';
+            }
+            header("$protocol 403 Forbidden", true, 403);
+            die();
+        }
+    }
+    private function xssHandle(): void
+    {
+        if (!isset($this->option['xss']) || $this->option['xss'] !== '1') {
+            return;
+        }
+        if (
+            strpos($_SERVER["REQUEST_URI"], "eval(") !== false ||
+            strpos($_SERVER["REQUEST_URI"], "base64") !== false ||
+            preg_match('/\\b(\\w*\\/\\*\\w*)\\b/', $_SERVER["REQUEST_URI"]) === 1
+            // strpos($_SERVER["REQUEST_URI"], "/**/")
+        ) {
+            @header("HTTP/1.1 414 Request-URI Too Long");
+            @header("Status: 414 Request-URI Too Long");
+            @header("Connection: Close");
+            @exit;
+        }
+    }
+    private function cspHandle(): void
+    {
+        if (!isset($this->option['csp']) || $this->option['csp'] !== '1') {
+            return;
+        }
+        header('Content-Security-Policy: default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\'; font-src \'self\'; object-src \'none\';');
+    }
+    private function headerHandle(): void
+    {
+        if (!isset($this->option['header']) || $this->option['header'] !== '1') {
+            return;
+        }
+        header_remove('X-Powered-By');
+        header_remove('Server');
+    }
+    private function libredtailHandle(): void
+    {
+        if (!isset($this->option['libredtail']) || $this->option['libredtail'] !== '1') {
+            return;
+        }
+        add_action('init', function () {
+            if (isset($_SERVER['HTTP_USER_AGENT']) && str_contains($_SERVER['HTTP_USER_AGENT'], 'libredtail-http')) {
+                status_header(403);
+                exit;
+            }
+        });
+    }
+}
