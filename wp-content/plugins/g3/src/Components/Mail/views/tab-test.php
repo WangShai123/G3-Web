@@ -1,11 +1,12 @@
 <?php
 if (array_key_exists('test', $_POST) && array_key_exists('mailTo', $_POST['test']) && $_POST['test']['mailTo']) {
-    $mailTo = $_POST['test']['mailTo'];
-    $res    = wp_mail(
+    $mailTo  = $_POST['test']['mailTo'];
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+    $res     = wp_mail(
         $mailTo,
         __('Testing Email from ' . get_bloginfo('name'), 'G3'),
         __("Congratulations! If you receive this email, the email configuration is correct.", 'G3'),
-        $headers = array('Content-Type: text/html; charset=UTF-8')
+        $headers
     );
     if ($res) {
         add_settings_error('test', 'setting_message', __('Test email sent successfully!', 'G3'), 'updated');
@@ -13,6 +14,13 @@ if (array_key_exists('test', $_POST) && array_key_exists('mailTo', $_POST['test'
         add_settings_error('test', 'setting_message', __('Failed to send test email!', 'G3'), 'error');
     }
 }
+add_action('wp_mail_failed', function ($wp_error) {
+    error_log('Mail failed: ' . print_r($wp_error, true));
+});
+
+add_action('wp_mail_succeeded', function ($mail_data) {
+    error_log('Mail succeeded: ' . print_r($mail_data, true));
+});
 ?>
 <div class="wrap">
     <?php settings_errors(setting: 'test'); ?>
