@@ -1,18 +1,10 @@
 <?php
 use JEALER\G3\Services\MailerService;
 if (array_key_exists('test', $_POST) && array_key_exists('mailTo', $_POST['test']) && $_POST['test']['mailTo']) {
-    $mailTo = $_POST['test']['mailTo'];
-    // $headers = ['Content-Type: text/html; charset=UTF-8'];
-    // $res     = wp_mail(
-    //     $mailTo,
-    //     __('Testing Email from ' . get_bloginfo('name'), 'G3'),
-    //     __("Congratulations! If you receive this email, the email configuration is correct.", 'G3'),
-    //     $headers
-    // );
+    $mailTo  = $_POST['test']['mailTo'];
     $subject = __('Testing Email from ' . get_bloginfo('name'), 'G3');
     $body    = __("Congratulations! If you receive this email, the email configuration is correct.", 'G3');
     $res     = MailerService::send($mailTo, $subject, $body);
-
     if ($res) {
         add_settings_error('test', 'setting_message', __('Test email sent successfully!', 'G3'), 'updated');
     } else {

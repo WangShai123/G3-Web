@@ -357,14 +357,15 @@ class Mail extends Components {
         }
 
         $phpmailer->isSMTP();
-        $phpmailer->isHTML(true);
-        $phpmailer->CharSet    = 'UTF-8';
         $phpmailer->SMTPAuth   = true;
         $phpmailer->Host       = $this->option['server'];
         $phpmailer->Port       = $this->option['port'];
         $phpmailer->Username   = $this->option['address'];
         $phpmailer->Password   = $this->option['secret'];
         $phpmailer->SMTPSecure = $this->option['encryption'] === '1' ? 'ssl' : ($this->option['encryption'] === '2' ? 'tls' : '');
+
+        $phpmailer->isHTML(true);
+        $phpmailer->CharSet = 'UTF-8';
         $phpmailer->setFrom($this->option['address'], $this->option['nickname'], false);
     }
 
