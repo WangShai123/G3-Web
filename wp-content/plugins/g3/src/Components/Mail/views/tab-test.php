@@ -14,13 +14,6 @@ if (array_key_exists('test', $_POST) && array_key_exists('mailTo', $_POST['test'
         add_settings_error('test', 'setting_message', __('Failed to send test email!', 'G3'), 'error');
     }
 }
-add_action('wp_mail_failed', function ($wp_error) {
-    error_log('Mail failed: ' . print_r($wp_error, true));
-});
-
-add_action('wp_mail_succeeded', function ($mail_data) {
-    error_log('Mail succeeded: ' . print_r($mail_data, true));
-});
 ?>
 <div class="wrap">
     <?php settings_errors(setting: 'test'); ?>

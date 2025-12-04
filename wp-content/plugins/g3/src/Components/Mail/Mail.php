@@ -41,6 +41,13 @@ class Mail extends Components {
     {
         $this->settings();
         $this->systemEmailHandle();
+        add_action('wp_mail_failed', function ($wp_error) {
+            error_log('Mail failed: ' . print_r($wp_error, true));
+        });
+
+        add_action('wp_mail_succeeded', function ($mail_data) {
+            error_log('Mail succeeded: ' . print_r($mail_data, true));
+        });
     }
     #[\Override]
     protected function adminMenu(): void
