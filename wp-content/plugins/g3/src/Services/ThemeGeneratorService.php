@@ -93,7 +93,7 @@ EOT;
         // write header.php file
         $headerPhp = <<<EOT
 <?php
-use JEALER\G3\Utilities\Post;
+use JEALER\G3\Services\PostService;
 ?>
 <!DOCTYPE html>
 <html lang="<?php bloginfo('language'); ?>" <?php html_class(); ?>>
@@ -104,7 +104,7 @@ use JEALER\G3\Utilities\Post;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="{$params['author']}">
     <meta name="robots" content="index,follow">
-    <title><?php echo Post::getTitle(); ?></title>
+    <title><?php echo PostService::getTitle(); ?></title>
     <?php wp_head(); ?>
 </head>
 

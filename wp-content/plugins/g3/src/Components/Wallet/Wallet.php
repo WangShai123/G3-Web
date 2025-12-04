@@ -46,7 +46,7 @@ class Wallet extends Components {
             'withdrawal'     => __('Withdrawal', 'G3'),
             'cryptocurrency' => __('Cryptocurrency', 'G3'),
         ];
-        Container::tab('wallet', 'general', $tabs);
+        Container::tab('Wallet', 'general', $tabs);
         echo '</div>';
     }
     private function settings(): void
