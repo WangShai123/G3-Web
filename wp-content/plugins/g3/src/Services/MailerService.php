@@ -47,7 +47,6 @@ class MailerService {
                 }
             }
 
-
             $mail = new PHPMailer(true);
 
             $config = self::getConfig();
@@ -114,6 +113,15 @@ class MailerService {
         }
     }
 
+    /**
+     * Get mail configuration
+     * 
+     * 获取邮件配置
+     * 
+     * @return array|false Mail configuration or false if not configured
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function getConfig(): array|false
     {
         $option = get_option(self::OPTION_KEY);

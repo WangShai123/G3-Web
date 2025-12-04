@@ -38,6 +38,8 @@ get_header();
 <script type="module">
     import JUI from '<?php echo G3_JS_URL . '/es/jui.js'; ?>'
     document.addEventListener('DOMContentLoaded', function () {
+        document.documentElement.classList.add('j-theme-indigo', 'j-radius-sm');
+
         const form = document.getElementById('adminLogin');
         form.addEventListener('submit', function (e) {
             e.preventDefault();
