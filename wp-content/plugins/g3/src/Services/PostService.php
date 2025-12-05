@@ -4,9 +4,105 @@ use JEALER\G3\Components;
 use JEALER\G3\Services\PageService;
 use WP_Post;
 class PostService {
-    public static string $seoTitleKey = 'g3_seo_title';
-    public static string $seoKeywordsKey = 'g3_seo_keywords';
-    public static string $seoDescriptionKey = 'g3_seo_description';
+
+    /**
+     * Option Key
+     * 
+     * 配置项 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const OPTION_KEY = 'g3_option_reading';
+
+    /**
+     * SEO Title Key
+     * 
+     * SEO 标题 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static string $seoTitleKey = 'g3_title';
+
+    /**
+     * SEO Keywords Key
+     * 
+     * SEO 关键词 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static string $seoKeywordsKey = 'g3_keywords';
+
+    /**
+     * SEO Description Key
+     * 
+     * SEO 描述 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static string $seoDescriptionKey = 'g3_description';
+
+    /**
+     * Cover Key
+     * 
+     * 封面 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const COVER_KEY = 'g3_cover';
+
+    /**
+     * Views Key
+     * 
+     * 浏览量 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const VIEW_KEY = 'g3_views';
+
+    /**
+     * Like Key
+     * 
+     * 点赞 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const LIKE_KEY = 'g3_like';
+
+    /**
+     * Dislike Key
+     * 
+     * 踩 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const DISLIKE_KEY = 'g3_dislike';
+
+    /**
+     * Favorite Key
+     * 
+     * 收藏 Key
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const FAVORITE_KEY = 'g3_favorite';
+
+    public static function getViewsKey(): string
+    {
+        if (defined('G3_POST_VIEWS_KEY') && is_string(G3_POST_VIEWS_KEY) && G3_POST_VIEWS_KEY !== '') {
+            return G3_POST_VIEWS_KEY;
+        } else {
+            return self::VIEW_KEY;
+        }
+    }
 
     /**
      * Get post meta data

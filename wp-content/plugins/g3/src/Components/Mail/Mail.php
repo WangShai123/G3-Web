@@ -3,16 +3,15 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
+use JEALER\G3\Services\MailerService;
 use PHPMailer\PHPMailer\PHPMailer;
 class Mail extends Components {
-    public string $optionKey = 'g3_option_mail';
     public array $option = [];
-    public string $templateKey = 'g3_option_mail_template';
     public array $template = [];
     public string $setGroup = 'set';
     protected function options(): void
     {
-        $option         = Option::get($this->optionKey, [
+        $option         = Option::get(MailerService::OPTION_KEY, [
             'enable'     => '0',
             'nickname'   => '',
             'server'     => '',
@@ -21,14 +20,14 @@ class Mail extends Components {
             'address'    => '',
             'secret'     => '',
         ]);
-        $this->option   = Option::cache($this->optionKey, $option);
-        $template       = Option::get($this->templateKey, [
+        $this->option   = Option::cache(MailerService::OPTION_KEY, $option);
+        $template       = Option::get(MailerService::TEMPLATE_OPTION_KEY, [
             'enable'         => '0',
             'register'       => '',
             'resetPassword'  => '',
             'paymentSuccess' => '',
         ]);
-        $this->template = Option::cache($this->templateKey, $template);
+        $this->template = Option::cache(MailerService::TEMPLATE_OPTION_KEY, $template);
     }
 
     #[\Override]
@@ -58,7 +57,8 @@ class Mail extends Components {
     private function submenu()
     {
         add_submenu_page(
-            'options-general.php',
+            // 'options-general.php',
+            'g3-settings',
             __('Email', 'G3'),
             __('Email', 'G3'),
             'manage_options',
@@ -89,7 +89,7 @@ class Mail extends Components {
         );
         register_setting(
             $this->setGroup,
-            $this->optionKey,
+            MailerService::OPTION_KEY,
         );
         Container::settingFields('mail', $this->setGroup, [
             [
@@ -97,7 +97,7 @@ class Mail extends Components {
                 'title'    => __('Enable', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'enable',
                         __('System Email', 'G3'),
@@ -114,7 +114,7 @@ class Mail extends Components {
                 'title'    => __('Nickname', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'nickname',
                         __('Nickname', 'G3'),
@@ -130,7 +130,7 @@ class Mail extends Components {
                 'title'    => __('Server', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'server',
                         __('Server', 'G3'),
@@ -147,7 +147,7 @@ class Mail extends Components {
                 'title'    => __('Port', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'port',
                         __('Port', 'G3'),
@@ -164,7 +164,7 @@ class Mail extends Components {
                 'title'    => __('SMTP Encryption', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'encryption',
                         __('SMTP Encryption', 'G3'),
@@ -187,7 +187,7 @@ class Mail extends Components {
                 'title'    => __('Sender\'s Email Address', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'address',
                         __('Sender\'s Email Address', 'G3'),
@@ -205,7 +205,7 @@ class Mail extends Components {
                 'title'    => __('Sender\'s Email Secret', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        MailerService::OPTION_KEY,
                         $this->option,
                         'secret',
                         __('Sender\'s Email Secret', 'G3'),
@@ -229,7 +229,7 @@ class Mail extends Components {
         );
         register_setting(
             'template',
-            $this->templateKey
+            MailerService::TEMPLATE_OPTION_KEY
         );
         Container::settingFields(
             'mail&tab=template',
@@ -240,7 +240,7 @@ class Mail extends Components {
                     'title'    => __('Custom Email Templates', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->templateKey,
+                            MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'enable',
                             __('Custom Email Templates', 'G3'),
@@ -257,7 +257,7 @@ class Mail extends Components {
                     'title'    => __('User Registration Notification Template', 'G3'),
                     'callback' => function () {
                         echo Container::textarea(
-                            $this->templateKey,
+                            MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'register',
                             __('User Registration Notification Template', 'G3'),
@@ -275,7 +275,7 @@ class Mail extends Components {
                     'title'    => __('Password Recovery Notification Template', 'G3'),
                     'callback' => function () {
                         echo Container::textarea(
-                            $this->templateKey,
+                            MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'resetPassword',
                             __('Password Recovery Notification Template', 'G3'),
@@ -293,7 +293,7 @@ class Mail extends Components {
                     'title'    => __('Order Payment Receipt Template', 'G3'),
                     'callback' => function () {
                         echo Container::textarea(
-                            $this->templateKey,
+                            MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'paymentSuccess',
                             __('Order Payment Receipt Template', 'G3'),

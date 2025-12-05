@@ -3,17 +3,14 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Services\PostService;
+use JEALER\G3\Services\ShareService;
 class Share extends Components {
-    public string $optionKey = 'g3_option_social_share';
     public array $option;
-    public string $accountOptionKey = 'g3_option_social_accounts';
     public array $accountOption;
-    public string $wechatTitleKey = 'g3_wechatTitle';
     #[\Override]
     protected function options(): void
     {
-        $option       = Option::get($this->optionKey, [
+        $option       = Option::get(ShareService::OPTION_KEY, [
             'enable'             => '1',
             'poster'             => '0',
             'wechatTitle'        => '0',
@@ -22,15 +19,15 @@ class Share extends Components {
             'qqZone'             => '0',
             'douYin'             => '0'
         ]);
-        $this->option = Option::cache($this->optionKey, $option);
+        $this->option = Option::cache(ShareService::OPTION_KEY, $option);
 
-        $accountOption       = Option::get($this->accountOptionKey, [
+        $accountOption       = Option::get(ShareService::ACCOUNT_OPTION_KEY, [
             'wechat'         => '',
             'wechatQRCode'   => '',
             'wechatMp'       => '',
             'wechatMpQRCode' => '',
         ]);
-        $this->accountOption = Option::cache($this->accountOptionKey, $accountOption);
+        $this->accountOption = Option::cache(ShareService::ACCOUNT_OPTION_KEY, $accountOption);
     }
 
     #[\Override]
@@ -48,7 +45,7 @@ class Share extends Components {
     private function submenu(): void
     {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Share', 'G3'),
             __('Share', 'G3'),
             'manage_options',
@@ -78,7 +75,7 @@ class Share extends Components {
         );
         register_setting(
             'general',
-            $this->optionKey,
+            ShareService::OPTION_KEY,
         );
         Container::settingFields('share-setting&tab=general', 'general', [
             [
@@ -86,7 +83,7 @@ class Share extends Components {
                 'title'    => __('Content Distribution', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'enable',
                         __('Content Distribution', 'G3'),
@@ -102,7 +99,7 @@ class Share extends Components {
                 'title'    => __('Share via Poster', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'poster',
                         __('Share via Poster', 'G3'),
@@ -117,7 +114,7 @@ class Share extends Components {
                 'title'    => __('WeChat Title', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'wechatTitle',
                         __('WeChat Title', 'G3'),
@@ -133,7 +130,7 @@ class Share extends Components {
                 'title'    => __('WeChat MP Media Library', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'wechatMediaLibrary',
                         __('WeChat MP Media Library', 'G3'),
@@ -150,7 +147,7 @@ class Share extends Components {
             //     'title'    => __('Share to WeiBo', 'G3'),
             //     'callback' => function () {
             //         echo Container::enable(
-            //             $this->optionKey,
+            //             ShareService::OPTION_KEY,
             //             $this->option,
             //             'weiBo',
             //             __('Share to WeiBo', 'G3'),
@@ -165,7 +162,7 @@ class Share extends Components {
                 'title'    => __('Share to QQ Zone', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'qqZone',
                         __('Share to QQ Zone', 'G3'),
@@ -180,7 +177,7 @@ class Share extends Components {
                 'title'    => __('Share to DouYin', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        ShareService::OPTION_KEY,
                         $this->option,
                         'douYin',
                         __('Share to DouYin', 'G3'),
@@ -215,7 +212,7 @@ class Share extends Components {
     public function wechatTitleRender(): void
     {
         $label    = __('Wechat Title', 'G3');
-        $value    = get_post_meta(get_the_ID(), $this->wechatTitleKey, true);
+        $value    = get_post_meta(get_the_ID(), ShareService::WECHAT_TITLE_KEY, true);
         $des      = __('Customize the title that will be displayed when shared on WeChat.', 'G3') . ' ' .
             __('If the title is empty, the title of the post will be used.', 'G3');
         $template = <<<HTML
@@ -234,7 +231,7 @@ HTML;
 
         add_action('save_post', function ($postId) {
             $value = empty($_POST['wechatTitle']) ? sanitize_text_field($_POST['post_title']) : sanitize_text_field($_POST['wechatTitle']);
-            update_post_meta($postId, $this->wechatTitleKey, $value);
+            update_post_meta($postId, ShareService::WECHAT_TITLE_KEY, $value);
         });
     }
 }

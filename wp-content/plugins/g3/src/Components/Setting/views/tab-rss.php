@@ -1,8 +1,10 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
+use JEALER\G3\Services\SystemService;
+$key = SystemService::RSS_OPTION_KEY;
 Frontend::loadStyle('jui');
-if (array_key_exists('g3_option_rss', $_POST) && $_POST['g3_option_rss']) {
-    update_option('g3_option_rss', $_POST['g3_option_rss']);
+if (array_key_exists($key, $_POST) && $_POST[$key]) {
+    update_option($key, $_POST[$key]);
     add_settings_error('rss', '1', __('Updated!', 'G3'), 'updated');
 }
 settings_errors('rss');
@@ -16,7 +18,7 @@ settings_errors('rss');
 <form action="" method="POST">
     <?php
     settings_fields('rss');
-    do_settings_sections('digital-operations&tab=rss');
+    do_settings_sections('g3-settings&tab=rss');
     submit_button();
     ?>
 </form>

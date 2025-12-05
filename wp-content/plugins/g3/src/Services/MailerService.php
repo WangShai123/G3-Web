@@ -13,7 +13,30 @@ use Exception;
  * @author Wang Shai
  */
 class MailerService {
-    const OPTION_KEY = 'g3_option_mail';
+
+    /**
+     * Option key for mail options
+     * 
+     * 邮件选项的键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const OPTION_KEY = 'g3_option_mail';
+
+    /**
+     * Option key for mail template options
+     * 
+     * 邮件模板选项的键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const TEMPLATE_OPTION_KEY = 'g3_option_mail_template';
 
     /**
      * Send email using PHPMailer

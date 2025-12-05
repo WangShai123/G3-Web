@@ -3,27 +3,26 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
+use JEALER\G3\Services\AuthService;
 class Login extends Components {
-    public string $optionKey = 'g3_option_general_login';
     public array $option;
-    public string $followOptionKey = 'g3_option_follow_login';
     public array $followOption;
 
     #[\Override]
     protected function options(): void
     {
-        $option       = Option::get($this->optionKey, [
+        $option       = Option::get(AuthService::OPTION_KEY, [
             'wechatQRCode' => '0',
             'wechatClient' => '0'
         ]);
-        $this->option = Option::cache($this->optionKey, $option);
+        $this->option = Option::cache(AuthService::OPTION_KEY, $option);
 
-        $followOption       = Option::get($this->followOptionKey, [
+        $followOption       = Option::get(AuthService::FOLLOW_OPTION_KEY, [
             'wechatMP' => '0',
             'message'  => __('Welcome'),
             'unionId'  => '0'
         ]);
-        $this->followOption = Option::cache($this->followOptionKey, $followOption);
+        $this->followOption = Option::cache(AuthService::FOLLOW_OPTION_KEY, $followOption);
     }
     #[\Override]
     protected function admin(): void
@@ -38,7 +37,7 @@ class Login extends Components {
     private function submenu(): void
     {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Login', 'G3'),
             __('Login', 'G3'),
             'manage_options',
@@ -67,7 +66,7 @@ class Login extends Components {
         );
         register_setting(
             'general',
-            $this->optionKey,
+            AuthService::OPTION_KEY,
         );
         Container::settingFields('login-setting', 'general', [
             [
@@ -75,7 +74,7 @@ class Login extends Components {
                 'title'    => __('Login via Wechat QRCode', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        AuthService::OPTION_KEY,
                         $this->option,
                         'wechatQRCode',
                         __('Login via Wechat QRCode', 'G3')
@@ -90,7 +89,7 @@ class Login extends Components {
                 'title'    => __('Login via Wechat Client', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        AuthService::OPTION_KEY,
                         $this->option,
                         'wechatClient',
                         __('Login via Wechat Client', 'G3')
@@ -110,7 +109,7 @@ class Login extends Components {
         );
         register_setting(
             'follow',
-            $this->followOptionKey,
+            AuthService::FOLLOW_OPTION_KEY,
         );
         Container::settingFields('login-setting&tab=follow', 'follow', [
             [
@@ -118,7 +117,7 @@ class Login extends Components {
                 'title'    => __('Follow Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->followOptionKey,
+                        AuthService::FOLLOW_OPTION_KEY,
                         $this->followOption,
                         'wechatMP',
                         __('Follow Login', 'G3')
@@ -133,7 +132,7 @@ class Login extends Components {
                 'title'    => __('Message'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->followOptionKey,
+                        AuthService::FOLLOW_OPTION_KEY,
                         $this->followOption,
                         'message',
                         __('Message', 'G3'),
@@ -150,7 +149,7 @@ class Login extends Components {
                 'title'    => __('UnionID'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->followOptionKey,
+                        AuthService::FOLLOW_OPTION_KEY,
                         $this->followOption,
                         'unionId',
                         __('UnionID', 'G3'),

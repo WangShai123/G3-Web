@@ -5,27 +5,24 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SidebarService;
+use JEALER\G3\Services\PostService;
 
 class Post extends Components {
-    public string $optionKey = 'g3_option_reading';
     public array $option = [];
     public string $viewsKey;
-    public string $likeKey = 'g3_like';
-    public string $dislikeKey = 'g3_dislike';
-    public string $favoritesKey = 'g3_favorites';
-    public string $coverKey = 'g3_cover';
+
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get($this->optionKey, [
+        $default      = Option::get(PostService::OPTION_KEY, [
             'enable'       => '1',
             'viewInterval' => '60',
             'copyright'    => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
             'autoNotice'   => '0',
         ]);
-        $this->option = Option::cache($this->optionKey, $default);
+        $this->option = Option::cache(PostService::OPTION_KEY, $default);
 
-        $this->viewsKey = $this->getViewsKey();
+        $this->viewsKey = PostService::getViewsKey();
     }
     #[\Override]
     protected function system(): void
@@ -63,7 +60,7 @@ class Post extends Components {
     private function submenu(): void
     {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Reading'),
             __('Reading'),
             'manage_options',
@@ -85,7 +82,7 @@ class Post extends Components {
     {
         register_setting(
             'reading',
-            $this->optionKey
+            PostService::OPTION_KEY
         );
         add_settings_section(
             'reading',
@@ -99,7 +96,7 @@ class Post extends Components {
                 'title'    => __('View Statistics', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        PostService::OPTION_KEY,
                         $this->option,
                         'enable',
                         __('View Statistics', 'G3'),
@@ -117,7 +114,7 @@ class Post extends Components {
                 'title'    => __('View Interval', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        $this->optionKey,
+                        PostService::OPTION_KEY,
                         $this->option,
                         'viewInterval',
                         __('View Interval', 'G3'),
@@ -152,7 +149,7 @@ class Post extends Components {
                 'title'    => __('Copyright Notice', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        PostService::OPTION_KEY,
                         $this->option,
                         'copyright',
                         __('Copyright Notice', 'G3')
@@ -169,7 +166,7 @@ class Post extends Components {
                 'title'    => __('Auto Notice', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        PostService::OPTION_KEY,
                         $this->option,
                         'autoNotice',
                         __('Auto Notice', 'G3'),
@@ -190,8 +187,6 @@ class Post extends Components {
             ]
         ]);
     }
-
-
 
     public function removeAutoP(): void
     {
@@ -279,9 +274,9 @@ class Post extends Components {
         $postId = $post->ID ?? 0;
 
         $viewCount      = get_post_meta($postId, $this->viewsKey, true) ?: 0;
-        $likeCount      = get_post_meta($postId, $this->likeKey, true) ?: 0;
-        $dislikeCount   = get_post_meta($postId, $this->dislikeKey, true) ?: 0;
-        $favoritesCount = get_post_meta($postId, $this->favoritesKey, true) ?: 0;
+        $likeCount      = get_post_meta($postId, PostService::LIKE_KEY, true) ?: 0;
+        $dislikeCount   = get_post_meta($postId, PostService::DISLIKE_KEY, true) ?: 0;
+        $favoritesCount = get_post_meta($postId, PostService::FAVORITE_KEY, true) ?: 0;
 
         $html  = '<div class="j-input-group is-2">';
         $html .= '<div class="input-group-item"><label for="views-count">' . __('View', 'G3') . '</label><input type="number" id="views-count" name="viewsCount" value="' . $viewCount . '" min="0"></div>';
@@ -309,9 +304,9 @@ class Post extends Components {
         $likeCount      = $_POST['likeCount'];
         $dislikeCount   = $_POST['dislikeCount'];
         update_post_meta($postId, $this->viewsKey, $viewCount);
-        update_post_meta($postId, $this->likeKey, $likeCount);
-        update_post_meta($postId, $this->dislikeKey, $dislikeCount);
-        update_post_meta($postId, $this->dislikeKey, $favoritesCount);
+        update_post_meta($postId, PostService::LIKE_KEY, $likeCount);
+        update_post_meta($postId, PostService::DISLIKE_KEY, $dislikeCount);
+        update_post_meta($postId, PostService::DISLIKE_KEY, $favoritesCount);
     }
     public function addViewsColumn(array $columns): array
     {
@@ -346,11 +341,6 @@ class Post extends Components {
         }
     }
 
-    private function getViewsKey(): string
-    {
-        $default = 'g3_views';
-        return defined('G3_POST_VIEWS_KEY') && is_string(G3_POST_VIEWS_KEY) && G3_POST_VIEWS_KEY !== '' ? G3_POST_VIEWS_KEY : $default;
-    }
     public function modifyPostNewPage()
     {
         echo <<<HTML
@@ -395,7 +385,7 @@ HTML;
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
         Frontend::loadScript('media.image');
-        $cover = get_term_meta($tag->term_id, $this->coverKey, true);
+        $cover = get_term_meta($tag->term_id, PostService::COVER_KEY, true);
         ?>
         <tr class="form-field">
             <th scope="row" valign="top">
@@ -420,7 +410,7 @@ HTML;
             if (!current_user_can('manage_categories')) {
                 return $term_id;
             }
-            update_term_meta($term_id, $this->coverKey, $_POST['cover']);
+            update_term_meta($term_id, PostService::COVER_KEY, $_POST['cover']);
         }
     }
 

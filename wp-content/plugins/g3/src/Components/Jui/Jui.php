@@ -8,8 +8,8 @@ class Jui extends Components {
     #[\Override]
     protected function init(): void
     {
-
     }
+
     #[\Override]
     public function system(): void
     {
@@ -19,10 +19,11 @@ class Jui extends Components {
 
     protected function initStyle()
     {
-        Frontend::loadStyle('jui', false);
+        Frontend::loadStyle('jui');
     }
     protected function initScript(): void
     {
+        Frontend::loadScript('jui');
     }
     protected function initModule(): void
     {
@@ -30,8 +31,9 @@ class Jui extends Components {
     }
 
     /**
-     * 初始化 JUI body class
      * Initialize body class
+     * 
+     * 初始化 JUI body class
      * 
      * @param array $classes body class
      * @return array $classes body class

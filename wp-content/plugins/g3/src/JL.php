@@ -5,16 +5,16 @@ use WP_Error;
 use JEALER\G3\Router;
 use JEALER\G3\Rewrite;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Services\SystemService;
 use DateTime;
 use Exception;
 
 class JL {
     public static $i = null;
-    private string $t = "5ebec86f4404d2c1";
-    private string $uri = "https://api.jealer.com/api/v1/requestVerify";
-
+    private string $t;
     public function __construct()
     {
+        $this->t = SystemService::KEY;
     }
 
     public static function run(): JL
@@ -135,8 +135,9 @@ class JL {
             "data_format" => "body",
             "timeout"     => 30
         ];
+        $uri    = "https://api.jealer.com/api/v1/requestVerify";
 
-        $response = wp_remote_post($this->uri, $params);
+        $response = wp_remote_post($uri, $params);
 
         return is_wp_error($response) ? new WP_Error(400) : $response;
     }

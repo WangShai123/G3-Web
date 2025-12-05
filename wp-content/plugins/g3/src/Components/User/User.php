@@ -2,7 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Services\UserService;
-
+use JEALER\G3\Services\SystemService;
 class User extends Components {
     #[\Override]
     protected function init(): void
@@ -59,10 +59,10 @@ class User extends Components {
         }
 
         // get user avatar from meta
-        $userAvatar = UserService::getMeta($user_id, UserService::$metaKey, 'avatar', '');
+        $userAvatar = UserService::getMeta($user_id, UserService::META_KEY, 'avatar', '');
 
         // fallback to default avatar
-        $defaultAvatar = get_option('g3_option_general')['avatar'] ?? '';
+        $defaultAvatar = get_option(SystemService::OPTION_KEY)['avatar'] ?? '';
         $avatarUrl     = !empty($userAvatar) ? $userAvatar : $defaultAvatar;
 
         // if avatar url is empty, return default avatar

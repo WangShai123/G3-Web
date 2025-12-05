@@ -1,7 +1,9 @@
 <?php
 namespace JEALER\G3\Services;
 class WechatMPService {
-    public const TABLE          = 'g3_wechat_mp_menus';
+    public const MENU_TABLE = 'g3_wechat_mp_menus';
+
+    public const OPTION_KEY     = 'g3_option_wechatMP';
     public const CACHE_GROUP    = 'wechat-MP';
     public const MENU_CACHE_KEY = 'menus';
 
@@ -20,7 +22,7 @@ class WechatMPService {
         $menus = wp_cache_get(self::MENU_CACHE_KEY, self::CACHE_GROUP);
         if (false === $menus) {
             global $wpdb;
-            $table = $wpdb->prefix . self::TABLE;
+            $table = $wpdb->prefix . self::MENU_TABLE;
             $menus = $wpdb->get_results("SELECT * FROM $table", ARRAY_A);
             if (!empty($menus)) {
                 wp_cache_set(self::MENU_CACHE_KEY, $menus, self::CACHE_GROUP);
@@ -50,7 +52,7 @@ class WechatMPService {
         $menu = wp_cache_get($key, self::CACHE_GROUP);
         if (false === $menu) {
             global $wpdb;
-            $table = $wpdb->prefix . self::TABLE;
+            $table = $wpdb->prefix . self::MENU_TABLE;
             $menu  = $wpdb->get_row("SELECT * FROM $table WHERE id = $id", ARRAY_A);
             if (!empty($menu)) {
                 wp_cache_set($key, $menu, self::CACHE_GROUP);
@@ -73,7 +75,7 @@ class WechatMPService {
     public static function updateMenu(int $id, array $data): bool|int
     {
         global $wpdb;
-        $table = $wpdb->prefix . self::TABLE;
+        $table = $wpdb->prefix . self::MENU_TABLE;
         if ($id == 0) {
             wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
             wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
@@ -102,7 +104,7 @@ class WechatMPService {
         if ($id == 0) return false;
 
         global $wpdb;
-        $table  = $wpdb->prefix . self::TABLE;
+        $table  = $wpdb->prefix . self::MENU_TABLE;
         $result = $wpdb->delete($table, ['id' => $id]);
         if ($result) {
             wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);

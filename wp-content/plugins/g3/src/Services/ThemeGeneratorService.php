@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
-
+use JEALER\G3\Services\SystemService;
 class ThemeGeneratorService {
     public static $instance = null;
     public function __construct()
@@ -122,12 +122,18 @@ EOT;
         file_put_contents($themePath . '/footer.php', $footerPhp);
 
         // write index.php
+        $icp      = SystemService::icpHtml();
         $indexPhp = <<<EOT
 <?php
 get_header();
 ?>
-<h1 style="text-align: center">Hello!</h1>
-<p style="text-align: center">Welcome to my website based on G3-Web.</p>
+<div style="height:95vh;display:flex;flex-direction:column;justify-content:space-between;">
+    <div>
+        <h1 style="text-align:center">Hello!</h1>
+        <p style="text-align:center">Welcome to my website built with G3-Web.</p>
+    </div>
+    <p style="text-align:center;color:gray;font-size:.75rem">{$icp}</p>
+</div>
 <?php
 get_footer();
 EOT;

@@ -4,13 +4,24 @@ use JEALER\G3\Components;
 use JEALER\G3\Themes as ThemesClass;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
+use JEALER\G3\Services\SystemService;
 use WP_Error;
 class Themes extends Components {
-    public string $optionKey = 'g3_option_themes';
     public array $option = [];
     private array $projects = [];
     protected string $version = '1.0.0';
 
+    #[\Override]
+    protected function options(): void
+    {
+        $option       = Option::get(SystemService::THEME_OPTION_KEY, [
+            'default' => 'G3-Web',
+            'low'     => '',
+            'mobile'  => 'G3-Mobile',
+            'tablet'  => '',
+        ]);
+        $this->option = Option::cache(SystemService::THEME_OPTION_KEY, $option);
+    }
     #[\Override]
     protected function init(): void
     {
@@ -36,18 +47,6 @@ class Themes extends Components {
     {
         $this->submenu();
     }
-    #[\Override]
-    protected function options(): void
-    {
-        $option       = Option::get($this->optionKey, [
-            'default' => 'G3-Web',
-            'low'     => '',
-            'mobile'  => 'G3-Mobile',
-            'tablet'  => '',
-        ]);
-        $this->option = Option::cache($this->optionKey, $option);
-    }
-
     private function submenu(): void
     {
         add_submenu_page(
@@ -76,7 +75,7 @@ class Themes extends Components {
         );
         register_setting(
             'section_themes',
-            $this->optionKey
+            SystemService::THEME_OPTION_KEY
         );
         add_settings_field(
             'low',
@@ -99,7 +98,7 @@ class Themes extends Components {
     public function renderLow(): void
     {
         echo Container::select(
-            $this->optionKey,
+            SystemService::THEME_OPTION_KEY,
             $this->option,
             'low',
             __('Theme for low-end browsers', 'G3'),
@@ -111,7 +110,7 @@ class Themes extends Components {
     public function renderMobile(): void
     {
         echo Container::select(
-            $this->optionKey,
+            SystemService::THEME_OPTION_KEY,
             $this->option,
             'mobile',
             __('Theme for mobile', 'G3'),

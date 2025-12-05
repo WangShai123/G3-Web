@@ -9,15 +9,14 @@ use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\ProductService;
 use WP_Post;
 class Product extends Components {
-    public string $optionKey = 'g3_option_shop';
     public array $option;
     #[\Override]
     protected function options(): void
     {
-        $option       = Option::get($this->optionKey, [
+        $option       = Option::get(ProductService::OPTION_KEY, [
 
         ]);
-        $this->option = Option::cache($this->optionKey, $option);
+        $this->option = Option::cache(ProductService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void
@@ -63,7 +62,7 @@ class Product extends Components {
         );
         register_setting(
             'general',
-            $this->optionKey,
+            ProductService::OPTION_KEY,
         );
         Container::settingFields('shop-setting', 'general', [
 
@@ -281,9 +280,9 @@ class Product extends Components {
     }
     public function renderGalleryMetabox(WP_POST $post): void
     {
-        wp_nonce_field(ProductService::$galleryKey . '_save', ProductService::$galleryKey . '_nonce');
+        wp_nonce_field(ProductService::GALLERY_KEY . '_save', ProductService::GALLERY_KEY . '_nonce');
 
-        $items = get_post_meta($post->ID, ProductService::$galleryKey, true);
+        $items = get_post_meta($post->ID, ProductService::GALLERY_KEY, true);
         if (!is_array($items)) $items = [];
         ?>
         <div style="overflow: hidden;position:relative" class="hide-if-no-js">
@@ -300,7 +299,7 @@ class Product extends Components {
                                 <button class="button is-icon icon-error action-removeGalleryItem" type="button">
                                     <?php echo Image::icon('close'); ?>
                                 </button>
-                                <input type="hidden" name="<?php echo ProductService::$galleryKey; ?>[]"
+                                <input type="hidden" name="<?php echo ProductService::GALLERY_KEY; ?>[]"
                                     value="<?php echo esc_url($item); ?>">
                             </div>
                         </div>
@@ -319,16 +318,16 @@ class Product extends Components {
     private function saveGallery(): void
     {
         add_action('save_post', function ($postId) {
-            if (!isset($_POST[ProductService::$galleryKey . '_nonce']) || !wp_verify_nonce($_POST[ProductService::$galleryKey . '_nonce'], ProductService::$galleryKey . '_save')) {
+            if (!isset($_POST[ProductService::GALLERY_KEY . '_nonce']) || !wp_verify_nonce($_POST[ProductService::GALLERY_KEY . '_nonce'], ProductService::GALLERY_KEY . '_save')) {
                 return;
             }
 
             if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-            if (isset($_POST[ProductService::$galleryKey]) && is_array($_POST[ProductService::$galleryKey])) {
-                update_post_meta($postId, ProductService::$galleryKey, array_values($_POST[ProductService::$galleryKey]));
+            if (isset($_POST[ProductService::GALLERY_KEY]) && is_array($_POST[ProductService::GALLERY_KEY])) {
+                update_post_meta($postId, ProductService::GALLERY_KEY, array_values($_POST[ProductService::GALLERY_KEY]));
             } else {
-                delete_post_meta($postId, ProductService::$galleryKey);
+                delete_post_meta($postId, ProductService::GALLERY_KEY);
             }
         });
     }
@@ -365,8 +364,8 @@ EOT;
     }
     public function renderPropertiesMetabox(WP_POST $post): void
     {
-        wp_nonce_field(ProductService::$propertiesKey . '_save', ProductService::$propertiesKey . '_nonce');
-        $properties = get_post_meta($post->ID, ProductService::$propertiesKey, true);
+        wp_nonce_field(ProductService::PROPERTY_KEY . '_save', ProductService::PROPERTY_KEY . '_nonce');
+        $properties = get_post_meta($post->ID, ProductService::PROPERTY_KEY, true);
         if (!is_array($properties)) $properties = [];
         ?>
         <div class="properties-container">
@@ -378,11 +377,11 @@ EOT;
                         <?php echo __('Property', 'G3') . ' ' . ($key + 1); ?>
                     </div>
                     <div class="property-control">
-                        <input type="text" name="<?php echo ProductService::$propertiesKey; ?>[<?php echo $key; ?>][name]"
-                            id="<?php echo ProductService::$propertiesKey; ?>[<?php echo $key; ?>][name]"
+                        <input type="text" name="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][name]"
+                            id="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][name]"
                             value="<?php echo esc_attr($value['name']); ?>" placeholder="<?php _e('Enter property name', 'G3'); ?>">
-                        <input type="text" name="<?php echo ProductService::$propertiesKey; ?>[<?php echo $key; ?>][value]"
-                            id="<?php echo ProductService::$propertiesKey; ?>[<?php echo $key; ?>][value]"
+                        <input type="text" name="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][value]"
+                            id="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][value]"
                             value="<?php echo esc_attr($value['value']); ?>"
                             placeholder="<?php _e('Enter property value', 'G3'); ?>">
                         <div class="property-actions">
@@ -404,14 +403,14 @@ EOT;
     private function saveProperties(): void
     {
         add_action('save_post', function ($postId) {
-            if (!isset($_POST[ProductService::$propertiesKey . '_nonce']) || !wp_verify_nonce($_POST[ProductService::$propertiesKey . '_nonce'], ProductService::$propertiesKey . '_save')) {
+            if (!isset($_POST[ProductService::PROPERTY_KEY . '_nonce']) || !wp_verify_nonce($_POST[ProductService::PROPERTY_KEY . '_nonce'], ProductService::PROPERTY_KEY . '_save')) {
                 return;
             }
             if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-            if (isset($_POST[ProductService::$propertiesKey]) && is_array($_POST[ProductService::$propertiesKey])) {
-                update_post_meta($postId, ProductService::$propertiesKey, array_values($_POST[ProductService::$propertiesKey]));
+            if (isset($_POST[ProductService::PROPERTY_KEY]) && is_array($_POST[ProductService::PROPERTY_KEY])) {
+                update_post_meta($postId, ProductService::PROPERTY_KEY, array_values($_POST[ProductService::PROPERTY_KEY]));
             } else {
-                delete_post_meta($postId, ProductService::$propertiesKey);
+                delete_post_meta($postId, ProductService::PROPERTY_KEY);
             }
         });
     }

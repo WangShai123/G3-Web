@@ -5,12 +5,12 @@ use JEALER\G3\Services\WechatMPService;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 class WechatMP extends Components {
-    public string $optionKey = 'g3_option_wechatMP';
     public array $option = [];
+
     #[\override]
     protected function options(): void
     {
-        $option       = Option::get($this->optionKey, [
+        $option       = Option::get(WechatMPService::OPTION_KEY, [
             'service'       => '0',
             'search'        => '0',
             'count'         => '5',
@@ -19,7 +19,7 @@ class WechatMP extends Components {
             'followMessage' => __('Thanks for your attention.', 'G3'),
             'visitMessage'  => __('Welcome back, my friend.', 'G3'),
         ]);
-        $this->option = Option::cache($this->optionKey, $option);
+        $this->option = Option::cache(WechatMPService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void
@@ -32,13 +32,13 @@ class WechatMP extends Components {
     {
         $this->submenu();
         add_action('admin_head', function () {
-            remove_submenu_page('digital-operations', 'wechat-mp-menu-edit');
+            remove_submenu_page('g3-settings', 'wechat-mp-menu-edit');
         });
     }
     private function submenu(): void
     {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Wechat MP', 'G3'),
             __('Wechat MP', 'G3'),
             'manage_options',
@@ -47,7 +47,7 @@ class WechatMP extends Components {
             15
         );
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Edit'),
             __('Edit'),
             'manage_options',
@@ -78,14 +78,14 @@ class WechatMP extends Components {
             '__return_false',
             'wechat-mp'
         );
-        register_setting('wechatMP', $this->optionKey);
+        register_setting('wechatMP', WechatMPService::OPTION_KEY);
         Container::settingFields('wechat-mp', 'wechatMP', [
             [
                 'id'       => 'service',
                 'title'    => __('Wechat MP Service', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'service',
                         __('Wechat MP Service', 'G3')
@@ -100,7 +100,7 @@ class WechatMP extends Components {
                 'title'    => __('Search'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'search',
                         __('Search', 'G3'),
@@ -117,7 +117,7 @@ class WechatMP extends Components {
                 'title'    => __('Count in Search Result', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'count',
                         __('Count in Search Result', 'G3'),
@@ -144,7 +144,7 @@ class WechatMP extends Components {
                 'title'    => __('Max Length of Search Keyword', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'length',
                         __('Max Length of Search Keyword', 'G3'),
@@ -161,7 +161,7 @@ class WechatMP extends Components {
                 'title'    => __('Default Cover', 'G3'),
                 'callback' => function () {
                     echo Container::imageInput(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'cover',
                         __('Default Cover', 'G3'),
@@ -177,7 +177,7 @@ class WechatMP extends Components {
                 'title'    => __('Follow Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'followMessage',
                         __('Follow Message', 'G3'),
@@ -193,7 +193,7 @@ class WechatMP extends Components {
                 'title'    => __('Visit Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        WechatMPService::OPTION_KEY,
                         $this->option,
                         'visitMessage',
                         __('Visit Message', 'G3'),

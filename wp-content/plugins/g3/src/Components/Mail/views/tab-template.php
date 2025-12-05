@@ -1,6 +1,8 @@
 <?php
-if (array_key_exists('g3_option_mail_template', $_POST) && $_POST['g3_option_mail_template']) {
-    update_option('g3_option_mail_template', $_POST['g3_option_mail_template']);
+use JEALER\G3\Services\MailerService;
+$key = MailerService::TEMPLATE_OPTION_KEY;
+if (array_key_exists($key, $_POST) && $_POST[$key]) {
+    update_option($key, $_POST[$key]);
     add_settings_error('template', 'setting_message', __('Updated!', 'G3'), 'updated');
 }
 settings_errors('template');

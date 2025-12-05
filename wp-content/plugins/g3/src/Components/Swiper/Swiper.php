@@ -7,14 +7,13 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SwiperService;
 class Swiper extends Components {
-    public string $optionkey = SwiperService::LOCATION_OPTION_KEY;
     public array $option;
     protected function options(): void
     {
-        $default      = Option::get($this->optionkey, [
+        $default      = Option::get(SwiperService::LOCATION_OPTION_KEY, [
             'home' => __('Home')
         ]);
-        $this->option = Option::cache($this->optionkey, $default);
+        $this->option = Option::cache(SwiperService::LOCATION_OPTION_KEY, $default);
     }
     protected function admin(): void
     {
@@ -94,7 +93,7 @@ class Swiper extends Components {
             }
 
             $this->option[$key] = $name;
-            update_option($this->optionkey, $this->option);
+            update_option(SwiperService::LOCATION_OPTION_KEY, $this->option);
 
             wp_send_json_success([
                 'code'    => 200,

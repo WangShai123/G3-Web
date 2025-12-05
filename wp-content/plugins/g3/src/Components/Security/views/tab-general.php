@@ -1,6 +1,8 @@
 <?php
-if (array_key_exists('g3_option_securities', $_POST) && $_POST['g3_option_securities']) {
-    update_option('g3_option_securities', $_POST['g3_option_securities']);
+use JEALER\G3\Services\SystemService;
+$key = SystemService::SECURITY_OPTION_KEY;
+if (array_key_exists($key, $_POST) && $_POST[$key]) {
+    update_option($key, $_POST[$key]);
     add_settings_error('notice', '1', __('Updated!', 'G3'), 'updated');
 }
 settings_errors('notice');

@@ -2,27 +2,25 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
+use JEALER\G3\Rewrite;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Rewrite;
 use JEALER\G3\Utilities\Validator;
+use JEALER\G3\Services\SystemService;
 use WP_Error;
 
 class Developer extends Components {
-    public string $formOptionKey = 'g3_option_dev_form';
     public array $formOption;
-    public string $settingOptionKey = 'g3_option_dev_setting';
     public array $settingOption;
+    public array $opMPOption;
     protected string $version = '1.0.0';
     public $v;
     public static $z;
-    public string $opMPOptionKey = 'g3_option_op_wechatMP';
-    public array $opMPOption;
 
     #[\Override]
     protected function options(): void
     {
-        $formOption       = Option::get($this->formOptionKey, [
+        $formOption       = Option::get(SystemService::FORM_OPTION_KEY, [
             'key1'  => 'Container::input',
             'key2'  => 'regular-text',
             'key3'  => 'Container::uploadInput',
@@ -36,9 +34,9 @@ class Developer extends Components {
             'key11' => ['1', '2'],
             'key12' => ['0'],
         ]);
-        $this->formOption = Option::cache($this->formOptionKey, $formOption);
+        $this->formOption = Option::cache(SystemService::FORM_OPTION_KEY, $formOption);
 
-        $settingOption       = Option::get($this->settingOptionKey, [
+        $settingOption       = Option::get(SystemService::SETTING_OPTION_KEY, [
             'environment'     => 'production',
             'wpAutoUpdate'    => '0',
             'translationsApi' => '0',
@@ -47,7 +45,7 @@ class Developer extends Components {
             'siteHealth'      => '0',
             'themeCustomize'  => '0',
             'blockPatterns'   => '0',
-            'permalink'       => '0',
+            'permalink'       => '1',
             'helpLink'        => '0',
             'adminBar'        => '0',
             'emoji'           => '0',
@@ -62,9 +60,9 @@ class Developer extends Components {
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
         ]);
-        $this->settingOption = Option::cache($this->settingOptionKey, $settingOption);
+        $this->settingOption = Option::cache(SystemService::SETTING_OPTION_KEY, $settingOption);
 
-        $opMPOption       = Option::get($this->opMPOptionKey, [
+        $opMPOption       = Option::get(SystemService::OPEN_MP_KEY, [
             'type'           => '0',
             'slug'           => '',
             'id'             => '',
@@ -73,7 +71,7 @@ class Developer extends Components {
             'token'          => '',
             'encodingAESKey' => '',
         ]);
-        $this->opMPOption = Option::cache($this->opMPOptionKey, $opMPOption);
+        $this->opMPOption = Option::cache(SystemService::OPEN_MP_KEY, $opMPOption);
     }
 
     #[\Override]
@@ -193,13 +191,13 @@ class Developer extends Components {
     public function submenu(): void
     {
         add_submenu_page(
-            'options-general.php',
+            'g3-settings',
             __('Developer Mode', 'G3'),
             __('Developer Mode', 'G3'),
             'manage_options',
             'developer-mode',
             [$this, 'render'],
-            19
+            20
         );
     }
 
@@ -260,13 +258,13 @@ class Developer extends Components {
     public function advancedSetting()
     {
         add_settings_section('devSetting', '', '__return_false', 'developer-mode&tab=setting');
-        register_setting('devSetting', $this->settingOptionKey);
+        register_setting('devSetting', SystemService::SETTING_OPTION_KEY);
         Container::settingFields('developer-mode&tab=setting', 'devSetting', [
             [
                 'id'       => 'environment',
                 'title'    => __('Environment', 'G3'),
                 'callback' => function () {
-                    echo Container::select($this->settingOptionKey, $this->settingOption, 'environment', __('Developer Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
+                    echo Container::select(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'environment', __('Developer Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
                         'local'       => __('Local Env', 'G3'),
                         'development' => __('Development Env', 'G3'),
                         'staging'     => __('Staging Env', 'G3'),
@@ -278,133 +276,133 @@ class Developer extends Components {
                 'id'       => 'wpAutoUpdate',
                 'title'    => __('WordPress Auto Update', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'wpAutoUpdate', __('WordPress Auto Update', 'G3'), __('Enable or disable WordPress auto updates.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpAutoUpdate', __('WordPress Auto Update', 'G3'), __('Enable or disable WordPress auto updates.', 'G3'));
                 },
             ],
             [
                 'id'       => 'translationsApi',
                 'title'    => __('Translations API', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'translationsApi', __('Translations API', 'G3'), __('Disable the translations API.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'translationsApi', __('Translations API', 'G3'), __('Disable the translations API.', 'G3'));
                 },
             ],
             [
                 'id'       => 'themeEditor',
                 'title'    => __('Theme Editor', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'themeEditor', __('Remove Theme Editor', 'G3'), __('Remove the theme editor from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeEditor', __('Remove Theme Editor', 'G3'), __('Remove the theme editor from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'pluginEditor',
                 'title'    => __('Plugin Editor', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'pluginEditor', __('Remove Plugin Editor', 'G3'), __('Remove the plugin editor from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'pluginEditor', __('Remove Plugin Editor', 'G3'), __('Remove the plugin editor from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'siteHealth',
                 'title'    => __('Site Health', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'siteHealth', __('Remove Site Health', 'G3'), __('Remove the site health from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'siteHealth', __('Remove Site Health', 'G3'), __('Remove the site health from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'themeCustomize',
                 'title'    => __('Theme Customize', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'themeCustomize', __('Remove Theme Customize', 'G3'), __('Remove the theme customize from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeCustomize', __('Remove Theme Customize', 'G3'), __('Remove the theme customize from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'blockPatterns',
                 'title'    => __('Block Patterns', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'blockPatterns', __('Remove Block Patterns', 'G3'), __('Remove the block patterns from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'blockPatterns', __('Remove Block Patterns', 'G3'), __('Remove the block patterns from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'permalink',
                 'title'    => __('Permalink', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'permalink', __('Permalink Settings', 'G3'), __('Remove the permalink settings from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'permalink', __('Permalink Settings', 'G3'), __('Remove the permalink settings from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'helpLink',
                 'title'    => __('Help Link', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'helpLink', __('Help Link', 'G3'), __('Remove the help link from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'helpLink', __('Help Link', 'G3'), __('Remove the help link from the WordPress admin.', 'G3'));
                 }
             ],
             [
                 'id'       => 'adminBar',
                 'title'    => __('Admin Bar', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'adminBar', __('Admin Bar', 'G3'), __('Remove the admin bar for all users.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminBar', __('Admin Bar', 'G3'), __('Remove the admin bar for all users.', 'G3'));
                 },
             ],
             [
                 'id'       => 'emoji',
                 'title'    => __('Emoji', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'emoji', __('Emoji', 'G3'), __('Disable the emoji.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'emoji', __('Emoji', 'G3'), __('Disable the emoji.', 'G3'));
                 },
             ],
             [
                 'id'       => 'wpHead',
                 'title'    => __('WP Head', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'wpHead', __('WP Head', 'G3'), __('Clean the data wp head.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpHead', __('WP Head', 'G3'), __('Clean the data wp head.', 'G3'));
                 },
             ],
             [
                 'id'       => 'gutenberg',
                 'title'    => __('Gutenberg', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'gutenberg', __('Gutenberg', 'G3'), __('Disable the block editor.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'gutenberg', __('Gutenberg', 'G3'), __('Disable the block editor.', 'G3'));
                 },
             ],
             [
                 'id'       => 'adminTitle',
                 'title'    => __('Admin Page Title', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'adminTitle', __('Admin Title', 'G3'), __('Remove <code>WordPress</code> in the admin page title.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminTitle', __('Admin Title', 'G3'), __('Remove <code>WordPress</code> in the admin page title.', 'G3'));
                 },
             ],
             [
                 'id'       => 'adminLogo',
                 'title'    => __('Admin Logo', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'adminLogo', __('Admin Logo', 'G3'), __('Remove the WordPress Logo & menu in the admin bar & admin login page.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminLogo', __('Admin Logo', 'G3'), __('Remove the WordPress Logo & menu in the admin bar & admin login page.', 'G3'));
                 },
             ],
             [
                 'id'       => 'toolsPage',
                 'title'    => __('Tools Page', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'toolsPage', __('Tools Page', 'G3'), __('Remove Tools page from admin menu.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'toolsPage', __('Tools Page', 'G3'), __('Remove Tools page from admin menu.', 'G3'));
                 }
             ],
             [
                 'id'       => 'pluginsPage',
                 'title'    => __('Plugins Page', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'pluginsPage', __('Plugins Page', 'G3'), __('Remove Plugins page from admin menu.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'pluginsPage', __('Plugins Page', 'G3'), __('Remove Plugins page from admin menu.', 'G3'));
                 }
             ],
             [
                 'id'       => 'themeInstall',
                 'title'    => __('Theme Install'),
                 'callback' => function () {
-                    echo Container::enable($this->settingOptionKey, $this->settingOption, 'themeInstall', __('Theme Install'), __('Remove Theme Install button in admin page themes.php.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeInstall', __('Theme Install'), __('Remove Theme Install button in admin page themes.php.', 'G3'));
                 }
             ],
             [
                 'id'       => 'dashboard',
                 'title'    => __('Dashboard'),
                 'callback' => function () {
-                    echo Container::checkbox($this->settingOptionKey, $this->settingOption, 'dashboard', __('Dashboard'), __('Check & Remove the default dashboard widgets.', 'G3'), '', [
+                    echo Container::checkbox(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'dashboard', __('Dashboard'), __('Check & Remove the default dashboard widgets.', 'G3'), '', [
                         '0' => __('Welcome Panel', 'G3'),
                         '1' => __('Site Health Status'),
                         '2' => __('At a Glance'),
@@ -418,14 +416,14 @@ class Developer extends Components {
                 'id'       => 'footerThanks',
                 'title'    => __('Footer Thanks', 'G3'),
                 'callback' => function () {
-                    echo Container::input($this->settingOptionKey, $this->settingOption, 'footerThanks', __('Footer Thanks', 'G3'), __('Set the data which will be displayed in the left footer area.', 'G3'));
+                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerThanks', __('Footer Thanks', 'G3'), __('Set the data which will be displayed in the left footer area.', 'G3'));
                 },
             ],
             [
                 'id'       => 'footerUpgrade',
                 'title'    => __('Footer Upgrade', 'G3'),
                 'callback' => function () {
-                    echo Container::input($this->settingOptionKey, $this->settingOption, 'footerUpgrade', __('Footer Upgrade', 'G3'), __('Set the data which will be displayed in the right footer area.', 'G3'));
+                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerUpgrade', __('Footer Upgrade', 'G3'), __('Set the data which will be displayed in the right footer area.', 'G3'));
                 },
             ]
         ]);
@@ -438,13 +436,13 @@ class Developer extends Components {
             '__return_false',
             'developer-mode&tab=form'
         );
-        register_setting('formFields', $this->formOptionKey);
+        register_setting('formFields', SystemService::FORM_OPTION_KEY);
         Container::settingFields('developer-mode&tab=form', 'formFields', [
             [
                 'id'       => 'key1',
                 'title'    => __('Input field', 'G3'),
                 'callback' => function () {
-                    echo Container::input($this->formOptionKey, $this->formOption, 'key1', __('Input field', 'G3'), __('Method', 'G3') . ': <code>Container::input()</code>');
+                    echo Container::input(SystemService::FORM_OPTION_KEY, $this->formOption, 'key1', __('Input field', 'G3'), __('Method', 'G3') . ': <code>Container::input()</code>');
                 },
                 'args'     => [
                     'label_for'         => 'key1',
@@ -456,7 +454,7 @@ class Developer extends Components {
                 'id'       => 'key2',
                 'title'    => __('Longer input', 'G3'),
                 'callback' => function () {
-                    echo Container::input($this->formOptionKey, $this->formOption, 'key2', __('Longer input', 'G3'), __('Set the class parameter to <code>regular-text</code>', 'G3'), 'text', 'regular-text');
+                    echo Container::input(SystemService::FORM_OPTION_KEY, $this->formOption, 'key2', __('Longer input', 'G3'), __('Set the class parameter to <code>regular-text</code>', 'G3'), 'text', 'regular-text');
                 },
                 'args'     => [
                     'label_for'         => 'key2',
@@ -468,7 +466,7 @@ class Developer extends Components {
                 'id'       => 'key3',
                 'title'    => __('File upload', 'G3'),
                 'callback' => function () {
-                    echo Container::uploadInput($this->formOptionKey, $this->formOption, 'key3', __('File upload', 'G3'), __('Method', 'G3') . ': <code>Container::uploadInput()</code>');
+                    echo Container::uploadInput(SystemService::FORM_OPTION_KEY, $this->formOption, 'key3', __('File upload', 'G3'), __('Method', 'G3') . ': <code>Container::uploadInput()</code>');
                 },
                 'args'     => [
                     'label_for'         => 'key3',
@@ -480,7 +478,7 @@ class Developer extends Components {
                 'id'       => 'key4',
                 'title'    => __('Image upload & preview', 'G3'),
                 'callback' => function () {
-                    echo Container::imageInput($this->formOptionKey, $this->formOption, 'key4', __('Image upload & preview', 'G3'), __('Method', 'G3') . ': <code>Container::imageInput()</code>');
+                    echo Container::imageInput(SystemService::FORM_OPTION_KEY, $this->formOption, 'key4', __('Image upload & preview', 'G3'), __('Method', 'G3') . ': <code>Container::imageInput()</code>');
                 },
                 'args'     => [
                     'label_for'         => 'key4',
@@ -492,7 +490,7 @@ class Developer extends Components {
                 'id'       => 'key5',
                 'title'    => __('Counter input', 'G3'),
                 'callback' => function () {
-                    echo Container::counterInput($this->formOptionKey, $this->formOption, 'key5', __('Counter input', 'G3'), __('Custom Texts', 'G3'), __('Method', 'G3') . ': <code>Container::counterInput()</code>');
+                    echo Container::counterInput(SystemService::FORM_OPTION_KEY, $this->formOption, 'key5', __('Counter input', 'G3'), __('Custom Texts', 'G3'), __('Method', 'G3') . ': <code>Container::counterInput()</code>');
                 },
                 'args'     => [
                     'label_for'         => 'key5',
@@ -504,7 +502,7 @@ class Developer extends Components {
                 'id'       => 'key6',
                 'title'    => __('Textarea', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea($this->formOptionKey, $this->formOption, 'key6', __('Textarea', 'G3'), __('Method', 'G3') . ': <code>Container::textarea()</code>');
+                    echo Container::textarea(SystemService::FORM_OPTION_KEY, $this->formOption, 'key6', __('Textarea', 'G3'), __('Method', 'G3') . ': <code>Container::textarea()</code>');
                 },
                 'args'     => [
                     'label_for'         => 'key6',
@@ -517,7 +515,7 @@ class Developer extends Components {
                 'title'    => __('Select field', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        $this->formOptionKey,
+                        SystemService::FORM_OPTION_KEY,
                         $this->formOption,
                         'key7',
                         __('Select field', 'G3'),
@@ -541,7 +539,7 @@ class Developer extends Components {
                 'id'       => 'key8',
                 'title'    => __('Enable Select', 'G3'),
                 'callback' => function () {
-                    echo Container::enable($this->formOptionKey, $this->formOption, 'key8', __('Enable Select', 'G3'), __('Method', 'G3') . ': <code>Container::enable()</code>');
+                    echo Container::enable(SystemService::FORM_OPTION_KEY, $this->formOption, 'key8', __('Enable Select', 'G3'), __('Method', 'G3') . ': <code>Container::enable()</code>');
                 },
                 'args'     => [
                     'label_for' => 'key8',
@@ -552,7 +550,7 @@ class Developer extends Components {
                 'id'       => 'key9',
                 'title'    => __('Radio field', 'G3'),
                 'callback' => function () {
-                    echo Container::radio($this->formOptionKey, $this->formOption, 'key9', __('Radio field', 'G3'), __('Method', 'G3') . ': <code>Container::radio()</code>', '', [
+                    echo Container::radio(SystemService::FORM_OPTION_KEY, $this->formOption, 'key9', __('Radio field', 'G3'), __('Method', 'G3') . ': <code>Container::radio()</code>', '', [
                         'option1' => 'option1',
                         'option2' => 'option2',
                         'option3' => 'option3',
@@ -566,7 +564,7 @@ class Developer extends Components {
                 'id'       => 'key10',
                 'title'    => __('Change the direction', 'G3'),
                 'callback' => function () {
-                    echo Container::radio($this->formOptionKey, $this->formOption, 'key10', __('Change the direction', 'G3'), '', '', [
+                    echo Container::radio(SystemService::FORM_OPTION_KEY, $this->formOption, 'key10', __('Change the direction', 'G3'), '', '', [
                         'option1' => 'option1',
                         'option2' => 'option2',
                         'option3' => 'option3',
@@ -578,7 +576,7 @@ class Developer extends Components {
                 'id'       => 'key11',
                 'title'    => __('Checkbox field', 'G3'),
                 'callback' => function () {
-                    echo Container::checkbox($this->formOptionKey, $this->formOption, 'key11', __('Checkbox field', 'G3'), __('Method', 'G3') . ': <code>Container::checkbox()</code>. ' . __('Tip', 'G3') . ': ' . __('the <code>value</code> is an array.', 'G3'), '', [
+                    echo Container::checkbox(SystemService::FORM_OPTION_KEY, $this->formOption, 'key11', __('Checkbox field', 'G3'), __('Method', 'G3') . ': <code>Container::checkbox()</code>. ' . __('Tip', 'G3') . ': ' . __('the <code>value</code> is an array.', 'G3'), '', [
                         '0' => 'option1',
                         '1' => 'option2',
                         '2' => 'option3',
@@ -592,7 +590,7 @@ class Developer extends Components {
                 'id'       => 'key12',
                 'title'    => __('Only one option', 'G3'),
                 'callback' => function () {
-                    echo Container::checkbox($this->formOptionKey, $this->formOption, 'key12', __('Only one option', 'G3'), __('Tip', 'G3') . __(': if <code>checkbox</code> is not checked, it will not submit any value what means the data does not exist.', 'G3'), '', ['0' => __('Enable', 'G3')]);
+                    echo Container::checkbox(SystemService::FORM_OPTION_KEY, $this->formOption, 'key12', __('Only one option', 'G3'), __('Tip', 'G3') . __(': if <code>checkbox</code> is not checked, it will not submit any value what means the data does not exist.', 'G3'), '', ['0' => __('Enable', 'G3')]);
                 },
                 'args'     => ['class' => 'item-input-checkbox-only']
             ]
@@ -1087,7 +1085,12 @@ class Developer extends Components {
             wp_deregister_style('global-styles');
             wp_dequeue_style('global-styles');
             wp_cache_delete('global-styles', 'options');
-        });
+
+            wp_deregister_style('global-styles-inline');
+            wp_dequeue_style('global-styles-inline');
+            wp_deregister_style('global-styles-inline-css');
+            wp_dequeue_style('global-styles-inline-css');
+        }, 20);
     }
     public function gutenbergHandle(): void
     {
@@ -1334,7 +1337,7 @@ class Developer extends Components {
     private function openPlatformMenu(): void
     {
         add_submenu_page(
-            'options-general.php',
+            'g3-settings',
             __('Open Platform', 'G3'),
             __('Open Platform', 'G3'),
             'manage_options',
@@ -1361,14 +1364,14 @@ class Developer extends Components {
             '__return_false',
             'open-platform&tab=mp'
         );
-        register_setting('opWechatMP', $this->opMPOptionKey);
+        register_setting('opWechatMP', SystemService::OPEN_MP_KEY);
         Container::settingFields('open-platform&tab=mp', 'opWechatMP', [
             [
                 'id'       => 'type',
                 'title'    => __('Official Account Type', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'type',
                         __('Official Account Type', 'G3'),
@@ -1392,7 +1395,7 @@ class Developer extends Components {
                 'title'    => __('Wechat ID', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'slug',
                         __('Wechat ID', 'G3')
@@ -1407,7 +1410,7 @@ class Developer extends Components {
                 'title'    => __('Original ID', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'id',
                         __('Original ID', 'G3')
@@ -1422,7 +1425,7 @@ class Developer extends Components {
                 'title'    => 'App ID',
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'appId',
                         'App ID'
@@ -1437,7 +1440,7 @@ class Developer extends Components {
                 'title'    => 'App Secret',
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'appSecret',
                         'App Secret',
@@ -1454,7 +1457,7 @@ class Developer extends Components {
                 'title'    => 'Token',
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'token',
                         'Token'
@@ -1470,7 +1473,7 @@ class Developer extends Components {
                 'title'    => 'Encoding AES Key',
                 'callback' => function () {
                     echo Container::input(
-                        $this->opMPOptionKey,
+                        SystemService::OPEN_MP_KEY,
                         $this->opMPOption,
                         'encodingAESKey',
                         'Encoding AES Key'

@@ -1,6 +1,8 @@
 <?php
-if (array_key_exists('g3_option_reading', $_POST) && $_POST['g3_option_reading']) {
-    update_option('g3_option_reading', $_POST['g3_option_reading']);
+use JEALER\G3\Services\PostService;
+$key = PostService::OPTION_KEY;
+if (array_key_exists($key, $_POST) && $_POST[$key]) {
+    update_option($key, $_POST[$key]);
     add_settings_error('general', '1', __('Updated!', 'G3'), 'updated');
 }
 settings_errors('general');

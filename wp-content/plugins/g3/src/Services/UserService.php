@@ -1,9 +1,20 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Validator;
+use JEALER\G3\Services\SystemService;
 use WP_User;
 class UserService {
-    public static string $metaKey = 'g3_user_meta';
+
+    /**
+     * Meta key
+     * 
+     * 元数据键
+     * 
+     * @var string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const META_KEY = 'g3_user_meta';
 
     /**
      * Get user meta data
@@ -48,7 +59,7 @@ class UserService {
      */
     public static function getDefaultAvatarUrl(): string
     {
-        $default = get_option('g3_option_general')['avatar'] ?? '';
+        $default = get_option(SystemService::OPTION_KEY)['avatar'] ?? '';
         return Validator::isImage($default) ? $default : G3_IMG_URL . '/avatar.png';
     }
 
@@ -70,7 +81,7 @@ class UserService {
             $userId = absint($userId);
         }
 
-        $userAvatar = self::getMeta($userId, self::$metaKey, 'avatar', []);
+        $userAvatar = self::getMeta($userId, self::META_KEY, 'avatar', []);
 
         if (!$userAvatar || !Validator::isImage($userAvatar)) {
             $userAvatar = self::getDefaultAvatarUrl();

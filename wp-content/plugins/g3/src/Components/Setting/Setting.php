@@ -5,20 +5,18 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
+use JEALER\G3\Services\SystemService;
 
-class DigitalOperations extends Components {
-    public string $optionKey = 'g3_option_general';
+class Setting extends Components {
     public array $option = [];
-    public string $seoKey = 'g3_option_seo';
     public array $seo = [];
-    public string $rssKey = 'g3_option_rss';
     public array $rss = [];
 
     #[\Override]
     protected function options(): void
     {
         $siteName     = get_bloginfo('name');
-        $option       = Option::get($this->optionKey, [
+        $option       = Option::get(SystemService::OPTION_KEY, [
             'sad'          => '0',
             'avatar'       => G3_IMG_URL . '/avatar.png',
             'cover'        => G3_IMG_URL . '/cover-placeholder.png',
@@ -28,19 +26,19 @@ class DigitalOperations extends Components {
             'links'        => '',
             'redirectLink' => '0',
         ]);
-        $this->option = Option::cache($this->optionKey, $option);
-        $seo          = Option::get($this->seoKey, [
+        $this->option = Option::cache(SystemService::OPTION_KEY, $option);
+        $seo          = Option::get(SystemService::SEO_OPTION_KEY, [
             'seo'      => '1',
             'keywords' => "{$siteName},G3 Web,G3 System,JEALER",
         ]);
-        $this->seo    = Option::cache($this->seoKey, $seo);
-        $rss          = Option::get($this->rssKey, [
+        $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $seo);
+        $rss          = Option::get(SystemService::RSS_OPTION_KEY, [
             'rss'  => '1',
             'rss1' => get_bloginfo('rss_url'),
             'rss2' => get_bloginfo('rss2_url'),
             'atom' => get_bloginfo('atom_url'),
         ]);
-        $this->rss    = Option::cache($this->rssKey, $rss);
+        $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $rss);
     }
     #[\Override]
     protected function init(): void
@@ -54,6 +52,7 @@ class DigitalOperations extends Components {
     protected function admin(): void
     {
         $this->settings();
+        $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
             // SEO: add field in edit form for post
             add_action('add_meta_boxes', [$this, 'initPostbox'], 10, 2);
@@ -72,7 +71,6 @@ class DigitalOperations extends Components {
     protected function adminMenu(): void
     {
         $this->menu();
-        $this->submenu();
     }
     #[\Override]
     protected function system(): void
@@ -80,27 +78,23 @@ class DigitalOperations extends Components {
         add_action('wp_head', [$this, 'redirectLinkHandle']);
         $this->rssHandle();
     }
-
-    private function menu()
+    private function menu(): void
     {
         add_menu_page(
-            __('Digital Operations', 'G3'),
-            __('Digital Operations', 'G3'),
+            __('G3 Settings', 'G3'),
+            __('G3 Settings', 'G3'),
             "manage_options",
-            "digital-operations",
+            "g3-settings",
             '__return_false',
             'dashicons-share',
             '79'
         );
-    }
-    private function submenu(): void
-    {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('General', 'G3'),
             __('General', 'G3'),
             'manage_options',
-            'digital-operations',
+            'g3-settings',
             [$this, 'render'],
             1
         );
@@ -114,7 +108,7 @@ class DigitalOperations extends Components {
             'sitemap' => __('SiteMap', 'G3'),
         ];
         echo '<div class="wrap"><h1>' . __('General', 'G3') . '</h1>';
-        Container::tab('DigitalOperations', 'general', $tabs);
+        Container::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
     private function settings(): void
@@ -123,16 +117,16 @@ class DigitalOperations extends Components {
             'general',
             '',
             '__return_false',
-            'digital-operations'
+            'g3-settings'
         );
-        register_setting('general', $this->optionKey);
-        Container::settingFields('digital-operations', 'general', [
+        register_setting('general', SystemService::OPTION_KEY);
+        Container::settingFields('g3-settings', 'general', [
             [
                 'id'       => 'sad',
                 'title'    => __('Sad Mod', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'sad',
                         __('Sad Mod', 'G3'),
@@ -148,7 +142,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Default Avatar', 'G3'),
                 'callback' => function () {
                     echo Container::imageInput(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'avatar',
                         __('Default Avatar', 'G3'),
@@ -164,7 +158,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Default Cover', 'G3'),
                 'callback' => function () {
                     echo Container::imageInput(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'cover',
                         __('Default Cover', 'G3'),
@@ -180,7 +174,7 @@ class DigitalOperations extends Components {
                 'title'    => __('ICP Code', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'icp',
                         __('ICP Code', 'G3'),
@@ -196,7 +190,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Header Code', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'headerCode',
                         __('Header Code', 'G3'),
@@ -212,7 +206,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Footer Code', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'footerCode',
                         __('Footer Code', 'G3'),
@@ -228,7 +222,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Links', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'links',
                         __('Links', 'G3'),
@@ -244,7 +238,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Redirect Link', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        $this->optionKey,
+                        SystemService::OPTION_KEY,
                         $this->option,
                         'redirectLink',
                         __('Redirect Link', 'G3'),
@@ -262,16 +256,16 @@ class DigitalOperations extends Components {
             'seo',
             null,
             '__return_false',
-            'digital-operations&tab=seo'
+            'g3-settings&tab=seo'
         );
-        register_setting('seo', $this->seoKey);
-        Container::settingFields('digital-operations&tab=seo', 'seo', [
+        register_setting('seo', SystemService::SEO_OPTION_KEY);
+        Container::settingFields('g3-settings&tab=seo', 'seo', [
             [
                 'id'       => 'seo',
                 'title'    => 'SEO',
                 'callback' => function () {
                     echo Container::enable(
-                        $this->seoKey,
+                        SystemService::SEO_OPTION_KEY,
                         $this->seo,
                         'seo',
                         'SEO',
@@ -287,7 +281,7 @@ class DigitalOperations extends Components {
                 'title'    => __('HomePage Keywords', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        $this->seoKey,
+                        SystemService::SEO_OPTION_KEY,
                         $this->seo,
                         'keywords',
                         __('HomePage Keywords', 'G3'),
@@ -307,16 +301,16 @@ class DigitalOperations extends Components {
             'rss',
             null,
             '__return_false',
-            'digital-operations&tab=rss'
+            'g3-settings&tab=rss'
         );
-        register_setting('rss', $this->rssKey);
-        Container::settingFields('digital-operations&tab=rss', 'rss', [
+        register_setting('rss', SystemService::RSS_OPTION_KEY);
+        Container::settingFields('g3-settings&tab=rss', 'rss', [
             [
                 'id'       => 'rss',
                 'title'    => 'RSS',
                 'callback' => function () {
                     echo Container::enable(
-                        $this->rssKey,
+                        SystemService::RSS_OPTION_KEY,
                         $this->rss,
                         'rss',
                         'RSS'
@@ -331,7 +325,7 @@ class DigitalOperations extends Components {
                 'title'    => __('RSS URL', 'G3'),
                 'callback' => function () {
                     $url = $this->rss['rss1'] ?? get_bloginfo('rss_url');
-                    echo '<input name="' . $this->rssKey . '[rss1]" type="url" id="rss1" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
+                    echo '<input name="' . SystemService::RSS_OPTION_KEY . '[rss1]" type="url" id="rss1" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
                 },
                 'args'     => [
                     'label_for' => 'rss1'
@@ -342,7 +336,7 @@ class DigitalOperations extends Components {
                 'title'    => __('RSS2 URL', 'G3'),
                 'callback' => function () {
                     $url = $this->rss['rss2'] ?? get_bloginfo('rss2_url');
-                    echo '<input name="' . $this->rssKey . '[rss2]" type="url" id="rss2" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
+                    echo '<input name="' . SystemService::RSS_OPTION_KEY . '[rss2]" type="url" id="rss2" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
                 },
                 'args'     => [
                     'label_for' => 'rss2'
@@ -353,7 +347,7 @@ class DigitalOperations extends Components {
                 'title'    => __('Atom URL', 'G3'),
                 'callback' => function () {
                     $url = $this->rss['atom'] ?? get_bloginfo('atom_url');
-                    echo '<input name="' . $this->rssKey . '[atom]" type="url" id="atom" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
+                    echo '<input name="' . SystemService::RSS_OPTION_KEY . '[atom]" type="url" id="atom" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
                 },
                 'args'     => [
                     'label_for' => 'atom'
@@ -366,7 +360,7 @@ class DigitalOperations extends Components {
             'sitemap',
             null,
             '__return_false',
-            'digital-operations&tab=sitemap'
+            'g3-settings&tab=sitemap'
         );
         register_setting(
             'sitemap',
@@ -387,7 +381,7 @@ class DigitalOperations extends Components {
             </fieldset>
             <?php
             },
-            'digital-operations&tab=sitemap',
+            'g3-settings&tab=sitemap',
             'sitemap'
         );
     }
@@ -589,5 +583,12 @@ class DigitalOperations extends Components {
                 'charset'  => 'UTF-8'
             ]
         );
+    }
+    private function permalink(): void
+    {
+        if (get_option('permalink_structure') === '/%postname%/') return;
+
+        update_option('permalink_structure', '/%postname%/');
+        flush_rewrite_rules();
     }
 }

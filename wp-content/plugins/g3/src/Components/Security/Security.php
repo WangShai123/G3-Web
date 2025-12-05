@@ -4,15 +4,16 @@ use JEALER\G3\Components;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Session;
+use JEALER\G3\Services\SystemService;
 
 class Security extends Components {
-    private string $optionKey = 'g3_option_securities';
     public array $option = [];
     private string $section = 'securitySection';
+
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get($this->optionKey, [
+        $default      = Option::get(SystemService::SECURITY_OPTION_KEY, [
             'login'      => '0',
             'url'        => 'admin',
             'upload'     => '1',
@@ -23,7 +24,7 @@ class Security extends Components {
             'header'     => '0',
             'libredtail' => '1'
         ]);
-        $this->option = Option::cache($this->optionKey, $default);
+        $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $default);
     }
     #[\Override]
     protected function system(): void
@@ -55,7 +56,7 @@ class Security extends Components {
     private function submenu()
     {
         add_submenu_page(
-            'options-general.php',
+            'g3-settings',
             __('Security', 'G3'),
             __('Security', 'G3'),
             'manage_options',
@@ -89,7 +90,7 @@ class Security extends Components {
         );
         register_setting(
             $this->section,
-            $this->optionKey
+            SystemService::SECURITY_OPTION_KEY
         );
         Container::settingFields(
             'security',
@@ -100,7 +101,7 @@ class Security extends Components {
                     'title'    => __('Custom Admin Login', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'login',
                             __('Custom Admin Login', 'G3'),
@@ -117,7 +118,7 @@ class Security extends Components {
                     'title'    => __('Admin Login URL', 'G3'),
                     'callback' => function () {
                         echo Container::input(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'url',
                             __('Admin Login URL', 'G3'),
@@ -134,7 +135,7 @@ class Security extends Components {
                     'title'    => __('Reset Upload File Names', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'upload',
                             __('Reset Upload File Name', 'G3'),
@@ -151,7 +152,7 @@ class Security extends Components {
                     'title'    => __('Safe Session', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'session',
                             __('Safe Session', 'G3'),
@@ -168,7 +169,7 @@ class Security extends Components {
                     'title'    => __('Prevent XMLRPC Attacks', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'xmlrpc',
                             __('Prevent XMLRPC Attacks', 'G3'),
@@ -185,7 +186,7 @@ class Security extends Components {
                     'title'    => __('Prevent XSS Attacks', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'xss',
                             __('Prevent XSS Attacks', 'G3'),
@@ -202,7 +203,7 @@ class Security extends Components {
                     'title'    => __('Content Security Policy', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'csp',
                             __('Content Security Policy', 'G3'),
@@ -219,7 +220,7 @@ class Security extends Components {
                     'title'    => __('Prevent Data Leakage', 'G3'),
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'header',
                             __('Remove Header Response', 'G3'),
@@ -236,7 +237,7 @@ class Security extends Components {
                     'title'    => 'Libredtail-HTTP',
                     'callback' => function () {
                         echo Container::enable(
-                            $this->optionKey,
+                            SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'libredtail',
                             'Libredtail-HTTP',

@@ -3,17 +3,18 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
+use JEALER\G3\Services\PaymentService;
 class Wallet extends Components {
-    public string $optionKey = 'g3_option_wallet';
     public array $option = [];
+
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get($this->optionKey, [
+        $default      = Option::get(PaymentService::WALLET_OPTION_KEY, [
             'enable'   => '0',
             'recharge' => '0',
         ]);
-        $this->option = Option::cache($this->optionKey, $default);
+        $this->option = Option::cache(PaymentService::WALLET_OPTION_KEY, $default);
     }
     #[\Override]
     protected function admin(): void
@@ -23,12 +24,12 @@ class Wallet extends Components {
     #[\Override]
     protected function adminMenu(): void
     {
-        $this->submenu();
+        $this->menu();
     }
-    private function submenu(): void
+    private function menu(): void
     {
         add_submenu_page(
-            'digital-operations',
+            'g3-settings',
             __('Wallet', 'G3'),
             __('Wallet', 'G3'),
             'manage_options',
@@ -59,13 +60,13 @@ class Wallet extends Components {
         );
         register_setting(
             'generalSetting',
-            $this->optionKey,
+            PaymentService::WALLET_OPTION_KEY,
         );
         add_settings_field(
             'enable',
             __('Wallet', 'G3'),
             function () {
-                echo Container::enable($this->optionKey, $this->option, 'enable', __('Wallet', 'G3'), __('Enable Wallet, if you want balance feature.', 'G3'));
+                echo Container::enable(PaymentService::WALLET_OPTION_KEY, $this->option, 'enable', __('Wallet', 'G3'), __('Enable Wallet, if you want balance feature.', 'G3'));
             },
             'wallet-setting&tab=general',
             'sectionGeneral',
@@ -75,7 +76,7 @@ class Wallet extends Components {
             'recharge',
             __('Recharge', 'G3'),
             function () {
-                echo Container::enable($this->optionKey, $this->option, 'recharge', __('Recharge', 'G3'), __('Enable Recharge, if you want users can recharge wallet.', 'G3'));
+                echo Container::enable(PaymentService::WALLET_OPTION_KEY, $this->option, 'recharge', __('Recharge', 'G3'), __('Enable Recharge, if you want users can recharge wallet.', 'G3'));
             },
             'wallet-setting&tab=general',
             'sectionGeneral',
