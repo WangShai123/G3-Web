@@ -89,8 +89,8 @@ Frontend::loadStyle('jui');
         </div>
 
         <div class="form-buttons">
-            <button type="button" class="j-button is-primary" id="createTheme">Submit</button>
-            <button type="reset" class="j-button is-ghost">Reset</button>
+            <button type="button" class="j-button is-primary" id="createTheme"><?php echo __('Submit'); ?></button>
+            <button type="reset" class="j-button is-ghost"><?php echo __('Cancel'); ?></button>
         </div>
     </form>
 </section>

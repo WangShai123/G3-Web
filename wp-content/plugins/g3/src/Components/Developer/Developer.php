@@ -222,16 +222,16 @@ class Developer extends Components {
     public function flushSetting(): void
     {
         add_settings_section(
-            'test_refresh',
+            'flush',
             null,
             '__return_false',
             'developer-mode&tab=refresh'
         );
         register_setting(
-            'test_refresh',
+            'flush',
             '',
         );
-        Container::settingFields('developer-mode&tab=refresh', 'test_refresh', [
+        Container::settingFields('developer-mode&tab=refresh', 'flush', [
             [
                 'id'       => 'jl_flush_rewrite_rules',
                 'title'    => __('Rewrite Rules', 'G3'),
@@ -874,11 +874,10 @@ class Developer extends Components {
     }
     public function flushRewriteRulesHandle()
     {
-        if (isset($_POST['jl_flush_rewrite_rules'])) {
+        if (isset($_POST['jl_flush_rewrite_rules']) && current_user_can('manage_options')) {
             Rewrite::flushRewriteRules();
             add_settings_error('flush', 'rewrite_flushed', __('Rewrite rules flushed successfully!', 'G3'), 'updated');
         }
-        return new WP_Error('no_action', 'No action taken.');
     }
     public function _ajaxFlushOptions()
     {
@@ -1229,7 +1228,13 @@ class Developer extends Components {
                                 style="text-transform: uppercase; letter-spacing: 2px; font-family: monospace; min-width: 300px;"
                                 required>
                             <p class="description">
-                                <?php echo esc_html(__('Please enter your G3 license code to activate G3 Web. test: G3-TEST-CODE-DEMO-0001', 'G3')); ?>
+                                <?php
+                                echo sprintf(
+                                    __('Please enter your G3 license code to activate G3 Web.<br>No License? Click <a href="%s" target="_blank">HERE</a> to get one!
+                                    <br>test: G3-TEST-CODE-DEMO-0001', 'G3'),
+                                    esc_url('https://www.jealer.com/g3-web/license/')
+                                );
+                                ?>
                             </p>
                         </td>
                     </tr>

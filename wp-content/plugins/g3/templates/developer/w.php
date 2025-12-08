@@ -34,6 +34,38 @@ $time = Developer::time();
         </div>
 
         <div class="welcome">
+            <h2><?php echo __('Tips for First Time Users', 'G3') ?></h2>
+            <div class="features">
+                <ul>
+                    <li>
+                        <?php
+                        echo sprintf(
+                            __('Install and activate the <a href="%s">G3-Web theme</a> to preview the template and its features.', 'G3'),
+                            admin_url('theme-install.php?search=g3-web')
+                        );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        echo sprintf(
+                            __('Install and activate the <a href="%s">G3-Mobile theme</a> to preview the mobile template and its features if you need.', 'G3'),
+                            admin_url('theme-install.php?search=g3-mobile')
+                        );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        echo sprintf(
+                            __('Learn more about G3-Web Plugin by <a href="%s" target="_blank">Documents</a>  and <a href="%s" target="_blank">Courses</a>.', 'G3'),
+                            esc_url('https://www.jealer.com/documents/'),
+                            esc_url('https://www.jealer.com/courses/')
+                        );
+                        ?>
+                    </li>
+                </ul>
+            </div>
+
+
             <h2><?php echo __('G3-Web helps you easily create a clean, modern and full-fledged website.', 'G3'); ?>
             </h2>
             <h3><?php _e('Useful Development Features', 'G3'); ?></h3>

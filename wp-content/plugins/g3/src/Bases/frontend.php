@@ -10,6 +10,8 @@ if (!function_exists('html_class')) {
      * 
      * @param bool $print whether to print the class attribute
      * @return string|void
+     * @since 1.0.0
+     * @author Wang Shai
      */
     function html_class($print = true)
     {

@@ -145,12 +145,12 @@ class Themes extends Components {
         /**
          * set G3 admin color scheme
          */
-        $option   = get_option('g3_option_dev_setting');
-        $fileName = isset($option['environment']) && ($option['environment'] === 'local' || $option['environment'] === 'development') ? '/dist/css/admin.css' : '/public/css/admin.min.css';
+        // $option = get_option(SystemService::SETTING_OPTION_KEY);
+        // $fileName = isset($option['environment']) && ($option['environment'] === 'local' || $option['environment'] === 'development') ? '/dist/css/admin.css' : '/public/css/admin.min.css';
         wp_admin_css_color(
             'G3',
             'G3',
-            WP_PLUGIN_URL . '/g3' . $fileName,
+            WP_PLUGIN_URL . '/g3/public/css/admin.min.css',
             ['#2d2f39', '#434656', '#0f49bd', '#135bec'],
             ['base' => '#e5f8ff', 'focus' => '#fff', 'current' => '#fff']
         );

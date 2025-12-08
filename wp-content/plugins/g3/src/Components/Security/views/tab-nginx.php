@@ -31,10 +31,19 @@ Frontend::loadStyle('jui');
 
 <div class="j-tip is-default mt-2">
     <div class="tip-content">
-        <!-- 屏蔽特定 User-Agent（例如 libredtail-http） -->
+        <!-- 屏蔽特定 User-Agent（例如 libredtail-http, python-httpx等） -->
         <div><?php _e('Block User-Agent, such as: libredtail-http.', 'G3'); ?></div>
-        <pre><code>if ($http_user_agent ~* (libredtail-http)) {
-    return 403;
+        <pre><code>map $http_user_agent $block_ua {
+    default         0;
+    "~*libredtail-http"   1;
+    "~*python-httpx"      1;
+    "~*python-requests"   1;
+    "~*Go-http-client"    1;
+}
+server {
+    if ($block_ua) {
+        return 403;
+    }
 }</code></pre>
     </div>
 </div>

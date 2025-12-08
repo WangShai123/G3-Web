@@ -2,6 +2,7 @@
 namespace JEALER\G3\Services;
 use JEALER\G3\Components;
 class PageService {
+
     /**
      * Check if is user page.
      * 

@@ -18,11 +18,11 @@ class Security extends Components {
             'url'        => 'admin',
             'upload'     => '1',
             'session'    => '0',
-            'xmlrpc'     => '0',
+            'xmlrpc'     => '1',
             'xss'        => '0',
             'csp'        => '0',
-            'header'     => '0',
-            'libredtail' => '1'
+            'xPoweredBy' => '1',
+            // 'libredtail' => '1'
         ]);
         $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $default);
     }
@@ -30,7 +30,7 @@ class Security extends Components {
     protected function system(): void
     {
         add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
-        $this->libredtailHandle();
+        // $this->uaHandle();
     }
     #[\Override]
     protected function init(): void
@@ -40,7 +40,7 @@ class Security extends Components {
         $this->xmlRpcHandle();
         $this->xssHandle();
         $this->cspHandle();
-        $this->headerHandle();
+        $this->xPoweredByHandle();
     }
     #[\Override]
     protected function admin(): void
@@ -105,7 +105,7 @@ class Security extends Components {
                             $this->option,
                             'login',
                             __('Custom Admin Login', 'G3'),
-                            __('The system will replace <code>"wp-login.php"</code> with the new address <code>"/login/$url"</code> below.', 'G3')
+                            __('The system will replace <code>"wp-login.php"</code> with the new address <code>"/oa/$url"</code> below.', 'G3')
                         );
                     },
                     'args'     => [
@@ -122,7 +122,7 @@ class Security extends Components {
                             $this->option,
                             'url',
                             __('Admin Login URL', 'G3'),
-                            __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('login/' . (isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : ''))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'),
+                            __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('oa/' . (isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : ''))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'),
                         );
                     },
                     'args'     => [
@@ -216,39 +216,39 @@ class Security extends Components {
                     ]
                 ],
                 [
-                    'id'       => 'header',
-                    'title'    => __('Prevent Data Leakage', 'G3'),
+                    'id'       => 'xPoweredBy',
+                    'title'    => 'X-Powered-By',
                     'callback' => function () {
                         echo Container::enable(
                             SystemService::SECURITY_OPTION_KEY,
                             $this->option,
-                            'header',
-                            __('Remove Header Response', 'G3'),
-                            __('Remove several data from header response to prevent information leakage.', 'G3')
+                            'xPoweredBy',
+                            'X-Powered-By',
+                            __('Remove X-Powered-By header.', 'G3')
                         );
                     },
                     'args'     => [
-                        'label_for' => 'header',
-                        'class'     => 'security-field__header',
+                        'label_for' => 'xPoweredBy',
+                        'class'     => 'security-field__xPoweredBy',
                     ]
                 ],
-                [
-                    'id'       => 'libredtail',
-                    'title'    => 'Libredtail-HTTP',
-                    'callback' => function () {
-                        echo Container::enable(
-                            SystemService::SECURITY_OPTION_KEY,
-                            $this->option,
-                            'libredtail',
-                            'Libredtail-HTTP',
-                            __('Prevent requests from Libredtail-HTTP UA.', 'G3')
-                        );
-                    },
-                    'args'     => [
-                        'label_for' => 'libredtail',
-                        'class'     => 'security-field__libredtail',
-                    ]
-                ]
+                // [
+                //     'id'       => 'libredtail',
+                //     'title'    => 'Libredtail-HTTP',
+                //     'callback' => function () {
+                //         echo Container::enable(
+                //             SystemService::SECURITY_OPTION_KEY,
+                //             $this->option,
+                //             'libredtail',
+                //             'Libredtail-HTTP',
+                //             __('Prevent requests from Libredtail-HTTP UA.', 'G3')
+                //         );
+                //     },
+                //     'args'     => [
+                //         'label_for' => 'libredtail',
+                //         'class'     => 'security-field__libredtail',
+                //     ]
+                // ]
             ]
         );
     }
@@ -264,7 +264,7 @@ class Security extends Components {
     public function registerLoginRule(): void
     {
         add_rewrite_rule(
-            'login/([^/]+)/?$',
+            'oa/([^/]+)/?$',
             'index.php?custom_admin_login=$matches[1]',
             'top'
         );
@@ -277,7 +277,7 @@ class Security extends Components {
         add_filter('template_include', function ($template) {
             global $wp_query;
             if (isset($wp_query->query_vars['custom_admin_login']) && $wp_query->query_vars['custom_admin_login'] === $this->option['url']) {
-                $template = WP_PLUGIN_DIR . '/g3/templates/admin/login.php';
+                $template = WP_PLUGIN_DIR . '/g3/templates/admin/oa.php';
             }
             return $template;
         });
@@ -345,7 +345,6 @@ class Security extends Components {
             strpos($_SERVER["REQUEST_URI"], "eval(") !== false ||
             strpos($_SERVER["REQUEST_URI"], "base64") !== false ||
             preg_match('/\\b(\\w*\\/\\*\\w*)\\b/', $_SERVER["REQUEST_URI"]) === 1
-            // strpos($_SERVER["REQUEST_URI"], "/**/")
         ) {
             @header("HTTP/1.1 414 Request-URI Too Long");
             @header("Status: 414 Request-URI Too Long");
@@ -360,15 +359,15 @@ class Security extends Components {
         }
         header('Content-Security-Policy: default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\'; font-src \'self\'; object-src \'none\';');
     }
-    private function headerHandle(): void
+    private function xPoweredByHandle(): void
     {
-        if (!isset($this->option['header']) || $this->option['header'] !== '1') {
+        if (!isset($this->option['xPoweredBy']) || $this->option['xPoweredBy'] !== '1' || is_admin()) {
             return;
+        } else {
+            header_remove('X-Powered-By');
         }
-        header_remove('X-Powered-By');
-        header_remove('Server');
     }
-    private function libredtailHandle(): void
+    private function uaHandle(): void
     {
         if (!isset($this->option['libredtail']) || $this->option['libredtail'] !== '1') {
             return;

@@ -3,6 +3,58 @@ namespace JEALER\G3\Utilities;
 
 final class Validator {
 
+    /*
+     * Sanitize output to prevent XSS.
+     * 
+     * 防止 XSS 攻击。
+     *
+     * @param string $data The data to sanitize.
+     * @param string $context The context of the data.
+     * @return string The sanitized data.
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function output($data, $context = 'html'): string
+    {
+        $result = match ($context) {
+            'attr' => esc_attr($data),
+            'html' => esc_html($data),
+            'post' => wp_kses_post($data),
+            default => esc_html($data),
+        };
+        return $result;
+    }
+
+    /*
+     * Sanitize input to prevent XSS.
+     * 
+     * 防止 XSS 攻击。
+     *
+     * @param string $input The input to sanitize.
+     * @return string The sanitized input.
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function input($input): string
+    {
+        return sanitize_text_field($input);
+    }
+
+    /*
+     * Sanitize textarea input to prevent XSS.
+     * 
+     * 防止 XSS 攻击。
+     *
+     * @param string $input The input to sanitize.
+     * @return string The sanitized input.
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function textarea($input): string
+    {
+        return sanitize_textarea_field($input);
+    }
+
     /**
      * Detect the language based on the environment variable LANG.
      * 
@@ -76,11 +128,6 @@ final class Validator {
     public static function isURL(string $url): bool
     {
         $url = trim($url);
-
-        if (!wp_http_validate_url($url)) {
-            return false;
-        }
-
-        return true;
+        return (bool) wp_http_validate_url($url);
     }
 }

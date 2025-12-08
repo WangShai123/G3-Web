@@ -1,8 +1,8 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
+settings_errors('flush');
 ?>
 <form action="" method="post">
     <div class="j-tip is-error mt-4">
@@ -14,7 +14,7 @@ Frontend::loadScript('jui');
         </div>
     </div>
     <?php
-    settings_fields('test_refresh');
+    settings_fields('flush');
     do_settings_sections('developer-mode&tab=refresh');
     ?>
 </form>

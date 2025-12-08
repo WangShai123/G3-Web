@@ -268,7 +268,7 @@ class TestController {
             'code'    => 200,
             'message' => 'This is a rate-limited API, up to 5 requests per minute',
             'data'    => [
-                'request_count' => Request::getRequestCount($request),
+                'request_count' => Request::count($request),
                 'timestamp'     => current_time('mysql')
             ],
         ]);

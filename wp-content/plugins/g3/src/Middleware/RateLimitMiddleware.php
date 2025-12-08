@@ -7,6 +7,7 @@ use WP_Error;
 class RateLimitMiddleware implements MiddlewareInterface {
     private int $limit;
     private int $window;
+    private string $cacheGroup;
 
     /**
      * @param int $limit 请求次数限制
@@ -14,8 +15,9 @@ class RateLimitMiddleware implements MiddlewareInterface {
      */
     public function __construct(int $limit = 60, int $window = 60)
     {
-        $this->limit  = $limit;
-        $this->window = $window;
+        $this->limit      = $limit;
+        $this->window     = $window;
+        $this->cacheGroup = 'rate_limit:';
     }
 
     /**
@@ -28,7 +30,7 @@ class RateLimitMiddleware implements MiddlewareInterface {
         $ip = System::getClientIP();
 
         // Set cache key
-        $cacheKey = 'rate_limit_' . md5($ip . $request->get_route());
+        $cacheKey = $this->cacheGroup . md5($ip . $request->get_route());
 
         // Get current count
         $count = get_transient($cacheKey);
@@ -51,8 +53,8 @@ class RateLimitMiddleware implements MiddlewareInterface {
         if ($count > $this->limit) {
             return new WP_Error(
                 '429',
-                // '请求过于频繁，请稍后再试',
-                __('Rate limit exceeded, please try again later', 'G3'),
+                // '请求过于频繁，禁止访问',
+                __('Forbidden: Rate limit exceeded', 'G3'),
                 [
                     'status' => 429,
                     'expire' => $this->window

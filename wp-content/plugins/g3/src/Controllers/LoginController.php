@@ -8,12 +8,13 @@ use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_Error;
 
 class LoginController {
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'login/admin',
+        route: 'oa/admin',
         methods: 'POST'
     )]
     #[Schema([
@@ -32,25 +33,15 @@ class LoginController {
             ]
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [10, 60])]
-    public function adminLogin(WP_REST_Request $request)
+    #[Middleware(RateLimitMiddleware::class, [6, 60])]
+    public function adminLogin(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data     = $request->get_json_params();
         $username = sanitize_text_field($data['username']);
         $password = sanitize_text_field($data['password']);
 
         $user = get_user_by('login', $username);
-        if (!$user) {
-            return new WP_Error(
-                401,
-                __('Invalid username or password.', 'G3'),
-                [
-                    'status' => 401
-                ]
-            );
-        }
-
-        if (!wp_check_password($password, $user->data->user_pass, $user->ID)) {
+        if (!$user || !wp_check_password($password, $user->data->user_pass, $user->ID)) {
             return new WP_Error(
                 401,
                 __('Invalid username or password.', 'G3'),

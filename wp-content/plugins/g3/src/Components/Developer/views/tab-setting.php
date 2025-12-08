@@ -1,8 +1,9 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-
-if (array_key_exists('g3_option_dev_setting', $_POST) && $_POST['g3_option_dev_setting']) {
-    update_option('g3_option_dev_setting', $_POST['g3_option_dev_setting']);
+use JEALER\G3\Services\SystemService;
+$key = SystemService::SETTING_OPTION_KEY;
+if (array_key_exists($key, $_POST) && $_POST[$key]) {
+    update_option($key, $_POST[$key]);
     add_settings_error('setting', '1', __('Updated!', 'G3'), 'updated');
 }
 settings_errors('setting');

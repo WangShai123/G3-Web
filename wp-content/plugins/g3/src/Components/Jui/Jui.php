@@ -74,9 +74,11 @@ class Jui extends Components {
         $config = self::getJsonConfig();
         return $config['chartTheme'] ?? 'default';
     }
+
     /**
-     * 获取 JUI 配置字符串
      * Get JUI config string
+     * 
+     * 获取 JUI 配置字符串
      * 
      * @return string key1-value1 key2-value2
      * @since 1.0.0

@@ -11,7 +11,7 @@ final class Request {
      * @param WP_REST_Request $request
      * @return int
      */
-    public static function getRequestCount(WP_REST_Request $request): int
+    public static function count(WP_REST_Request $request): int
     {
         $ip       = System::getClientIP();
         $cacheKey = 'rate_limit_' . md5($ip . $request->get_route());

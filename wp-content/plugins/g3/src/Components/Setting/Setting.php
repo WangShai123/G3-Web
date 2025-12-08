@@ -66,6 +66,7 @@ class Setting extends Components {
                 add_action('edited_' . $taxonomy, [$this, 'updateKeywordsField']);
             }
         }
+        $this->pluginAction();
     }
     #[\Override]
     protected function adminMenu(): void
@@ -590,5 +591,20 @@ class Setting extends Components {
 
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();
+    }
+
+    private function pluginAction()
+    {
+        add_filter('plugin_row_meta', function ($links, $file) {
+            if ($file !== 'g3/loader.php') return $links;
+            $links[] = '<a href="https://www.jealer.com/g3-web/sponsor/" target="_blank"><span class="dashicons dashicons-star-filled" aria-hidden="true" style="font-size:14px;line-height:1.4"></span>' . __('Sponsor', 'G3') . '</a>';
+            $links[] = '<a href="https://www.jealer.com/documents" target="_blank"><span class="dashicons dashicons-book-alt" aria-hidden="true" style="font-size:14px;line-height:1.4"></span>' . __('Documents', 'G3') . '</a>';
+            $links[] = '<a href="https://www.jealer.com/courses" target="_blank"><span class="dashicons dashicons-video-alt" aria-hidden="true" style="font-size:14px;line-height:1.4"></span>' . __('Online Courses', 'G3') . '</a>';
+            return $links;
+        }, 10, 2);
+        add_filter('plugin_action_links_g3/loader.php', function ($links) {
+            $links[] = '<a href="index.php?page=g3-welcome">' . __('Tip', 'G3') . '</a>';
+            return $links;
+        });
     }
 }
