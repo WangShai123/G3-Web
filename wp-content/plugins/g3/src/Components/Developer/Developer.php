@@ -8,6 +8,7 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
 use WP_Error;
+use WP_Duotone;
 
 class Developer extends Components {
     public array $formOption;
@@ -1080,16 +1081,17 @@ class Developer extends Components {
         /** Disable responsive image intrinsic size style */
         add_filter('wp_img_tag_add_auto_sizes', '__return_false');
         /** Remove global styles in head */
-        add_action('wp_enqueue_scripts', function () {
-            wp_deregister_style('global-styles');
-            wp_dequeue_style('global-styles');
-            wp_cache_delete('global-styles', 'options');
-
-            wp_deregister_style('global-styles-inline');
-            wp_dequeue_style('global-styles-inline');
-            wp_deregister_style('global-styles-inline-css');
-            wp_dequeue_style('global-styles-inline-css');
+        add_action('wp_loaded', function () {
+            remove_action('wp_footer', 'wp_enqueue_global_styles', 1);
         }, 20);
+        add_action('wp_footer', function () {
+            wp_dequeue_style('core-block-supports');
+        }, 5);
+        // add_action('wp_enqueue_scripts', function () {
+        //     wp_deregister_style('global-styles');
+        //     wp_dequeue_style('global-styles');
+        //     wp_cache_delete('global-styles', 'options');
+        // }, 20);
     }
     public function gutenbergHandle(): void
     {
