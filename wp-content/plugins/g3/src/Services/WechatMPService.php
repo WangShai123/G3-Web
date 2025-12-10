@@ -1,6 +1,8 @@
 <?php
 namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
+use JEALER\G3\Includes\EasyWechatCache;
+use JEALER\G3\Services\SystemService;
 class WechatMPService {
 
     /**
@@ -90,12 +92,13 @@ class WechatMPService {
 
     private function config(): array
     {
-        $data = get_option(self::OPTION_KEY);
+        $data = get_option(SystemService::OPEN_MP_KEY);
         return [
-            'app_id'  => $data['appId'] ?? '',
-            'secret'  => $data['appSecret'] ?? '',
-            'token'   => $data['token'] ?? '',
-            'aes_key' => $data['encodingAESKey'] ?? '',
+            'app_id' => $data['appId'] ?? '',
+            'secret' => $data['appSecret'] ?? '',
+            // 'token'  => $data['token'] ?? '',
+            // 'aes_key' => $data['encodingAESKey'] ?? 'EncodingAESKey',
+            'cache'  => new EasyWechatCache()
         ];
     }
 

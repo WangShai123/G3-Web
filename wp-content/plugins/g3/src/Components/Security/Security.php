@@ -30,7 +30,7 @@ class Security extends Components {
     {
         add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
         // $this->uaHandle();
-        $this->xPoweredByHandle();
+        // $this->xPoweredByHandle();
     }
     #[\Override]
     protected function init(): void
