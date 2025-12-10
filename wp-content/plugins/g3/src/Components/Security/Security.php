@@ -21,8 +21,7 @@ class Security extends Components {
             'xmlrpc'     => '1',
             'xss'        => '0',
             'csp'        => '0',
-            'xPoweredBy' => '1',
-            // 'libredtail' => '1'
+            'xPoweredBy' => '1'
         ]);
         $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $default);
     }
@@ -31,6 +30,7 @@ class Security extends Components {
     {
         add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
         // $this->uaHandle();
+        $this->xPoweredByHandle();
     }
     #[\Override]
     protected function init(): void
@@ -38,9 +38,8 @@ class Security extends Components {
         $this->securityLoginHandle();
         $this->destroyExtraSessions();
         $this->xmlRpcHandle();
-        $this->xssHandle();
+        // $this->xssHandle();
         $this->cspHandle();
-        $this->xPoweredByHandle();
     }
     #[\Override]
     protected function admin(): void
@@ -181,23 +180,23 @@ class Security extends Components {
                         'class'     => 'security-field__xmlrpc',
                     ]
                 ],
-                [
-                    'id'       => 'xss',
-                    'title'    => __('Prevent XSS Attacks', 'G3'),
-                    'callback' => function () {
-                        echo Container::enable(
-                            SystemService::SECURITY_OPTION_KEY,
-                            $this->option,
-                            'xss',
-                            __('Prevent XSS Attacks', 'G3'),
-                            __('Filter requests and prevent XSS attacks.', 'G3')
-                        );
-                    },
-                    'args'     => [
-                        'label_for' => 'xss',
-                        'class'     => 'security-field__xss',
-                    ]
-                ],
+                // [
+                //     'id'       => 'xss',
+                //     'title'    => __('Prevent XSS Attacks', 'G3'),
+                //     'callback' => function () {
+                //         echo Container::enable(
+                //             SystemService::SECURITY_OPTION_KEY,
+                //             $this->option,
+                //             'xss',
+                //             __('Prevent XSS Attacks', 'G3'),
+                //             __('Filter requests and prevent XSS attacks.', 'G3')
+                //         );
+                //     },
+                //     'args'     => [
+                //         'label_for' => 'xss',
+                //         'class'     => 'security-field__xss',
+                //     ]
+                // ],
                 [
                     'id'       => 'csp',
                     'title'    => __('Content Security Policy', 'G3'),
@@ -306,18 +305,18 @@ class Security extends Components {
     }
     private function sessionHandle(): void
     {
-        if (!current_user_can('manage_options')) {
-            if (!(is_user_logged_in() && count(wp_get_all_sessions()) > 1)) {
-                return;
-            }
-            $n       = max(wp_list_pluck(wp_get_all_sessions(), 'login'));
-            $session = Session::getCurrentSession();
-            if ($session['login'] === $n) {
-                wp_destroy_other_sessions();
-            } else {
-                wp_destroy_current_session();
-            }
+        if (current_user_can('manage_options')) {
+            return;
         }
+
+        if (!(is_user_logged_in() && count(wp_get_all_sessions()) > 1)) {
+            return;
+        }
+
+        $n       = max(wp_list_pluck(wp_get_all_sessions(), 'login'));
+        $session = Session::current();
+
+        $session['login'] === $n ? wp_destroy_other_sessions() : wp_destroy_current_session();
     }
     private function xmlRpcHandle(): void
     {
@@ -338,7 +337,7 @@ class Security extends Components {
     }
     private function xssHandle(): void
     {
-        if (!isset($this->option['xss']) || $this->option['xss'] !== '1') {
+        if (is_admin() || !isset($this->option['xss']) || $this->option['xss'] !== '1') {
             return;
         }
         if (
@@ -354,14 +353,14 @@ class Security extends Components {
     }
     private function cspHandle(): void
     {
-        if (!isset($this->option['csp']) || $this->option['csp'] !== '1') {
+        if (is_admin() || !isset($this->option['csp']) || $this->option['csp'] !== '1') {
             return;
         }
         header('Content-Security-Policy: default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\'; font-src \'self\'; object-src \'none\';');
     }
     private function xPoweredByHandle(): void
     {
-        if (!isset($this->option['xPoweredBy']) || $this->option['xPoweredBy'] !== '1' || is_admin()) {
+        if (is_admin() || !isset($this->option['xPoweredBy']) || $this->option['xPoweredBy'] !== '1') {
             return;
         } else {
             header_remove('X-Powered-By');
@@ -369,7 +368,7 @@ class Security extends Components {
     }
     private function uaHandle(): void
     {
-        if (!isset($this->option['libredtail']) || $this->option['libredtail'] !== '1') {
+        if (is_admin() || !isset($this->option['libredtail']) || $this->option['libredtail'] !== '1') {
             return;
         }
         add_action('init', function () {

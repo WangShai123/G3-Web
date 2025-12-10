@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Utilities;
 use WP_Session_Tokens;
+
 final class Session {
 
     /**
@@ -12,7 +13,7 @@ final class Session {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function getCurrentSession(): array|null
+    public static function current(): array|null
     {
         $session = WP_Session_Tokens::get_instance(get_current_user_id());
         return $session->get(wp_get_session_token());

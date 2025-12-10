@@ -2,6 +2,7 @@
 use JEALER\G3\Includes\SwiperListTable;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Components;
+
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
 

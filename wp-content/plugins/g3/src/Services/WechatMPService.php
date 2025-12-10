@@ -1,11 +1,144 @@
 <?php
 namespace JEALER\G3\Services;
+use EasyWeChat\OfficialAccount\Application;
 class WechatMPService {
+
+    /**
+     * Menu Table Name for Wechat MP
+     * 
+     * 微信公众号菜单数据表名
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public const MENU_TABLE = 'g3_wechat_mp_menus';
 
-    public const OPTION_KEY     = 'g3_option_wechatMP';
-    public const CACHE_GROUP    = 'wechat-MP';
+    /**
+     * Option Key for Wechat MP
+     * 
+     * 微信公众号选项键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const OPTION_KEY = 'g3_option_wechatMP';
+
+    /**
+     * Cache Group for Wechat MP
+     * 
+     * 微信公众号缓存组
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const CACHE_GROUP = 'wechat-MP';
+
+    /**
+     * Menu Cache Key for Wechat MP
+     * 
+     * 微信公众号菜单缓存键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public const MENU_CACHE_KEY = 'menus';
+
+    /**
+     * Instance of WechatMPService
+     * 
+     * 微信公众号服务实例
+     * 
+     * @var WechatMPService
+     * @access private
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static $instance = null;
+
+    /**
+     * EasyWeChat Application Instance
+     * 
+     * EasyWeChat 应用实例
+     * 
+     * @var Application
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public Application $app;
+
+    public function __construct()
+    {
+        $this->app = new Application($this->config());
+    }
+
+    public static function run()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function config(): array
+    {
+        $data = get_option(self::OPTION_KEY);
+        return [
+            'app_id'  => $data['appId'] ?? '',
+            'secret'  => $data['appSecret'] ?? '',
+            'token'   => $data['token'] ?? '',
+            'aes_key' => $data['encodingAESKey'] ?? '',
+        ];
+    }
+
+    /**
+     * Create menus for Wechat MP
+     * 
+     * 创建微信公众号菜单
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function createMenus(): bool
+    {
+        $buttons  = self::formatMenusToTree(self::getMenus());
+        $result   = $this->app->getClient()->postJson('cgi-bin/menu/create', [
+            'button' => $buttons
+        ]);
+        $response = $result->toArray();
+        return $response['errcode'] == 0 ? true : false;
+    }
+
+    /**
+     * Delete menus for Wechat MP
+     * 
+     * 删除微信公众号菜单
+     * 
+     * @param int $menuId Menu ID
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function deleteMenus(int $menuId = 0): bool
+    {
+        if ($menuId == 0) {
+            $result = $this->app->getClient()->get('cgi-bin/menu/delete');
+        } else {
+            $result = $this->app->getClient()->postJson('cgi-bin/menu/delconditional', [
+                'menuid' => $menuId
+            ]);
+        }
+        $response = $result->toArray();
+        return $response['errcode'] == 0 ? true : false;
+    }
 
     /**
      * Get all menus from cache or database
@@ -28,8 +161,73 @@ class WechatMPService {
                 wp_cache_set(self::MENU_CACHE_KEY, $menus, self::CACHE_GROUP);
             }
         }
-        // return self::formattedMenus($menus);
         return $menus;
+    }
+
+    /**
+     * Format menus to tree
+     * 
+     * 将菜单数据格式化为树形结构，满足微信公众号菜单创建的数据格式要求
+     * 
+     * @param array $menus Menu data
+     * @return array Tree structure
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function formatMenusToTree(array $menus): array
+    {
+        // Build a group with parent as the key
+        $grouped = [];
+        foreach ($menus as $menu) {
+            $grouped[$menu['parent']][] = $menu;
+        }
+
+        // Build tree according to parent=0
+        return self::buildTree($grouped, 0);
+    }
+
+    /**
+     * Recursively build tree
+     * 
+     * 递归构建树结构
+     * 
+     * @param array $grouped Grouped menu data
+     * @param int $parentId Parent ID
+     * @return array Tree structure
+     */
+    private static function buildTree(array &$grouped, int $parentId): array
+    {
+        if (!isset($grouped[$parentId])) {
+            return [];
+        }
+
+        // Sort by sort
+        usort($grouped[$parentId], function ($a, $b) {
+            return ($a['sort'] ?? 0) <=> ($b['sort'] ?? 0);
+        });
+
+        $tree = [];
+
+        foreach ($grouped[$parentId] as $item) {
+            $node = [];
+
+            // Has sub menu
+            if (isset($grouped[$item['id']])) {
+                $node['name']       = $item['name'];
+                $node['sub_button'] = self::buildTree($grouped, $item['id']);
+            } else {
+                // Last level button
+                $node = [
+                    'type' => self::renderMenuType($item['type']),
+                    'name' => $item['name'],
+                    'key'  => $item['value'],
+                ];
+            }
+
+            $tree[] = $node;
+        }
+
+        return $tree;
     }
 
     /**
@@ -175,4 +373,5 @@ class WechatMPService {
         };
         return $type;
     }
+
 }

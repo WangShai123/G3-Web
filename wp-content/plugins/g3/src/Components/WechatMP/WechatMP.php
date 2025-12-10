@@ -260,5 +260,31 @@ class WechatMP extends Components {
                 'message' => __('Success', 'G3')
             ]);
         });
+
+        add_action('wp_ajax_g3_sync_wechatMP_menu', function () {
+            if (!is_admin() || !current_user_can('manage_options')) {
+                wp_send_json_error([
+                    'message' => __('Forbidden', 'G3')
+                ], 400);
+            }
+            // 验证 nonce : g3_sync_wechatMP_menu
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_sync_wechatMP_menu')) {
+                wp_send_json_error([
+                    'message' => __('Forbidden', 'G3')
+                ], 400);
+            }
+
+            $result = WechatMPService::run()->createMenus();
+
+            if ($result) {
+                wp_send_json_success([
+                    'message' => __('Success', 'G3')
+                ]);
+            } else {
+                wp_send_json_error([
+                    'message' => __('Failed', 'G3')
+                ]);
+            }
+        });
     }
 }

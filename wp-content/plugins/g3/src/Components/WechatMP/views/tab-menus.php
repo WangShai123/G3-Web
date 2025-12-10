@@ -2,6 +2,7 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Includes\WechatMenuListTable;
+use JEALER\G3\Services\WechatMPService;
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
 $table = new WechatMenuListTable();
@@ -66,12 +67,12 @@ $table = new WechatMenuListTable();
                     url: ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'sync_wechat_mp_menu',
-                        nonce: '<?php echo wp_create_nonce('sync_wechat_mp_menu'); ?>'
+                        action: 'g3_sync_wechatMP_menu',
+                        nonce: '<?php echo wp_create_nonce('g3_sync_wechatMP_menu'); ?>'
                     },
                     success: function (res) {
                         if (res.success) {
-                            JUI.Toast.success(res.data.message, 1500);
+                            JUI.Toast.success(res.data.message, 2000);
                         } else {
                             JUI.Toast.error(res.data.message, 2000);
                         }

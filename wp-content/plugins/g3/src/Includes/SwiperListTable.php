@@ -2,8 +2,11 @@
 namespace JEALER\G3\Includes;
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
+
 class SwiperListTable extends WP_List_Table {
     private array $columns;
+    private int $perPage = 15;
+
     public function __construct($args = [])
     {
         parent::__construct([
@@ -31,7 +34,6 @@ class SwiperListTable extends WP_List_Table {
 
     public function prepare_items(): void
     {
-        $perPage     = 20;
         $currentPage = $this->get_pagenum();
         $totalItems  = SwiperService::count();
 
@@ -41,9 +43,10 @@ class SwiperListTable extends WP_List_Table {
         $this->_column_headers = array($this->columns, $hidden, $sortable);
         $this->set_pagination_args([
             'total_items' => $totalItems,
-            'per_page'    => $perPage
+            'per_page'    => $this->perPage,
+            'total_pages' => ceil($totalItems / $this->perPage)
         ]);
-        $this->items = $this->getCurrentData($perPage, $currentPage);
+        $this->items = $this->getCurrentData($this->perPage, $currentPage);
     }
 
     public function column_default($item, $column_name)
@@ -88,17 +91,30 @@ class SwiperListTable extends WP_List_Table {
     {
         global $wpdb;
 
-        $orderby = (!empty($_GET['orderby'])) ? $_GET['orderby'] : 'id';
-        $order   = (!empty($_GET['sort'])) ? $_GET['sort'] : 'desc';
+        $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'id';
+        $order   = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc';
 
         $offset = ($current_page - 1) * $per_page;
 
         $table = $wpdb->prefix . SwiperService::TABLE;
 
+        // fix SQL syntax error, correctly escape column names and sorting direction
+        $allowed_orderby = ['id', 'title', 'link', 'target', 'location', 'sort', 'status', 'updated'];
+        $allowed_order   = ['asc', 'desc'];
+
+        // validate orderby and order parameters
+        if (!in_array($orderby, $allowed_orderby)) {
+            $orderby = 'id';
+        }
+
+        if (!in_array(strtolower($order), $allowed_order)) {
+            $order = 'desc';
+        }
+
         $sql = $wpdb->prepare(
-            "SELECT * FROM $table order by `{$orderby}` {$order} limit %d,%d",
-            $offset,
-            $per_page
+            "SELECT * FROM `$table` ORDER BY `$orderby` $order LIMIT %d OFFSET %d",
+            $per_page,
+            $offset
         );
 
         return $wpdb->get_results($sql);
@@ -110,7 +126,7 @@ class SwiperListTable extends WP_List_Table {
             'target'   => ['target', false],
             'status'   => ['status', false],
             'location' => ['location', false],
-            'sort'     => ['Sort', false],
+            'sort'     => ['sort', false],
             'updated'  => ['updated', false],
         ];
     }
@@ -118,7 +134,7 @@ class SwiperListTable extends WP_List_Table {
     public function column_title($item)
     {
         $actions = [
-            'edit' => sprintf('<a href="themes.php?page=swiper&t=edit&id=%s" class="swiper-edit" style="color:#0f49bd">%s</a>', $item->{"id"}, __('Edit', 'G3')),
+            'edit' => sprintf('<a href="themes.php?page=swiper&t=edit&id=%s" class="swiper-edit">%s</a>', $item->{"id"}, __('Edit', 'G3')),
         ];
 
         return sprintf('%1$s %2$s', $item->{"title"}, $this->row_actions($actions));
@@ -220,9 +236,8 @@ class SwiperListTable extends WP_List_Table {
         $table  = $wpdb->prefix . SwiperService::TABLE;
         $result = $wpdb->query(
             $wpdb->prepare(
-                "UPDATE $table SET `status` = %d WHERE `id` IN (%s)",
-                $status,
-                implode(',', $ids)
+                "UPDATE $table SET `status` = %d WHERE `id` IN (" . implode(',', array_map('intval', $ids)) . ")",
+                $status
             )
         );
         foreach ($ids as $id) {
