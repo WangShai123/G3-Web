@@ -9,6 +9,7 @@
 /wp-content/languages
 /wp-content/plugins/index.php
 /wp-content/themes/index.php
+/wp-content/upgrade/
 /wp-includes/
 /index.php
 /license.txt
@@ -58,3 +59,6 @@ wp-config.php
 
 # DS_Store
 .DS_Store
+
+# config
+/.user.ini
