@@ -39,7 +39,10 @@ final class Container {
         if (file_exists($template_path)) {
             require_once $template_path;
         } else {
-            echo \sprintf(__('Template file does not exist: %s', 'G3'), $template_path);
+            echo \sprintf(
+                __('Template file does not exist: %s', 'G3'),
+                $template_path
+            );
         }
     }
 

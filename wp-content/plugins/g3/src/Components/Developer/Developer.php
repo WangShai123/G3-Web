@@ -63,7 +63,7 @@ class Developer extends Components {
         ]);
         $this->settingOption = Option::cache(SystemService::SETTING_OPTION_KEY, $settingOption);
 
-        $opMPOption       = Option::get(SystemService::OPEN_MP_KEY, [
+        $opMPOption       = Option::get(SystemService::OPEN_WECHAT_OA_KEY, [
             'type'           => '0',
             'slug'           => '',
             'id'             => '',
@@ -72,7 +72,7 @@ class Developer extends Components {
             'token'          => '',
             'encodingAESKey' => '',
         ]);
-        $this->opMPOption = Option::cache(SystemService::OPEN_MP_KEY, $opMPOption);
+        $this->opMPOption = Option::cache(SystemService::OPEN_WECHAT_OA_KEY, $opMPOption);
     }
 
     #[\Override]
@@ -277,7 +277,7 @@ class Developer extends Components {
                 'id'       => 'wpAutoUpdate',
                 'title'    => __('WordPress Auto Update', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpAutoUpdate', __('WordPress Auto Update', 'G3'), __('Enable or disable WordPress auto updates.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpAutoUpdate', __('WordPress Auto Update', 'G3'), __('Disable WordPress auto updates.', 'G3'));
                 },
             ],
             [
@@ -324,9 +324,9 @@ class Developer extends Components {
             ],
             [
                 'id'       => 'permalink',
-                'title'    => __('Permalink', 'G3'),
+                'title'    => __('Permalinks'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'permalink', __('Permalink Settings', 'G3'), __('Remove the permalink settings from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'permalink', __('Permalinks', 'G3'), __('Remove the permalinks setting page from the WordPress admin.', 'G3'));
                 },
             ],
             [
@@ -345,9 +345,9 @@ class Developer extends Components {
             ],
             [
                 'id'       => 'emoji',
-                'title'    => __('Emoji', 'G3'),
+                'title'    => 'Emoji',
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'emoji', __('Emoji', 'G3'), __('Disable the emoji.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'emoji', 'Emoji', __('Disable the emoji.', 'G3'));
                 },
             ],
             [
@@ -1358,27 +1358,27 @@ class Developer extends Components {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . __('Open Platform', 'G3') . '</h1>';
         $args = [
-            'wechatMP' => __('Wechat MP', 'G3')
+            'wechatOA' => __('Wechat OA', 'G3')
         ];
-        Container::tab('Developer', 'wechatMP', $args);
+        Container::tab('Developer', 'wechatOA', $args);
         echo '</div>';
     }
     private function opMpSetting(): void
     {
         add_settings_section(
-            'opWechatMP',
+            'opwechatOA',
             null,
             '__return_false',
             'open-platform&tab=mp'
         );
-        register_setting('opWechatMP', SystemService::OPEN_MP_KEY);
-        Container::settingFields('open-platform&tab=mp', 'opWechatMP', [
+        register_setting('opwechatOA', SystemService::OPEN_WECHAT_OA_KEY);
+        Container::settingFields('open-platform&tab=mp', 'opwechatOA', [
             [
                 'id'       => 'type',
                 'title'    => __('Official Account Type', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        SystemService::OPEN_MP_KEY,
+                        SystemService::OPEN_WECHAT_OA_KEY,
                         $this->opMPOption,
                         'type',
                         __('Official Account Type', 'G3'),
@@ -1402,7 +1402,7 @@ class Developer extends Components {
                 'title'    => __('Wechat ID', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        SystemService::OPEN_MP_KEY,
+                        SystemService::OPEN_WECHAT_OA_KEY,
                         $this->opMPOption,
                         'slug',
                         __('Wechat ID', 'G3')
@@ -1412,27 +1412,27 @@ class Developer extends Components {
                     'label_for' => 'slug',
                 ]
             ],
-            [
-                'id'       => 'id',
-                'title'    => __('Original ID', 'G3'),
-                'callback' => function () {
-                    echo Container::input(
-                        SystemService::OPEN_MP_KEY,
-                        $this->opMPOption,
-                        'id',
-                        __('Original ID', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'id',
-                ]
-            ],
+            // [
+            //     'id'       => 'id',
+            //     'title'    => __('Original ID', 'G3'),
+            //     'callback' => function () {
+            //         echo Container::input(
+            //             SystemService::OPEN_WECHAT_OA_KEY,
+            //             $this->opMPOption,
+            //             'id',
+            //             __('Original ID', 'G3')
+            //         );
+            //     },
+            //     'args'     => [
+            //         'label_for' => 'id',
+            //     ]
+            // ],
             [
                 'id'       => 'appId',
                 'title'    => 'App ID',
                 'callback' => function () {
                     echo Container::input(
-                        SystemService::OPEN_MP_KEY,
+                        SystemService::OPEN_WECHAT_OA_KEY,
                         $this->opMPOption,
                         'appId',
                         'App ID'
@@ -1447,7 +1447,7 @@ class Developer extends Components {
                 'title'    => 'App Secret',
                 'callback' => function () {
                     echo Container::input(
-                        SystemService::OPEN_MP_KEY,
+                        SystemService::OPEN_WECHAT_OA_KEY,
                         $this->opMPOption,
                         'appSecret',
                         'App Secret',
@@ -1459,37 +1459,37 @@ class Developer extends Components {
                     'label_for' => 'appSecret',
                 ]
             ],
-            [
-                'id'       => 'token',
-                'title'    => 'Token',
-                'callback' => function () {
-                    echo Container::input(
-                        SystemService::OPEN_MP_KEY,
-                        $this->opMPOption,
-                        'token',
-                        'Token'
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'token',
-                ]
+            // [
+            //     'id'       => 'token',
+            //     'title'    => 'Token',
+            //     'callback' => function () {
+            //         echo Container::input(
+            //             SystemService::OPEN_WECHAT_OA_KEY,
+            //             $this->opMPOption,
+            //             'token',
+            //             'Token'
+            //         );
+            //     },
+            //     'args'     => [
+            //         'label_for' => 'token',
+            //     ]
 
-            ],
-            [
-                'id'       => 'encodingAESKey',
-                'title'    => 'Encoding AES Key',
-                'callback' => function () {
-                    echo Container::input(
-                        SystemService::OPEN_MP_KEY,
-                        $this->opMPOption,
-                        'encodingAESKey',
-                        'Encoding AES Key'
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'encodingAESKey',
-                ]
-            ]
+            // ],
+            // [
+            //     'id'       => 'encodingAESKey',
+            //     'title'    => 'Encoding AES Key',
+            //     'callback' => function () {
+            //         echo Container::input(
+            //             SystemService::OPEN_WECHAT_OA_KEY,
+            //             $this->opMPOption,
+            //             'encodingAESKey',
+            //             'Encoding AES Key'
+            //         );
+            //     },
+            //     'args'     => [
+            //         'label_for' => 'encodingAESKey',
+            //     ]
+            // ]
         ]);
     }
 }

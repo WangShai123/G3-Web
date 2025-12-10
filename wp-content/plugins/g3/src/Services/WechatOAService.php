@@ -3,10 +3,11 @@ namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
-class WechatMPService {
+use WP_Error;
+class WechatOAService {
 
     /**
-     * Menu Table Name for Wechat MP
+     * Menu Table Name for Wechat Official Account
      * 
      * 微信公众号菜单数据表名
      * 
@@ -15,10 +16,10 @@ class WechatMPService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const MENU_TABLE = 'g3_wechat_mp_menus';
+    public const MENU_TABLE = 'g3_wechat_oa_menus';
 
     /**
-     * Option Key for Wechat MP
+     * Option Key for Wechat OA
      * 
      * 微信公众号选项键
      * 
@@ -27,10 +28,10 @@ class WechatMPService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_wechatMP';
+    public const OPTION_KEY = 'g3_option_wechatOA';
 
     /**
-     * Cache Group for Wechat MP
+     * Cache Group for Wechat Official Account
      * 
      * 微信公众号缓存组
      * 
@@ -39,10 +40,10 @@ class WechatMPService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const CACHE_GROUP = 'wechat-MP';
+    public const CACHE_GROUP = 'wechat-OA';
 
     /**
-     * Menu Cache Key for Wechat MP
+     * Menu Cache Key for Wechat Official Account
      * 
      * 微信公众号菜单缓存键
      * 
@@ -54,11 +55,11 @@ class WechatMPService {
     public const MENU_CACHE_KEY = 'menus';
 
     /**
-     * Instance of WechatMPService
+     * Instance of WechatOAService
      * 
      * 微信公众号服务实例
      * 
-     * @var WechatMPService
+     * @var WechatOAService
      * @access private
      * @since 1.0.0
      * @author Wang Shai
@@ -79,7 +80,23 @@ class WechatMPService {
 
     public function __construct()
     {
-        $this->app = new Application($this->config());
+        $this->init();
+    }
+
+    private function init()
+    {
+        $service = get_option(self::OPTION_KEY)['service'] ?? false;
+        if ($service) {
+            $this->app = new Application($this->config());
+        } else {
+            return new WP_Error(
+                400,
+                __('Wechat Official Account service is not enabled', 'G3'),
+                [
+                    'status' => 400
+                ]
+            );
+        }
     }
 
     public static function run()
@@ -92,12 +109,10 @@ class WechatMPService {
 
     private function config(): array
     {
-        $data = get_option(SystemService::OPEN_MP_KEY);
+        $data = get_option(SystemService::OPEN_WECHAT_OA_KEY);
         return [
             'app_id' => $data['appId'] ?? '',
             'secret' => $data['appSecret'] ?? '',
-            // 'token'  => $data['token'] ?? '',
-            // 'aes_key' => $data['encodingAESKey'] ?? 'EncodingAESKey',
             'cache'  => new EasyWechatCache()
         ];
     }
@@ -112,12 +127,12 @@ class WechatMPService {
      */
     public function createMenus(): bool
     {
-        $buttons  = self::formatMenusToTree(self::getMenus());
-        $result   = $this->app->getClient()->postJson('cgi-bin/menu/create', [
+        $buttons = self::formatMenusToTree(self::getMenus());
+        $result  = $this->app->getClient()->postJson('cgi-bin/menu/create', [
             'button' => $buttons
-        ]);
-        $response = $result->toArray();
-        return $response['errcode'] == 0 ? true : false;
+        ])->toArray();
+
+        return $result['errcode'] == 0 ? true : false;
     }
 
     /**
@@ -133,14 +148,15 @@ class WechatMPService {
     public function deleteMenus(int $menuId = 0): bool
     {
         if ($menuId == 0) {
-            $result = $this->app->getClient()->get('cgi-bin/menu/delete');
+            $result = $this->app->getClient()->get('cgi-bin/menu/delete')->toArray();
+            error_log('Menu deleted result with get: ' . print_r($result, true));
         } else {
             $result = $this->app->getClient()->postJson('cgi-bin/menu/delconditional', [
                 'menuid' => $menuId
             ]);
+            error_log('Menu deleted result with postJson: ' . print_r($result, true));
         }
-        $response = $result->toArray();
-        return $response['errcode'] == 0 ? true : false;
+        return isset($result['errcode']) && $result['errcode'] == 0 ? true : false;
     }
 
     /**
@@ -220,11 +236,15 @@ class WechatMPService {
                 $node['sub_button'] = self::buildTree($grouped, $item['id']);
             } else {
                 // Last level button
-                $node = [
-                    'type' => self::renderMenuType($item['type']),
-                    'name' => $item['name'],
-                    'key'  => $item['value'],
-                ];
+                $node['type'] = self::renderMenuType($item['type']);
+                $node['name'] = $item['name'];
+
+                // Set corresponding fields according to type
+                match ($node['type']) {
+                    'view' => $node['url'] = $item['value'],
+                    'click' => $node['key'] = $item['value'],
+                    default => $node['key'] = $item['value'],
+                };
             }
 
             $tree[] = $node;

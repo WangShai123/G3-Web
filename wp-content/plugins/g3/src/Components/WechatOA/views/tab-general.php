@@ -1,7 +1,7 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-use JEALER\G3\Services\WechatMPService;
-$key = WechatMPService::OPTION_KEY;
+use JEALER\G3\Services\WechatOAService;
+$key = WechatOAService::OPTION_KEY;
 if (array_key_exists($key, $_POST) && $_POST[$key]) {
     update_option($key, $_POST[$key]);
     add_settings_error('general', '1', __('Updated!', 'G3'), 'updated');
@@ -22,8 +22,8 @@ Frontend::loadStyle('jui');
 </div>
 <form action="" method="post">
     <?php
-    settings_fields('wechatMP');
-    do_settings_sections('wechat-mp');
+    settings_fields('wechatOA');
+    do_settings_sections('wechat-oa');
     submit_button();
     ?>
 </form>

@@ -127,7 +127,6 @@ $time = Developer::time();
                 <div><?php _e('Custom Admin', 'G3'); ?></div>
             </div>
             <h3><?php _e('Free and Helpful Courses', 'G3'); ?></h3>
-            <!-- 即使您不懂任何技术，我们的课程仍然可以帮助您在 7-14 天，系统地认识互联网应用技术，并有能力自主完成网站开发。 -->
             <p><?php _e('Even if you have no technical knowledge, our course can still help you
                 systematically learn about Internet application technologies in 7-14 days and enable you to independently complete
                 website development.', 'G3'); ?></p>
@@ -150,15 +149,12 @@ $time = Developer::time();
                     ?>
                 </li>
                 <li>
-                    <!-- 对于设计师，G3-Web帮助您轻松把设计方案变成即时落地系统性解决方案。 -->
                     <?php _e('For designers: G3-Web helps you easily turn design proposals into immediately implementable systematic solutions.', 'G3'); ?>
                 </li>
                 <li>
-                    <!-- 对于销售，G3-Web帮助您轻松构建适用多种客户的数字化解决方案。 -->
                     <?php _e('For sales: G3-Web helps you easily build digital solutions that suit a variety of customers.', 'G3'); ?>
                 </li>
                 <li>
-                    <!-- 对于新手，G3-Web提供了简单易用的界面和教程，帮助新手快速学会如何建立自己的网站。 -->
                     <?php _e('For beginners: G3-Web provides a simple and easy-to-use interface and tutorial to help you learn and build your first website.', 'G3'); ?>
                 </li>
             </ul>

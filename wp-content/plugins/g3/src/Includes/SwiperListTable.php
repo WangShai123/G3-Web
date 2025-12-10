@@ -20,7 +20,7 @@ class SwiperListTable extends WP_List_Table {
     {
         return [
             'cb'       => '<input type="checkbox" />',
-            // 'id' => __('ID', 'G3'),
+            // 'id' => 'ID',
             'title'    => __('Title', 'G3'),
             'media'    => __('Media', 'G3'),
             'link'     => __('Link', 'G3'),

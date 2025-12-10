@@ -5,7 +5,7 @@ return [
     'g3_option_dev_setting',
     'g3_option_mail',
     'g3_option_mail_template',
-    'g3_option_op_wechatMP',
+    'g3_option_op_wechatOA',
     'g3_option_securities',
 
 
@@ -23,5 +23,5 @@ return [
     'g3_option_social_accounts',
     'g3_option_shop',
     'g3_option_wallet',
-    'g3_option_wechatMP'
+    'g3_option_wechatOA'
 ];

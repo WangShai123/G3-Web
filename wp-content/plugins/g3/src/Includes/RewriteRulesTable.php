@@ -23,7 +23,7 @@ class RewriteRulesTable extends WP_List_Table {
     public function get_columns()
     {
         return [
-            'id'      => __('ID', 'G3'),
+            'id'      => 'ID',
             'rule'    => __('Rule', 'G3'),
             'rewrite' => __('Rewrite', 'G3'),
         ];

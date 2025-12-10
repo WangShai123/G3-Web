@@ -24,8 +24,8 @@ class Share extends Components {
         $accountOption       = Option::get(ShareService::ACCOUNT_OPTION_KEY, [
             'wechat'         => '',
             'wechatQRCode'   => '',
-            'wechatMp'       => '',
-            'wechatMpQRCode' => '',
+            'wechatOA'       => '',
+            'wechatOAQRCode' => '',
         ]);
         $this->accountOption = Option::cache(ShareService::ACCOUNT_OPTION_KEY, $accountOption);
     }

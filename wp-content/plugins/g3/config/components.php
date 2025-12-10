@@ -15,7 +15,7 @@ return [
     'Product'      => true, // 5
     'Stock'        => true,
     'Wallet'       => true, // 14
-    'WechatMP'     => true, // 15
+    'WechatOA'     => true, // 15
 
     'Comment'      => true,
     'Jui'          => true,

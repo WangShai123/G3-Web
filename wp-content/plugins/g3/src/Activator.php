@@ -347,9 +347,15 @@ class Activator {
         // 日志表 jl_logs
 
         /**
-         * Wechat MP Menus
+         * Wechat Official Account Menus Table
+         * 
+         * 微信公众号菜单表。存储微信公众号菜单信息，如菜单id、父菜单id、菜单名称、菜单排序、菜单类型、菜单值等
+         * 
+         * @var string $tableName 微信公众号菜单表名
+         * @since 1.0.0
+         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_wechat_mp_menus';
+        $tableName  = $wpdb->prefix . 'g3_wechat_oa_menus';
         $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
         if (!$tableExist) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
@@ -361,7 +367,7 @@ class Activator {
                 `value` varchar(255) NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `parent` (`parent`)
-            ) ENGINE=InnoDB $charset COMMENT='wechat MP menus table';";
+            ) ENGINE=InnoDB $charset COMMENT='wechat OA menus table';";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);

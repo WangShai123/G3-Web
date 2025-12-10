@@ -1,10 +1,10 @@
 <?php
-use JEALER\G3\Services\WechatMPService;
+use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 $id          = $_GET['id'] ?? 0;
-$menus       = WechatMPService::getMenus();
-$formatMenus = WechatMPService::formatMenus($menus);
+$menus       = WechatOAService::getMenus();
+$formatMenus = WechatOAService::formatMenus($menus);
 $data        = [];
 if ($id) {
     foreach ($menus as $menu) {
@@ -24,7 +24,7 @@ Frontend::loadScript('jui');
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo $id ? __('Edit') : __('Add New Menu', 'G3') ?></h1>
-    <a href="<?php echo admin_url('admin.php?page=wechat-mp&tab=menus'); ?>" class="page-title-action">
+    <a href="<?php echo admin_url('admin.php?page=wechat-oa&tab=menus'); ?>" class="page-title-action">
         <?php _e('Back') ?>
     </a>
     <table class="form-table" role="presentation">
@@ -121,7 +121,7 @@ Frontend::loadScript('jui');
             submit.html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>')
             const id = '<?php echo $id; ?>'
             const data = {
-                action: 'g3_edit_wechatMP_menu',
+                action: 'g3_edit_wechatOA_menu',
                 id,
                 name: $('#name').val(),
                 parent: $('#parent').val(),
@@ -137,7 +137,7 @@ Frontend::loadScript('jui');
                     if (res.success) {
                         JUI.Toast.success(res.data.message, 1000)
                         setTimeout(() => {
-                            window.location.href = '<?php echo admin_url("admin.php?page=wechat-mp&tab=menus"); ?>'
+                            window.location.href = '<?php echo admin_url("admin.php?page=wechat-oa&tab=menus"); ?>'
                         }, 1000)
                     } else {
                         JUI.Toast.error(res.data.message, 2000)
@@ -150,7 +150,7 @@ Frontend::loadScript('jui');
                     setTimeout(() => {
                         submit.removeAttr('disabled')
                         submit.text(oldText)
-                    }, 2000)
+                    }, 1000)
                 }
             })
         })

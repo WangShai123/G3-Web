@@ -93,7 +93,7 @@ class SystemService {
     public const THEME_OPTION_KEY = 'g3_option_themes';
 
     /**
-     * Open Platform Wechat MP Key
+     * Open Platform Wechat Official Account Key
      * 
      * 开放平台微信公众号Key
      * 
@@ -101,7 +101,7 @@ class SystemService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const OPEN_MP_KEY = 'g3_option_op_wechatMP';
+    public const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
 
     /**
      * Get ICP Code

@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Includes;
 use WP_List_Table;
-use JEALER\G3\Services\WechatMPService;
+use JEALER\G3\Services\WechatOAService;
 
 class WechatMenuListTable extends WP_List_Table {
     public function __construct($args = [])
@@ -26,8 +26,8 @@ class WechatMenuListTable extends WP_List_Table {
 
     public function prepare_items(): void
     {
-        $menus                 = WechatMPService::getMenus();
-        $this->items           = WechatMPService::formatMenus($menus);
+        $menus                 = WechatOAService::getMenus();
+        $this->items           = WechatOAService::formatMenus($menus);
         $this->_column_headers = [$this->get_columns(), [], $this->get_sortable_columns()];
     }
 
@@ -41,8 +41,8 @@ class WechatMenuListTable extends WP_List_Table {
     {
         $this->prepare_items();
 
-        echo '<div class="wrap">';
-        echo '<table class="wp-list-table widefat fixed striped test-rewrite-rules-table">';
+        echo '<div class="mt-3">';
+        echo '<table class="wp-list-table widefat fixed striped wechat-oa-menus-table">';
         $this->display_table_header();
         $this->display_rows_or_placeholder();
         echo '</table>';
@@ -72,7 +72,7 @@ class WechatMenuListTable extends WP_List_Table {
 
                 if ($column_name == 'action') {
                     echo "<td $attributes>";
-                    echo "<a href='admin.php?page=wechat-mp-menu-edit&id={$item['id']}''>" . __('Edit') . "</a> - ";
+                    echo "<a href='admin.php?page=wechat-oa-menu-edit&id={$item['id']}''>" . __('Edit') . "</a> - ";
                     echo "<span class='action-delete cursor-pointer color-error' data-id='{$item['id']}'>" . __('Delete') . "</span>";
                     echo "</td>";
                 } else {

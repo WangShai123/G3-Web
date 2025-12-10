@@ -20,13 +20,11 @@ Frontend::loadStyle('jui');
         </div>
         <div>
             <?php
-            //启用关注登录功能后，系统将自动生成公众号二维码，用户关注公众号即可完成登录。
             echo __('After enabling the follow login function, the system will automatically generate a WeChat official account QR code. Users can follow the WeChat official account to complete the login.', 'G3');
             ?>
         </div>
         <div>
             <?php
-            //启用关注登录功能后，系统将自动禁用其他登录方式。
             echo __('After enabling the follow login function, the system will automatically disable other login methods.', 'G3');
             ?>
         </div>

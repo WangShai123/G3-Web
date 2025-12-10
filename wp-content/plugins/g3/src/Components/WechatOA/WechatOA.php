@@ -1,16 +1,17 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Components;
-use JEALER\G3\Services\WechatMPService;
+use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
-class WechatMP extends Components {
+use JEALER\G3\Utilities\Request;
+class WechatOA extends Components {
     public array $option = [];
 
     #[\override]
     protected function options(): void
     {
-        $option       = Option::get(WechatMPService::OPTION_KEY, [
+        $option       = Option::get(WechatOAService::OPTION_KEY, [
             'service'       => '0',
             'search'        => '0',
             'count'         => '5',
@@ -19,7 +20,7 @@ class WechatMP extends Components {
             'followMessage' => __('Thanks for your attention.', 'G3'),
             'visitMessage'  => __('Welcome back, my friend.', 'G3'),
         ]);
-        $this->option = Option::cache(WechatMPService::OPTION_KEY, $option);
+        $this->option = Option::cache(WechatOAService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void
@@ -32,17 +33,17 @@ class WechatMP extends Components {
     {
         $this->submenu();
         add_action('admin_head', function () {
-            remove_submenu_page('g3-settings', 'wechat-mp-menu-edit');
+            remove_submenu_page('g3-settings', 'wechat-oa-menu-edit');
         });
     }
     private function submenu(): void
     {
         add_submenu_page(
             'g3-settings',
-            __('Wechat MP', 'G3'),
-            __('Wechat MP', 'G3'),
+            __('Wechat Official Account', 'G3'),
+            __('Wechat OA', 'G3'),
             'manage_options',
-            'wechat-mp',
+            'wechat-oa',
             [$this, 'render'],
             15
         );
@@ -51,7 +52,7 @@ class WechatMP extends Components {
             __('Edit'),
             __('Edit'),
             'manage_options',
-            'wechat-mp-menu-edit',
+            'wechat-oa-menu-edit',
             function () {
                 require_once __DIR__ . '/views/view-menu-edit.php';
             }
@@ -60,35 +61,35 @@ class WechatMP extends Components {
     public function render(): void
     {
         echo '<div class="wrap">';
-        echo '<h1>' . __('Wechat MP', 'G3') . '</h1>';
+        echo '<h1>' . __('Wechat Official Account', 'G3') . '</h1>';
         $tabs = [
             'general'  => __('General', 'G3'),
             'menus'    => __('Menus'),
             'custom'   => __('Custom Reply', 'G3'),
             'advanced' => __('Advanced Replay', 'G3'),
         ];
-        Container::tab('WechatMP', 'general', $tabs);
+        Container::tab('wechatOA', 'general', $tabs);
         echo '</div>';
     }
     private function settings(): void
     {
         add_settings_section(
-            'wechatMP',
+            'wechatOA',
             null,
             '__return_false',
-            'wechat-mp'
+            'wechat-oa'
         );
-        register_setting('wechatMP', WechatMPService::OPTION_KEY);
-        Container::settingFields('wechat-mp', 'wechatMP', [
+        register_setting('wechatOA', WechatOAService::OPTION_KEY);
+        Container::settingFields('wechat-oa', 'wechatOA', [
             [
                 'id'       => 'service',
-                'title'    => __('Wechat MP Service', 'G3'),
+                'title'    => __('Wechat OA Service', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'service',
-                        __('Wechat MP Service', 'G3')
+                        __('Wechat OA Service', 'G3')
                     );
                 },
                 'args'     => [
@@ -100,12 +101,12 @@ class WechatMP extends Components {
                 'title'    => __('Search'),
                 'callback' => function () {
                     echo Container::enable(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'search',
                         __('Search', 'G3'),
                         // 启用搜索后，用户在微信公众号里发送的信息，如果在自定义应答之外，系统会自动搜索并返回网站的内容。
-                        __('After activating the search, users who send messages to the WeChat MP will automatically search for the content on the website and return the content.', 'G3')
+                        __('After activating the search, users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
                     );
                 },
                 'args'     => [
@@ -117,7 +118,7 @@ class WechatMP extends Components {
                 'title'    => __('Count in Search Result', 'G3'),
                 'callback' => function () {
                     echo Container::select(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'count',
                         __('Count in Search Result', 'G3'),
@@ -144,7 +145,7 @@ class WechatMP extends Components {
                 'title'    => __('Max Length of Search Keyword', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'length',
                         __('Max Length of Search Keyword', 'G3'),
@@ -161,7 +162,7 @@ class WechatMP extends Components {
                 'title'    => __('Default Cover', 'G3'),
                 'callback' => function () {
                     echo Container::imageInput(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'cover',
                         __('Default Cover', 'G3'),
@@ -177,11 +178,11 @@ class WechatMP extends Components {
                 'title'    => __('Follow Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'followMessage',
                         __('Follow Message', 'G3'),
-                        __('The message sent to users when they follow the WeChat MP.', 'G3')
+                        __('The message sent to users when they follow the WeChat Official Account.', 'G3')
                     );
                 },
                 'args'     => [
@@ -193,11 +194,11 @@ class WechatMP extends Components {
                 'title'    => __('Visit Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
-                        WechatMPService::OPTION_KEY,
+                        WechatOAService::OPTION_KEY,
                         $this->option,
                         'visitMessage',
                         __('Visit Message', 'G3'),
-                        __('The message sent to users when they visit the WeChat MP.', 'G3')
+                        __('The message sent to users when they visit the WeChat Official Account.', 'G3')
                     );
                 },
                 'args'     => [
@@ -206,30 +207,36 @@ class WechatMP extends Components {
             ]
         ]);
     }
+    private function serviceAvailable(): bool
+    {
+        return $this->option['service'] ? true : false;
+    }
+    private function checkServiceInAjax(): void
+    {
+        if (!$this->serviceAvailable()) {
+            Request::ajaxError(__('Wechat Official Account service is not enabled', 'G3'));
+        }
+    }
     private function wpAjax(): void
     {
         // delete menu
-        add_action('wp_ajax_g3_delete_wechatMP_menu', function () {
+        add_action('wp_ajax_g3_delete_wechatOA_menu', function () {
+            $this->checkServiceInAjax();
             $id = $_POST['id'] ?? 0;
             if (!current_user_can('manage_options') || !$id || !is_admin()) {
-                wp_send_json_error([
-                    'message' => __('Forbidden', 'G3')
-                ], 400);
+                Request::ajaxError(__('Forbidden', 'G3'));
             }
-
-            $result = WechatMPService::deleteMenu($id);
+            $result = WechatOAService::deleteMenu($id);
             if (!$result) {
-                wp_send_json_error([
-                    'message' => __('Failed', 'G3')
-                ]);
+                Request::ajaxError(__('Failed', 'G3'));
             }
-            wp_send_json_success([
-                'message' => __('Success', 'G3')
-            ]);
+            Request::ajaxSuccess(__('Success', 'G3'));
         });
 
         // edit menu
-        add_action('wp_ajax_g3_edit_wechatMP_menu', function () {
+        add_action('wp_ajax_g3_edit_wechatOA_menu', function () {
+            $this->checkServiceInAjax();
+
             $id     = $_POST['id'] ?? 0;
             $name   = $_POST['name'] ?? '';
             $parent = $_POST['parent'] ?? 0;
@@ -238,9 +245,7 @@ class WechatMP extends Components {
             $value  = $_POST['value'] ?? '';
 
             if (!current_user_can('manage_options') || empty($name) || empty($value) || !is_admin()) {
-                wp_send_json_error([
-                    'message' => __('Forbidden', 'G3')
-                ], 400);
+                Request::ajaxForbidden();
             }
 
             $data   = [
@@ -250,40 +255,45 @@ class WechatMP extends Components {
                 'type'   => $type,
                 'value'  => $value
             ];
-            $result = WechatMPService::updateMenu($id, $data);
+            $result = WechatOAService::updateMenu($id, $data);
             if (!$result) {
-                wp_send_json_error([
-                    'message' => __('Failed', 'G3')
-                ]);
+                Request::ajaxFailed();
             }
-            wp_send_json_success([
-                'message' => __('Success', 'G3')
-            ]);
+            Request::ajaxUpdated();
         });
 
-        add_action('wp_ajax_g3_sync_wechatMP_menu', function () {
+        add_action('wp_ajax_g3_create_wechatOA_menus', function () {
+            $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
-                wp_send_json_error([
-                    'message' => __('Forbidden', 'G3')
-                ], 400);
+                Request::ajaxForbidden();
             }
-            // 验证 nonce : g3_sync_wechatMP_menu
-            if (!wp_verify_nonce($_POST['nonce'], 'g3_sync_wechatMP_menu')) {
-                wp_send_json_error([
-                    'message' => __('Forbidden', 'G3')
-                ], 400);
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_create_wechatOA_menus')) {
+                Request::ajaxForbidden();
             }
 
-            $result = WechatMPService::run()->createMenus();
+            $service = WechatOAService::run();
+            $service->deleteMenus();
+            $result = $service->createMenus();
 
             if ($result) {
-                wp_send_json_success([
-                    'message' => __('Success', 'G3')
-                ]);
+                Request::ajaxUpdated();
             } else {
-                wp_send_json_error([
-                    'message' => __('Failed', 'G3')
-                ]);
+                Request::ajaxFailed();
+            }
+        });
+        add_action('wp_ajax_g3_flush_wechatOA_menus', function () {
+            $this->checkServiceInAjax();
+            if (!is_admin() || !current_user_can('manage_options')) {
+                Request::ajaxForbidden();
+            }
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_flush_wechatOA_menus')) {
+                Request::ajaxForbidden();
+            }
+            $result = WechatOAService::run()->deleteMenus();
+            if ($result) {
+                Request::ajaxSuccess(__('Data Flush Complete', 'G3'));
+            } else {
+                Request::ajaxFailed();
             }
         });
     }

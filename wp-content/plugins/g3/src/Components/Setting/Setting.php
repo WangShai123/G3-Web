@@ -82,8 +82,8 @@ class Setting extends Components {
     private function menu(): void
     {
         add_menu_page(
-            __('G3 Settings', 'G3'),
-            __('G3 Settings', 'G3'),
+            __('Operation Settings', 'G3'),
+            __('Operation Settings', 'G3'),
             "manage_options",
             "g3-settings",
             '__return_false',

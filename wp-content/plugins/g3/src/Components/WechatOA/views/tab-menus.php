@@ -2,7 +2,7 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Includes\WechatMenuListTable;
-use JEALER\G3\Services\WechatMPService;
+use JEALER\G3\Services\WechatOAService;
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
 $table = new WechatMenuListTable();
@@ -17,13 +17,20 @@ $table = new WechatMenuListTable();
         ?>
     </div>
 </div>
-<div class="mt-4 flex gap-2">
-    <a href="<?php echo admin_url('admin.php?page=wechat-mp-menu-edit'); ?>" class="button button-primary">
-        <?php _e('Add New Menu', 'G3'); ?>
-    </a>
-    <button type="button" class="button" id="sync-wechat-mp-menu">
-        <?php _e('Synchronize Menu to WeChat MP', 'G3'); ?>
-    </button>
+<div class="mt-4 flex gap-2 justify-between">
+    <div>
+        <a href="<?php echo admin_url('admin.php?page=wechat-oa-menu-edit'); ?>" class="button button-primary">
+            <?php _e('Add New Menu', 'G3'); ?>
+        </a>
+    </div>
+    <div class="flex gap-1 flex-wrap justify-end">
+        <button type="button" class="button" id="create-wechat-oa-menu">
+            <?php _e('Create Menu for WeChat OA', 'G3'); ?>
+        </button>
+        <button type="button" class="button button-error" id="flush-wechat-oa-menu">
+            <?php _e('Flush Menus Online', 'G3'); ?>
+        </button>
+    </div>
 </div>
 <?php $table->display(); ?>
 
@@ -38,7 +45,7 @@ $table = new WechatMenuListTable();
                     url: ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'g3_delete_wechatMP_menu',
+                        action: 'g3_delete_wechatOA_menu',
                         id
                     },
                     success: function (res) {
@@ -48,6 +55,7 @@ $table = new WechatMenuListTable();
                                 window.location.reload();
                             }, 1000);
                         } else {
+                            console.log(res.data)
                             JUI.Toast.error(res.data.message, 2000);
                         }
                     },
@@ -57,18 +65,18 @@ $table = new WechatMenuListTable();
                 });
             }
         });
-        $('#sync-wechat-mp-menu').on('click', function (e) {
+        $('#create-wechat-oa-menu').on('click', function (e) {
             const oldText = $(this).text();
             e.preventDefault();
-            if (confirm('<?php _e('Are you sure you want to synchronize the menu to WeChat MP?', 'G3'); ?>')) {
+            if (confirm('<?php _e('Are you sure you want to create this menu for WeChat Official Account?', 'G3'); ?>')) {
                 $(this).attr('disabled', true);
                 $(this).html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>');
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'g3_sync_wechatMP_menu',
-                        nonce: '<?php echo wp_create_nonce('g3_sync_wechatMP_menu'); ?>'
+                        action: 'g3_create_wechatOA_menus',
+                        nonce: '<?php echo wp_create_nonce('g3_create_wechatOA_menus'); ?>'
                     },
                     success: function (res) {
                         if (res.success) {
@@ -78,13 +86,45 @@ $table = new WechatMenuListTable();
                         }
                     },
                     error: function (xhr, status, error) {
-                        JUI.Toast.error(error, 2000);
+                        console.log(xhr, status, error)
                     },
                     complete: function () {
                         setTimeout(function () {
-                            $('#sync-wechat-mp-menu').removeAttr('disabled');
-                            $('#sync-wechat-mp-menu').text(oldText)
-                        }, 2000)
+                            $('#create-wechat-oa-menu').removeAttr('disabled');
+                            $('#create-wechat-oa-menu').text(oldText)
+                        }, 1000)
+                    }
+                })
+            }
+        });
+        $('#flush-wechat-oa-menu').on('click', function (e) {
+            const oldText = $(this).text();
+            e.preventDefault();
+            if (confirm('<?php _e('Are you sure you want to flush the menus online?', 'G3'); ?>')) {
+                $(this).attr('disabled', true);
+                $(this).html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>');
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'g3_flush_wechatOA_menus',
+                        nonce: '<?php echo wp_create_nonce('g3_flush_wechatOA_menus'); ?>'
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            JUI.Toast.success(res.data.message, 2000);
+                        } else {
+                            JUI.Toast.error(res.data.message, 2000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr, status, error)
+                    },
+                    complete: function () {
+                        setTimeout(function () {
+                            $('#flush-wechat-oa-menu').removeAttr('disabled');
+                            $('#flush-wechat-oa-menu').text(oldText)
+                        }, 1000)
                     }
                 })
             }

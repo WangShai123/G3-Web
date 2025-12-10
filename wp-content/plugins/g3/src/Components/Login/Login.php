@@ -18,7 +18,7 @@ class Login extends Components {
         $this->option = Option::cache(AuthService::OPTION_KEY, $option);
 
         $followOption       = Option::get(AuthService::FOLLOW_OPTION_KEY, [
-            'wechatMP' => '0',
+            'wechatOA' => '0',
             'message'  => __('Welcome'),
             'unionId'  => '0'
         ]);
@@ -113,18 +113,18 @@ class Login extends Components {
         );
         Container::settingFields('login-setting&tab=follow', 'follow', [
             [
-                'id'       => 'wechatMP',
+                'id'       => 'wechatOA',
                 'title'    => __('Follow Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
                         AuthService::FOLLOW_OPTION_KEY,
                         $this->followOption,
-                        'wechatMP',
+                        'wechatOA',
                         __('Follow Login', 'G3')
                     );
                 },
                 'args'     => [
-                    'label_for' => 'wechatMP'
+                    'label_for' => 'wechatOA'
                 ]
             ],
             [
@@ -146,14 +146,13 @@ class Login extends Components {
             ],
             [
                 'id'       => 'unionId',
-                'title'    => __('UnionID'),
+                'title'    => 'UnionID',
                 'callback' => function () {
                     echo Container::enable(
                         AuthService::FOLLOW_OPTION_KEY,
                         $this->followOption,
                         'unionId',
-                        __('UnionID', 'G3'),
-                        //是否存储用户UnionID。UnionID是用户在微信系统中的唯一身份标识，通过它可以准确识别微信用户。
+                        'UnionID',
                         __('Whether to store user UnionID. UnionID is the unique identity identifier of a user in the WeChat system, and it can accurately identify WeChat users.', 'G3')
                     );
                 },
