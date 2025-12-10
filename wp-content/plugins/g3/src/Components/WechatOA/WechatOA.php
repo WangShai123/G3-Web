@@ -68,7 +68,7 @@ class WechatOA extends Components {
             'custom'   => __('Custom Reply', 'G3'),
             'advanced' => __('Advanced Replay', 'G3'),
         ];
-        Container::tab('wechatOA', 'general', $tabs);
+        Container::tab('WechatOA', 'general', $tabs);
         echo '</div>';
     }
     private function settings(): void
