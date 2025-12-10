@@ -360,8 +360,8 @@ class Activator {
                 `type` tinyint(4) NOT NULL,
                 `value` varchar(255) NOT NULL,
                 PRIMARY KEY (`id`),
-                KEY `parent_id` (`parent_id`)
-            ) ENGINE=InnoDB $charset COMMENT='wechat MP table';";
+                KEY `parent` (`parent`)
+            ) ENGINE=InnoDB $charset COMMENT='wechat MP menus table';";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);

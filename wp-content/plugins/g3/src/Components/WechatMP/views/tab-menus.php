@@ -43,10 +43,10 @@ $table = new WechatMenuListTable();
                     },
                     success: function (res) {
                         if (res.success) {
-                            JUI.Toast.success(res.data.message, 1500);
+                            JUI.Toast.success(res.data.message, 1000);
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 1500);
+                            }, 1000);
                         } else {
                             JUI.Toast.error(res.data.message, 2000);
                         }
