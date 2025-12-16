@@ -8,10 +8,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use simplehtmldom\HtmlWeb;
+use Symfony\Component\DomCrawler\Crawler;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Common;
+use RuntimeException;
 
 /**
  * 测试文章数据采集命令
@@ -60,7 +61,7 @@ class TaCommand extends Command {
             $question = new Question("请输入要添加的 taxonomy 名称: ");
             $question->setValidator(function ($answer) {
                 if (empty($answer)) {
-                    throw new \RuntimeException('taxonomy 不能为空');
+                    throw new RuntimeException('taxonomy 不能为空');
                 }
                 return $answer;
             });
@@ -72,7 +73,7 @@ class TaCommand extends Command {
             $question = new Question("请输入要添加的 term 别名: ");
             $question->setValidator(function ($answer) {
                 if (empty($answer)) {
-                    throw new \RuntimeException('term 不能为空');
+                    throw new RuntimeException('term 不能为空');
                 }
                 return $answer;
             });
@@ -84,7 +85,7 @@ class TaCommand extends Command {
             $question = new Question("请输入用户 id: ");
             $question->setValidator(function ($answer) {
                 if (empty($answer) || !is_numeric($answer)) {
-                    throw new \RuntimeException('用户 id 必须是有效的数字');
+                    throw new RuntimeException('用户 id 必须是有效的数字');
                 }
                 return $answer;
             });
@@ -92,16 +93,16 @@ class TaCommand extends Command {
         }
 
         // 文章数量
-        if (empty($loopCount) || $loopCount < 1) {
-            $question = new Question("请输入要添加的文章数量 [1]: ", 1);
-            $question->setValidator(function ($answer) {
-                if (!is_numeric($answer) || $answer < 1) {
-                    throw new \RuntimeException('文章数量必须是大于0的数字');
-                }
-                return $answer;
-            });
-            $loopCount = $helper->ask($input, $output, $question);
-        }
+        // if (empty($loopCount) || $loopCount < 1) {
+        $question = new Question("请输入要添加的文章数量 [1]: ", 1);
+        $question->setValidator(function ($answer) {
+            if (!is_numeric($answer) || $answer < 1) {
+                throw new RuntimeException('文章数量必须是大于0的数字');
+            }
+            return $answer;
+        });
+        $loopCount = $helper->ask($input, $output, $question);
+        // }
 
         // 确认参数
         $output->writeln("\n<comment>参数信息：</comment>");
@@ -121,45 +122,34 @@ class TaCommand extends Command {
         // 开始执行时间统计
         $start = microtime(true);
 
-        $client    = new HtmlWeb();
         $targetUrl = 'https://www.dushu.com/meiwen/random/';
+
+        // 导入 wordpress 核心文件
+        $wpFile = __DIR__ . '/../../../../../wp-load.php';
+        require_once $wpFile;
 
         // 循环请求 API 获取数据
         for ($i = 1; $i <= $loopCount; $i++) {
             $output->writeln("正在获取第 {$i} 条数据...");
 
             // 爬取数据
-            $html = $client->load($targetUrl);
+            $htmlContent = file_get_contents($targetUrl);
+            $crawler     = new Crawler($htmlContent);
 
             // 解析数据
-            $article = $html->find('.article-detail', 0);
-            $title   = $article->find('h1', 0)->plaintext . PHP_EOL;
-            $author  = $article->find('.article-info span', 0)->plaintext . PHP_EOL;
-            $author  = '<p>作者: ' . $author . '</p>';
-            $content = $article->find('.text', 0)->innertext . PHP_EOL . $author;
-            $digest  = mb_substr($content, 0, 150, 'utf-8') . '...';
-
-            // 设置缩略图
-            $thumbnail = Image::randomImage('640', '480');
-            // 上传图片
-            $upload_dir = \wp_upload_dir();
-            $image_data = file_get_contents($thumbnail);
-            $filename   = 'test_' . time() . '_' . basename($thumbnail);
-
-            if (\wp_mkdir_p($upload_dir['path'])) {
-                $file = $upload_dir['path'] . '/' . $filename;
-            } else {
-                $file = $upload_dir['basedir'] . '/' . $filename;
+            $article = $crawler->filter('.article-detail')->first();
+            if (!$article->count()) {
+                $output->writeln("第 {$i} 条数据解析失败：无法找到文章详情");
+                continue;
             }
-            file_put_contents($file, $image_data);
-            $wp_filetype = \wp_check_filetype($filename, null);
-            $attachment  = array(
-                'post_mime_type' => $wp_filetype['type'],
-                'post_title'     => \sanitize_file_name($filename),
-                'post_content'   => '',
-                'post_status'    => 'inherit'
-            );
-            $attach_id   = \wp_insert_attachment($attachment, $file);
+            $title           = $article->filter('h1')->first()->text();
+            $authorElements  = $article->filter('.article-info span');
+            $author          = $authorElements->count() > 0 ? $authorElements->first()->text() : '未知作者';
+            $author          = '<p>作者: ' . $author . '</p>';
+            $contentElements = $article->filter('.text');
+            $content         = $contentElements->count() > 0 ? $contentElements->first()->html() : '';
+            $content         = $content . PHP_EOL . $author;
+            $digest          = mb_substr($content, 0, 150, 'utf-8') . '...';
 
             // 创建文章
             $newPost = array(
@@ -174,6 +164,34 @@ class TaCommand extends Command {
 
             // 插入文章
             $postId = \wp_insert_post($newPost);
+
+            // 设置缩略图
+            $thumbnail = Image::randomImage('640', '480');
+            // 上传图片
+            $upload_dir = \wp_upload_dir();
+            $image_data = file_get_contents($thumbnail);
+            $filename   = 'auto_' . time() . '_' . basename($thumbnail);
+
+            if (\wp_mkdir_p($upload_dir['path'])) {
+                $file = $upload_dir['path'] . '/' . $filename;
+            } else {
+                $file = $upload_dir['basedir'] . '/' . $filename;
+            }
+            file_put_contents($file, $image_data);
+            $wp_filetype = \wp_check_filetype($filename, null);
+            $attachment  = array(
+                'post_mime_type' => $wp_filetype['type'],
+                'post_title'     => \sanitize_file_name($filename),
+                'post_content'   => '',
+                'post_status'    => 'inherit',
+                'post_author'    => $authorId,
+            );
+            $attach_id   = \wp_insert_attachment($attachment, $file, $postId);
+
+            // 确保附件元数据被正确生成，包括sizes信息
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+            $attach_data = \wp_generate_attachment_metadata($attach_id, $file);
+            \wp_update_attachment_metadata($attach_id, $attach_data);
 
             // 输出结果
             if ($postId) {

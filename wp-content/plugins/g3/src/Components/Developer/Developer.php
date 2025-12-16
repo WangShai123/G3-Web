@@ -50,13 +50,13 @@ class Developer extends Components {
             'helpLink'        => '0',
             'adminBar'        => '0',
             'emoji'           => '0',
-            'wpHead'          => '0',
+            'wpHead'          => '1',
             'gutenberg'       => '0',
-            'adminTitle'      => '0',
-            'adminLogo'       => '0',
-            'toolsPage'       => '1',
-            'pluginsPage'     => '1',
-            'themeInstall'    => '1',
+            'adminTitle'      => '1',
+            'adminLogo'       => '1',
+            'toolsPage'       => '0',
+            'pluginsPage'     => '0',
+            'themeInstall'    => '0',
             'dashboard'       => ['0', '1', '2', '3', '4', '5'],
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
@@ -103,8 +103,6 @@ class Developer extends Components {
         $this->upgradeHandle();
         $this->themeInstallHandle();
         $this->adminTitleHandle();
-        $this->toolsPageHandle();
-        $this->pluginsPageHandle();
 
         // If defined constant G3_HIDE_DEVELOPER_MODE and it's true, then hide developer mode menu
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
@@ -126,6 +124,8 @@ class Developer extends Components {
     {
         $this->adminMenuHandle();
         $this->welcomePage();
+        $this->toolsPageHandle();
+        $this->pluginsPageHandle();
         $this->openPlatformMenu();
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
@@ -252,6 +252,13 @@ class Developer extends Components {
                 'id'       => 'jl_generate_object_cache',
                 'title'    => __('Object Cache', 'G3'),
                 'callback' => [$this, '_generateObjectCacheButton']
+            ],
+            [
+                'id'       => 'auto_backup',
+                'title'    => __('Auto Backup', 'G3'),
+                'callback' => function () {
+                    echo __('When the G3-Web plugin is uninstalled, the system will automatically backup related option configuration data, and clear the relevant option data in the database to avoid data pollution.<br>The backup file directory: ', 'G3') . '<code>/wp-plugins/g3/backup/options.php</code>.';
+                }
             ]
         ]);
     }
@@ -265,7 +272,7 @@ class Developer extends Components {
                 'id'       => 'environment',
                 'title'    => __('Environment', 'G3'),
                 'callback' => function () {
-                    echo Container::select(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'environment', __('Developer Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
+                    echo Container::select(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'environment', __('Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
                         'local'       => __('Local Env', 'G3'),
                         'development' => __('Development Env', 'G3'),
                         'staging'     => __('Staging Env', 'G3'),
@@ -291,56 +298,56 @@ class Developer extends Components {
                 'id'       => 'themeEditor',
                 'title'    => __('Theme Editor', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeEditor', __('Remove Theme Editor', 'G3'), __('Remove the theme editor from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeEditor', __('Theme Editor', 'G3'), __('Disable the theme editor from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'pluginEditor',
                 'title'    => __('Plugin Editor', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'pluginEditor', __('Remove Plugin Editor', 'G3'), __('Remove the plugin editor from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'pluginEditor', __('Plugin Editor', 'G3'), __('Disable the plugin editor from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'siteHealth',
                 'title'    => __('Site Health', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'siteHealth', __('Remove Site Health', 'G3'), __('Remove the site health from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'siteHealth', __('Site Health', 'G3'), __('Disable the site health from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'themeCustomize',
                 'title'    => __('Theme Customize', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeCustomize', __('Remove Theme Customize', 'G3'), __('Remove the theme customize from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeCustomize', __('Theme Customize', 'G3'), __('Disable the theme customize from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'blockPatterns',
                 'title'    => __('Block Patterns', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'blockPatterns', __('Remove Block Patterns', 'G3'), __('Remove the block patterns from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'blockPatterns', __('Block Patterns', 'G3'), __('Disable the block patterns from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'permalink',
                 'title'    => __('Permalinks'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'permalink', __('Permalinks', 'G3'), __('Remove the permalinks setting page from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'permalink', __('Permalinks', 'G3'), __('Disable the permalinks setting page from the WordPress admin.', 'G3'));
                 },
             ],
             [
                 'id'       => 'helpLink',
                 'title'    => __('Help Link', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'helpLink', __('Help Link', 'G3'), __('Remove the help link from the WordPress admin.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'helpLink', __('Help Link', 'G3'), __('Disable the help link from the WordPress admin.', 'G3'));
                 }
             ],
             [
                 'id'       => 'adminBar',
                 'title'    => __('Admin Bar', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminBar', __('Admin Bar', 'G3'), __('Remove the admin bar for all users.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminBar', __('Admin Bar', 'G3'), __('Disable the admin bar for all users.', 'G3'));
                 },
             ],
             [
@@ -352,23 +359,23 @@ class Developer extends Components {
             ],
             [
                 'id'       => 'wpHead',
-                'title'    => __('WP Head', 'G3'),
+                'title'    => 'WP Head',
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpHead', __('WP Head', 'G3'), __('Clean the data wp head.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'wpHead', 'WP Head', __('Clean the data wp head.', 'G3'));
                 },
             ],
             [
                 'id'       => 'gutenberg',
-                'title'    => __('Gutenberg', 'G3'),
+                'title'    => 'Gutenberg',
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'gutenberg', __('Gutenberg', 'G3'), __('Disable the block editor.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'gutenberg', 'Gutenberg', __('Disable the block editor.', 'G3'));
                 },
             ],
             [
                 'id'       => 'adminTitle',
                 'title'    => __('Admin Page Title', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminTitle', __('Admin Title', 'G3'), __('Remove <code>WordPress</code> in the admin page title.', 'G3'));
+                    echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'adminTitle', __('Admin Page Title', 'G3'), __('Remove <code>WordPress</code> in the admin page title.', 'G3'));
                 },
             ],
             [
@@ -394,7 +401,7 @@ class Developer extends Components {
             ],
             [
                 'id'       => 'themeInstall',
-                'title'    => __('Theme Install'),
+                'title'    => __('Theme Install', 'G3'),
                 'callback' => function () {
                     echo Container::enable(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'themeInstall', __('Theme Install'), __('Remove Theme Install button in admin page themes.php.', 'G3'));
                 }
@@ -415,16 +422,16 @@ class Developer extends Components {
             ],
             [
                 'id'       => 'footerThanks',
-                'title'    => __('Footer Thanks', 'G3'),
+                'title'    => 'Footer Thanks',
                 'callback' => function () {
-                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerThanks', __('Footer Thanks', 'G3'), __('Set the data which will be displayed in the left footer area.', 'G3'));
+                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerThanks', 'Footer Thanks', __('Set the data which will be displayed in the left footer area.', 'G3'));
                 },
             ],
             [
                 'id'       => 'footerUpgrade',
-                'title'    => __('Footer Upgrade', 'G3'),
+                'title'    => 'Footer Upgrade',
                 'callback' => function () {
-                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerUpgrade', __('Footer Upgrade', 'G3'), __('Set the data which will be displayed in the right footer area.', 'G3'));
+                    echo Container::input(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'footerUpgrade', 'Footer Upgrade', __('Set the data which will be displayed in the right footer area.', 'G3'));
                 },
             ]
         ]);
@@ -1027,7 +1034,7 @@ class Developer extends Components {
     }
     public function adminBarMenuHandle($wp_admin_bar): void
     {
-        if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '0') {
+        if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '1') {
             return;
         }
 
@@ -1064,7 +1071,7 @@ class Developer extends Components {
     }
     public function wpHeadHandle(): void
     {
-        if (!isset($this->settingOption['wpHead']) || $this->settingOption['wpHead'] !== '0') {
+        if (!isset($this->settingOption['wpHead']) || $this->settingOption['wpHead'] !== '1') {
             return;
         }
 
@@ -1141,7 +1148,7 @@ class Developer extends Components {
     }
     public static function time()
     {
-        return self::$z ? self::$z->getExpire() : false;
+        return self::$z ? self::$z->gE() : false;
     }
 
     public function form(): void
@@ -1161,7 +1168,6 @@ class Developer extends Components {
     {
         $current_notice = null;
 
-        // handle form submit
         if (isset($_POST["submit"]) && isset($_POST["g3_code"])) {
             if (
                 !isset($_POST["g3_license_nonce"]) ||
@@ -1169,25 +1175,25 @@ class Developer extends Components {
             ) {
                 $current_notice = [
                     "type"    => "error",
-                    "message" => "Security check failed. Please try again."
+                    "message" => __("Security check failed. Please try again.", "G3")
                 ];
             } else {
                 $code = sanitize_text_field($_POST["g3_code"]);
                 if (empty($code)) {
                     $current_notice = [
                         "type"    => "error",
-                        "message" => "Please enter a valid license code."
+                        "message" => __("Please enter a valid license code.", "G3")
                     ];
                 } else {
-                    $result         = $this->v->verify($code);
+                    $result         = $this->v->vY($code);
                     $current_notice = is_wp_error($result) ?
                         [
                             "type"    => "error",
-                            "message" => "Verification Failed!"
+                            "message" => $result->get_error_message()
                         ] :
                         [
                             "type"     => "success",
-                            "message"  => "Verified successfully! Redirecting...",
+                            "message"  => __("Verified successfully! Redirecting...", "G3"),
                             "redirect" => true
                         ];
                 }
@@ -1226,16 +1232,15 @@ class Developer extends Components {
                         </th>
                         <td>
                             <input type="text" id="g3_code" name="g3_code" value=""
-                                placeholder="<?php echo esc_attr(__('G3-XXXX-XXXX-XXXX-XXXX', 'G3')); ?>"
+                                placeholder="<?php echo 'G3-XXXX-XXXX-XXXX-XXXX'; ?>"
                                 style="text-transform: uppercase; letter-spacing: 2px; font-family: monospace; min-width: 300px;"
                                 required>
                             <p class="description">
                                 <?php
                                 echo sprintf(
-                                    __('Please enter your G3 license code to activate G3 Web.<br>No License? Click <a href="%s" target="_blank">HERE</a> to get one!
-                                    <br>test: G3-TEST-CODE-DEMO-0001', 'G3'),
+                                    __('Please enter your G3 license code to activate G3 Web.<br>No License? Click <a href="%s" target="_blank">HERE</a> to get one!', 'G3'),
                                     esc_url('https://www.jealer.com/g3-web/license/')
-                                );
+                                ) . '<br>test: G3-TEST-CODE-DEMO-0001';
                                 ?>
                             </p>
                         </td>
@@ -1251,8 +1256,8 @@ class Developer extends Components {
     {
         add_submenu_page(
             "index.php",
-            "Welcome",
-            "Welcome",
+            __('Welcome', 'G3'),
+            __('Welcome', 'G3'),
             "read",
             "g3-welcome",
             function () {
@@ -1264,7 +1269,7 @@ class Developer extends Components {
 
     private function adminTitleHandle()
     {
-        if (!isset($this->settingOption['adminTitle']) || $this->settingOption['adminTitle'] !== '0') {
+        if (!isset($this->settingOption['adminTitle']) || $this->settingOption['adminTitle'] !== '1') {
             return;
         }
         add_filter('admin_title', function ($admin_title, $title) {
@@ -1291,16 +1296,14 @@ class Developer extends Components {
     }
     private function toolsPageHandle()
     {
-        if (!isset($this->settingOption['toolsPage']) || $this->settingOption['toolsPage'] !== '0') {
+        if (!isset($this->settingOption['toolsPage']) || $this->settingOption['toolsPage'] !== '1') {
             return;
         }
-        add_action('admin_menu', function () {
-            remove_menu_page('tools.php');
-        });
+        remove_menu_page('tools.php');
     }
     private function pluginsPageHandle()
     {
-        if (!isset($this->settingOption['pluginsPage']) || $this->settingOption['pluginsPage'] !== '0') {
+        if (!isset($this->settingOption['pluginsPage']) || $this->settingOption['pluginsPage'] !== '1') {
             return;
         }
         add_action('admin_menu', function () {
@@ -1309,7 +1312,7 @@ class Developer extends Components {
     }
     private function themeInstallHandle()
     {
-        if (!isset($this->settingOption['themeInstall']) || $this->settingOption['themeInstall'] !== '0') {
+        if (!isset($this->settingOption['themeInstall']) || $this->settingOption['themeInstall'] !== '1') {
             return;
         }
         if (strpos($_SERVER['REQUEST_URI'], 'themes.php') !== false) {

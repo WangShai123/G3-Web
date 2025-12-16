@@ -3,7 +3,7 @@ namespace JEALER\G3\Includes;
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 
-class WechatMenuListTable extends WP_List_Table {
+class WechatOAMenuListTable extends WP_List_Table {
     public function __construct($args = [])
     {
         parent::__construct([
@@ -84,7 +84,7 @@ class WechatMenuListTable extends WP_List_Table {
     }
     public function no_items(): void
     {
-        _e('No menus found.', 'G3');
+        _e('No data found.', 'G3');
     }
 
     public function extra_tablenav($which): void

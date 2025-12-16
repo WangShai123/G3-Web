@@ -15,8 +15,8 @@ if ($mediaLibrary) : ?>
     <fieldset>
         <label>
             <input type="checkbox" id="wechatMediaLibrary" name="shareToWechatMediaLibrary"
-                title="<?php _e('Publish to WeChat MP Media Library', 'G3'); ?>">
-            <span><?php _e('WeChat MP Media Library', 'G3'); ?></span>
+                title="<?php _e('Publish to Wechat OA Media Library', 'G3'); ?>">
+            <span><?php _e('Wechat OA Media Library', 'G3'); ?></span>
             <?php echo $tipSpan; ?>
         </label>
     </fieldset>

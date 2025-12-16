@@ -25,6 +25,8 @@
         "ext-simplexml": "*",
         "ext-fileinfo": "*",
         "symfony/console": "^7.3",
-        "w7corp/easywechat": "^6.19"
+        "w7corp/easywechat": "^6.19",
+        "symfony/dom-crawler": "^7.4",
+        "symfony/css-selector": "^7.4"
     }
 }

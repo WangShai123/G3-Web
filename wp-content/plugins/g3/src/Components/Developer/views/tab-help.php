@@ -1,13 +1,12 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
-Frontend::loadStyle('jui');
+use JEALER\G3\Utilities\Container;
+
+echo Container::tip(
+    __('Learn more about G3 Web and G3 System on the websites below.', 'G3'),
+    'default',
+    'mt-4'
+);
 ?>
-<div class="j-tip is-default mt-4">
-    <div class="tip-title"><?php echo __('Tip', 'G3'); ?></div>
-    <div class="tip-content">
-        <div><?php _e('Learn more about G3 Web and G3 System on the websites below.', 'G3'); ?></div>
-    </div>
-</div>
 <p>
     <a href="https://www.jealer.com/g3-system/g3-web" target="_blank"
         title="<?php _e('About G3 Web', 'G3'); ?>"><?php _e('About G3 Web', 'G3'); ?></a>

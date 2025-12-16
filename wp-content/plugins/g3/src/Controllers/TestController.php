@@ -294,7 +294,7 @@ class TestController {
         if (empty($files['file'])) {
             return new WP_Error(
                 400,
-                __('No file uploaded.', 'G3'),
+                'No file uploaded.',
                 [
                     'status' => 400,
                 ]

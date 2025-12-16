@@ -11,12 +11,9 @@ use Exception;
 
 class JL {
     public static $i = null;
-    private string $t;
     public function __construct()
     {
-        $this->t = SystemService::KEY;
     }
-
     public static function run(): JL
     {
         if (!isset(self::$i)) {
@@ -24,105 +21,83 @@ class JL {
         }
         return self::$i;
     }
-
     public static function admin(): bool
     {
-        return self::run()->isLicensed();
+        return self::run()->i();
     }
     public static function x(): bool
     {
-        return !self::run()->isLicensed();
+        return !self::run()->i();
     }
     public static function y(): bool
     {
-        return self::run()->isLicensed();
+        return self::run()->i();
     }
-
-    public function getExpire(): bool|string
+    public function gE(): bool|string
     {
-        $data = get_transient($this->t);
-        if (isset($data['e'])) {
-            $e      = $data['e'];
-            $expire = $this->_decrypt($e, $this->t);
+        $d = $this->gT();
+        if (isset($d['e'])) {
+            $e      = $d['e'];
+            $expire = $this->_d($e, $this->t());
             $expire = wp_date("Y-m-d H:i:s", $expire);
             return $expire;
         }
         return false;
     }
-
-    public function getActivatedAt(): bool|string
+    public function a(): bool|string
     {
-        $data = get_transient($this->t);
-        if (isset($data['a'])) {
-            $a            = $data['a'];
-            $activated_at = $this->_decrypt($a, $this->t);
-            $activated_at = wp_date("Y-m-d H:i:s", $activated_at);
-            return $activated_at;
+        $d = $this->gT();
+        if (isset($d['a'])) {
+            $a  = $d['a'];
+            $at = $this->_d($a, $this->t());
+            $at = wp_date("Y-m-d H:i:s", $at);
+            return $at;
         }
         return false;
     }
-
-    /**
-     * Verify License
-     * @param string $code License Code
-     * @return bool|WP_Error Returns true on success, or WP_Error object on failure
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function verify(string $code): bool|WP_Error
+    public function vY(string $s): bool|WP_Error
     {
-        $response = $this->send($code);
-
-        if (is_wp_error($response)) {
-            return $response;
+        $r = $this->send($s);
+        if (is_wp_error($r)) {
+            return $r;
         }
-
-        $validationResult = $this->validate($response);
-
-        if (is_wp_error($validationResult)) {
-            return $validationResult;
+        $vR = $this->v($r);
+        if (is_wp_error($vR)) {
+            return $vR;
         }
-
-        return $this->process($validationResult);
+        return $this->process($vR);
     }
 
-    private function isLicensed(): bool
+    private function t(): string
     {
-        return $this->checkVerification() ?? false;
+        return get_transient('wPxK91qZ') ?: '';
     }
-
-    /**
-     * Check verification
-     * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function checkVerification(): bool
+    private function gT(): array
     {
-        $data = get_transient($this->t);
-        if (!is_array($data) || !isset($data["t"]) || !isset($data["e"])) {
-            return false;
-        }
-        $site_url = get_site_url();
-        $token    = $this->_decrypt($data["t"], $this->t);
-        if ($token != $site_url) {
-            return false;
-        }
-        $time = $this->_decrypt($data["e"], $this->t);
-        if (!$this->validateTimestamp($time) || $time < time()) {
-            return false;
-        }
-        return true;
+        return get_transient($this->t()) ?: [];
     }
+    private function i(): bool
+    {
+        return $this->cV() ?? false;
+    }
+    private function cV(): bool
+    {
+        $d = $this->gT();
+        $t = $d['t'] ?? false;
+        $e = $d['e'] ?? false;
+        $z = $d['z'] ?? false;
+        if (!$z || !$e || !$t) return false;
 
-    /**
-     * Send Verification Request
-     * @param string $code License Code
-     * @return array|WP_Error HTTP Response Array or WP_Error Object
-     */
+        $u  = get_site_url();
+        $_u = $this->_d($t, $z);
+        if ($_u != $u) return false;
+
+        $_t = $this->_d($e, $z);
+        return $this->vt($_t) && $_t >= time();
+    }
     private function send(string $code): array|WP_Error
     {
-        $params = [
+        $params   = [
             "method"      => "POST",
             "headers"     => [
                 "Content-Type" => "application/json; charset=utf-8"
@@ -135,89 +110,51 @@ class JL {
             "data_format" => "body",
             "timeout"     => 30
         ];
-        $uri    = "https://api.jealer.com/api/v1/requestVerify";
+        $response = wp_remote_post($this->u(), $params);
 
-        $response = wp_remote_post($uri, $params);
+        $message = json_decode($response['body'], true);
 
-        return is_wp_error($response) ? new WP_Error(400) : $response;
+        return is_wp_error($response) ? new WP_Error(400, $message) : $response;
     }
-
-    /**
-     * Validate HTTP Response
-     * @param array $response HTTP Response Array
-     * @return array|WP_Error Validated Data Array or WP_Error Object
-     */
-    private function validate(array $response): array|WP_Error
+    private function v(array $r): array|WP_Error
     {
-        $responseCode = wp_remote_retrieve_response_code($response);
-        $responseBody = wp_remote_retrieve_body($response);
-
-        // Check HTTP Status Code and Response Body
-        if ($responseCode !== 200 || empty($responseBody)) {
-            return new WP_Error(400);
+        $rC = wp_remote_retrieve_response_code($r);
+        $rB = wp_remote_retrieve_body($r);
+        if ($rC !== 200 || empty($rB)) {
+            $msg = json_decode($rB, true)['message'] ?? 'Failed';
+            return new WP_Error(400, $msg);
         }
-
-        // Parse JSON Response Body
-        $data = json_decode($responseBody, true);
-
-        return (json_last_error() !== JSON_ERROR_NONE) ? new WP_Error(400) : $data;
+        $d = json_decode($rB, true);
+        return (json_last_error() !== JSON_ERROR_NONE) ? new WP_Error(400) : $d;
     }
-
-    /**
-     * Process Verification Data
-     * @param array $data Validated Verification Data Array
-     * @return bool|WP_Error Processing Result Boolean or WP_Error Object
-     */
-    private function process(array $data): bool|WP_Error
+    private function process(array $d): bool|WP_Error
     {
-        if (!isset($data["code"]) || $data["code"] !== 200) {
+        if (!isset($d["code"]) || $d["code"] !== 200) {
             return new WP_Error(400);
         }
 
-        // Extract Verification Data
-        $verificationData = $data["data"] ?? [];
+        $vD = $d["data"] ?? [];
+        $e  = $vD["e"] ?? false;
+        $t  = $vD["t"] ?? false;
+        $z  = $vD["z"] ?? false;
+        if (!$e || !$t || !$z) return new WP_Error(400);
 
-        if (!isset($verificationData["t"], $verificationData["e"])) {
+        set_transient('wPxK91qZ', $z);
+
+        $eT = $this->_d($e, $z);
+        if (!$this->vt($eT) || $eT <= time()) {
             return new WP_Error(400);
         }
 
-        // Validate Expiration Time
-        $expirationTime = $this->_decrypt($verificationData["e"], $this->t);
-
-        if (
-            !$this->validateTimestamp($expirationTime) ||
-            $expirationTime <= time()
-        ) {
-            return new WP_Error(400);
-        }
-
-        $remainingSeconds = $this->gs($expirationTime);
-
-        return set_transient($this->t, $verificationData, $remainingSeconds);
+        $rS = $this->gs($eT);
+        return set_transient($z, $vD, $rS);
     }
-
-    /**
-     * Calculate Remaining Seconds
-     * @param int $timestamp Expiration Timestamp
-     * @return int Remaining Seconds
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function gs(int $timestamp): int
+    private function gs(int $t): int
     {
-        $remaining_seconds = $timestamp - time();
-        return $remaining_seconds > 0 ? $remaining_seconds : 0;
+        $s = $t - time();
+        return $s > 0 ? $s : 0;
     }
-
-    /**
-     * Decrypt Token
-     * @param string $token Encrypted Token
-     * @param string $key Decryption Key
-     * @return string|bool Decrypted Token or False on Failure
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function _decrypt(string $token, string $key): bool|string
+    private function _d(string $token, string $key): bool|string
     {
         return openssl_decrypt(
             base64_decode($token),
@@ -227,24 +164,20 @@ class JL {
             str_pad($key, 16, '\0')
         );
     }
-
-    /**
-     * Validate Timestamp
-     * @param string $timestamp Timestamp String
-     * @return bool True if Valid, False otherwise
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function validateTimestamp(string $timestamp): bool
+    private function vt(string $t): bool
     {
         try {
             $dateTime = new DateTime();
-            $dateTime->setTimestamp((int) $timestamp);
+            $dateTime->setTimestamp((int) $t);
             return true;
         }
         catch (Exception $e) {
             return false;
         }
+    }
+    private function u(): string
+    {
+        return Common::singleton(SystemService::class)->endPoint();
     }
 
     /**

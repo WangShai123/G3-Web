@@ -45,6 +45,10 @@
     width: 20px;
 }
 
+#postimagediv .inside img {
+    width: 100%;
+}
+
 .postbox .inside .j-input-group {
     display: flex;
     flex-wrap: wrap;

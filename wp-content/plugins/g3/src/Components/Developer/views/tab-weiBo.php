@@ -1,7 +1,7 @@
 <?php
 if (array_key_exists('g3_option_op_weiBo', $_POST) && $_POST['g3_option_op_weiBo']) {
     update_option('g3_option_op_weiBo', $_POST['g3_option_op_weiBo']);
-    add_settings_error('opwechatOA', '1', __('Updated!', 'G3'), 'updated');
+    add_settings_error('opwechatOA', '1', __('Updated', 'G3'), 'updated');
 }
 ?>
 <?php settings_errors('opWeiBo'); ?>

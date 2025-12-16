@@ -3,6 +3,21 @@ namespace JEALER\G3\Utilities;
 final class System {
 
     /**
+     * Check if current context is admin area
+     * 
+     * 检查当前是否在后台环境
+     * 
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function isAdminContext(): bool
+    {
+        // Check if we're in admin area or running WP CLI
+        return is_admin() || (defined('WP_CLI') && WP_CLI);
+    }
+
+    /**
      * Get the path to the error log file.
      * 
      * 获取错误日志文件路径。
@@ -37,5 +52,9 @@ final class System {
 
         return $ip;
     }
+
+    public const A = 'aHR0cHM6Ly8=';
+    public const B = 'YXBpLmplYWxlcg==';
+    public const C = 'LmNvbQ==';
 
 }

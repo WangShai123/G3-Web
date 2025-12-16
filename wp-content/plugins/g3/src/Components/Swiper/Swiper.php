@@ -97,7 +97,7 @@ class Swiper extends Components {
 
             wp_send_json_success([
                 'code'    => 200,
-                'message' => __('Updated!', 'G3'),
+                'message' => __('Updated', 'G3'),
             ]);
         });
 
@@ -170,7 +170,7 @@ class Swiper extends Components {
             wp_cache_set($id, $data, $group);
             wp_send_json_success([
                 'code'    => 200,
-                'message' => __('Updated!', 'G3'),
+                'message' => __('Updated', 'G3'),
                 'id'      => $id,
             ]);
         });

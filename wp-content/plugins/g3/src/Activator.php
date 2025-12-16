@@ -69,7 +69,7 @@ class Activator {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
             wp_die(
                 __('G3-Web requires PHP 8.3+. Please upgrade your PHP version.', 'G3'),
-                __('Failed to active G3 Web Plugin!', 'G3'),
+                __('Failed to active G3-Web plugin!', 'G3'),
                 ['back_link' => true]
             );
         }
@@ -82,7 +82,7 @@ class Activator {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
             wp_die(
                 __('G3-Web requires WordPress 6.5+. Please upgrade your WordPress version.', 'G3'),
-                __('Failed to active G3 Web Plugin!', 'G3'),
+                __('Failed to active G3-Web plugin!', 'G3'),
                 ['back_link' => true]
             );
         }
@@ -368,7 +368,26 @@ class Activator {
                 PRIMARY KEY (`id`),
                 KEY `parent` (`parent`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA menus table';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
 
+        $tableName  = $wpdb->prefix . 'g3_wechat_oa_messages';
+        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
+        if (!$tableExist) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+                `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `msgid` varchar(64) NOT NULL COMMENT '微信消息ID',
+                `openid` varchar(64) NOT NULL COMMENT '用户唯一标识',
+                `nickname` varchar(128) NOT NULL COMMENT '用户昵称（可选）',
+                `type` varchar(32) NOT NULL COMMENT '消息类型 text/image/voice/video/location/link/event等',
+                `content` longtext NOT NULL COMMENT '文本内容/事件描述/媒体ID/地理位置信息/链接信息',
+                `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '消息接收时间',
+                PRIMARY KEY (`id`),
+                KEY `openid` (`openid`),
+                KEY `type` (`type`),
+                KEY `created` (`created`)
+            ) ENGINE=InnoDB $charset COMMENT='wechat OA messages table';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }

@@ -14,16 +14,15 @@ $time = Developer::time();
     <div class="mt-4 welcome-wrap">
         <div class="j-tip <?php echo $time ? 'is-success' : 'is-danger'; ?>">
             <div class="tip-title">
-                <?php echo esc_html(__('Tip', 'G3')); ?>
+                <?php echo __('Tip', 'G3'); ?>
             </div>
             <div class="tip-content">
                 <div>
                     <?php
                     if ($time) {
-                        echo "Your G3-Web expires in $time";
+                        echo sprintf(__('Your G3-Web expires in %s', 'G3'), $time);
                     } else {
                         echo '<span style="color: var(--tip-color)">';
-                        // 部分高级功能需要获得激活授权后才可用
                         echo __('Part of the advanced features need to be activated.', 'G3') . ' ';
                         echo sprintf(__('Click <a href="%s"><b>HERE</b></a> to activate.', 'G3'), admin_url('admin.php?page=g3-verify-license'));
                         echo '</span>';
@@ -62,6 +61,9 @@ $time = Developer::time();
                         );
                         ?>
                     </li>
+                    <li>
+                        <?php _e('Authorized users can get free business consulting services once a quarter in the live broadcast.', 'G3'); ?>
+                    </li>
                 </ul>
             </div>
 
@@ -90,7 +92,6 @@ $time = Developer::time();
                     <li>
                         <b>AOP:</b>
                         <?php
-                        // 通过 AOP 配置和AOP注解，轻松实现拦截、日志等切面逻辑。
                         _e('Easy to implement intercept, log, etc. through AOP configuration and AOP Attribute.', 'G3');
                         ?>
                     </li>
@@ -111,18 +112,18 @@ $time = Developer::time();
                 <div><?php _e('Balance Management', 'G3'); ?></div>
                 <div><?php _e('Transaction System', 'G3'); ?></div>
                 <div><?php _e('Credits System', 'G3'); ?></div>
-                <div><?php _e('Tokens Support', 'G3'); ?></div>
+                <div>Tokens Support</div>
                 <div><?php _e('Store Management System', 'G3'); ?></div>
                 <div><?php _e('Ads Management', 'G3'); ?></div>
                 <div><?php _e('Activity Feature', 'G3'); ?></div>
                 <div><?php _e('Announcement Feature', 'G3'); ?></div>
                 <div><?php _e('Community System', 'G3'); ?></div>
-                <div><?php _e('Wechat MP Support', 'G3'); ?></div>
+                <div><?php _e('Wechat OA Support', 'G3'); ?></div>
                 <div><?php _e('Multiple Themes Mode', 'G3'); ?></div>
                 <div><?php _e('OSS Support', 'G3'); ?></div>
                 <div><?php _e('SMTP Support', 'G3'); ?></div>
                 <div><?php _e('Marketing Tools', 'G3'); ?></div>
-                <div><?php _e('Security Tools'); ?></div>
+                <div><?php _e('Security Tools', 'G3'); ?></div>
                 <div><?php _e('Developer Mode', 'G3'); ?></div>
                 <div><?php _e('Custom Admin', 'G3'); ?></div>
             </div>
@@ -130,11 +131,10 @@ $time = Developer::time();
             <p><?php _e('Even if you have no technical knowledge, our course can still help you
                 systematically learn about Internet application technologies in 7-14 days and enable you to independently complete
                 website development.', 'G3'); ?></p>
-            <!-- 灵活的付款方式 -->
             <h3><?php _e('Flexible Payment Terms', 'G3'); ?></h3>
             <ul>
-                <li><?php _e('200 RMB/Year', 'G3'); ?></li>
-                <li><?php _e('Free Forever since the fourth year.', 'G3'); ?></li>
+                <li><?php echo '240 RMB/' . __('Year', 'G3'); ?></li>
+                <li><?php _e('Free Forever after the third year.', 'G3'); ?></li>
             </ul>
             <h3><?php _e('No matter who you are, G3-Web has got you covered.', 'G3'); ?></h3>
             <ul>

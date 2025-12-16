@@ -13,6 +13,10 @@ class Setting extends Components {
     public array $rss = [];
 
     #[\Override]
+    protected function front(): void
+    {
+    }
+    #[\Override]
     protected function options(): void
     {
         $siteName     = get_bloginfo('name');
@@ -47,6 +51,7 @@ class Setting extends Components {
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
+
     }
     #[\Override]
     protected function admin(): void
@@ -592,7 +597,6 @@ class Setting extends Components {
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();
     }
-
     private function pluginAction()
     {
         add_filter('plugin_row_meta', function ($links, $file) {
@@ -607,4 +611,5 @@ class Setting extends Components {
             return $links;
         });
     }
+
 }

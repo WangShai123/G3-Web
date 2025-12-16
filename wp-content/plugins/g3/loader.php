@@ -15,7 +15,7 @@
  * 
  * Plugin Name: G3 Web
  * Plugin URI: https://www.jealer.com/g3-system/
- * Description: G3 Web helps you develop stronger wordpress theme. Dependencies: PHP 8.3+, WordPress 6.5+, Redis, fileinfo, %postname% permalink structure.
+ * Description: G3-Web helps you develop stronger wordpress theme. Dependencies: PHP 8.3+, WordPress 6.5+, Redis, fileinfo, %postname% permalink structure.
  * Version: 1.0.0
  * Requires at least: 6.5
  * Requires PHP: 8.3

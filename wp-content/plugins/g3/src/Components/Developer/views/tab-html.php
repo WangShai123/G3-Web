@@ -1,16 +1,15 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
+use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Image;
-Frontend::loadStyle('jui');
-Frontend::loadScript('jui');
-?>
-<div class="j-tip is-default mt-4">
-    <div class="tip-title"><?php echo __('Tip', 'G3'); ?></div>
-    <div class="tip-content">
-        <div><?php _e('HTML element demo in admin panel.', 'G3'); ?></div>
-    </div>
-</div>
 
+Frontend::loadScript('jui');
+echo Container::tip(
+    __('HTML element demo in admin panel.', 'G3'),
+    'default',
+    'mt-4'
+);
+?>
 <div class="mt-4">
     <h3><?php _e('Button', 'G3'); ?></h3>
     <div class="flex gap-2">
@@ -81,7 +80,7 @@ Frontend::loadScript('jui');
         </icon>
     </div>
 
-    <h4 class="icon-title"><?php _e('Logo', 'G3'); ?></h4>
+    <h4 class="icon-title">Logo</h4>
     <div class="flex flex-wrap icon-wrap">
         <icon>
             <?php echo Image::icon('wordpress'); ?>

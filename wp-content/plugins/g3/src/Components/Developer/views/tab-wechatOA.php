@@ -3,7 +3,7 @@ use JEALER\G3\Services\SystemService;
 $key = SystemService::OPEN_WECHAT_OA_KEY;
 if (array_key_exists($key, $_POST) && $_POST[$key]) {
     update_option($key, $_POST[$key]);
-    add_settings_error('opWechatOA', '1', __('Updated!', 'G3'), 'updated');
+    add_settings_error('opWechatOA', '1', __('Updated', 'G3'), 'updated');
 }
 ?>
 <?php settings_errors('opWechatOA'); ?>

@@ -303,7 +303,7 @@ class PostService {
         } elseif (PageService::isRegister()) {
             $keywords = __('Register', 'G3') . ',' . $siteName;
         } elseif (PageService::isLostPassword()) {
-            $keywords = __('Post Password', 'G3') . ',' . $siteName;
+            $keywords = __('Lost Password', 'G3') . ',' . $siteName;
         } elseif (PageService::isResetPassword()) {
             $keywords = __('Reset Password', 'G3') . ',' . $siteName;
         }

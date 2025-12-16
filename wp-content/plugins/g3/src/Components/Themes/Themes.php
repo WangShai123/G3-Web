@@ -15,9 +15,9 @@ class Themes extends Components {
     protected function options(): void
     {
         $option       = Option::get(SystemService::THEME_OPTION_KEY, [
-            'default' => 'G3-Web',
+            'default' => 'WebTheme',
             'low'     => '',
-            'mobile'  => 'G3-Mobile',
+            'mobile'  => 'MobileTheme',
             'tablet'  => '',
         ]);
         $this->option = Option::cache(SystemService::THEME_OPTION_KEY, $option);
@@ -150,7 +150,8 @@ class Themes extends Components {
         wp_admin_css_color(
             'G3',
             'G3',
-            WP_PLUGIN_URL . '/g3/public/css/admin.min.css',
+            // WP_PLUGIN_URL . '/g3/public/css/admin.min.css',
+            WP_PLUGIN_URL . '/g3/dist/css/admin.css',
             ['#2d2f39', '#434656', '#0f49bd', '#135bec'],
             ['base' => '#e5f8ff', 'focus' => '#fff', 'current' => '#fff']
         );

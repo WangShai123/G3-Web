@@ -19,6 +19,18 @@ class WechatOAService {
     public const MENU_TABLE = 'g3_wechat_oa_menus';
 
     /**
+     * Messages Table Name for Wechat Official Account
+     * 
+     * 微信公众号消息数据表名
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const MESSAGES_TABLE = 'g3_wechat_oa_messages';
+
+    /**
      * Option Key for Wechat OA
      * 
      * 微信公众号选项键
@@ -40,7 +52,7 @@ class WechatOAService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const CACHE_GROUP = 'wechat-OA';
+    public const CACHE_GROUP = 'wechat-oa';
 
     /**
      * Menu Cache Key for Wechat Official Account
@@ -88,15 +100,17 @@ class WechatOAService {
         $service = get_option(self::OPTION_KEY)['service'] ?? false;
         if ($service) {
             $this->app = new Application($this->config());
-        } else {
-            return new WP_Error(
-                400,
-                __('Wechat Official Account service is not enabled', 'G3'),
-                [
-                    'status' => 400
-                ]
-            );
+            // Messages Handle
+            $this->app->getServer()->withHandler(function ($message) {
+                $this->processIncomingMessage($message);
+                return $this->handleReply($message);
+            });
         }
+    }
+
+    public function isAvailable(): bool
+    {
+        return isset($this->app) && $this->app instanceof Application;
     }
 
     public static function run()
@@ -118,7 +132,7 @@ class WechatOAService {
     }
 
     /**
-     * Create menus for Wechat MP
+     * Create menus for Wechat OA
      * 
      * 创建微信公众号菜单
      * 
@@ -136,7 +150,7 @@ class WechatOAService {
     }
 
     /**
-     * Delete menus for Wechat MP
+     * Delete menus for Wechat OA
      * 
      * 删除微信公众号菜单
      * 
@@ -387,14 +401,427 @@ class WechatOAService {
         return $result;
     }
 
+    /**
+     * Render menu type
+     * 
+     * 渲染菜单类型
+     * 
+     * @param string $type Menu type
+     * @return string Formatted menu type
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     private static function renderMenuType(string $type): string
     {
-        match ($type) {
-            '1' => $type = 'view',
-            '2' => $type = 'click',
-            default => $type = '-'
+        return match ($type) {
+            '1' => 'view',
+            '2' => 'click',
+            default => '-'
         };
-        return $type;
     }
+
+
+    /**
+     * Save received message to database
+     * 
+     * 保存接收到的消息到数据库
+     * 
+     * @param array $message Message data
+     * @return bool|int Number of rows affected, or false on error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function saveMessage(array $message)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+        // Prepare message data
+        $data = [
+            'msgid'    => $message['MsgID'] ?? '',
+            'openid'   => $message['FromUserName'] ?? '',
+            'nickname' => $message['Nickname'] ?? '',
+            'type'     => $message['MsgType'] ?? '',
+            'content'  => '',
+            'created'  => $message['CreateTime'] ?? 0,
+        ];
+
+        // Handle different message types
+        switch ($message['MsgType']) {
+            case 'text':
+                $data['content'] = $message['Content'] ?? '';
+                break;
+            case 'image':
+                $data['content'] = $message['PicUrl'] ?? '';
+                break;
+            case 'voice':
+                $data['content'] = $message['Recognition'] ?? $message['MediaId'] ?? '';
+                break;
+            case 'video':
+            case 'shortvideo':
+                $data['content'] = $message['MediaId'] ?? '';
+                break;
+            case 'location':
+                $data['content'] = sprintf(
+                    'Location: (%s, %s), Label: %s',
+                    $message['Location_X'] ?? '',
+                    $message['Location_Y'] ?? '',
+                    $message['Label'] ?? ''
+                );
+                break;
+            case 'link':
+                $data['content'] = sprintf(
+                    'Title: %s, Description: %s, Url: %s',
+                    $message['Title'] ?? '',
+                    $message['Description'] ?? '',
+                    $message['Url'] ?? ''
+                );
+                break;
+            default:
+                $data['content'] = 'Unsupported message type';
+                break;
+        }
+
+        // Insert message into database
+        $result = $wpdb->insert($table, $data);
+
+        // Clear message cache
+        wp_cache_delete('messages:count', self::CACHE_GROUP);
+        wp_cache_delete('messages:latest', self::CACHE_GROUP);
+
+        return $result;
+    }
+
+    /**
+     * Get messages from database
+     * 
+     * 从数据库获取消息
+     * 
+     * @param int $page Page number
+     * @param int $per_page Number of items per page
+     * @param array $conditions Query conditions
+     * @return array Messages data
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function getMessages(int $page = 1, int $per_page = 20, array $conditions = []): array
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+        // Build query conditions
+        $where  = 'WHERE 1=1';
+        $params = [];
+
+        if (!empty($conditions['openid'])) {
+            $where    .= ' AND openid = %s';
+            $params[]  = $conditions['openid'];
+        }
+
+        if (!empty($conditions['type'])) {
+            $where    .= ' AND type = %s';
+            $params[]  = $conditions['type'];
+        }
+
+        // Calculate offset
+        $offset = ($page - 1) * $per_page;
+
+        // Prepare query
+        $query    = "SELECT * FROM {$table} {$where} ORDER BY created DESC LIMIT %d OFFSET %d";
+        $params[] = $per_page;
+        $params[] = $offset;
+
+        // Execute query
+        $prepared_query = $wpdb->prepare($query, $params);
+        $messages       = $wpdb->get_results($prepared_query, ARRAY_A);
+
+        return $messages ?: [];
+    }
+
+    /**
+     * Get total count of messages
+     * 
+     * 获取消息总数
+     * 
+     * @param array $conditions Query conditions
+     * @return int Total count of messages
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function getMessageCount(array $conditions = []): int
+    {
+        $cache_key = 'messages:count:query_' . md5(serialize($conditions));
+        $count     = wp_cache_get($cache_key, self::CACHE_GROUP);
+
+        if (false === $count) {
+            global $wpdb;
+            $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+            // Build query conditions
+            $where  = 'WHERE 1=1';
+            $params = [];
+
+            if (!empty($conditions['openid'])) {
+                $where    .= ' AND openid = %s';
+                $params[]  = $conditions['openid'];
+            }
+
+            if (!empty($conditions['type'])) {
+                $where    .= ' AND type = %s';
+                $params[]  = $conditions['type'];
+            }
+
+            // Prepare query
+            $query          = "SELECT COUNT(*) FROM {$table} {$where}";
+            $prepared_query = $wpdb->prepare($query, $params);
+            $count          = (int) $wpdb->get_var($prepared_query);
+
+            // Cache result for 5 minutes
+            wp_cache_set($cache_key, $count, self::CACHE_GROUP, 300);
+        }
+
+        return $count;
+    }
+
+    /**
+     * Get message by ID
+     * 
+     * 根据ID获取消息
+     * 
+     * @param int $id Message ID
+     * @return array|null Message data or null if not found
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function getMessageById(int $id): ?array
+    {
+        if ($id <= 0) {
+            return null;
+        }
+
+        $cache_key = 'wechat_message_' . $id;
+        $message   = wp_cache_get($cache_key, self::CACHE_GROUP);
+
+        if (false === $message) {
+            global $wpdb;
+            $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+            $message = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $id),
+                ARRAY_A
+            );
+
+            if ($message) {
+                wp_cache_set($cache_key, $message, self::CACHE_GROUP, 3600);
+            }
+        }
+
+        return $message ?: null;
+    }
+
+    /**
+     * Delete message by ID
+     * 
+     * 根据ID删除消息
+     * 
+     * @param int $id Message ID
+     * @return bool|int Number of rows affected, or false on error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function deleteMessage(int $id): bool|int
+    {
+        if ($id <= 0) {
+            return false;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+        $result = $wpdb->delete($table, ['id' => $id]);
+
+        if ($result) {
+            // Clear related caches
+            wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
+            wp_cache_delete('messages:count', self::CACHE_GROUP);
+            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete multiple messages
+     * 
+     * 删除多条消息
+     * 
+     * @param array $ids Message IDs
+     * @return bool|int Number of rows affected, or false on error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function deleteMessages(array $ids): bool|int
+    {
+        if (empty($ids)) {
+            return false;
+        }
+
+        // Sanitize IDs
+        $ids = array_map('intval', $ids);
+        $ids = array_filter($ids, function ($id) {
+            return $id > 0;
+        });
+
+        if (empty($ids)) {
+            return false;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . self::MESSAGES_TABLE;
+
+        // Create placeholders for prepared statement
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+        $query        = "DELETE FROM {$table} WHERE id IN ({$placeholders})";
+
+        // Clear related caches
+        foreach ($ids as $id) {
+            wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
+        }
+        wp_cache_delete('messages:count_', self::CACHE_GROUP);
+        wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
+
+        return $wpdb->query($wpdb->prepare($query, $ids));
+    }
+
+    /**
+     * Process incoming message from WeChat server
+     * 
+     * 处理来自微信服务器的入站消息
+     * 
+     * @param array $message Message data from EasyWeChat
+     * @return bool Whether the message was processed successfully
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function processIncomingMessage(array $message): bool
+    {
+        try {
+            // Validate message
+            if (empty($message['FromUserName']) || empty($message['MsgType'])) {
+                error_log('Invalid WeChat message: missing required fields');
+                return false;
+            }
+
+            // Save message to database
+            $result = $this->saveMessage($message);
+
+            if (false === $result) {
+                error_log(message: 'Failed to save WeChat message to database');
+                return false;
+            }
+
+            // Trigger action for other plugins or modules to hook into
+            do_action('g3_wechat_message_received', $message);
+
+            return true;
+        }
+        catch (\Exception $e) {
+            error_log('Error processing WeChat message: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get user information by OpenID
+     * 
+     * 根据OpenID获取用户信息
+     * 
+     * @param string $openid User OpenID
+     * @return array|null User information or null if failed
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function getUserInfo(string $openid): ?array
+    {
+        if (empty($openid)) {
+            return null;
+        }
+
+        try {
+            $cache_key = 'users:' . md5($openid);
+            $user_info = wp_cache_get($cache_key, self::CACHE_GROUP);
+
+            if (false === $user_info) {
+                $response = $this->app->getClient()->get('cgi-bin/user/info', [
+                    'query' => [
+                        'openid' => $openid,
+                        'lang'   => 'zh_CN'
+                    ]
+                ]);
+
+                $result = $response->toArray();
+
+                if (isset($result['errcode']) && $result['errcode'] != 0) {
+                    error_log('Failed to get user info: ' . $result['errmsg']);
+                    return null;
+                }
+
+                $user_info = $result;
+                // Cache for 30 minutes
+                wp_cache_set($cache_key, $user_info, self::CACHE_GROUP, 1800);
+            }
+
+            return $user_info ?: null;
+        }
+        catch (\Exception $e) {
+            error_log('Error getting user info: ' . $e->getMessage());
+            return null;
+        }
+    }
+    private function handleReply(array $message): ?string
+    {
+        // 根据消息类型进行回复
+        switch ($message['MsgType']) {
+            case 'text':
+                // 文本消息处理
+                return $this->handleTextMessage($message);
+            case 'event':
+                // 事件消息处理
+                return $this->handleEventMessage($message);
+            default:
+                // 默认回复
+                return __('Hello, thanks for your message!', 'G3');
+        }
+    }
+
+    private function handleTextMessage(array $message): ?string
+    {
+        $content = $message['Content'] ?? '';
+
+        // 关键词回复示例
+        if (strpos($content, '你好') !== false) {
+            return __('Hello! How can I help you?', 'G3');
+        }
+
+        // 默认回复
+        return __('Message received, thank you!', 'G3');
+    }
+
+    private function handleEventMessage(array $message): ?string
+    {
+        $event = $message['Event'] ?? '';
+
+        switch ($event) {
+            case 'subscribe':
+                // 关注事件
+                return __('Welcome! Thanks for subscribing to our account.', 'G3');
+            case 'unsubscribe':
+                // 取消关注事件
+                return null; // 不回复
+            default:
+                return null;
+        }
+    }
+
 
 }

@@ -118,7 +118,6 @@ class Post extends Components {
                         $this->option,
                         'viewInterval',
                         __('View Interval', 'G3'),
-                        // 设置同一访客在多少时间内重复访问不重新计数浏览次数。
                         __('Defines how long a visit from the same user must wait before it counts as a new view.', 'G3'),
                         '',
                         [

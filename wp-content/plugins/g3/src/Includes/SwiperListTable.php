@@ -192,7 +192,7 @@ class SwiperListTable extends WP_List_Table {
                 $this->updateStatus($ids, 1);
                 break;
         }
-        $msg = __('Updated!', 'G3');
+        $msg = __('Updated', 'G3');
         wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},1000)');
 
         // $sendback = wp_get_referer() ?: admin_url('themes.php');
@@ -244,5 +244,9 @@ class SwiperListTable extends WP_List_Table {
             wp_cache_delete($id, SwiperService::CACHE_GROUP);
         }
         return $result;
+    }
+    public function no_items()
+    {
+        _e('No data found.', 'G3');
     }
 }

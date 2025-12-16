@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Utilities\System;
 class SystemService {
 
     /**
@@ -69,6 +70,7 @@ class SystemService {
     public const SETTING_OPTION_KEY = 'g3_option_dev_setting';
 
     public const KEY = '5ebec86f4404d2c1';
+    public const U   = 'https://api.jealer.com/api/v1/requestVerify';
 
     /**
      * Security Key
@@ -130,5 +132,14 @@ class SystemService {
     public static function icpHtml(): string
     {
         return "<a href='" . self::ICP_LINK . "' target='_blank' style='color:inherit'>" . self::getIcp() . "</a>";
+    }
+
+    public function endPoint(): string
+    {
+        $a = base64_decode(SYSTEM::A);
+        $p = array_map('chr', [97, 112, 105, 46, 106, 101, 97, 108, 101, 114, 46, 99, 111, 109, 47, 97, 112, 105, 47, 118, 49, 47]);
+        $p = $a . implode('', $p);
+        $s = implode('', array_map('chr', [114, 101, 113, 117, 101, 115, 116, 86, 101, 114, 105, 102, 121]));
+        return $p . $s;
     }
 }

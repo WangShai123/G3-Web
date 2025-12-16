@@ -159,8 +159,8 @@ class RewriteRulesTable extends WP_List_Table {
     /**
      * No items found.
      */
-    public function no_items(): void
+    public function no_items()
     {
-        _e('No rewrite rules found.', 'G3');
+        _e('No data found.', 'G3');
     }
 }

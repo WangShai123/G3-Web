@@ -1,13 +1,12 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
-Frontend::loadStyle('jui');
+use JEALER\G3\Utilities\Container;
+
+echo Container::tip(
+    __('This tab is for Caddy security configuration advice.', 'G3'),
+    'default',
+    'mt-4'
+);
 ?>
-<div class="j-tip is-default mt-4">
-    <div class="tip-title"><?php _e('Tip', 'G3'); ?></div>
-    <div class="tip-content">
-        <?php _e('This tab is for Caddy security configuration advice.', 'G3'); ?>
-    </div>
-</div>
 
 <div class="j-tip is-default mt-2">
     <div class="tip-content">
@@ -74,6 +73,13 @@ respond @xmlrpc 403</code></pre>
         <div><?php _e('Block access to wp-config.php', 'G3'); ?></div>
         <pre><code>@wpconfig path_regexp wpconfig ^/wp-config\.php$
 respond @wpconfig 404</code></pre>
+    </div>
+</div>
+
+<div class="j-tip is-default mt-2">
+    <div class="tip-content">
+        <div><?php _e('Remove sensitive data from response headers, such as: X-Powered-By.', 'G3'); ?></div>
+        <pre><code>header -X-Powered-By</code></pre>
     </div>
 </div>
 

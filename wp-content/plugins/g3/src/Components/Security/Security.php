@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Components;
+use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Session;
@@ -14,23 +15,28 @@ class Security extends Components {
     protected function options(): void
     {
         $default      = Option::get(SystemService::SECURITY_OPTION_KEY, [
-            'login'      => '0',
-            'url'        => 'admin',
-            'upload'     => '1',
-            'session'    => '0',
-            'xmlrpc'     => '1',
-            'xss'        => '0',
-            'csp'        => '0',
-            'xPoweredBy' => '1'
+            'login'       => '0',
+            'url'         => Common::hash(8),
+            'upload'      => '1',
+            'userSiteMap' => '1',
+            'session'     => '0',
+            'xmlrpc'      => '1',
+            'xss'         => '0',
+            'csp'         => '0',
+            'xPoweredBy'  => '1'
         ]);
         $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $default);
+    }
+    #[\Override]
+    protected function front(): void
+    {
+        $this->userSiteMapHandle();
     }
     #[\Override]
     protected function system(): void
     {
         add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
         // $this->uaHandle();
-        // $this->xPoweredByHandle();
     }
     #[\Override]
     protected function init(): void
@@ -137,13 +143,30 @@ class Security extends Components {
                             SystemService::SECURITY_OPTION_KEY,
                             $this->option,
                             'upload',
-                            __('Reset Upload File Name', 'G3'),
-                            __('To reset upload file names, please enable this option.', 'G3')
+                            __('Reset Upload File Names', 'G3'),
+                            __('Rename the currently uploaded file using a timestamp.', 'G3')
                         );
                     },
                     'args'     => [
                         'label_for' => 'upload',
                         'class'     => 'security-field__upload',
+                    ]
+                ],
+                [
+                    'id'       => 'userSiteMap',
+                    'title'    => __('Users SiteMap', 'G3'),
+                    'callback' => function () {
+                        echo Container::enable(
+                            SystemService::SECURITY_OPTION_KEY,
+                            $this->option,
+                            'userSiteMap',
+                            __('Users SiteMap', 'G3'),
+                            __('Remove the default users site map to avoid exposing user ID and login name security risks.', 'G3'),
+                        );
+                    },
+                    'args'     => [
+                        'label_for' => 'userSiteMap',
+                        'class'     => 'security-field__userSiteMap',
                     ]
                 ],
                 [
@@ -155,7 +178,7 @@ class Security extends Components {
                             $this->option,
                             'session',
                             __('Safe Session', 'G3'),
-                            __('To enable safe session, please enable this option.', 'G3')
+                            __('When the same user logs in from multiple locations, only the most recent login session remains valid.', 'G3')
                         );
                     },
                     'args'     => [
@@ -172,7 +195,7 @@ class Security extends Components {
                             $this->option,
                             'xmlrpc',
                             __('Prevent XMLRPC Attacks', 'G3'),
-                            __('Disable the XML-RPC API to block access to xmlrpc.php.', 'G3')
+                            __('Remove the XML-RPC API to block access to xmlrpc.php.', 'G3')
                         );
                     },
                     'args'     => [
@@ -214,23 +237,23 @@ class Security extends Components {
                         'class'     => 'security-field__csp',
                     ]
                 ],
-                [
-                    'id'       => 'xPoweredBy',
-                    'title'    => 'X-Powered-By',
-                    'callback' => function () {
-                        echo Container::enable(
-                            SystemService::SECURITY_OPTION_KEY,
-                            $this->option,
-                            'xPoweredBy',
-                            'X-Powered-By',
-                            __('Remove X-Powered-By header.', 'G3')
-                        );
-                    },
-                    'args'     => [
-                        'label_for' => 'xPoweredBy',
-                        'class'     => 'security-field__xPoweredBy',
-                    ]
-                ],
+                // [
+                //     'id'       => 'xPoweredBy',
+                //     'title'    => 'X-Powered-By',
+                //     'callback' => function () {
+                //         echo Container::enable(
+                //             SystemService::SECURITY_OPTION_KEY,
+                //             $this->option,
+                //             'xPoweredBy',
+                //             'X-Powered-By',
+                //             __('Remove X-Powered-By header.', 'G3')
+                //         );
+                //     },
+                //     'args'     => [
+                //         'label_for' => 'xPoweredBy',
+                //         'class'     => 'security-field__xPoweredBy',
+                //     ]
+                // ],
                 // [
                 //     'id'       => 'libredtail',
                 //     'title'    => 'Libredtail-HTTP',
@@ -254,32 +277,21 @@ class Security extends Components {
 
     public function securityLoginHandle(): void
     {
-        if (!isset($this->option['login']) || $this->option['login'] !== '1') {
+        if (!$this->customAdminLogin()) {
             return;
         }
-        $this->registerLoginRule();
         $this->disableWPLogin();
     }
-    public function registerLoginRule(): void
+    public function customAdminLogin(): bool
     {
-        add_rewrite_rule(
-            'oa/([^/]+)/?$',
-            'index.php?custom_admin_login=$matches[1]',
-            'top'
-        );
-
-        add_filter('query_vars', function ($vars) {
-            $vars[] = 'custom_admin_login';
-            return $vars;
-        });
-
-        add_filter('template_include', function ($template) {
-            global $wp_query;
-            if (isset($wp_query->query_vars['custom_admin_login']) && $wp_query->query_vars['custom_admin_login'] === $this->option['url']) {
-                $template = WP_PLUGIN_DIR . '/g3/templates/admin/oa.php';
-            }
-            return $template;
-        });
+        if (!isset($this->option['login']) || $this->option['login'] !== '1') {
+            return false;
+        }
+        return true;
+    }
+    public function customAdminParam(): string
+    {
+        return isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : Common::hash();
     }
     private function disableWPLogin(): void
     {
@@ -295,6 +307,19 @@ class Security extends Components {
         }
         $file['name'] = time() . '_' . $file['name'];
         return $file;
+    }
+    public function userSiteMapHandle(): void
+    {
+        add_filter('wp_sitemaps_add_provider', function ($provider, $name) {
+            $d = get_option(SystemService::SECURITY_OPTION_KEY);
+            if (!isset($d['userSiteMap']) || $d['userSiteMap'] !== '1') {
+                return $provider;
+            }
+            if ('users' === $name) {
+                return false;
+            }
+            return $provider;
+        }, 10, 2);
     }
     public function destroyExtraSessions(): void
     {
@@ -357,14 +382,6 @@ class Security extends Components {
             return;
         }
         header('Content-Security-Policy: default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\'; font-src \'self\'; object-src \'none\';');
-    }
-    private function xPoweredByHandle(): void
-    {
-        if (is_admin() || !isset($this->option['xPoweredBy']) || $this->option['xPoweredBy'] !== '1') {
-            return;
-        } else {
-            header_remove('X-Powered-By');
-        }
     }
     private function uaHandle(): void
     {

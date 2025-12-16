@@ -39,10 +39,10 @@ final class Container {
         if (file_exists($template_path)) {
             require_once $template_path;
         } else {
-            echo \sprintf(
+            echo '<div class="wrap">' . \sprintf(
                 __('Template file does not exist: %s', 'G3'),
                 $template_path
-            );
+            ) . '</div>';
         }
     }
 
@@ -89,8 +89,8 @@ final class Container {
 
         if (empty($options)) {
             $options = [
-                '0' => 'Disable',
-                '1' => 'Enable',
+                '0' => __('Disable', 'G3'),
+                '1' => __('Enable', 'G3'),
             ];
         }
         foreach ($options as $key => $val) {
@@ -603,5 +603,40 @@ final class Container {
                 $args
             );
         }
+    }
+
+    /**
+     * Generate a tip
+     * 
+     * 生成一个提示
+     * 
+     * @param string $message Tip message
+     * @param string $type Tip type
+     * @return string HTML
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function tip(string $message, string $type = 'default', string $className = ''): string
+    {
+        Frontend::loadStyle('jui');
+
+        $title = __('Tip', 'G3');
+
+        $type = match ($type) {
+            'success' => 'success',
+            'warning' => 'warning',
+            'danger' => 'danger',
+            default => 'default',
+        };
+
+        $result = <<<HTML
+<div class="j-tip is-$type $className">
+    <div class="tip-title">$title</div>
+    <div class="tip-content">
+        $message
+    </div>
+</div>
+HTML;
+        return $result;
     }
 }

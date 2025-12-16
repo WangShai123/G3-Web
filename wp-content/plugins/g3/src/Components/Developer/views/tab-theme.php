@@ -1,23 +1,18 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
-Frontend::loadStyle('jui');
-?>
-<div class="j-tip is-default mt-4">
-    <div class="tip-title"><?php echo __('Tip', 'G3'); ?></div>
-    <div class="tip-content">
-        <?php
-        // 快速创建一个拥有完整架构的G3 Web 主题项目
-        echo '<div>' . __('Quickly create a G3 Web theme project with complete architecture.', 'G3') . '</div>';
-        ?>
-    </div>
-</div>
+use JEALER\G3\Utilities\Container;
 
+echo Container::tip(
+    __('Quickly create a G3 Web theme project with complete architecture.', 'G3'),
+    'default',
+    'mt-4'
+);
+?>
 <section class="mt-4">
     <form class="j-form is-vertical is-item-vertical">
         <!-- Theme Name -->
         <div class="form-item">
             <label for="name" class="item-label is-required">
-                <?php echo __('Theme Name'); ?>
+                <?php echo __('Theme Name', 'G3'); ?>
             </label>
             <div class="form-control">
                 <input type="text" class="j-input" id="name" placeholder="Enter theme name" autocomplete="name"
@@ -39,7 +34,7 @@ Frontend::loadStyle('jui');
         <!-- URL -->
         <div class="form-item">
             <label for="url" class="item-label is-required">
-                <?php echo __('Theme URL'); ?>
+                <?php echo __('Theme URL', 'G3'); ?>
             </label>
             <div class="form-control">
                 <input type="url" class="j-input" id="url" placeholder="eg: https://g3system.com" autocomplete="url" />
@@ -49,7 +44,7 @@ Frontend::loadStyle('jui');
         <!-- Description -->
         <div class="form-item">
             <label for="description" class="item-label is-required">
-                <?php echo __('Theme Description'); ?>
+                <?php echo __('Theme Description', 'G3'); ?>
             </label>
             <div class="form-control">
                 <textarea class="j-input" id="description" placeholder="Enter description" autocomplete="off"

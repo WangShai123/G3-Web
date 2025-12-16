@@ -102,4 +102,8 @@ class SwiperLocationTable extends WP_List_Table {
             }
         }
     }
+    public function no_items()
+    {
+        _e('No data found.', 'G3');
+    }
 }

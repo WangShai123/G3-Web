@@ -14,6 +14,7 @@ class WechatOA extends Components {
         $option       = Option::get(WechatOAService::OPTION_KEY, [
             'service'       => '0',
             'search'        => '0',
+            'storeMessages' => '0',
             'count'         => '5',
             'length'        => '16',
             'cover'         => '',
@@ -65,6 +66,7 @@ class WechatOA extends Components {
         $tabs = [
             'general'  => __('General', 'G3'),
             'menus'    => __('Menus'),
+            'message'  => __('Messages', 'G3'),
             'custom'   => __('Custom Reply', 'G3'),
             'advanced' => __('Advanced Replay', 'G3'),
         ];
@@ -105,12 +107,27 @@ class WechatOA extends Components {
                         $this->option,
                         'search',
                         __('Search', 'G3'),
-                        // 启用搜索后，用户在微信公众号里发送的信息，如果在自定义应答之外，系统会自动搜索并返回网站的内容。
-                        __('After activating the search, users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
+                        __('After activating it, users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
                     );
                 },
                 'args'     => [
                     'label_for' => 'search',
+                ]
+            ],
+            [
+                'id'       => 'storeMessages',
+                'title'    => __('Store Messages', 'G3'),
+                'callback' => function () {
+                    echo Container::enable(
+                        WechatOAService::OPTION_KEY,
+                        $this->option,
+                        'storeMessages',
+                        __('Store Messages', 'G3'),
+                        __('After activating it, the messages sent to the WeChat Official Account will be stored in the database.', 'G3')
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'storeMessages',
                 ]
             ],
             [

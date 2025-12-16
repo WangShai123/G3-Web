@@ -135,4 +135,19 @@ final class Common {
             default => wp_date(get_option('date_format'), $time),
         };
     }
+
+    /**
+     * Generate a random string, support max length 32 bits
+     * 
+     * 生成随机字符串，支持最大长度 32 位
+     * 
+     * @param int $length string length
+     * @return string random string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function hash(int $length = 8): string
+    {
+        return substr(wp_hash(uniqid('G3')), 0, $length);
+    }
 }

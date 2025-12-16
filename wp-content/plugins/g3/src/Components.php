@@ -70,6 +70,7 @@ class Components {
         add_action('add_meta_boxes', [$this, 'metaBoxActions']);
 
         if (defined('WP_DEBUG') && WP_DEBUG) $this->debug();
+
         $this->end();
 
         $this->initialized = true;

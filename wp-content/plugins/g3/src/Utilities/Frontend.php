@@ -86,7 +86,7 @@ final class Frontend {
         // static $scripts;
         $scripts = [
             // jQuery
-            'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js'],
+            'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://cdn.jsdelivr.net/npm/jquery'],
             // G3
             'redirect.link'      => [G3_JS_URL . '/g3.redirect.link.min.js', [], '1.0.0'],
             // JUI
@@ -116,7 +116,12 @@ final class Frontend {
              * Axios: 
              * @link https://github.com/axios/axios
              */
-            'axios'              => [G3_JS_URL . '/axios.min.js', [], '1.13.1', 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js'],
+            'axios'              => [G3_JS_URL . '/axios.min.js', [], '1.13.2', 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js'],
+            /**
+             * Axios Cache Interceptor
+             * @link https://github.com/arthurfiorette/axios-cache-interceptor
+             */
+            'axios.cache'        => [G3_JS_URL . '/axios-cache-interceptor.min.js', ['axios'], '1.9.0', 'https://cdn.jsdelivr.net/npm/axios-cache-interceptor@1/dist/index.bundle.js'],
             /**
              * Quill: a modern WYSIWYG editor built for compatibility and extensibility
              * @link https://github.com/slab/quill
@@ -208,6 +213,7 @@ final class Frontend {
             'jui.offcanvas' => [G3_JS_URL . '/es/jui.offcanvas.js', [], '1.0.0'],
             'jui.drop'      => [G3_JS_URL . '/es/jui.drop.js', [], '1.0.0'],
             'jui.tooltip'   => [G3_JS_URL . '/es/jui.tooltip.js', [], '1.0.0'],
+            'ky'            => [G3_JS_URL . '/es/ky.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/distribution/index.js'],
         ];
 
         /**

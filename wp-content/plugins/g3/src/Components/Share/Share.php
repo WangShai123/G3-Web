@@ -127,14 +127,13 @@ class Share extends Components {
             ],
             [
                 'id'       => 'wechatMediaLibrary',
-                'title'    => __('WeChat MP Media Library', 'G3'),
+                'title'    => __('Wechat OA Media Library', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'wechatMediaLibrary',
-                        __('WeChat MP Media Library', 'G3'),
-                        //发布内容时，自动同步内容到微信公众号素材库
+                        __('Wechat OA Media Library', 'G3'),
                         __('When publishing post, the content will be automatically synchronized to the WeChat official account media library.', 'G3')
                     );
                 },
@@ -202,7 +201,7 @@ class Share extends Components {
 
         add_meta_box(
             'wechatTitle',
-            __('Wechat Title', 'G3'),
+            __('WeChat Title', 'G3'),
             [$this, 'wechatTitleRender'],
             'post',
             'normal',
@@ -211,7 +210,7 @@ class Share extends Components {
     }
     public function wechatTitleRender(): void
     {
-        $label    = __('Wechat Title', 'G3');
+        $label    = __('WeChat Title', 'G3');
         $value    = get_post_meta(get_the_ID(), ShareService::WECHAT_TITLE_KEY, true);
         $des      = __('Customize the title that will be displayed when shared on WeChat.', 'G3') . ' ' .
             __('If the title is empty, the title of the post will be used.', 'G3');

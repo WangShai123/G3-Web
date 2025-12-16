@@ -1,19 +1,17 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-Frontend::loadStyle('jui');
+use JEALER\G3\Utilities\Container;
+
 Frontend::loadScript('jui');
 settings_errors('flush');
 ?>
 <form action="" method="post">
-    <div class="j-tip is-error mt-4">
-        <div class="tip-title"><?php echo __('Tip', 'G3'); ?></div>
-        <div class="tip-content">
-            <?php
-            echo '<div class="underline">' . __('The actions below will flush the Rewrite / Options / Cache data, please make sure you have a backup before performing the action.', 'G3') . '</div>';
-            ?>
-        </div>
-    </div>
     <?php
+    echo Container::tip(
+        __('The actions below will flush the Rewrite / Options / Cache data, please make sure you have a backup before performing the action.', 'G3'),
+        'default',
+        'mt-4'
+    );
     settings_fields('flush');
     do_settings_sections('developer-mode&tab=refresh');
     ?>

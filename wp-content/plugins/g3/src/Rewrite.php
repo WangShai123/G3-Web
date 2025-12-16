@@ -1,6 +1,8 @@
 <?php
 namespace JEALER\G3;
 
+use JEALER\G3\Components;
+
 /**
  * Rewrite Router
  * 
@@ -160,6 +162,13 @@ class Rewrite {
                 continue;
             }
 
+            // Check dependency
+            $dependency = $route['dependency'] ?? true;
+            if (!$this->isDependencySatisfied($dependency)) {
+                // Skip this route if dependency is not satisfied
+                continue;
+            }
+
             $var = $route['var'];
 
             // build expected query string, support multiple query vars
@@ -197,7 +206,6 @@ class Rewrite {
     {
         $instance = self::getInstance();
         $instance->registerRewriteRules();
-
         flush_rewrite_rules();
     }
 
@@ -214,7 +222,6 @@ class Rewrite {
     {
         // verify current rewrite rules against config
         if (!$this->verifyRewriteRules()) {
-            // rules not match, flush rules to fix
             self::flushRewriteRules();
         }
     }
@@ -243,7 +250,6 @@ class Rewrite {
                 }
             }
         }
-
         return array_unique($vars);
     }
 
@@ -263,41 +269,63 @@ class Rewrite {
 
         // check if query vars match any route
         foreach ($this->config as $url => $route) {
+
+            // ensure route is an array and contains necessary keys
             if (!is_array($route) || !isset($route['var']) || !isset($route['path'])) {
                 continue;
             }
 
-            $var      = $route['var'];
-            $hasMatch = false;
+            // Check dependency
+            $dependency = $route['dependency'] ?? true;
+            if (!$this->isDependencySatisfied($dependency)) {
+                // Skip this route if dependency is not satisfied
+                continue;
+            }
 
-            // if var is array, check if any of them exists and has value
+            $var          = $route['var'];
+            $hasMatch     = false;
+            $matchedValue = null;
+
+            // Check if route matches current request
             if (is_array($var)) {
-                // handle multiple query vars
+                // Handle multiple query vars
                 foreach ($var as $varName) {
                     if (isset($wp_query->query_vars[$varName]) && !empty($wp_query->query_vars[$varName])) {
-                        $hasMatch = true;
+                        $hasMatch     = true;
+                        $matchedValue = $wp_query->query_vars[$varName];
                         break;
                     }
                 }
             } else {
-                // handle single query var
+                // Handle single query var
                 if (isset($wp_query->query_vars[$var]) && !empty($wp_query->query_vars[$var])) {
-                    $hasMatch = true;
+                    $hasMatch     = true;
+                    $matchedValue = $wp_query->query_vars[$var];
                 }
             }
 
-            // if found match, return corresponding template
+            // if found match, determine which template to load
             if ($hasMatch) {
-                // build template path
-                $templateFile = $route['path'];
+                $templateFile = $route['path']; // Default template
 
-                // check if theme template exists
+                // Check for priority matching rules
+                if (isset($route['priority']) && is_array($route['priority'])) {
+                    // Look for a matching value in the priority rules
+                    foreach ($route['priority'] as $param) {
+                        if (isset($param['value']) && $param['value'] == $matchedValue) {
+                            error_log('test priority callback: ' . $param['value']);
+                            $templateFile = $param['path'];
+                            break;
+                        }
+                    }
+                }
+
+                // Get the actual template path
                 $themeTemplate = get_stylesheet_directory() . '/templates/' . $templateFile;
                 if (file_exists($themeTemplate)) {
                     return $themeTemplate;
                 }
 
-                // then check plugin directory
                 $pluginTemplate = WP_PLUGIN_DIR . '/g3/templates/' . $templateFile;
                 if (file_exists($pluginTemplate)) {
                     return $pluginTemplate;
@@ -307,5 +335,52 @@ class Rewrite {
 
         // if no match found, return original template to avoid interfering with WordPress default template loading
         return $template;
+    }
+
+    /**
+     * Check if a route dependency is satisfied
+     * 
+     * 检查路由依赖是否满足
+     * 
+     * @param mixed $dependency
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function isDependencySatisfied($dependency): bool
+    {
+        // Default to true if no dependency specified
+        if ($dependency === null) {
+            return true;
+        }
+
+        // If boolean, return as is
+        if (is_bool($dependency)) {
+            return $dependency;
+        }
+
+        // If string, treat as component name
+        if (is_string($dependency)) {
+            // Convert first letter to uppercase
+            $componentName = ucfirst($dependency);
+
+            // Check if component is registered in the Components class
+            if (
+                property_exists(Components::class, 'components') &&
+                is_array(Components::$components)
+            ) {
+                return array_key_exists($componentName, Components::$components);
+            }
+
+            return false;
+        }
+
+        // If callable (function), execute and return result
+        if (is_callable($dependency)) {
+            return (bool) call_user_func($dependency);
+        }
+
+        // For any other case, assume dependency is satisfied
+        return true;
     }
 }
