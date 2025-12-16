@@ -32,6 +32,9 @@ wp-config.php
 /wp-content/plugins/g3/extensions/jl.php
 /g3.php
 
+!/wp-content/plugins/g3/public/languages/*.pot~
+!/wp-content/plugins/g3/public/languages/*.po~
+
 # Helpers
 /wp-content/backup-*.php
 /wp-content/object-cache.php
