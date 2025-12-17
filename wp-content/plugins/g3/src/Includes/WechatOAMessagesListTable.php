@@ -3,6 +3,7 @@ namespace JEALER\G3\Includes;
 
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Common;
 
 class WechatOAMessagesListTable extends WP_List_Table {
     private $perPage = 20;
@@ -54,15 +55,15 @@ class WechatOAMessagesListTable extends WP_List_Table {
     {
         switch ($column_name) {
             case 'openid':
-                return substr($item->openid, 0, 20) . '...';
+                return Common::truncate($item->openid, 20);
             case 'nickname':
-                return !empty($item->nickname) ? substr($item->nickname, 0, 20) . '...' : '-';
+                return !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-';
             case 'type':
                 return ucfirst($item->type);
             case 'content':
                 $content = $item->content;
                 if (strlen($content) > 50) {
-                    $content = substr($content, 0, 50) . '...';
+                    $content = Common::truncate($content, 50);
                 }
                 return esc_html($content);
             case 'created':

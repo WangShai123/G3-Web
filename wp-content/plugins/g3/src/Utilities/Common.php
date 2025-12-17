@@ -150,4 +150,21 @@ final class Common {
     {
         return substr(wp_hash(uniqid('G3')), 0, $length);
     }
+
+    /**
+     * Truncate a string
+     * 
+     * 截断字符串
+     * 
+     * @param string $string
+     * @param int $length
+     * @param string $ellipsis
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function truncate($string, $length = 50, $ellipsis = '...'): string
+    {
+        return strlen($string) > $length ? substr($string, 0, $length) . $ellipsis : $string;
+    }
 }
