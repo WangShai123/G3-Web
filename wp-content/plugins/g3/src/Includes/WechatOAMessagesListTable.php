@@ -74,6 +74,9 @@ class WechatOAMessagesListTable extends WP_List_Table {
 
     public function prepare_items()
     {
+        // 处理批量操作
+        $this->process_bulk_action();
+
         $columns  = $this->get_columns();
         $hidden   = [];
         $sortable = $this->get_sortable_columns();
@@ -128,5 +131,63 @@ class WechatOAMessagesListTable extends WP_List_Table {
     {
         $this->prepare_items();
         parent::display();
+    }
+
+    public function process_bulk_action()
+    {
+        if ('delete' === $this->current_action()) {
+            // 获取要删除的消息ID（单个或多个）
+            $messages = [];
+            if (isset($_GET['messages'])) {
+                $messages = [$_GET['messages']];
+            } elseif (isset($_REQUEST['messages'])) {
+                $messages = $_REQUEST['messages'];
+            }
+
+            if (!empty($messages) && is_array($messages)) {
+                // 验证nonce
+                if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'])) {
+                    wp_die('Security check failed');
+                }
+
+                // 如果只有一个消息，使用单个删除方法
+                if (count($messages) == 1) {
+                    $deleted = WechatOAService::deleteMessage((int) $messages[0]);
+                } else {
+                    // 如果有多个消息，使用批量删除方法
+                    $deleted = WechatOAService::deleteMessages($messages);
+                }
+
+                if ($deleted !== false) {
+                    // 显示成功消息
+                    add_action('admin_notices', function () use ($deleted) {
+                        echo '<div class="notice notice-success is-dismissible">';
+                        echo '<p>' . sprintf(__('Successfully deleted %d message(s).', 'G3'), $deleted) . '</p>';
+                        echo '</div>';
+                    });
+                } else {
+                    // 显示错误消息
+                    add_action('admin_notices', function () {
+                        echo '<div class="notice notice-error is-dismissible">';
+                        echo '<p>' . __('Failed to delete message(s).', 'G3') . '</p>';
+                        echo '</div>';
+                    });
+                }
+            }
+        }
+    }
+
+    public function column_action($item)
+    {
+        $actions = [
+            'delete' => sprintf(
+                '<a href="?page=%s&action=delete&messages=%s&_wpnonce=%s">' . __('Delete', 'G3') . '</a>',
+                $_REQUEST['page'],
+                $item->id,
+                wp_create_nonce('bulk-' . $this->_args['plural'])
+            ),
+        ];
+
+        return join(' | ', $actions);
     }
 }

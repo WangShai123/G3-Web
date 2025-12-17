@@ -654,7 +654,7 @@ class WechatOAService {
     }
 
     /**
-     * Delete message by ID
+     * Delete message by ID (alias for deleteMessages)
      * 
      * 根据ID删除消息
      * 
@@ -665,37 +665,26 @@ class WechatOAService {
      */
     public static function deleteMessage(int $id): bool|int
     {
-        if ($id <= 0) {
-            return false;
-        }
-
-        global $wpdb;
-        $table = $wpdb->prefix . self::MESSAGES_TABLE;
-
-        $result = $wpdb->delete($table, ['id' => $id]);
-
-        if ($result) {
-            // Clear related caches
-            wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
-            wp_cache_delete('messages:count', self::CACHE_GROUP);
-            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
-        }
-
-        return $result;
+        return self::deleteMessages($id);
     }
 
     /**
-     * Delete multiple messages
+     * Delete message(s) by ID(s)
      * 
-     * 删除多条消息
+     * 根据ID删除消息（单条或多条）
      * 
-     * @param array $ids Message IDs
+     * @param int|array $ids Message ID or array of Message IDs
      * @return bool|int Number of rows affected, or false on error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function deleteMessages(array $ids): bool|int
+    public static function deleteMessages(int|array $ids): bool|int
     {
+        // 如果是单个ID，转换为数组
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
         if (empty($ids)) {
             return false;
         }
@@ -713,18 +702,30 @@ class WechatOAService {
         global $wpdb;
         $table = $wpdb->prefix . self::MESSAGES_TABLE;
 
-        // Create placeholders for prepared statement
-        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-        $query        = "DELETE FROM {$table} WHERE id IN ({$placeholders})";
+        // 如果只有一个ID，使用DELETE ... WHERE id = ? 查询
+        if (count($ids) == 1) {
+            $id = reset($ids);
 
-        // Clear related caches
-        foreach ($ids as $id) {
+            // 清除相关缓存
             wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
-        }
-        wp_cache_delete('messages:count_', self::CACHE_GROUP);
-        wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
+            wp_cache_delete('messages:count', self::CACHE_GROUP);
+            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
 
-        return $wpdb->query($wpdb->prepare($query, $ids));
+            return $wpdb->delete($table, ['id' => $id]);
+        } else {
+            // 如果有多个ID，使用 DELETE ... WHERE id IN (...) 查询
+            $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+            $query        = "DELETE FROM {$table} WHERE id IN ({$placeholders})";
+
+            // 清除相关缓存
+            foreach ($ids as $id) {
+                wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
+            }
+            wp_cache_delete('messages:count', self::CACHE_GROUP);
+            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
+
+            return $wpdb->query($wpdb->prepare($query, $ids));
+        }
     }
 
     /**
