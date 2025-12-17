@@ -55,6 +55,9 @@ class WechatOAController {
 
             // Handle WeChat server verification (GET request)
             if ($request->get_method() === 'GET') {
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
                 // Manual verification - more reliable approach
                 $signature = $request->get_param('signature');
                 $timestamp = $request->get_param('timestamp');
