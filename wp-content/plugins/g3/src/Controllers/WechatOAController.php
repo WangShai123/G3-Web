@@ -32,6 +32,26 @@ class WechatOAController {
                 ], 503);
             }
 
+            // Handle WeChat server verification (GET request)
+            if ($request->get_method() === 'GET') {
+                // Let EasyWeChat handle the verification
+                $server   = $service->app->getServer();
+                $response = $server->serve();
+
+                // For GET requests, EasyWeChat should return the echostr directly
+                $content    = $response->getBody()->getContents();
+                $statusCode = $response->getStatusCode();
+
+                $wpResponse = new WP_REST_Response($content, $statusCode);
+
+                // Set response headers
+                foreach ($response->getHeaders() as $header => $values) {
+                    $wpResponse->header($header, implode(', ', $values));
+                }
+
+                return $wpResponse;
+            }
+
             // Handle WeChat server push messages
             $response = $service->app->getServer()->serve();
 
