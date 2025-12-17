@@ -135,28 +135,28 @@ class WechatOAMessagesListTable extends WP_List_Table {
 
     public function process_bulk_action()
     {
+        // 处理删除操作（单个或多个）
         if ('delete' === $this->current_action()) {
             // 获取要删除的消息ID（单个或多个）
             $messages = [];
-            if (isset($_GET['messages'])) {
-                $messages = [$_GET['messages']];
-            } elseif (isset($_REQUEST['messages'])) {
+
+            // 检查 bulk actions 的参数
+            if (isset($_REQUEST['messages']) && is_array($_REQUEST['messages'])) {
                 $messages = $_REQUEST['messages'];
+            } elseif (isset($_GET['messages'])) {
+                // 单个消息删除
+                $messages = [$_GET['messages']];
             }
 
-            if (!empty($messages) && is_array($messages)) {
+            if (!empty($messages)) {
                 // 验证nonce
-                if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'])) {
+                $nonce = wp_unslash($_REQUEST['_wpnonce'] ?? $_REQUEST['_wpnonce'] ?? '');
+                if (!wp_verify_nonce($nonce, 'bulk-' . $this->_args['plural'])) {
                     wp_die('Security check failed');
                 }
 
-                // 如果只有一个消息，使用单个删除方法
-                if (count($messages) == 1) {
-                    $deleted = WechatOAService::deleteMessage((int) $messages[0]);
-                } else {
-                    // 如果有多个消息，使用批量删除方法
-                    $deleted = WechatOAService::deleteMessages($messages);
-                }
+                // 删除消息
+                $deleted = WechatOAService::deleteMessages($messages);
 
                 if ($deleted !== false) {
                     // 显示成功消息
@@ -173,6 +173,10 @@ class WechatOAMessagesListTable extends WP_List_Table {
                         echo '</div>';
                     });
                 }
+
+                // 重定向以避免重复提交
+                wp_redirect(remove_query_arg(['action', 'messages', '_wpnonce']));
+                exit;
             }
         }
     }
