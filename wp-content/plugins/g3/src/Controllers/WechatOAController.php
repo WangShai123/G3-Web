@@ -83,12 +83,10 @@ class WechatOAController {
                 // Compare with signature
                 if ($hash === $signature) {
                     // Return echostr to confirm successful verification
-                    // Make sure we only return the echostr with no extra characters
-                    return new WP_REST_Response($echostr, 200, [
-                        'Content-Type' => 'text/plain'
-                    ]);
+                    // 最简化的响应，只返回echostr
+                    wp_die($echostr, '', ['response' => 200]);
                 } else {
-                    return new WP_REST_Response('Forbidden', 403);
+                    wp_die('Forbidden', '', ['response' => 403]);
                 }
             }
 
