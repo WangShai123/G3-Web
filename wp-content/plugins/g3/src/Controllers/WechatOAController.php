@@ -9,6 +9,7 @@ use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Services\SystemService;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -63,7 +64,7 @@ class WechatOAController {
                 error_log("WeChat Verification - Signature: $signature, Timestamp: $timestamp, Nonce: $nonce, Echostr: $echostr");
 
                 // Get token from service config
-                $config = get_option('g3_option_wechatOA');
+                $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
                 $token  = $config['token'] ?? '';
 
                 error_log("WeChat Token from config: $token");

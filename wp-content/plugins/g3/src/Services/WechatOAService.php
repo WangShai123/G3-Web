@@ -130,12 +130,11 @@ class WechatOAService {
             'cache'  => new EasyWechatCache()
         ];
 
-        $d = get_option(SystemService::OPEN_WECHAT_OA_KEY);
-        if (!empty($d['token'])) {
-            $result['token'] = $d['token'];
+        if (!empty($data['token'])) {
+            $result['token'] = $data['token'];
         }
-        if (!empty($d['encodingAESKey'])) {
-            $result['aes_key'] = $d['encodingAESKey'];
+        if (!empty($data['encodingAESKey'])) {
+            $result['aes_key'] = $data['encodingAESKey'];
         }
         // 添加调试日志
         error_log('WeChat OA Final Config: ' . print_r($result, true));
