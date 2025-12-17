@@ -61,13 +61,9 @@ class WechatOAController {
                 $nonce     = $request->get_param('nonce');
                 $echostr   = $request->get_param('echostr');
 
-                error_log("WeChat Verification - Signature: $signature, Timestamp: $timestamp, Nonce: $nonce, Echostr: $echostr");
-
-                // Get token from service config
+                // Get token from service config - FIXED: Use the correct option key
                 $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
                 $token  = $config['token'] ?? '';
-
-                error_log("WeChat Token from config: $token");
 
                 if (empty($token)) {
                     error_log('WeChat token is not configured');
@@ -84,15 +80,14 @@ class WechatOAController {
                 // Generate SHA1 hash
                 $hash = sha1($concatenated);
 
-                error_log("Calculated hash: $hash, Received signature: $signature");
-
                 // Compare with signature
                 if ($hash === $signature) {
                     // Return echostr to confirm successful verification
-                    error_log("WeChat verification successful, returning echostr: $echostr");
-                    return new WP_REST_Response($echostr, 200);
+                    // Make sure we only return the echostr with no extra characters
+                    return new WP_REST_Response($echostr, 200, [
+                        'Content-Type' => 'text/plain'
+                    ]);
                 } else {
-                    error_log("WeChat verification failed");
                     return new WP_REST_Response('Forbidden', 403);
                 }
             }
