@@ -804,8 +804,24 @@ class WechatOAService {
             return null;
         }
     }
-    private function handleReply(array $message): ?string
+    private function handleReply($message): ?string
     {
+        // Convert message to array if it's an object
+        if (is_object($message)) {
+            // Handle EasyWeChat Message object
+            if (method_exists($message, 'toArray')) {
+                $messageArray = $message->toArray();
+            } else {
+                // Fallback: manually extract properties
+                $messageArray = [];
+                foreach (get_object_vars($message) as $key => $value) {
+                    $messageArray[$key] = $value;
+                }
+            }
+        } else {
+            $messageArray = $message;
+        }
+
         // 根据消息类型进行回复
         switch ($message['MsgType']) {
             case 'text':
