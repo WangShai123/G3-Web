@@ -159,24 +159,20 @@ class WechatOAMessagesListTable extends WP_List_Table {
                 $deleted = WechatOAService::deleteMessages($messages);
 
                 if ($deleted !== false) {
-                    // 显示成功消息
+                    // 设置成功消息
                     add_action('admin_notices', function () use ($deleted) {
                         echo '<div class="notice notice-success is-dismissible">';
                         echo '<p>' . sprintf(__('Successfully deleted %d message(s).', 'G3'), $deleted) . '</p>';
                         echo '</div>';
                     });
                 } else {
-                    // 显示错误消息
+                    // 设置错误消息
                     add_action('admin_notices', function () {
                         echo '<div class="notice notice-error is-dismissible">';
                         echo '<p>' . __('Failed to delete message(s).', 'G3') . '</p>';
                         echo '</div>';
                     });
                 }
-
-                // 重定向以避免重复提交
-                wp_redirect(remove_query_arg(['action', 'messages', '_wpnonce']));
-                exit;
             }
         }
     }
