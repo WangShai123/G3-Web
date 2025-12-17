@@ -123,7 +123,9 @@ class WechatOAService {
 
     private function config(): array
     {
-        $data   = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        $data = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        error_log('WeChat OA Config Data from SystemService::OPEN_WECHAT_OA_KEY: ' . print_r($data, true));
+
         $result = [
             'app_id' => $data['appId'] ?? '',
             'secret' => $data['appSecret'] ?? '',
@@ -136,7 +138,7 @@ class WechatOAService {
         if (!empty($data['encodingAESKey'])) {
             $result['aes_key'] = $data['encodingAESKey'];
         }
-        // 添加调试日志
+
         error_log('WeChat OA Final Config: ' . print_r($result, true));
         return $result;
     }
