@@ -453,8 +453,14 @@ class WechatOAService {
             'nickname' => $message['Nickname'] ?? '',
             'type'     => $message['MsgType'] ?? '',
             'content'  => '',
-            'created'  => $message['CreateTime'] ?? 0,
+            'created'  => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : current_time('mysql'),
         ];
+
+        // Handle timestamp conversion if available
+        if (!empty($message['CreateTime'])) {
+            // Convert timestamp to MySQL datetime format
+            $data['created'] = date('Y-m-d H:i:s', $message['CreateTime']);
+        }
 
         // Handle different message types
         switch ($message['MsgType']) {
@@ -716,21 +722,7 @@ class WechatOAService {
     public function processIncomingMessage(mixed $message): bool
     {
         try {
-            // Convert message to array if it's an object
-            if (is_object($message)) {
-                // Handle EasyWeChat Message object
-                if (method_exists($message, 'toArray')) {
-                    $messageArray = $message->toArray();
-                } else {
-                    // Fallback: manually extract properties
-                    $messageArray = [];
-                    foreach (get_object_vars($message) as $key => $value) {
-                        $messageArray[$key] = $value;
-                    }
-                }
-            } else {
-                $messageArray = $message;
-            }
+            $messageArray = $this->normalizeMessage($message);
 
             // Validate message
             if (empty($messageArray['FromUserName']) || empty($messageArray['MsgType'])) {
@@ -806,30 +798,16 @@ class WechatOAService {
     }
     private function handleReply($message): ?string
     {
-        // Convert message to array if it's an object
-        if (is_object($message)) {
-            // Handle EasyWeChat Message object
-            if (method_exists($message, 'toArray')) {
-                $messageArray = $message->toArray();
-            } else {
-                // Fallback: manually extract properties
-                $messageArray = [];
-                foreach (get_object_vars($message) as $key => $value) {
-                    $messageArray[$key] = $value;
-                }
-            }
-        } else {
-            $messageArray = $message;
-        }
+        $messageArray = $this->normalizeMessage($message);
 
         // 根据消息类型进行回复
-        switch ($message['MsgType']) {
+        switch ($messageArray['MsgType']) {
             case 'text':
                 // 文本消息处理
-                return $this->handleTextMessage($message);
+                return $this->handleTextMessage($messageArray);
             case 'event':
                 // 事件消息处理
-                return $this->handleEventMessage($message);
+                return $this->handleEventMessage($messageArray);
             default:
                 // 默认回复
                 return __('Hello, thanks for your message!', 'G3');
@@ -865,5 +843,35 @@ class WechatOAService {
         }
     }
 
+    /**
+     * Convert message to array format
+     * 
+     * 将消息转换为数组格式
+     * 
+     * @param mixed $message Message data (array or object)
+     * @return array Message data in array format
+     */
+    private function normalizeMessage($message): array
+    {
+        if (is_array($message)) {
+            return $message;
+        }
+
+        if (is_object($message)) {
+            // Handle EasyWeChat Message object
+            if (method_exists($message, 'toArray')) {
+                return $message->toArray();
+            } else {
+                // Fallback: manually extract properties
+                $result = [];
+                foreach (get_object_vars($message) as $key => $value) {
+                    $result[$key] = $value;
+                }
+                return $result;
+            }
+        }
+
+        return [];
+    }
 
 }
