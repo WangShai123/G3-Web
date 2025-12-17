@@ -1462,37 +1462,36 @@ class Developer extends Components {
                     'label_for' => 'appSecret',
                 ]
             ],
-            // [
-            //     'id'       => 'token',
-            //     'title'    => 'Token',
-            //     'callback' => function () {
-            //         echo Container::input(
-            //             SystemService::OPEN_WECHAT_OA_KEY,
-            //             $this->opMPOption,
-            //             'token',
-            //             'Token'
-            //         );
-            //     },
-            //     'args'     => [
-            //         'label_for' => 'token',
-            //     ]
-
-            // ],
-            // [
-            //     'id'       => 'encodingAESKey',
-            //     'title'    => 'Encoding AES Key',
-            //     'callback' => function () {
-            //         echo Container::input(
-            //             SystemService::OPEN_WECHAT_OA_KEY,
-            //             $this->opMPOption,
-            //             'encodingAESKey',
-            //             'Encoding AES Key'
-            //         );
-            //     },
-            //     'args'     => [
-            //         'label_for' => 'encodingAESKey',
-            //     ]
-            // ]
+            [
+                'id'       => 'token',
+                'title'    => 'Token',
+                'callback' => function () {
+                    echo Container::input(
+                        SystemService::OPEN_WECHAT_OA_KEY,
+                        $this->opMPOption,
+                        'token',
+                        'Token'
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'token',
+                ]
+            ],
+            [
+                'id'       => 'encodingAESKey',
+                'title'    => 'Encoding AES Key',
+                'callback' => function () {
+                    echo Container::input(
+                        SystemService::OPEN_WECHAT_OA_KEY,
+                        $this->opMPOption,
+                        'encodingAESKey',
+                        'Encoding AES Key'
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'encodingAESKey',
+                ]
+            ]
         ]);
     }
 }

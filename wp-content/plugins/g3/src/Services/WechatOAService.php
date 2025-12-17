@@ -123,12 +123,22 @@ class WechatOAService {
 
     private function config(): array
     {
-        $data = get_option(SystemService::OPEN_WECHAT_OA_KEY);
-        return [
+        $data   = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        $result = [
             'app_id' => $data['appId'] ?? '',
             'secret' => $data['appSecret'] ?? '',
             'cache'  => new EasyWechatCache()
         ];
+
+        $d = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        if (!empty($d['token'])) {
+            $result['token'] = $d['token'];
+        }
+        if (!empty($d['encodingAESKey'])) {
+            $result['aes_key'] = $d['encodingAESKey'];
+        }
+
+        return $result;
     }
 
     /**
