@@ -47,7 +47,7 @@ class Swiper extends Components {
             'swipers'   => __('Edit Swipers', 'G3'),
             'locations' => __('Manage Locations', 'G3'),
         ];
-        Container::tab('swiper', 'swipers', $tabs);
+        Container::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
     public function edit(): void
