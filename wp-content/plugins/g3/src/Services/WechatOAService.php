@@ -724,7 +724,12 @@ class WechatOAService {
             wp_cache_delete('messages:count', self::CACHE_GROUP);
             wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
 
-            return $wpdb->query($wpdb->prepare($query, $ids));
+            // 确保有参数传递给 prepare 方法
+            if (!empty($ids)) {
+                return $wpdb->query($wpdb->prepare($query, $ids));
+            } else {
+                return false;
+            }
         }
     }
 
