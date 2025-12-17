@@ -562,8 +562,12 @@ class WechatOAService {
         $params[] = $offset;
 
         // Execute query
-        $prepared_query = $wpdb->prepare($query, $params);
-        $messages       = $wpdb->get_results($prepared_query, ARRAY_A);
+        if (!empty($params)) {
+            $prepared_query = $wpdb->prepare($query, $params);
+            $messages       = $wpdb->get_results($prepared_query, ARRAY_A);
+        } else {
+            $messages = $wpdb->get_results($wpdb->prepare($query, $per_page, $offset), ARRAY_A);
+        }
 
         return $messages ?: [];
     }
