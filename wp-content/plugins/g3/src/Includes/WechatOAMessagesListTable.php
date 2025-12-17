@@ -62,8 +62,8 @@ class WechatOAMessagesListTable extends WP_List_Table {
             case 'type':
                 return ucfirst($item->type);
             case 'content':
-                $content = $item->content;
-                return $this->renderContent($content);
+                $content = Common::truncate($item->content, 50);
+                return esc_html($content);
             case 'created':
                 return wp_date('Y-m-d H:i:s', strtotime($item->created));
             default:
