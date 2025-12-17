@@ -115,38 +115,19 @@ class WechatOAMessagesListTable extends WP_List_Table {
 
     private function get_data($current_page, $perPage)
     {
-        return [
-            (object) [
-                'id'       => 1,
-                'openid'   => 'openid_test',
-                'nickname' => 'nickname_test',
-                'type'     => 'text',
-                'content'  => 'content_test',
-                'created'  => '2023-04-01 12:00:00',
-            ],
-            (object) [
-                'id'       => 2,
-                'openid'   => 'openid_test',
-                'nickname' => 'nickname_test',
-                'type'     => 'image',
-                'content'  => 'content_test',
-                'created'  => '2023-04-01 12:00:00',
-            ],
-        ];
+        // 计算偏移量
+        $offset = ($current_page - 1) * $perPage;
 
-        // // 计算偏移量
-        // $offset = ($current_page - 1) * $perPage;
+        // 获取消息数据
+        $messages = WechatOAService::getMessages($current_page, $perPage);
 
-        // // 获取消息数据
-        // $messages = WechatOAService::getMessages($current_page, $perPage);
+        // 将关联数组转换为对象数组，以匹配现有代码的使用方式
+        $result = [];
+        foreach ($messages as $message) {
+            $result[] = (object) $message;
+        }
 
-        // // 将关联数组转换为对象数组，以匹配现有代码的使用方式
-        // $result = [];
-        // foreach ($messages as $message) {
-        //     $result[] = (object) $message;
-        // }
-
-        // return $result;
+        return $result;
     }
 
     public function no_items()
