@@ -137,7 +137,8 @@ class WechatOAService {
         if (!empty($d['encodingAESKey'])) {
             $result['aes_key'] = $d['encodingAESKey'];
         }
-
+        // 添加调试日志
+        error_log('WeChat OA Final Config: ' . print_r($result, true));
         return $result;
     }
 

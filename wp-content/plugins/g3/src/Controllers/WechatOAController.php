@@ -33,26 +33,71 @@ class WechatOAController {
             }
 
             // Handle WeChat server verification (GET request)
+            // if ($request->get_method() === 'GET') {
+            //     // Let EasyWeChat handle the verification
+            //     $server   = $service->app->getServer();
+            //     $response = $server->serve();
+
+            //     // For GET requests, EasyWeChat should return the echostr directly
+            //     $content    = $response->getBody()->getContents();
+            //     $statusCode = $response->getStatusCode();
+
+            //     $wpResponse = new WP_REST_Response($content, $statusCode);
+
+            //     // Set response headers
+            //     foreach ($response->getHeaders() as $header => $values) {
+            //         $wpResponse->header($header, implode(', ', $values));
+            //     }
+
+            //     return $wpResponse;
+            // }
+
+            // Handle WeChat server verification (GET request)
             if ($request->get_method() === 'GET') {
-                // Let EasyWeChat handle the verification
-                $server   = $service->app->getServer();
-                $response = $server->serve();
+                // Manual verification - more reliable approach
+                $signature = $request->get_param('signature');
+                $timestamp = $request->get_param('timestamp');
+                $nonce     = $request->get_param('nonce');
+                $echostr   = $request->get_param('echostr');
 
-                // For GET requests, EasyWeChat should return the echostr directly
-                $content    = $response->getBody()->getContents();
-                $statusCode = $response->getStatusCode();
+                error_log("WeChat Verification - Signature: $signature, Timestamp: $timestamp, Nonce: $nonce, Echostr: $echostr");
 
-                $wpResponse = new WP_REST_Response($content, $statusCode);
+                // Get token from service config
+                $config = get_option('g3_option_wechatOA');
+                $token  = $config['token'] ?? '';
 
-                // Set response headers
-                foreach ($response->getHeaders() as $header => $values) {
-                    $wpResponse->header($header, implode(', ', $values));
+                error_log("WeChat Token from config: $token");
+
+                if (empty($token)) {
+                    error_log('WeChat token is not configured');
+                    return new WP_REST_Response('Forbidden', 403);
                 }
 
-                return $wpResponse;
+                // Sort parameters lexicographically
+                $params = [$token, $timestamp, $nonce];
+                sort($params, SORT_STRING);
+
+                // Concatenate parameters
+                $concatenated = implode('', $params);
+
+                // Generate SHA1 hash
+                $hash = sha1($concatenated);
+
+                error_log("Calculated hash: $hash, Received signature: $signature");
+
+                // Compare with signature
+                if ($hash === $signature) {
+                    // Return echostr to confirm successful verification
+                    error_log("WeChat verification successful, returning echostr: $echostr");
+                    return new WP_REST_Response($echostr, 200);
+                } else {
+                    error_log("WeChat verification failed");
+                    return new WP_REST_Response('Forbidden', 403);
+                }
             }
 
             // Handle WeChat server push messages
+            error_log('Handling WeChat server push messages');
             $response = $service->app->getServer()->serve();
 
             // Get response content and status code
