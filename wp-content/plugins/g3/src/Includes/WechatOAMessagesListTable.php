@@ -56,7 +56,7 @@ class WechatOAMessagesListTable extends WP_List_Table {
             case 'openid':
                 return substr($item->openid, 0, 20) . '...';
             case 'nickname':
-                return substr($item->nickname, 0, 20) . '...';
+                return !empty($item->nickname) ? substr($item->nickname, 0, 20) . '...' : '-';
             case 'type':
                 return ucfirst($item->type);
             case 'content':
@@ -66,7 +66,7 @@ class WechatOAMessagesListTable extends WP_List_Table {
                 }
                 return esc_html($content);
             case 'created':
-                return date('Y-m-d H:i:s', $item->created);
+                return wp_date('Y-m-d H:i:s', strtotime($item->created));
             default:
                 return isset($item->$column_name) ? $item->$column_name : '-';
         }
@@ -99,39 +99,24 @@ class WechatOAMessagesListTable extends WP_List_Table {
 
     private function get_total_items()
     {
-        // 这里需要根据实际情况实现获取总数据量的逻辑
-        // 暂时返回一个默认值
-        // return 0;
-
-        // 模拟数据
-        return 100;
+        return WechatOAService::getMessageCount();
     }
 
     private function get_data($current_page, $perPage)
     {
-        // 这里需要根据实际情况实现获取数据的逻辑
-        // 暂时返回一个空数组
-        // return [];
+        // 计算偏移量
+        $offset = ($current_page - 1) * $perPage;
 
-        // 模拟数据
-        return [
-            (object) [
-                'id'       => '1',
-                'openid'   => 'o6_bmjrPTlm6_2sgVt7hMZOPfL2M',
-                'nickname' => 'John Doe',
-                'type'     => 'text',
-                'content'  => 'Hello, World!',
-                'created'  => 1633072800,
-            ],
-            (object) [
-                'id'       => '2',
-                'openid'   => 'o6_bmjrPTlm6_2sgVt7hMZOPfL2M',
-                'nickname' => 'Jane Smith',
-                'type'     => 'text',
-                'content'  => 'Hello, World!',
-                'created'  => 1633272800,
-            ]
-        ];
+        // 获取消息数据
+        $messages = WechatOAService::getMessages($current_page, $perPage);
+
+        // 将关联数组转换为对象数组，以匹配现有代码的使用方式
+        $result = [];
+        foreach ($messages as $message) {
+            $result[] = (object) $message;
+        }
+
+        return $result;
     }
 
     public function no_items()
