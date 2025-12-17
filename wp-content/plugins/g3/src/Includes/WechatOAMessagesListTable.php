@@ -4,6 +4,7 @@ namespace JEALER\G3\Includes;
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Validator;
 
 class WechatOAMessagesListTable extends WP_List_Table {
     private $perPage = 20;
@@ -62,15 +63,21 @@ class WechatOAMessagesListTable extends WP_List_Table {
                 return ucfirst($item->type);
             case 'content':
                 $content = $item->content;
-                if (strlen($content) > 50) {
-                    $content = Common::truncate($content, 50);
-                }
-                return esc_html($content);
+                return $this->renderContent($content);
             case 'created':
                 return wp_date('Y-m-d H:i:s', strtotime($item->created));
             default:
                 return isset($item->$column_name) ? $item->$column_name : '-';
         }
+    }
+
+    private function renderContent($content)
+    {
+        if (Validator::isImage($content)) {
+            return '<img src="' . $content . '" alt="Image" width="160" height="80" />';
+        }
+        $content = Common::truncate($content, 50);
+        return esc_html($content);
     }
 
     public function prepare_items()
@@ -108,19 +115,38 @@ class WechatOAMessagesListTable extends WP_List_Table {
 
     private function get_data($current_page, $perPage)
     {
-        // 计算偏移量
-        $offset = ($current_page - 1) * $perPage;
+        return [
+            (object) [
+                'id'       => 1,
+                'openid'   => 'openid_test',
+                'nickname' => 'nickname_test',
+                'type'     => 'text',
+                'content'  => 'content_test',
+                'created'  => '2023-04-01 12:00:00',
+            ],
+            (object) [
+                'id'       => 2,
+                'openid'   => 'openid_test',
+                'nickname' => 'nickname_test',
+                'type'     => 'image',
+                'content'  => 'content_test',
+                'created'  => '2023-04-01 12:00:00',
+            ],
+        ];
 
-        // 获取消息数据
-        $messages = WechatOAService::getMessages($current_page, $perPage);
+        // // 计算偏移量
+        // $offset = ($current_page - 1) * $perPage;
 
-        // 将关联数组转换为对象数组，以匹配现有代码的使用方式
-        $result = [];
-        foreach ($messages as $message) {
-            $result[] = (object) $message;
-        }
+        // // 获取消息数据
+        // $messages = WechatOAService::getMessages($current_page, $perPage);
 
-        return $result;
+        // // 将关联数组转换为对象数组，以匹配现有代码的使用方式
+        // $result = [];
+        // foreach ($messages as $message) {
+        //     $result[] = (object) $message;
+        // }
+
+        // return $result;
     }
 
     public function no_items()
@@ -181,12 +207,14 @@ class WechatOAMessagesListTable extends WP_List_Table {
     public function column_action($item)
     {
         $actions = [
-            'delete' => sprintf(
-                '<a href="?page=%s&action=delete&messages=%s&_wpnonce=%s">' . __('Delete', 'G3') . '</a>',
-                $_REQUEST['page'],
-                $item->id,
-                wp_create_nonce('bulk-' . $this->_args['plural'])
+            'view'   => sprintf(
+                '<span id="view-message-%s" class="cursor-pointer color-link">' . __('View', 'G3') . '</span>',
+                $item->id
             ),
+            'delete' => sprintf(
+                '<span id="delete-message-%s" class="cursor-pointer color-error">' . __('Delete', 'G3') . '</span>',
+                $item->id
+            )
         ];
 
         return join(' | ', $actions);
