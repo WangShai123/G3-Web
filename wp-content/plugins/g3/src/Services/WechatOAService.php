@@ -448,7 +448,7 @@ class WechatOAService {
 
         // Prepare message data
         $data = [
-            'msgid'    => $message['MsgID'] ?? '',
+            'msgid'    => $message['MsgID'] ?? $message['MsgId'] ?? '',
             'openid'   => $message['FromUserName'] ?? '',
             'nickname' => $message['Nickname'] ?? '',
             'type'     => $message['MsgType'] ?? '',
@@ -708,30 +708,46 @@ class WechatOAService {
      * 
      * 处理来自微信服务器的入站消息
      * 
-     * @param array $message Message data from EasyWeChat
+     * @param mixed $message Message data from EasyWeChat
      * @return bool Whether the message was processed successfully
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function processIncomingMessage(array $message): bool
+    public function processIncomingMessage(mixed $message): bool
     {
         try {
+            // Convert message to array if it's an object
+            if (is_object($message)) {
+                // Handle EasyWeChat Message object
+                if (method_exists($message, 'toArray')) {
+                    $messageArray = $message->toArray();
+                } else {
+                    // Fallback: manually extract properties
+                    $messageArray = [];
+                    foreach (get_object_vars($message) as $key => $value) {
+                        $messageArray[$key] = $value;
+                    }
+                }
+            } else {
+                $messageArray = $message;
+            }
+
             // Validate message
-            if (empty($message['FromUserName']) || empty($message['MsgType'])) {
+            if (empty($messageArray['FromUserName']) || empty($messageArray['MsgType'])) {
                 error_log('Invalid WeChat message: missing required fields');
                 return false;
             }
 
             // Save message to database
-            $result = $this->saveMessage($message);
+            $result = $this->saveMessage($messageArray);
 
             if (false === $result) {
-                error_log(message: 'Failed to save WeChat message to database');
+                error_log('Failed to save WeChat message to database');
                 return false;
             }
 
             // Trigger action for other plugins or modules to hook into
-            do_action('g3_wechat_message_received', $message);
+            do_action('g3_wechat_message_received', $messageArray);
 
             return true;
         }
