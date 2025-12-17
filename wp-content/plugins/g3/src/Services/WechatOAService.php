@@ -453,7 +453,7 @@ class WechatOAService {
         if (!empty($openid) && $this->isAvailable()) {
             try {
                 $userInfo = $this->getUserInfo($openid);
-                $nickname = $userInfo['nickname'] ?? '';
+                $nickname = $userInfo['nickname'] ?? '-';
             }
             catch (\Exception $e) {
                 error_log('Failed to get user info: ' . $e->getMessage());
