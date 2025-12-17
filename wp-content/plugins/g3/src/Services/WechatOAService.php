@@ -446,11 +446,25 @@ class WechatOAService {
         global $wpdb;
         $table = $wpdb->prefix . self::MESSAGES_TABLE;
 
+        // Get user nickname from WeChat API if possible
+        $openid   = $message['FromUserName'] ?? '';
+        $nickname = '';
+
+        if (!empty($openid) && $this->isAvailable()) {
+            try {
+                $userInfo = $this->getUserInfo($openid);
+                $nickname = $userInfo['nickname'] ?? '';
+            }
+            catch (\Exception $e) {
+                error_log('Failed to get user info: ' . $e->getMessage());
+            }
+        }
+
         // Prepare message data
         $data = [
             'msgid'    => $message['MsgID'] ?? $message['MsgId'] ?? '',
-            'openid'   => $message['FromUserName'] ?? '',
-            'nickname' => $message['Nickname'] ?? '',
+            'openid'   => $openid,
+            'nickname' => $nickname,
             'type'     => $message['MsgType'] ?? '',
             'content'  => '',
             'created'  => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : current_time('mysql'),
