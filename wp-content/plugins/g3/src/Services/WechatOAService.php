@@ -584,7 +584,8 @@ class WechatOAService {
      */
     public static function getMessageCount(array $conditions = []): int
     {
-        $cache_key = 'messages:count:query_' . md5(serialize($conditions));
+        // 根据条件是否为空使用不同的缓存键
+        $cache_key = empty($conditions) ? 'messages:count' : 'messages:count:query_' . md5(serialize($conditions));
         $count     = wp_cache_get($cache_key, self::CACHE_GROUP);
 
         if (false === $count) {
@@ -606,9 +607,16 @@ class WechatOAService {
             }
 
             // Prepare query
-            $query          = "SELECT COUNT(*) FROM {$table} {$where}";
-            $prepared_query = $wpdb->prepare($query, $params);
-            $count          = (int) $wpdb->get_var($prepared_query);
+            $query = "SELECT COUNT(*) FROM {$table} {$where}";
+
+            if (!empty($params)) {
+                // 如果有条件参数，使用 prepare
+                $prepared_query = $wpdb->prepare($query, $params);
+                $count          = (int) $wpdb->get_var($prepared_query);
+            } else {
+                // 如果没有条件参数，直接执行查询
+                $count = (int) $wpdb->get_var($query);
+            }
 
             // Cache result for 5 minutes
             wp_cache_set($cache_key, $count, self::CACHE_GROUP, 300);
