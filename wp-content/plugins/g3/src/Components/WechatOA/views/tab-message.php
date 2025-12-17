@@ -17,5 +17,7 @@ if (!$enable) :
         'mt-4'
     );
 else :
+    echo '<form id="list-form" method="post">';
     $table->display();
+    echo '</form>';
 endif;
