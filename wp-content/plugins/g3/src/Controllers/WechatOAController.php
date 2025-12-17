@@ -24,13 +24,9 @@ class WechatOAController {
     public function callback(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         try {
-            error_log('WeChat Callback Request: ' . $request->get_method() . ' ' . $_SERVER['REQUEST_URI']);
-            error_log('Request Params: ' . print_r($request->get_params(), true));
-
             $service = WechatOAService::run();
 
             if (!$service->isAvailable()) {
-                error_log('Service app not uninitialized');
                 return new WP_REST_Response([
                     'message' => 'Service not available'
                 ], 503);
@@ -44,14 +40,11 @@ class WechatOAController {
                 $nonce     = $request->get_param('nonce');
                 $echostr   = $request->get_param('echostr');
 
-                error_log("WeChat Verification Parameters - Signature: $signature, Timestamp: $timestamp, Nonce: $nonce, Echostr: $echostr");
-
                 // Get token from service config - FIXED: Use the correct option key
                 $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
                 $token  = $config['token'] ?? '';
 
                 if (empty($token)) {
-                    error_log('WeChat token is not configured');
                     return new WP_REST_Response('Forbidden', 403);
                 }
 
@@ -59,30 +52,15 @@ class WechatOAController {
                 $params = [$token, $timestamp, $nonce];
                 sort($params, SORT_STRING);
 
-                error_log("Sorted params for signature: " . print_r($params, true));
-
                 // Concatenate parameters
                 $concatenated = implode('', $params);
 
                 // Generate SHA1 hash
                 $hash = sha1($concatenated);
 
-                error_log("Calculated hash: $hash, Received signature: $signature");
-
-                // Compare with signature
-                // if ($hash === $signature) {
-                //     // Return echostr to confirm successful verification
-                //     // 最简化的响应，只返回echostr
-                //     wp_die($echostr, '', ['response' => 200]);
-                // } else {
-                //     wp_die('Forbidden', '', ['response' => 403]);
-                // }
-
                 // Compare with signature
                 if ($hash === $signature) {
-                    error_log("Signature verification successful, returning echostr: $echostr");
 
-                    // 清空所有输出缓冲区
                     while (ob_get_level()) {
                         ob_end_clean();
                     }
@@ -92,7 +70,6 @@ class WechatOAController {
                     echo $echostr;
                     exit;
                 } else {
-                    error_log("Signature verification failed");
                     header('HTTP/1.1 403 Forbidden');
                     echo 'Forbidden';
                     exit;
@@ -100,7 +77,6 @@ class WechatOAController {
             }
 
             // Handle WeChat server push messages
-            error_log('Handling WeChat server push messages');
             $response = $service->app->getServer()->serve();
 
             // Get response content and status code
