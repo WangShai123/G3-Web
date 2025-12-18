@@ -18,7 +18,7 @@ class TestController {
      * 访问：GET /wp-json/api/v1/test/info
      * 
      * @param WP_REST_Request $request
-     * @return array
+     * @return WP_Error|WP_REST_Response
      */
     #[RestRouter(
         namespace: 'api/v1',

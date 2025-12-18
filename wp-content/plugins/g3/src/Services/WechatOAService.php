@@ -1,9 +1,12 @@
 <?php
 namespace JEALER\G3\Services;
+
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
 use WP_Error;
+use Exception;
+
 class WechatOAService {
 
     /**
@@ -29,6 +32,30 @@ class WechatOAService {
      * @author Wang Shai
      */
     public const MESSAGES_TABLE = 'g3_wechat_oa_messages';
+
+    /**
+     * Reply Table Name for Wechat Official Account
+     * 
+     * 微信公众号回复数据表名
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const REPLY_TABLE = 'g3_wechat_oa_reply';
+
+    /**
+     * Keyword Table Name for Wechat Official Account
+     * 
+     * 微信公众号关键词数据表名
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const KEYWORD_TABLE = 'g3_wechat_oa_reply_keyword';
 
     /**
      * Option Key for Wechat OA
@@ -173,12 +200,10 @@ class WechatOAService {
     {
         if ($menuId == 0) {
             $result = $this->app->getClient()->get('cgi-bin/menu/delete')->toArray();
-            error_log('Menu deleted result with get: ' . print_r($result, true));
         } else {
             $result = $this->app->getClient()->postJson('cgi-bin/menu/delconditional', [
                 'menuid' => $menuId
             ]);
-            error_log('Menu deleted result with postJson: ' . print_r($result, true));
         }
         return isset($result['errcode']) && $result['errcode'] == 0 ? true : false;
     }
@@ -455,7 +480,7 @@ class WechatOAService {
                 $userInfo = $this->getUserInfo($openid);
                 $nickname = $userInfo['nickname'] ?? '-';
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 error_log('Failed to get user info: ' . $e->getMessage());
             }
         }
@@ -741,6 +766,209 @@ class WechatOAService {
         }
     }
 
+    public static function replyListCount(): int
+    {
+        return 4;
+    }
+
+    /**
+     * Add a reply rule
+     * 
+     * 添加一条自动回复规则
+     *
+     * @param array $data {
+     *     @type string|array $keywords  关键词（字符串逗号分隔 或 数组）
+     *     @type string       $content   回复内容
+     *     @type string       $type      类型（如 'text', 'news'）
+     *     @type int          $status    状态（1=启用, 0=禁用）
+     * }
+     * @return int|WP_Error 成功返回 reply_id，失败返回 WP_Error 或 false
+     */
+    public static function addReply(array $data)
+    {
+        global $wpdb;
+
+        // === 1. 标准化并校验关键词 ===
+        $keywords = self::normalizeKeywords($data['keywords'] ?? '');
+
+        if (empty($keywords)) {
+            return new WP_Error(
+                'no_keywords',
+                __('At least one keyword is required', 'G3')
+            );
+        }
+
+        // === 2. 查重：只要 keyword 表存在就算占用（全局唯一）===
+        foreach ($keywords as $keyword) {
+            if (self::isKeywordExists($keyword)) {
+                return new WP_Error(
+                    'keyword_exists',
+                    sprintf(
+                        __('Keyword "%s" is already in use', 'G3'),
+                        esc_html($keyword)
+                    )
+                );
+            }
+        }
+
+        // === 3. 校验回复内容 ===
+        $content = trim($data['content'] ?? '');
+        if (empty($content)) {
+            return new WP_Error(
+                'empty_content',
+                __('Reply content cannot be empty', 'G3')
+            );
+        }
+
+        // === 4. 开启事务 ===
+        $wpdb->query('START TRANSACTION');
+
+        try {
+            // 插入主表
+            $replyData = [
+                'type'    => sanitize_text_field($data['type'] ?? 'text'),
+                'content' => $content,
+                'status'  => (int) ($data['status'] ?? 1),
+                'created' => current_time('mysql', true),
+                'updated' => current_time('mysql', true)
+            ];
+
+            $replyId = self::insertReply($replyData);
+            if (!$replyId) {
+                new WP_Error(
+                    'db_error',
+                    __('Failed to insert reply into main table', 'G3')
+                );
+            }
+
+            // 批量插入关键词
+            self::batchInsertKeywords($replyId, $keywords);
+
+            // === 5. （可选）预热缓存：为每个关键词缓存 reply_id ===
+            foreach ($keywords as $keyword) {
+                wp_cache_set("keyword:{$keyword}", $replyId, self::CACHE_GROUP);
+            }
+
+            $wpdb->query('COMMIT');
+            return $replyId;
+        }
+        catch (Exception $e) {
+            $wpdb->query('ROLLBACK');
+            error_log('G3 WeChat OA - addReply failed: ' . $e->getMessage());
+            return new WP_Error(
+                'db_error',
+                __('Save failed, please try again later', 'G3')
+            );
+        }
+    }
+    /**
+     * 标准化关键词输入
+     * @param mixed $input
+     * @return array 去重、去空、trim 后的关键词数组
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function normalizeKeywords($input): array
+    {
+        $keywords = [];
+
+        if (is_array($input)) {
+            $keywords = $input;
+        } elseif (is_string($input)) {
+            $keywords = explode(',', $input);
+        }
+
+        $keywords = array_map('trim', $keywords);
+        $keywords = array_filter($keywords, function ($kw) {
+            return !empty($kw) && strlen($kw) <= 100; // 匹配 VARCHAR(100)
+        });
+
+        return array_unique($keywords);
+    }
+    /**
+     * 检查关键词是否已存在于 keyword 表（全局唯一）
+     * @param string $keyword
+     * @return bool 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function isKeywordExists(string $keyword): bool
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT 1 FROM {$table} WHERE keyword = %s",
+            $keyword
+        ));
+    }
+    /**
+     * 插入主表
+     */
+    private static function insertReply(array $data)
+    {
+        global $wpdb;
+        $table  = $wpdb->prefix . self::REPLY_TABLE;
+        $result = $wpdb->insert($table, $data, ['%s', '%s', '%d', '%s', '%s']);
+        return $result ? $wpdb->insert_id : false;
+    }
+    /**
+     * 批量插入关键词（使用单条 INSERT ... VALUES (...), (...) 语句）
+     */
+    private static function batchInsertKeywords(int $replyId, array $keywords): void
+    {
+        if (empty($keywords)) return;
+
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+
+        $values       = [];
+        $placeholders = [];
+
+        foreach ($keywords as $keyword) {
+            $values[]       = $replyId;
+            $values[]       = $keyword;
+            $placeholders[] = '(%d, %s)';
+        }
+
+        $sql      = "INSERT INTO {$table} (reply_id, keyword) VALUES " . implode(', ', $placeholders);
+        $prepared = $wpdb->prepare($sql, $values);
+
+        if (false === $wpdb->query($prepared)) {
+            throw new Exception('Batch insert keywords failed');
+        }
+    }
+
+    public static function getReply(string $keyword)
+    {
+        if (empty($keyword)) {
+            return false;
+        }
+
+        $cacheKey = 'reply:' . md5($keyword);
+        $reply    = wp_cache_get($cacheKey, self::CACHE_GROUP);
+
+        if (false === $reply) {
+            global $wpdb;
+
+            $keywordTable = $wpdb->prefix . self::KEYWORD_TABLE;
+            $replyId      = $wpdb->get_var($wpdb->prepare(
+                "SELECT reply_id FROM {$keywordTable} WHERE keyword = %s",
+                $keyword
+            ));
+            if (!$replyId) return false;
+
+            $replyTable = $wpdb->prefix . self::REPLY_TABLE;
+            $reply      = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$replyTable} WHERE id = %d",
+                $replyId
+            ), ARRAY_A);
+            if (!$reply) return false;
+            wp_cache_set($cacheKey, $reply, self::CACHE_GROUP);
+        }
+
+        return $reply;
+    }
+
     /**
      * Process incoming message from WeChat server
      * 
@@ -846,13 +1074,23 @@ class WechatOAService {
         }
     }
 
+    private function searchUrl(string $keyword)
+    {
+        return home_url('/') . '?s=' . urlencode($keyword);
+    }
     private function handleTextMessage(array $message): ?string
     {
         $content = $message['Content'] ?? '';
 
-        // 关键词回复示例
-        if (strpos($content, '你好') !== false) {
-            return __('Hello! How can I help you?', 'G3');
+        // 尝试根据消息内容获取自动回复
+        $reply = self::getReply($content);
+
+        if ($reply !== false) {
+            return $reply['content'] ?? '';
+        }
+
+        if ($this->isSearchEnabled()) {
+            return $this->searchUrl($content);
         }
 
         // 默认回复
@@ -904,6 +1142,12 @@ class WechatOAService {
         }
 
         return [];
+    }
+
+    public function isSearchEnabled(): bool
+    {
+        $option = get_option(self::OPTION_KEY)['search'] ?? false;
+        return $option === '1';
     }
 
 }

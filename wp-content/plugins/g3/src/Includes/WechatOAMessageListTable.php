@@ -6,7 +6,7 @@ use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Validator;
 
-class WechatOAMessagesListTable extends WP_List_Table {
+class WechatOAMessageListTable extends WP_List_Table {
     private $perPage = 20;
 
     public function __construct()
@@ -22,11 +22,11 @@ class WechatOAMessagesListTable extends WP_List_Table {
     {
         return [
             'cb'       => '<input type="checkbox" />',
-            'openid'   => __('OpenID', 'G3'),
-            'nickname' => __('Nickname', 'G3'),
-            'type'     => __('Type', 'G3'),
-            'content'  => __('Content', 'G3'),
-            'created'  => __('Created At', 'G3'),
+            'openid'   => 'OpenID',
+            'nickname' => __('Nickname'),
+            'type'     => __('Type'),
+            'content'  => __('Content'),
+            'created'  => __('Time'),
             'action'   => __('Action')
         ];
     }

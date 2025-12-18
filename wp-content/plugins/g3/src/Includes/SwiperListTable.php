@@ -194,10 +194,6 @@ class SwiperListTable extends WP_List_Table {
         }
         $msg = __('Updated', 'G3');
         wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},1000)');
-
-        // $sendback = wp_get_referer() ?: admin_url('themes.php');
-        // wp_safe_redirect(remove_query_arg(['action', 'action2', 'swiper'], $sendback));
-        // exit;
     }
 
     /**

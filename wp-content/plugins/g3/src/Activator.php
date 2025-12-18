@@ -372,6 +372,22 @@ class Activator {
             dbDelta($sql);
         }
 
+        /**
+         * Wechat Official Account Messages Table
+         * 
+         * 微信公众号消息表。
+         *  - id: 消息表字段id
+         *  - msgid: 微信消息id
+         *  - openid: 用户唯一标识
+         *  - nickname: 用户昵称（可选）
+         *  - type: 消息类型: text/image/voice/video/location/link/event等
+         *  - content: 消息内容: 文本内容/事件描述/媒体ID/地理位置信息/链接信息等
+         *  - created: 消息创建时间 UTC 时间
+         * 
+         * @var string $tableName 微信公众号消息表名
+         * @since 1.0.0
+         * @author Wang Shai
+         */
         $tableName  = $wpdb->prefix . 'g3_wechat_oa_messages';
         $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
         if (!$tableExist) {
@@ -379,15 +395,71 @@ class Activator {
                 `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `msgid` varchar(64) NOT NULL COMMENT '微信消息ID',
                 `openid` varchar(64) NOT NULL COMMENT '用户唯一标识',
-                `nickname` varchar(128) NOT NULL COMMENT '用户昵称（可选）',
-                `type` varchar(32) NOT NULL COMMENT '消息类型 text/image/voice/video/location/link/event等',
-                `content` longtext NOT NULL COMMENT '文本内容/事件描述/媒体ID/地理位置信息/链接信息',
-                `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '消息接收时间',
+                `nickname` varchar(128) NOT NULL COMMENT '用户昵称',
+                `type` varchar(32) NOT NULL COMMENT '消息类型',
+                `content` longtext NOT NULL COMMENT '消息内容',
+                `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '消息接收时间 UTC',
                 PRIMARY KEY (`id`),
                 KEY `openid` (`openid`),
                 KEY `type` (`type`),
                 KEY `created` (`created`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA messages table';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
+         * Wechat Official Account Reply Table
+         * 
+         * 微信公众号应答表。
+         *  - id: 应答表字段id
+         *  - type: 应答类型: text/image/voice/video/location/link/event等
+         *  - content: 应答内容
+         *  - status: 应答状态: 1: enabled, 0: disabled, default: 1
+         *  - created: 创建时间 UTC 时间
+         *  - updated: 更新时间 UTC 时间
+         * 
+         * @var string $tableName 微信公众号回复表名
+         * @since 1.0.0
+         * @author Wang Shai
+         */
+        $tableName  = $wpdb->prefix . 'g3_wechat_oa_reply';
+        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
+        if (!$tableExist) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+                `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `type` varchar(32) NOT NULL COMMENT '应答类型',
+                `content` longtext NOT NULL COMMENT '应答内容',
+                `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '应答状态',
+                `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间 UTC',
+                `updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间 UTC',
+                PRIMARY KEY (`id`),
+                KEY `status` (`status`)
+            ) ENGINE=InnoDB $charset COMMENT='wechat OA reply table';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
+         * Wechat Official Account Reply Keyword Table
+         * 
+         * 微信公众号应答关键词关联表。
+         *  - reply_id: 关联的应答id
+         *  - keyword: 触发关键词
+         * 
+         * @var string $tableName 微信公众号应答关键词表名
+         * @since 1.0.0
+         * @author Wang Shai
+         */
+        $tableName  = $wpdb->prefix . 'g3_wechat_oa_reply_keyword';
+        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
+        if (!$tableExist) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+                `reply_id` bigint(20) UNSIGNED NOT NULL COMMENT '关联的应答id',
+                `keyword` varchar(100) NOT NULL COMMENT '关键词',
+                PRIMARY KEY (`reply_id`, `keyword`),
+                KEY `keyword` (`keyword`)
+            ) ENGINE=InnoDB $charset COMMENT='wechat OA reply keyword table';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }

@@ -152,19 +152,22 @@ final class Common {
     }
 
     /**
-     * Truncate a string
+     * Truncate string with ellipsis
      * 
-     * 截断字符串
+     * 截断字符串并添加省略号
      * 
-     * @param string $string
-     * @param int $length
-     * @param string $ellipsis
-     * @return string
+     * @param string $string The string to truncate
+     * @param int $length Maximum length of the string
+     * @param string $ellipsis Ellipsis string, defaults to '...'
+     * @return string Truncated string with ellipsis
      * @since 1.0.0
      * @author Wang Shai
      */
     public static function truncate($string, $length = 50, $ellipsis = '...'): string
     {
-        return strlen($string) > $length ? substr($string, 0, $length) . $ellipsis : $string;
+        // Use multibyte functions for proper handling of UTF-8 characters
+        return mb_strlen($string) > $length
+            ? mb_substr($string, 0, $length) . $ellipsis
+            : $string;
     }
 }

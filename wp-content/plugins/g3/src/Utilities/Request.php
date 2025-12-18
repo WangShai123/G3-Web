@@ -5,6 +5,18 @@ use WP_REST_Request;
 final class Request {
 
     /**
+     * Get REST API URL
+     * 
+     * 获取REST API URL
+     *
+     * @return string
+     */
+    public static function restApi($router = ''): string
+    {
+        return get_site_url() . '/wp-json' . $router;
+    }
+
+    /**
      * Get current request count
      * 
      * 获取当前请求计数

@@ -2,10 +2,10 @@
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Container;
-use JEALER\G3\Includes\WechatOAMessagesListTable;
+use JEALER\G3\Includes\WechatOAMessageListTable;
 
 Frontend::loadStyle('jui');
-$table = new WechatOAMessagesListTable();
+$table = new WechatOAMessageListTable();
 
 $option = Components::getProperty('WechatOA', 'option');
 $enable = $option['storeMessages'] ?? false;
