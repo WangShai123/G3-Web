@@ -95,12 +95,15 @@ class WechatOAController {
                 $wpResponse->header($header, implode(', ', $values));
             }
 
+            $wpResponse->header('Content-Type', 'application/xml');
+
             return $wpResponse;
 
         }
         catch (\Exception $e) {
             // Log the error
             error_log('WeChat callback error: ' . $e->getMessage());
+            error_log('WeChat callback error trace: ' . $e->getTraceAsString());
 
             // Return error response
             return new WP_REST_Response([
