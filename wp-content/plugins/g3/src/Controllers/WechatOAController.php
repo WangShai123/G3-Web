@@ -83,18 +83,34 @@ class WechatOAController {
             // 打印 完整 $res
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
-            // 获取实际的响应内容
+            // // 获取实际的响应内容
+            // $responseBody = $response->getBody();
+            // if (method_exists($responseBody, '__toString')) {
+            //     $actualContent = (string) $responseBody;
+            //     error_log('WeChat OA - Actual response body: ' . $actualContent);
+            // } else {
+            //     $actualContent = $responseBody->getContents();
+            //     error_log('WeChat OA - Actual response contents: ' . $actualContent);
+            // }
+
+            // // Get response content and status code
+            // $content    = $response->getBody()->getContents();
+            // $statusCode = $response->getStatusCode();
+
+            // 获取实际的响应内容（只获取一次）
             $responseBody = $response->getBody();
+            $content      = '';
             if (method_exists($responseBody, '__toString')) {
-                $actualContent = (string) $responseBody;
-                error_log('WeChat OA - Actual response body: ' . $actualContent);
+                $content = (string) $responseBody;
+                error_log('WeChat OA - Actual response body: ' . $content);
             } else {
-                $actualContent = $responseBody->getContents();
-                error_log('WeChat OA - Actual response contents: ' . $actualContent);
+                // 保存当前位置以便可以重新读取
+                $responseBody->rewind();
+                $content = $responseBody->getContents();
+                error_log('WeChat OA - Actual response contents: ' . $content);
             }
 
-            // Get response content and status code
-            $content    = $response->getBody()->getContents();
+            // Get response status code
             $statusCode = $response->getStatusCode();
 
             error_log('WeChat OA - Response content length: ' . strlen($content));
