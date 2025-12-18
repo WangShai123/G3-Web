@@ -77,11 +77,15 @@ class WechatOAController {
             }
 
             // Handle WeChat server push messages
+            error_log('WeChat OA - Processing incoming message');
             $response = $service->app->getServer()->serve();
 
             // Get response content and status code
             $content    = $response->getBody()->getContents();
             $statusCode = $response->getStatusCode();
+
+            error_log('WeChat OA - Response content: ' . $content);
+            error_log('WeChat OA - Response status code: ' . $statusCode);
 
             // Create WordPress REST response
             $wpResponse = new WP_REST_Response($content, $statusCode);
