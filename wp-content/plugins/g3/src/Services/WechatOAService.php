@@ -155,7 +155,7 @@ class WechatOAService {
         $result = [
             'app_id' => $data['appId'] ?? '',
             'secret' => $data['appSecret'] ?? '',
-            'cache'  => new EasyWechatCache()
+            // 'cache'  => new EasyWechatCache()
         ];
 
         if (!empty($data['token'])) {
