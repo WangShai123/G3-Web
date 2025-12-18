@@ -1067,16 +1067,19 @@ class WechatOAService {
         switch ($messageArray['MsgType']) {
             case 'text':
                 // 文本消息处理
-                error_log('WeChat OA - Text message reply: ' . $this->handleTextMessage($messageArray));
                 $reply = $this->handleTextMessage($messageArray);
+                error_log('WeChat OA - Text message reply: ' . $reply);
+                break;
             case 'event':
                 // 事件消息处理
-                error_log('WeChat OA - Event message reply: ' . $this->handleEventMessage($messageArray));
                 $reply = $this->handleEventMessage($messageArray);
+                error_log('WeChat OA - Event message reply: ' . $reply);
+                break;
             default:
                 // 默认回复
-                error_log('WeChat OA - Default reply: ' . __('Hello, thanks for your message!', 'G3'));
                 $reply = __('Hello, thanks for your message!', 'G3');
+                error_log('WeChat OA - Default reply: ' . __('Hello, thanks for your message!', 'G3'));
+                break;
         }
         error_log('WeChat OA - Final reply content: ' . ($reply ?? 'null'));
         return $reply;
