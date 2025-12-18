@@ -102,7 +102,8 @@ class WechatOAController {
 
             error_log('WeChat OA - Sending response: ' . $content);
 
-            $this->decryptAndLogResponse($content);
+            // 尝试使用EasyWeChat解密响应内容并打印（仅用于调试）
+            $this->decryptAndLogResponseWithEasyWeChat($content);
 
             return $wpResponse;
 
@@ -118,16 +119,15 @@ class WechatOAController {
             ], 500);
         }
     }
-
     /**
-     * 解密微信响应内容并记录日志（仅用于调试）
+     * 使用EasyWeChat解密微信响应内容并记录日志（仅用于调试）
      * 
      * @param string $encryptedResponse
      */
-    private function decryptAndLogResponse(string $encryptedResponse): void
+    private function decryptAndLogResponseWithEasyWeChat(string $encryptedResponse): void
     {
         try {
-            error_log('WeChat OA - Starting decryption process');
+            error_log('WeChat OA - Starting decryption process with EasyWeChat');
 
             // 从响应中提取加密数据
             $xml = simplexml_load_string($encryptedResponse, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -135,21 +135,37 @@ class WechatOAController {
                 $encrypt = (string) $xml->Encrypt;
                 error_log('WeChat OA - Encrypted data length: ' . strlen($encrypt));
 
-                // 获取EncodingAESKey
-                $config         = get_option(SystemService::OPEN_WECHAT_OA_KEY);
-                $encodingAESKey = $config['encodingAESKey'] ?? '';
+                // 使用EasyWeChat解密
+                if (isset($this->app)) {
+                    // 获取消息加密器
+                    $encryptor = $this->app->getRequest();
 
-                if (!empty($encodingAESKey)) {
-                    error_log('WeChat OA - EncodingAESKey found, length: ' . strlen($encodingAESKey));
-                    // 解密过程
-                    $decrypted = $this->decrypt($encrypt, $encodingAESKey);
-                    if (!empty($decrypted)) {
-                        error_log('WeChat OA - Decrypted response content: ' . $decrypted);
+                    // 获取配置信息
+                    $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+                    $token  = $config['token'] ?? '';
+                    $aesKey = $config['encodingAESKey'] ?? '';
+                    $appId  = $config['appId'] ?? '';
+
+                    if (!empty($token) && !empty($aesKey) && !empty($appId)) {
+                        error_log('WeChat OA - Decrypting with appId: ' . $appId);
+
+                        // 使用EasyWeChat的加密模块解密
+                        $decrypted = $this->app->getEncryptionClient()->decrypt(
+                            $encrypt,
+                            $aesKey,
+                            $appId
+                        );
+
+                        if (!empty($decrypted)) {
+                            error_log('WeChat OA - Decrypted response content with EasyWeChat: ' . $decrypted);
+                        } else {
+                            error_log('WeChat OA - EasyWeChat decryption returned empty result');
+                        }
                     } else {
-                        error_log('WeChat OA - Decryption returned empty result');
+                        error_log('WeChat OA - Missing configuration for decryption');
                     }
                 } else {
-                    error_log('WeChat OA - EncodingAESKey not found for decryption');
+                    error_log('WeChat OA - App not available for decryption');
                 }
             } else {
                 error_log('WeChat OA - Invalid encrypted response format');
@@ -157,66 +173,8 @@ class WechatOAController {
             }
         }
         catch (\Exception $e) {
-            error_log('WeChat OA - Decryption error: ' . $e->getMessage());
-            error_log('WeChat OA - Decryption error trace: ' . $e->getTraceAsString());
-        }
-    }
-
-    /**
-     * 微信消息解密方法
-     * 
-     * @param string $encrypted
-     * @param string $encodingAESKey
-     * @return string
-     */
-    private function decrypt(string $encrypted, string $encodingAESKey): string
-    {
-        try {
-            error_log('WeChat OA - Decrypting data with key length: ' . strlen($encodingAESKey));
-
-            // 微信加密数据解密逻辑
-            $key = base64_decode($encodingAESKey . "=");
-            error_log('WeChat OA - Decoded key length: ' . strlen($key));
-
-            $ciphertext_dec = base64_decode($encrypted);
-            error_log('WeChat OA - Decoded ciphertext length: ' . strlen($ciphertext_dec));
-
-            if (strlen($key) != 32) {
-                error_log('WeChat OA - Invalid key length: ' . strlen($key));
-                return '';
-            }
-
-            if (strlen($ciphertext_dec) == 0) {
-                error_log('WeChat OA - Empty ciphertext');
-                return '';
-            }
-
-            $iv = substr($key, 0, 16);
-            error_log('WeChat OA - IV length: ' . strlen($iv));
-
-            $decrypted = openssl_decrypt($ciphertext_dec, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
-            error_log('WeChat OA - OpenSSL decrypt result length: ' . strlen($decrypted ?? ''));
-
-            // 去除补位字符
-            if ($decrypted) {
-                $pad = ord(substr($decrypted, -1));
-                error_log('WeChat OA - Padding value: ' . $pad);
-
-                if ($pad >= 1 && $pad <= 32) {
-                    $result = substr($decrypted, 0, (strlen($decrypted) - $pad));
-                    error_log('WeChat OA - After padding removal length: ' . strlen($result));
-                    return $result;
-                } else {
-                    error_log('WeChat OA - Invalid padding, returning full decrypted data');
-                    return $decrypted;
-                }
-            }
-
-            return '';
-        }
-        catch (\Exception $e) {
-            error_log('WeChat OA - Decrypt exception: ' . $e->getMessage());
-            return '';
+            error_log('WeChat OA - EasyWeChat decryption error: ' . $e->getMessage());
+            error_log('WeChat OA - EasyWeChat decryption error trace: ' . $e->getTraceAsString());
         }
     }
 }
