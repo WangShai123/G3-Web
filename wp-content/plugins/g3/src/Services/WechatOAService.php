@@ -1093,7 +1093,7 @@ class WechatOAService {
         $reply = self::getReply($content);
 
         if ($reply !== false) {
-            // 检查回复状态
+            // 检查启用状态
             if ($reply['status'] == '1') {
                 $result = $reply['content'] ?? __('Message received, thank you!', 'G3');
                 error_log('WeChat OA - Hit keyword rule, reply content: ' . $result);

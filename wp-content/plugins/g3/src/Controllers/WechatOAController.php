@@ -77,7 +77,7 @@ class WechatOAController {
             }
 
             // Handle WeChat server push messages
-            error_log('WeChat OA - Processing incoming message');
+            error_log('WeChat OA - Processing incoming message from ' . $_SERVER['REMOTE_ADDR']);
             $response = $service->app->getServer()->serve();
 
             // Get response content and status code
@@ -99,6 +99,8 @@ class WechatOAController {
             $wpResponse->header('Content-Type', 'application/xml; charset=utf-8');
 
             error_log('WeChat OA - Sending response with headers: ' . json_encode($wpResponse->get_headers()));
+
+            error_log('WeChat OA - Sending response: ' . $content);
 
             return $wpResponse;
 
