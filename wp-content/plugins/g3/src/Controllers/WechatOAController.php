@@ -102,6 +102,9 @@ class WechatOAController {
 
             error_log('WeChat OA - Sending response: ' . $content);
 
+            $test = $this->decryptAndLogResponse($content);
+            error_log('WeChat OA - Decrypted response content: ' . $test);
+
             return $wpResponse;
 
         }
@@ -114,6 +117,73 @@ class WechatOAController {
             return new WP_REST_Response([
                 'message' => 'Internal Server Error'
             ], 500);
+        }
+    }
+
+    /**
+     * 解密微信响应内容并记录日志（仅用于调试）
+     * 
+     * @param string $encryptedResponse
+     */
+    private function decryptAndLogResponse(string $encryptedResponse): void
+    {
+        try {
+            // 从响应中提取加密数据
+            $xml = simplexml_load_string($encryptedResponse, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if ($xml && isset($xml->Encrypt)) {
+                $encrypt = (string) $xml->Encrypt;
+
+                // 获取EncodingAESKey
+                $config         = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+                $encodingAESKey = $config['encodingAESKey'] ?? '';
+
+                if (!empty($encodingAESKey)) {
+                    // 解密过程
+                    $decrypted = $this->decrypt($encrypt, $encodingAESKey);
+                    error_log('WeChat OA - Decrypted response content: ' . $decrypted);
+                } else {
+                    error_log('WeChat OA - EncodingAESKey not found for decryption');
+                }
+            } else {
+                error_log('WeChat OA - Invalid encrypted response format');
+            }
+        }
+        catch (\Exception $e) {
+            error_log('WeChat OA - Decryption error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 微信消息解密方法
+     * 
+     * @param string $encrypted
+     * @param string $encodingAESKey
+     * @return string
+     */
+    private function decrypt(string $encrypted, string $encodingAESKey): string
+    {
+        try {
+            // 微信加密数据解密逻辑
+            $key            = base64_decode($encodingAESKey . "=");
+            $ciphertext_dec = base64_decode($encrypted);
+            $iv             = substr($key, 0, 16);
+
+            $decrypted = openssl_decrypt($ciphertext_dec, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+
+            // 去除补位字符
+            if ($decrypted) {
+                $pad = ord(substr($decrypted, -1));
+                if ($pad < 1 || $pad > 32) {
+                    $pad = 0;
+                }
+                return substr($decrypted, 0, (strlen($decrypted) - $pad));
+            }
+
+            return '';
+        }
+        catch (\Exception $e) {
+            error_log('WeChat OA - Decrypt exception: ' . $e->getMessage());
+            return '';
         }
     }
 }
