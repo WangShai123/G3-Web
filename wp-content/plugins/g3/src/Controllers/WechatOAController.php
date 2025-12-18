@@ -81,7 +81,7 @@ class WechatOAController {
             $response = $service->app->getServer()->serve();
 
             // 打印 完整 $res
-            error_log('WeChat OA - Full response: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
+            error_log('WeChat OA - Full response: ' . print_r($response, true));
 
             // Get response content and status code
             $content    = $response->getBody()->getContents();
