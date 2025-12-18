@@ -102,8 +102,7 @@ class WechatOAController {
 
             error_log('WeChat OA - Sending response: ' . $content);
 
-            $test = $this->decryptAndLogResponse($content);
-            error_log('WeChat OA - Decrypted response content: ' . $test);
+            $this->decryptAndLogResponse($content);
 
             return $wpResponse;
 
