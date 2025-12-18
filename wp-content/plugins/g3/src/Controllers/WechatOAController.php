@@ -84,8 +84,9 @@ class WechatOAController {
             $content    = $response->getBody()->getContents();
             $statusCode = $response->getStatusCode();
 
-            error_log('WeChat OA - Response content: ' . $content);
+            error_log('WeChat OA - Response content length: ' . strlen($content));
             error_log('WeChat OA - Response status code: ' . $statusCode);
+            error_log('WeChat OA - First 200 chars of response: ' . substr($content, 0, 200));
 
             // Create WordPress REST response
             $wpResponse = new WP_REST_Response($content, $statusCode);
@@ -95,7 +96,9 @@ class WechatOAController {
                 $wpResponse->header($header, implode(', ', $values));
             }
 
-            $wpResponse->header('Content-Type', 'application/xml');
+            $wpResponse->header('Content-Type', 'application/xml; charset=utf-8');
+
+            error_log('WeChat OA - Sending response with headers: ' . json_encode($wpResponse->get_headers()));
 
             return $wpResponse;
 
