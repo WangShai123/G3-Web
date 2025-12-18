@@ -27,7 +27,7 @@ class AdminController {
         methods: 'POST'
     )]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
-    // #[Middleware(RateLimitMiddleware::class, [10, 60])]
+    #[Middleware(RateLimitMiddleware::class, [10, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [

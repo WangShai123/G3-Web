@@ -78,7 +78,7 @@ echo '</form>';
                     modal.showLoading();
                     const data = {
                         keywords: formData.keywords,
-                        content: formData.content,
+                        content: formData.reply,
                         status: formData.status,
                         type: 'text'
                     };
