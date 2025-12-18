@@ -1082,18 +1082,31 @@ class WechatOAService {
     {
         $content = $message['Content'] ?? '';
 
+        error_log('WeChat OA - Received text message: ' . $content);
+
         // 尝试根据消息内容获取自动回复
         $reply = self::getReply($content);
 
         if ($reply !== false) {
-            return $reply['content'] ?? '';
+            // 检查回复状态
+            if ($reply['status'] == '1') {
+                $result = $reply['content'] ?? __('Message received, thank you!', 'G3');
+                error_log('WeChat OA - Hit keyword rule, reply content: ' . $result);
+                return $result;
+            } else {
+                error_log('WeChat OA - Keyword matched but reply is disabled');
+            }
+        } else {
+            error_log('WeChat OA - No keyword matched');
         }
 
         if ($this->isSearchEnabled()) {
+            error_log('WeChat OA - Search enabled, return search URL: ' . $this->searchUrl($content));
             return $this->searchUrl($content);
         }
 
         // 默认回复
+        error_log('WeChat OA - Return default reply: ' . __('Message received, thank you!', 'G3'));
         return __('Message received, thank you!', 'G3');
     }
 

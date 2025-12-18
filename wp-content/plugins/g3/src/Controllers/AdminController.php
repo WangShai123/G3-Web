@@ -41,9 +41,8 @@ class AdminController {
     public function addReply(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data = $request->get_json_params();
-        error_log(print_r($data, true));
-        $result = WechatOAService::addReply($data);
 
+        $result = WechatOAService::addReply($data);
         if (is_wp_error($result)) {
             return new WP_Error($result->get_error_code(), $result->get_error_message());
         }
