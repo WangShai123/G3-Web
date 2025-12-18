@@ -128,6 +128,8 @@ class WechatOAController {
     {
         try {
             error_log('WeChat OA - Starting decryption process with EasyWeChat');
+            $service = WechatOAService::run();
+            $app     = $service->app;
 
             // 从响应中提取加密数据
             $xml = simplexml_load_string($encryptedResponse, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -136,9 +138,9 @@ class WechatOAController {
                 error_log('WeChat OA - Encrypted data length: ' . strlen($encrypt));
 
                 // 使用EasyWeChat解密
-                if (isset($this->app)) {
+                if (isset($app)) {
                     // 获取消息加密器
-                    $encryptor = $this->app->getRequest();
+                    $encryptor = $app->getRequest();
 
                     // 获取配置信息
                     $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
@@ -150,7 +152,7 @@ class WechatOAController {
                         error_log('WeChat OA - Decrypting with appId: ' . $appId);
 
                         // 使用EasyWeChat的加密模块解密
-                        $decrypted = $this->app->getEncryptionClient()->decrypt(
+                        $decrypted = $app->getEncryptionClient()->decrypt(
                             $encrypt,
                             $aesKey,
                             $appId
