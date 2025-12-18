@@ -83,6 +83,16 @@ class WechatOAController {
             // 打印 完整 $res
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
+            // 获取实际的响应内容
+            $responseBody = $response->getBody();
+            if (method_exists($responseBody, '__toString')) {
+                $actualContent = (string) $responseBody;
+                error_log('WeChat OA - Actual response body: ' . $actualContent);
+            } else {
+                $actualContent = $responseBody->getContents();
+                error_log('WeChat OA - Actual response contents: ' . $actualContent);
+            }
+
             // Get response content and status code
             $content    = $response->getBody()->getContents();
             $statusCode = $response->getStatusCode();
