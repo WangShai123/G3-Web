@@ -210,7 +210,7 @@ class WechatOAService {
                 $nickname = $userInfo['nickname'] ?? '-';
             }
             catch (Exception $e) {
-                error_log('Failed to get user info: ' . $e->getMessage());
+                error_log('saveMessage Notice, Failed to get user info: ' . $e->getMessage());
             }
         }
 
@@ -1208,22 +1208,26 @@ class WechatOAService {
             return null;
         }
 
+        error_log('getUserInfo Notice, OpenID: ' . $openid);
+
         try {
             $cache_key = 'users:' . md5($openid);
             $user_info = wp_cache_get($cache_key, self::CACHE_GROUP);
 
             if (false === $user_info) {
                 $response = $this->app->getClient()->get('cgi-bin/user/info', [
-                    'query' => [
-                        'openid' => $openid,
-                        'lang'   => 'zh_CN'
-                    ]
+                    // 'query' => [
+                    //     'openid' => $openid,
+                    //     'lang'   => 'zh_CN'
+                    // ]
+                    'openid' => $openid,
+                    'lang'   => 'zh_CN'
                 ]);
 
                 $result = $response->toArray();
 
                 if (isset($result['errcode']) && $result['errcode'] != 0) {
-                    error_log('Failed to get user info: ' . $result['errmsg']);
+                    error_log('userInfo Notice, Failed to get user info: ' . $result['errmsg']);
                     return null;
                 }
 

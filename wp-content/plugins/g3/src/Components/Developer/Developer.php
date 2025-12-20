@@ -1496,7 +1496,7 @@ class Developer extends Components {
                 'id'       => 'url',
                 'title'    => 'URL',
                 'callback' => function () {
-                    echo get_site_url() . '/wp-json/api/v1/wechat_oa/callback';
+                    echo get_site_url() . '/dev/wechat_oa/callback';
                 }
             ]
         ]);
