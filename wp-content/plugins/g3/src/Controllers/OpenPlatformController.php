@@ -10,6 +10,9 @@ use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Services\SystemService;
+
+use Psr\Http\Message\ResponseInterface;
+
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -20,14 +23,14 @@ class OpenPlatformController {
      * WeChat Official Account Platform callback
      *
      * @param WP_REST_Request $request
-     * @return WP_Error|WP_REST_Response
+     * @return ResponseInterface|WP_REST_Response
      */
     #[RestRouter(
         namespace: 'api/v1',
         route: 'wechat_oa/callback',
         methods: ['GET', 'POST']
     )]
-    public function wechatOACallback(WP_REST_Request $request): WP_Error|WP_REST_Response
+    public function wechatOACallback(WP_REST_Request $request): ResponseInterface|WP_REST_Response
     {
         try {
             $service = WechatOAService::run();
@@ -89,6 +92,7 @@ class OpenPlatformController {
 
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
+            return $response;
             // // 获取实际的响应内容（只获取一次）
             // $responseBody = $response->getBody();
             // $content      = '';
@@ -133,25 +137,25 @@ class OpenPlatformController {
             // return $wpResponse;
 
             // 直接输出响应内容，不使用WP_REST_Response包装
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
+            // while (ob_get_level()) {
+            //     ob_end_clean();
+            // }
 
             // 设置正确的Content-Type头
             // header('Content-Type: application/xml; charset=utf-8');
 
             // Set proper headers
-            foreach ($response->getHeaders() as $header => $values) {
-                header($header . ': ' . implode(', ', $values));
-            }
+            // foreach ($response->getHeaders() as $header => $values) {
+            //     header($header . ': ' . implode(', ', $values));
+            // }
 
-            http_response_code($response->getStatusCode());
+            // http_response_code($response->getStatusCode());
 
-            echo $response->getBody();
+            // echo $response->getBody();
 
             // 输出响应内容
             // echo $content;
-            exit;
+            // exit;
 
         }
         catch (\Exception $e) {
