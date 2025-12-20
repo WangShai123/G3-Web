@@ -88,7 +88,7 @@ try {
             // Output response body directly
             // echo $response->getBody();
             // exit;
-            return $response;
+            return $response->getBody();
         }
         catch (Exception $e) {
             error_log('WeChat Callback POST Error: ' . $e->getMessage());
