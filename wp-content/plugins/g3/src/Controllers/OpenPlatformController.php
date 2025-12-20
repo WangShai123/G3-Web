@@ -98,6 +98,8 @@ class OpenPlatformController {
                 $headers[$name] = implode(', ', $values);
             }
 
+            error_log('WeChat OA Callback Response: ' . $body);
+
             return new WP_REST_Response($body, $status, $headers);
 
 
