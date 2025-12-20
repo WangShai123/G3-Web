@@ -143,8 +143,6 @@ class WechatOAMessageListTable extends WP_List_Table {
 
     public function process_bulk_action()
     {
-        $redirect_url = $_SERVER['REQUEST_URI'];
-
         // 处理删除操作（单个或多个）
         if ('delete' === $this->current_action()) {
             // 获取要删除的消息ID（单个或多个）
@@ -174,7 +172,7 @@ class WechatOAMessageListTable extends WP_List_Table {
                         echo '<p>Successfully deleted message(s).</p>';
                         echo '</div>';
                     });
-                    wp_redirect(remove_query_arg('paged', $redirect_url));
+                    wp_safe_redirect(admin_url('admin.php?page=wechat-oa&tab=message'));
                     exit;
                 } else {
                     // 设置错误消息
