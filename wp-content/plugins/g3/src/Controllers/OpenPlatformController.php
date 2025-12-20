@@ -149,10 +149,14 @@ class OpenPlatformController {
             error_log('WeChat callback error: ' . $e->getMessage());
             error_log('WeChat callback error trace: ' . $e->getTraceAsString());
 
+            // // Return error response
+            // return new WP_REST_Response([
+            //     'message' => 'Internal Server Error'
+            // ], 500);
             // Return error response
-            return new WP_REST_Response([
-                'message' => 'Internal Server Error'
-            ], 500);
+            header('HTTP/1.1 500 Internal Server Error');
+            echo 'Internal Server Error';
+            exit;
         }
     }
 }
