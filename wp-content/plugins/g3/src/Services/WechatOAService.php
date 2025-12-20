@@ -968,6 +968,7 @@ class WechatOAService {
     private function handleEventMessage(array $message): ?string
     {
         $event = $message['Event'] ?? '';
+        error_log('WeChat OA - Event: ' . $event);
 
         switch ($event) {
             case 'subscribe':
