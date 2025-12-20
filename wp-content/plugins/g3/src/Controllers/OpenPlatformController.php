@@ -12,6 +12,7 @@ use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Services\SystemService;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 use WP_REST_Request;
 use WP_REST_Response;
@@ -92,10 +93,13 @@ class OpenPlatformController {
 
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
-            // return $response;
+            $response->send();
+
+            return $response;
+
             // // 获取实际的响应内容（只获取一次）
-            $responseBody = $response->getBody();
-            $content      = '';
+            // $responseBody = $response->getBody();
+            // $content      = '';
 
             // if (method_exists($responseBody, '__toString')) {
             //     $content = (string) $responseBody;
@@ -108,16 +112,14 @@ class OpenPlatformController {
             // }
 
             // 重置指针位置以确保能读取内容
-            $responseBody->rewind();
-            $content = $responseBody->getContents();
+            // $responseBody->rewind();
+            // $content = $responseBody->getContents();
 
 
 
-            error_log('WeChat OA - Actual response body: ' . $content);
+            // error_log('WeChat OA - Actual response body: ' . $content);
 
             // return $content;
-            echo $content;
-            exit;
 
             // Get response status code
             // $statusCode = $response->getStatusCode();
