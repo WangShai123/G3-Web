@@ -68,7 +68,7 @@ return [
     ],
 
     // Wechat OA Callback
-    'api/v1/wechat_oa/([^/]+)/?$' => [
+    'dev/wechat_oa/([^/]+)/?$'    => [
         'var'      => 'callback',
         'path'     => 'wechat/_.php',
         'priority' => [
