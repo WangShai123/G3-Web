@@ -82,15 +82,16 @@ class OpenPlatformController {
                 }
             }
 
-            // Handle WeChat server push messages
+            // Handle WeChat server push messages (POST request)
             error_log('WeChat OA - Processing incoming message from ' . $_SERVER['REMOTE_ADDR']);
+            // Serve the request and get response
             $response = $service->app->getServer()->serve();
 
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
-            // 获取实际的响应内容（只获取一次）
-            $responseBody = $response->getBody();
-            $content      = '';
+            // // 获取实际的响应内容（只获取一次）
+            // $responseBody = $response->getBody();
+            // $content      = '';
 
             // if (method_exists($responseBody, '__toString')) {
             //     $content = (string) $responseBody;
@@ -103,16 +104,16 @@ class OpenPlatformController {
             // }
 
             // 重置指针位置以确保能读取内容
-            $responseBody->rewind();
-            $content = $responseBody->getContents();
+            // $responseBody->rewind();
+            // $content = $responseBody->getContents();
 
-            error_log('WeChat OA - Actual response body: ' . $content);
+            // error_log('WeChat OA - Actual response body: ' . $content);
 
             // Get response status code
-            $statusCode = $response->getStatusCode();
+            // $statusCode = $response->getStatusCode();
 
-            error_log('WeChat OA - Response content length: ' . strlen($content));
-            error_log('WeChat OA - Response status code: ' . $statusCode);
+            // error_log('WeChat OA - Response content length: ' . strlen($content));
+            // error_log('WeChat OA - Response status code: ' . $statusCode);
             // error_log('WeChat OA - First 200 chars of response: ' . substr($content, 0, 200));
 
             // // Create WordPress REST response
@@ -137,10 +138,19 @@ class OpenPlatformController {
             }
 
             // 设置正确的Content-Type头
-            header('Content-Type: application/xml; charset=utf-8');
+            // header('Content-Type: application/xml; charset=utf-8');
+
+            // Set proper headers
+            foreach ($response->getHeaders() as $header => $values) {
+                header($header . ': ' . implode(', ', $values));
+            }
+
+            http_response_code($response->getStatusCode());
+
+            echo $response->getBody();
 
             // 输出响应内容
-            echo $content;
+            // echo $content;
             exit;
 
         }
