@@ -88,25 +88,31 @@ class OpenPlatformController {
             // Let EasyWeChat handle everything
             $psr7Response = $service->app->getServer()->serve();
 
-            // --- Convert PSR-7 Response to WP_REST_Response ---
-            $body   = $psr7Response->getBody()->__toString();
-            $status = $psr7Response->getStatusCode();
+            // === 关键：直接输出原始响应，不经过 WordPress REST 层 ===
+            http_response_code($psr7Response->getStatusCode());
 
-            // Flatten headers for WordPress (array of strings)
-            $headers = [];
+            // 输出所有 headers
             foreach ($psr7Response->getHeaders() as $name => $values) {
-                $headers[$name] = implode(', ', $values);
+                foreach ($values as $value) {
+                    header(sprintf('%s: %s', $name, $value), false); // false = 不替换已有同名头
+                }
             }
 
-            error_log('WeChat OA Callback Response: ' . $body);
+            // 清除所有输出缓冲（防止 WordPress 或插件污染输出）
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
 
-            return new WP_REST_Response($body, $status, $headers);
-
+            // 输出 body 并立即终止
+            echo $psr7Response->getBody()->__toString();
+            exit;
 
         }
         catch (\Exception $e) {
             error_log('WeChat OA Callback Error: ' . $e->getMessage());
-            return new WP_REST_Response('Internal Server Error', 500);
+            http_response_code(500);
+            echo 'error';
+            exit;
         }
     }
 }
