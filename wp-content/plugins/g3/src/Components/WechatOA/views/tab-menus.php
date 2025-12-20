@@ -22,7 +22,7 @@ echo Container::tip(
     </div>
     <div class="flex gap-1 flex-wrap justify-end">
         <button type="button" class="button" id="create-wechat-oa-menu">
-            <?php _e('Create Menu for WeChat OA', 'G3'); ?>
+            <?php _e('Update Menus Online', 'G3'); ?>
         </button>
         <button type="button" class="button button-error" id="flush-wechat-oa-menu">
             <?php _e('Flush Menus Online', 'G3'); ?>

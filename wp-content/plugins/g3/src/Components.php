@@ -240,7 +240,7 @@ class Components {
                 // Create additional router for theme controllers
                 $themeRouter = new Router(
                     baseDir: $themeControllersDir,
-                    baseNamespace: "G3\\Controllers"
+                    baseNamespace: "JEALER\\G3\\Controllers"
                 );
                 // Reflectively scan theme controllers
                 $themeRouter->discover();

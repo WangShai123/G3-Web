@@ -106,7 +106,7 @@ final class Common {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function getHumanTime(int $time = 0): string
+    public static function humanTime(int $time = 0): string
     {
         if (!$time) {
             // Default: Post publish time
@@ -148,6 +148,9 @@ final class Common {
      */
     public static function hash(int $length = 8): string
     {
+        if ($length > 32) {
+            return substr(wp_hash(uniqid('G3')), 0, 32);
+        }
         return substr(wp_hash(uniqid('G3')), 0, $length);
     }
 
@@ -169,5 +172,77 @@ final class Common {
         return mb_strlen($string) > $length
             ? mb_substr($string, 0, $length) . $ellipsis
             : $string;
+    }
+
+    /**
+     * Truncate HTML string with ellipsis
+     * 
+     * 截断 HTML 字符串并添加省略号
+     * 
+     * @param string $html The HTML string to truncate
+     * @param int $length Maximum length of the string
+     * @param string $more Ellipsis string, defaults to '…'
+     * @return string Truncated HTML string with ellipsis
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function truncateHtml(string $html, int $length = 80, string $more = '…'): string
+    {
+        if (mb_strlen(strip_tags($html)) <= $length) {
+            return $html;
+        }
+
+        // Use wp_html_excerpt to safely truncate (will not cut off in the middle of a tag)
+        $truncated = wp_html_excerpt($html, $length, '');
+
+        // Auto close unclosed tags
+        $truncated = force_balance_tags($truncated);
+
+        return $truncated . $more;
+    }
+
+    /**
+     * Get Localized Date and Time based on WordPress settings
+     * 
+     * 按照 WordPress 设置的日期和时间格式返回当前时区的日期和时间字符串
+     * 
+     * @param int $timestamp timestamp
+     * @return string date and time string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function dateTime(int $timestamp): bool|string
+    {
+        return wp_date(get_option('date_format') . ' ' . get_option('time_format'), $timestamp);
+    }
+
+    /**
+     * Get Localized Date based on WordPress settings
+     * 
+     * 按照 WordPress 设置的日期格式返回当前时区的日期字符串
+     * 
+     * @param int $timestamp timestamp
+     * @return string date string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function date(int $timestamp): bool|string
+    {
+        return wp_date(get_option('date_format'), $timestamp);
+    }
+
+    /**
+     * Get Localized Time based on WordPress settings
+     * 
+     * 按照 WordPress 设置的时间格式返回当前时区的时间字符串
+     * 
+     * @param int $timestamp timestamp
+     * @return string time string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function time(int $timestamp): bool|string
+    {
+        return wp_date(get_option('time_format'), $timestamp);
     }
 }

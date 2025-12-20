@@ -11,10 +11,17 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-class LoginController {
+class AuthController {
+
+    /**
+     * 自定义后台登录
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_Error|WP_REST_Response
+     */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'oa/admin',
+        route: 'oa/admin/auth',
         methods: 'POST'
     )]
     #[Schema([

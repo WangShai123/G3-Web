@@ -9,11 +9,25 @@ final class Request {
      * 
      * 获取REST API URL
      *
+     * @param string $router
      * @return string
      */
-    public static function restApi($router = ''): string
+    public static function restApi(string $router = ''): string
     {
         return get_site_url() . '/wp-json' . $router;
+    }
+
+    /**
+     * Get AJAX API URL
+     * 
+     * 获取AJAX API URL
+     *
+     * @param string $endpoint
+     * @return string
+     */
+    public static function ajaxApi(string $endpoint = ''): string
+    {
+        return admin_url('admin-ajax.php') . '?action=' . $endpoint;
     }
 
     /**

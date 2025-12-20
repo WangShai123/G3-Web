@@ -170,14 +170,14 @@ class WechatOAMessageListTable extends WP_List_Table {
                     // 设置成功消息
                     add_action('admin_notices', function () use ($deleted) {
                         echo '<div class="notice notice-success is-dismissible">';
-                        echo '<p>' . sprintf(__('Successfully deleted %d message(s).', 'G3'), $deleted) . '</p>';
+                        echo '<p>Successfully deleted message(s).</p>';
                         echo '</div>';
                     });
                 } else {
                     // 设置错误消息
                     add_action('admin_notices', function () {
                         echo '<div class="notice notice-error is-dismissible">';
-                        echo '<p>' . __('Failed to delete message(s).', 'G3') . '</p>';
+                        echo '<p>Failed to delete message(s)</p>';
                         echo '</div>';
                     });
                 }
@@ -193,7 +193,7 @@ class WechatOAMessageListTable extends WP_List_Table {
                 $item->id
             ),
             'delete' => sprintf(
-                '<span id="delete-message-%s" class="cursor-pointer color-error">' . __('Delete', 'G3') . '</span>',
+                '<span id="delete-message-%s" class="cursor-pointer color-error">' . __('Delete') . '</span>',
                 $item->id
             )
         ];

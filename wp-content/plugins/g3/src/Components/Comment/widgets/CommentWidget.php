@@ -170,7 +170,7 @@ class CommentWidget extends WP_Widget {
                 'avatar'     => UserService::getMeta($comment->user_id, UserService::META_KEY, 'avatar', []),
                 'nickname'   => $comment->comment_author,
                 'content'    => mb_substr(strip_tags($comment->comment_content), 0, $length, 'utf-8'),
-                'time'       => Common::getHumanTime(strtotime($comment->comment_date))
+                'time'       => Common::humanTime(strtotime($comment->comment_date))
             ],
             $comments
         );

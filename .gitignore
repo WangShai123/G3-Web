@@ -5,12 +5,12 @@
 # Note: if you want to stage/commit WP core files
 # you can delete this whole section/until Configuration.
 /wp-admin/
+/wp-includes/
 /wp-content/index.php
 /wp-content/languages
 /wp-content/plugins/index.php
 /wp-content/themes/index.php
 /wp-content/upgrade/
-/wp-includes/
 /index.php
 /license.txt
 /readme.html
@@ -18,24 +18,33 @@
 /xmlrpc.php
 
 # Configuration
-wp-config.php
+/wp-config.php
+/.user.ini
+
+# Uploads
+/wp-content/uploads/
 
 # Default themes
 /wp-content/themes
-#/wp-content/themes/twenty*/
+/wp-content/themes/twenty*/
 
 # Local files in plugin g3
-/wp-content/plugins/g3/backup/
-#/wp-content/plugins/g3/dist/
-/wp-content/plugins/g3/documents/
-/wp-content/plugins/g3/tests/
-/wp-content/plugins/g3/extensions/jl.php
 /g3.php
+/wp-content/plugins/g3/backup/
+/wp-content/plugins/g3/documents/
+/wp-content/plugins/g3/extensions/jl.php
+#/wp-content/plugins/g3/dist/
 
-!/wp-content/plugins/g3/public/languages/*.pot~
-!/wp-content/plugins/g3/public/languages/*.po~
+# Advanced tests
+/wp-content/plugins/g3/tests/
+# Component tests
+/wp-content/plugins/g3/src/Components/*/tests/
 
-# Helpers
+# Languages backup files
+/wp-content/plugins/g3/public/languages/*.pot~
+/wp-content/plugins/g3/public/languages/*.po~
+
+# Tools
 /wp-content/backup-*.php
 /wp-content/object-cache.php
 /wp-content/object-cache.php.bak
@@ -45,23 +54,20 @@ wp-config.php
 /wp-content/plugins/loco-translate/
 /wp-content/plugins/query-monitor/
 
-# Uploads
-/wp-content/uploads/
-
 # Tools
-/.vscode
+/.github
 /.idea
-/.trae
+/.vscode
 /.lingma
+/.trae
+/*.txt
 
 # Log files
-*.log
+/*.log
+/wp-content/*.log
 
 # htaccess
 /.htaccess
 
 # DS_Store
 .DS_Store
-
-# config
-/.user.ini

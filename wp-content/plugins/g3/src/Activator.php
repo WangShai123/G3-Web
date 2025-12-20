@@ -326,7 +326,7 @@ class Activator {
                 `seller_notes` varchar(255) NULL COMMENT '卖家备注',
                 `seller_id` int(11) NOT NULL COMMENT '卖家用户id',
                 PRIMARY KEY (`id`),
-                UNIQUE KEY `order_number` (`order_number`),
+                UNIQUE KEY `unique_order_number` (`order_number`),
                 KEY `user_id` (`user_id`)
             ) ENGINE=InnoDB $charset COMMENT='orders table';";
 
@@ -458,7 +458,7 @@ class Activator {
                 `reply_id` bigint(20) UNSIGNED NOT NULL COMMENT '关联的应答id',
                 `keyword` varchar(100) NOT NULL COMMENT '关键词',
                 PRIMARY KEY (`reply_id`, `keyword`),
-                KEY `keyword` (`keyword`)
+                UNIQUE KEY `unique_keyword` (`keyword`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA reply keyword table';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);

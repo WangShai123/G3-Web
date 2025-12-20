@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-14 13:58+0000\n"
+"POT-Creation-Date: 2025-12-20 18:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -156,6 +156,7 @@ msgstr ""
 msgid "Activity Sidebar"
 msgstr ""
 
+#: src/Includes/WechatOAReplyListTable.php:78
 #: src/Includes/SwiperListTable.php:163 src/Includes/SwiperLocationTable.php:61
 #: src/Includes/WechatOAMenuListTable.php:93
 #: src/Components/Activity/Activity.php:13
@@ -217,8 +218,8 @@ msgstr ""
 msgid "Admin Bar"
 msgstr ""
 
-#: src/Components/Security/Security.php:124
-#: src/Components/Security/Security.php:130
+#: src/Components/Security/Security.php:123
+#: src/Components/Security/Security.php:129
 msgid "Admin Login URL"
 msgstr ""
 
@@ -321,6 +322,10 @@ msgstr ""
 msgid "All Products"
 msgstr ""
 
+#: src/Services/WechatOAService.php:1463
+msgid "All provided IDs are invalid"
+msgstr ""
+
 #: src/Components/Post/Post.php:20
 msgid ""
 "All publicly displayed data on this platform is sourced from the public "
@@ -419,6 +424,7 @@ msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr ""
 
 #: src/Components/WechatOA/views/tab-menus.php:40
+#: src/Components/WechatOA/views/tab-reply.php:180
 msgid "Are you sure you want to delete it?"
 msgstr ""
 
@@ -429,6 +435,10 @@ msgstr ""
 #: src/Middleware/SchemaMiddleware.php:166
 #, php-format
 msgid "Array %s[%s] must be type %s."
+msgstr ""
+
+#: src/Services/WechatOAService.php:1035
+msgid "At least one keyword is required"
 msgstr ""
 
 #: src/Components/Setting/Setting.php:353
@@ -463,6 +473,10 @@ msgstr ""
 
 #: templates/developer/w.php:112
 msgid "Balance Management"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1305
+msgid "Batch insert keywords failed"
 msgstr ""
 
 #: src/Components/WechatOA/views/tab-general.php:11
@@ -606,18 +620,14 @@ msgstr ""
 msgid "Contact Us"
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:25
-msgid "Content"
-msgstr ""
-
 #: templates/developer/w.php:106 src/Components/Post/Post.php:477
 #: src/Components/Post/Post.php:478 src/Components/Share/Share.php:83
 #: src/Components/Share/Share.php:89
 msgid "Content Distribution"
 msgstr ""
 
-#: src/Components/Security/Security.php:226
-#: src/Components/Security/Security.php:232
+#: src/Components/Security/Security.php:225
+#: src/Components/Security/Security.php:231
 msgid "Content Security Policy"
 msgstr ""
 
@@ -649,14 +659,6 @@ msgstr ""
 msgid "Cover Image"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-menus.php:25
-msgid "Create Menu for WeChat OA"
-msgstr ""
-
-#: src/Includes/WechatOAMessagesListTable.php:27
-msgid "Created At"
-msgstr ""
-
 #: templates/developer/w.php:114
 msgid "Credits System"
 msgstr ""
@@ -674,8 +676,8 @@ msgstr ""
 msgid "Custom Admin"
 msgstr ""
 
-#: src/Components/Security/Security.php:107
-#: src/Components/Security/Security.php:113
+#: src/Components/Security/Security.php:106
+#: src/Components/Security/Security.php:112
 msgid "Custom Admin Login"
 msgstr ""
 
@@ -700,6 +702,7 @@ msgstr ""
 msgid "Custom interaction data"
 msgstr ""
 
+#: src/Includes/WechatOAReplyListTable.php:185
 #: src/Components/WechatOA/WechatOA.php:70
 msgid "Custom Reply"
 msgstr ""
@@ -738,8 +741,9 @@ msgid ""
 "new view."
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:45
-msgid "Delete"
+#: src/Includes/WechatOAReplyListTable.php:142
+#: src/Controllers/AdminController.php:88
+msgid "Deleted"
 msgstr ""
 
 #: src/Components/Security/views/tab-nginx.php:22
@@ -952,7 +956,12 @@ msgstr ""
 msgid "Enable Wallet, if you want balance feature."
 msgstr ""
 
-#: templates/admin/oa.php:31
+#: src/Components/WechatOA/views/tab-reply.php:34
+#: src/Components/WechatOA/views/tab-reply.php:113
+msgid "Enter keywords please"
+msgstr ""
+
+#: templates/admin/oa.php:30
 msgid "Enter Password Please"
 msgstr ""
 
@@ -962,6 +971,11 @@ msgstr ""
 
 #: src/Components/Product/Product.php:386
 msgid "Enter property value"
+msgstr ""
+
+#: src/Components/WechatOA/views/tab-reply.php:42
+#: src/Components/WechatOA/views/tab-reply.php:122
+msgid "Enter reply please"
 msgstr ""
 
 #: src/Components/Setting/Setting.php:235
@@ -982,7 +996,7 @@ msgid ""
 "header here."
 msgstr ""
 
-#: templates/admin/oa.php:23
+#: templates/admin/oa.php:22
 msgid "Enter Username Please"
 msgstr ""
 
@@ -999,13 +1013,21 @@ msgid ""
 "                website development."
 msgstr ""
 
-#: src/Utilities/Request.php:50 src/Components/WechatOA/WechatOA.php:248
+#: src/Utilities/Request.php:76 src/Components/WechatOA/WechatOA.php:248
 msgid "Failed"
 msgstr ""
 
 #: src/Activator.php:72 src/Activator.php:85 src/Activator.php:138
 #: src/Activator.php:147
 msgid "Failed to active G3-Web plugin!"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1405
+msgid "Failed to delete replies from main table."
+msgstr ""
+
+#: src/Services/WechatOAService.php:1415
+msgid "Failed to delete reply(s)."
 msgstr ""
 
 #: src/Components/Developer/Developer.php:925
@@ -1015,12 +1037,24 @@ msgid ""
 "%s."
 msgstr ""
 
+#: src/Services/WechatOAService.php:1205
+msgid "Failed to insert reply into main table"
+msgstr ""
+
 #: src/Services/MailerService.php:69
 msgid "Failed to load PHPMailer library."
 msgstr ""
 
 #: src/Components/Mail/views/tab-test.php:11
 msgid "Failed to send test email!"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1241
+msgid "Failed to update reply in main table"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1488
+msgid "Failed to update reply status"
 msgstr ""
 
 #: src/Components/Post/Post.php:282
@@ -1170,7 +1204,7 @@ msgid ""
 "tools to help you create professional-level WordPress themes quickly."
 msgstr ""
 
-#: src/Middleware/RoleMiddleware.php:51 src/Utilities/Request.php:44
+#: src/Middleware/RoleMiddleware.php:51 src/Utilities/Request.php:70
 #: src/Components/Developer/Developer.php:901
 #: src/Components/WechatOA/WechatOA.php:244
 msgid "Forbidden"
@@ -1232,7 +1266,7 @@ msgstr ""
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr ""
 
-#: src/Components/Security/Security.php:81
+#: src/Components/Security/Security.php:80
 #: src/Components/Product/Product.php:50
 #: src/Components/WechatOA/WechatOA.php:67 src/Components/Menu/Menu.php:89
 #: src/Components/Wallet/Wallet.php:46 src/Components/Setting/Setting.php:100
@@ -1369,6 +1403,10 @@ msgstr ""
 msgid "Invalid data"
 msgstr ""
 
+#: src/Includes/WechatOAReplyListTable.php:113
+msgid "Invalid IDs selected."
+msgstr ""
+
 #: src/Components/Swiper/Swiper.php:129
 msgid "Invalid Image"
 msgstr ""
@@ -1377,12 +1415,17 @@ msgstr ""
 msgid "Invalid Link"
 msgstr ""
 
-#: src/Controllers/LoginController.php:47
+#: src/Controllers/AuthController.php:54
 msgid "Invalid username or password."
 msgstr ""
 
 #. Author of the plugin
 msgid "JEALER"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1060 src/Services/WechatOAService.php:1073
+#, php-format
+msgid "Keyword %s already exists"
 msgstr ""
 
 #: src/Components/Setting/Setting.php:506
@@ -1443,7 +1486,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: src/Services/PostService.php:302 src/Components/Security/Security.php:131
+#: src/Services/PostService.php:302 src/Components/Security/Security.php:130
 #: src/Components/Login/Login.php:41 src/Components/Login/Login.php:42
 #: src/Components/Login/Login.php:51
 msgid "Login"
@@ -1499,11 +1542,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:23
-msgid "Message ID"
-msgstr ""
-
-#: src/Components/WechatOA/views/tab-message.php:13
+#: src/Components/WechatOA/views/tab-message.php:15
 msgid ""
 "Message is unavailable. Because the WechatOA message storage function has "
 "been disabled."
@@ -1615,8 +1654,8 @@ msgstr ""
 msgid "No categories found."
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:122
-#: src/Includes/SwiperListTable.php:250 src/Includes/RewriteRulesTable.php:164
+#: src/Includes/SwiperListTable.php:246 src/Includes/RewriteRulesTable.php:164
+#: src/Includes/WechatOAMessageListTable.php:135
 #: src/Includes/SwiperLocationTable.php:107
 #: src/Includes/WechatOAMenuListTable.php:87
 msgid "No data found."
@@ -1624,6 +1663,10 @@ msgstr ""
 
 #: src/Components/Mail/Mail.php:174
 msgid "No Encryption"
+msgstr ""
+
+#: src/Includes/WechatOAReplyListTable.php:106
+msgid "No items selected."
 msgstr ""
 
 #: templates/developer/w.php:139
@@ -1640,6 +1683,14 @@ msgstr ""
 
 #: src/Components/Product/Product.php:87
 msgid "No products found."
+msgstr ""
+
+#: src/Services/WechatOAService.php:1455
+msgid "No reply IDs provided"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1369
+msgid "No valid reply ID(s) provided."
 msgstr ""
 
 #: src/Components/Themes/Themes.php:126
@@ -1693,10 +1744,6 @@ msgstr ""
 #: src/Components/Developer/Developer.php:1352
 #: src/Components/Developer/Developer.php:1362
 msgid "Open Platform"
-msgstr ""
-
-#: src/Includes/WechatOAMessagesListTable.php:24
-msgid "OpenID"
 msgstr ""
 
 #: src/Components/Setting/Setting.php:90 src/Components/Setting/Setting.php:91
@@ -1793,7 +1840,7 @@ msgstr ""
 msgid "PHPMailer library not found."
 msgstr ""
 
-#: src/Components/Security/Security.php:131
+#: src/Components/Security/Security.php:130
 msgid ""
 "Please <a href=\"?page=developer-mode&tab=flush\">flush rewrite rules</a> "
 "after setting."
@@ -1895,8 +1942,8 @@ msgid ""
 "parameters."
 msgstr ""
 
-#: src/Components/Security/Security.php:192
-#: src/Components/Security/Security.php:198
+#: src/Components/Security/Security.php:191
+#: src/Components/Security/Security.php:197
 msgid "Prevent XMLRPC Attacks"
 msgstr ""
 
@@ -2037,10 +2084,6 @@ msgstr ""
 msgid "Radio field"
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:75
-msgid "Read"
-msgstr ""
-
 #: src/Components/Wallet/Wallet.php:77 src/Components/Wallet/Wallet.php:79
 msgid "Recharge"
 msgstr ""
@@ -2084,7 +2127,7 @@ msgstr ""
 msgid "Remove sensitive data from response headers, such as: X-Powered-By."
 msgstr ""
 
-#: src/Components/Security/Security.php:165
+#: src/Components/Security/Security.php:164
 msgid ""
 "Remove the default users site map to avoid exposing user ID and login name "
 "security risks."
@@ -2094,7 +2137,7 @@ msgstr ""
 msgid "Remove the WordPress Logo & menu in the admin bar & admin login page."
 msgstr ""
 
-#: src/Components/Security/Security.php:199
+#: src/Components/Security/Security.php:198
 msgid "Remove the XML-RPC API to block access to xmlrpc.php."
 msgstr ""
 
@@ -2106,8 +2149,16 @@ msgstr ""
 msgid "Remove Tools page from admin menu."
 msgstr ""
 
-#: src/Components/Security/Security.php:148
+#: src/Components/Security/Security.php:147
 msgid "Rename the currently uploaded file using a timestamp."
+msgstr ""
+
+#: src/Services/WechatOAService.php:1044
+msgid "Reply content cannot be empty"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1245
+msgid "Reply not found"
 msgstr ""
 
 #: src/Middleware/SchemaMiddleware.php:44
@@ -2118,8 +2169,8 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: src/Components/Security/Security.php:141
-#: src/Components/Security/Security.php:147
+#: src/Components/Security/Security.php:140
+#: src/Components/Security/Security.php:146
 msgid "Reset Upload File Names"
 msgstr ""
 
@@ -2174,9 +2225,13 @@ msgstr ""
 msgid "Sad Mod"
 msgstr ""
 
-#: src/Components/Security/Security.php:175
-#: src/Components/Security/Security.php:181
+#: src/Components/Security/Security.php:174
+#: src/Components/Security/Security.php:180
 msgid "Safe Session"
+msgstr ""
+
+#: src/Services/WechatOAService.php:1108
+msgid "Save failed, please try again later"
 msgstr ""
 
 #: src/Middleware/SchemaMiddleware.php:56
@@ -2218,9 +2273,9 @@ msgstr ""
 msgid "Search Sidebar"
 msgstr ""
 
+#: src/Components/Security/Security.php:65
 #: src/Components/Security/Security.php:66
-#: src/Components/Security/Security.php:67
-#: src/Components/Security/Security.php:79
+#: src/Components/Security/Security.php:78
 msgid "Security"
 msgstr ""
 
@@ -2398,7 +2453,6 @@ msgid ""
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:28
 #: src/Includes/SwiperListTable.php:30
 #: src/Components/Swiper/views/page-edit.php:123
 #: src/Components/Swiper/views/page-edit.php:126
@@ -2508,7 +2562,7 @@ msgstr ""
 msgid "The number of search results returned. Default: 5."
 msgstr ""
 
-#: src/Components/Security/Security.php:114
+#: src/Components/Security/Security.php:113
 msgid ""
 "The system will replace <code>\"wp-login.php\"</code> with the new address "
 "<code>\"/oa/$url\"</code> below."
@@ -2616,7 +2670,6 @@ msgstr ""
 msgid "Translations API"
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:26
 #: src/Includes/WechatOAMenuListTable.php:21
 #: src/Components/WechatOA/views/view-menu-edit.php:81
 #: src/Components/WechatOA/views/view-menu-edit.php:84
@@ -2628,16 +2681,16 @@ msgstr ""
 msgid "Unauthorized"
 msgstr ""
 
-#: src/Includes/WechatOAMessagesListTable.php:75
-msgid "Unread"
-msgstr ""
-
 #: src/Components/Product/Product.php:167
 msgid "Update Brand"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:86
 msgid "Update Category"
+msgstr ""
+
+#: src/Components/WechatOA/views/tab-menus.php:25
+msgid "Update Menus Online"
 msgstr ""
 
 #: src/Components/Product/Product.php:141
@@ -2648,8 +2701,9 @@ msgstr ""
 msgid "Update Time"
 msgstr ""
 
-#: src/Includes/SwiperListTable.php:195 src/Utilities/Request.php:38
-#: src/Components/Swiper/Swiper.php:100 src/Components/Swiper/Swiper.php:173
+#: src/Includes/SwiperListTable.php:195 src/Utilities/Request.php:64
+#: src/Controllers/AdminController.php:53 src/Components/Swiper/Swiper.php:100
+#: src/Components/Swiper/Swiper.php:173
 #: src/Components/Developer/views/tab-form.php:9
 #: src/Components/Developer/views/tab-setting.php:8
 #: src/Components/Developer/views/tab-wechatOA.php:6
@@ -2694,7 +2748,7 @@ msgstr ""
 msgid "Use as cover image"
 msgstr ""
 
-#: src/Components/Security/Security.php:233
+#: src/Components/Security/Security.php:232
 msgid ""
 "Use Content Security Policy (CSP) to prevent cross-site scripting attacks. "
 "Before enabling, please ensure that there are no external resource "
@@ -2717,8 +2771,8 @@ msgstr ""
 msgid "User Registration Notification Template"
 msgstr ""
 
-#: src/Components/Security/Security.php:158
-#: src/Components/Security/Security.php:164
+#: src/Components/Security/Security.php:157
+#: src/Components/Security/Security.php:163
 msgid "Users SiteMap"
 msgstr ""
 
@@ -2743,6 +2797,7 @@ msgstr ""
 msgid "Verify License"
 msgstr ""
 
+#: src/Includes/WechatOAMessageListTable.php:192
 #: src/Components/Post/Post.php:281
 msgid "View"
 msgstr ""
@@ -2824,7 +2879,6 @@ msgstr ""
 msgid "Wechat Official Account"
 msgstr ""
 
-#: src/Services/WechatOAService.php:106
 #: src/Components/WechatOA/WechatOA.php:234
 msgid "Wechat Official Account service is not enabled"
 msgstr ""
@@ -2870,7 +2924,7 @@ msgid ""
 "database to avoid data pollution.<br>The backup file directory: "
 msgstr ""
 
-#: src/Components/Security/Security.php:182
+#: src/Components/Security/Security.php:181
 msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."

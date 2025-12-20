@@ -48,9 +48,10 @@ final class Image {
      * 获取内置svg图标
      * 
      * @param string $icon Icon name
+     * @param string $animation Animation name
      * @return string
      */
-    public static function icon(string $icon): string
+    public static function icon(string $icon, string $animation = ''): string
     {
         $h = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">';
         $f = '</svg>';
@@ -82,7 +83,13 @@ final class Image {
 
             default => $path = ''
         };
-        return $h . $path . $f;
+        $icon = $h . $path . $f;
+
+        if ($animation) {
+            $icon = '<icon class="animate-' . $animation . '">' . $icon . '</icon>';
+        }
+
+        return $icon;
     }
 
 }

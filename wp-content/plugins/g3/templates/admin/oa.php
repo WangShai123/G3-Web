@@ -14,8 +14,7 @@ get_header();
 <div class="flex flex-col justify-center items-center h-screen w-full">
     <h1 class="text-center -translate-y-24px"><?php echo $name; ?></h1>
     <section class="flex justify-center -translate-y-24px">
-        <form class="j-form is-vertical is-item-vertical" id="adminLogin" data-form="adminLogin"
-            style="width:480px;min-width:300px">
+        <form class="j-form is-vertical is-item-vertical" id="adminLogin" style="width:480px;min-width:300px">
             <div class="form-item">
                 <label for="username" class="item-label is-required"><?php _e('Username'); ?></label>
                 <div class="form-control">
@@ -56,27 +55,26 @@ get_header();
         form.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const submit = form.querySelector('button[type="submit"]');
-            const oldText = submit.textContent;
-            const newText = '<icon class="animate-spin"><?php echo Image::icon('loader'); ?></icon>';
-            submit.disabled = true;
-            submit.innerHTML = newText;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const text = submitBtn.textContent;
+            const loader = '<?php echo Image::icon('loader', 'spin'); ?>';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = loader;
             setTimeout(function () {
-                submit.disabled = false;
-                submit.innerHTML = oldText;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = text;
             }, 2000);
 
-            const data = {
-                username: form.querySelector('#username').value,
-                password: form.querySelector('#password').value
-            }
             const origin = window.location.origin;
-            fetch(origin + '/wp-json/api/v1/oa/admin', {
+            fetch(origin + '/wp-json/api/v1/oa/admin/auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({
+                    username: form.querySelector('#username').value,
+                    password: form.querySelector('#password').value
+                })
             }).then(res => res.json())
                 .then(res => {
                     if (res.code === 200) {
@@ -111,7 +109,6 @@ get_header();
                 })
                 document.body.prepend(themeBox)
             }
-
             const themeValues = Array.from(document.documentElement.classList)
                 .filter((cls) => cls.startsWith('j-theme-'))
                 .map((cls) => cls.replace('j-theme-', ''))

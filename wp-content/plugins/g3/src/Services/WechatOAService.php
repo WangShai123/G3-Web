@@ -766,178 +766,6 @@ class WechatOAService {
         }
     }
 
-    public static function replyListCount(): int
-    {
-        return 4;
-    }
-
-    /**
-     * Add a reply rule
-     * 
-     * 添加一条自动回复规则
-     *
-     * @param array $data {
-     *     @type string|array $keywords  关键词（字符串逗号分隔 或 数组）
-     *     @type string       $content   回复内容
-     *     @type string       $type      类型（如 'text', 'news'）
-     *     @type int          $status    状态（1=启用, 0=禁用）
-     * }
-     * @return int|WP_Error 成功返回 reply_id，失败返回 WP_Error 或 false
-     */
-    public static function addReply(array $data)
-    {
-        global $wpdb;
-
-        // === 1. 标准化并校验关键词 ===
-        $keywords = self::normalizeKeywords($data['keywords'] ?? '');
-
-        if (empty($keywords)) {
-            return new WP_Error(
-                'no_keywords',
-                __('At least one keyword is required', 'G3')
-            );
-        }
-
-        // === 2. 查重：只要 keyword 表存在就算占用（全局唯一）===
-        foreach ($keywords as $keyword) {
-            if (self::isKeywordExists($keyword)) {
-                return new WP_Error(
-                    'keyword_exists',
-                    sprintf(
-                        __('Keyword "%s" is already in use', 'G3'),
-                        esc_html($keyword)
-                    )
-                );
-            }
-        }
-
-        // === 3. 校验回复内容 ===
-        $content = trim($data['content'] ?? '');
-        if (empty($content)) {
-            return new WP_Error(
-                'empty_content',
-                __('Reply content cannot be empty', 'G3')
-            );
-        }
-
-        // === 4. 开启事务 ===
-        $wpdb->query('START TRANSACTION');
-
-        try {
-            // 插入主表
-            $replyData = [
-                'type'    => sanitize_text_field($data['type'] ?? 'text'),
-                'content' => $content,
-                'status'  => (int) ($data['status'] ?? 1),
-                'created' => current_time('mysql', true),
-                'updated' => current_time('mysql', true)
-            ];
-
-            $replyId = self::insertReply($replyData);
-            if (!$replyId) {
-                new WP_Error(
-                    'db_error',
-                    __('Failed to insert reply into main table', 'G3')
-                );
-            }
-
-            // 批量插入关键词
-            self::batchInsertKeywords($replyId, $keywords);
-
-            // === 5. （可选）预热缓存：为每个关键词缓存 reply_id ===
-            foreach ($keywords as $keyword) {
-                wp_cache_set("keyword:{$keyword}", $replyId, self::CACHE_GROUP);
-            }
-
-            $wpdb->query('COMMIT');
-            return $replyId;
-        }
-        catch (Exception $e) {
-            $wpdb->query('ROLLBACK');
-            error_log('G3 WeChat OA - addReply failed: ' . $e->getMessage());
-            return new WP_Error(
-                'db_error',
-                __('Save failed, please try again later', 'G3')
-            );
-        }
-    }
-    /**
-     * 标准化关键词输入
-     * @param mixed $input
-     * @return array 去重、去空、trim 后的关键词数组
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private static function normalizeKeywords($input): array
-    {
-        $keywords = [];
-
-        if (is_array($input)) {
-            $keywords = $input;
-        } elseif (is_string($input)) {
-            $keywords = explode(',', $input);
-        }
-
-        $keywords = array_map('trim', $keywords);
-        $keywords = array_filter($keywords, function ($kw) {
-            return !empty($kw) && strlen($kw) <= 100; // 匹配 VARCHAR(100)
-        });
-
-        return array_unique($keywords);
-    }
-    /**
-     * 检查关键词是否已存在于 keyword 表（全局唯一）
-     * @param string $keyword
-     * @return bool 
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private static function isKeywordExists(string $keyword): bool
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::KEYWORD_TABLE;
-        return (bool) $wpdb->get_var($wpdb->prepare(
-            "SELECT 1 FROM {$table} WHERE keyword = %s",
-            $keyword
-        ));
-    }
-    /**
-     * 插入主表
-     */
-    private static function insertReply(array $data)
-    {
-        global $wpdb;
-        $table  = $wpdb->prefix . self::REPLY_TABLE;
-        $result = $wpdb->insert($table, $data, ['%s', '%s', '%d', '%s', '%s']);
-        return $result ? $wpdb->insert_id : false;
-    }
-    /**
-     * 批量插入关键词（使用单条 INSERT ... VALUES (...), (...) 语句）
-     */
-    private static function batchInsertKeywords(int $replyId, array $keywords): void
-    {
-        if (empty($keywords)) return;
-
-        global $wpdb;
-        $table = $wpdb->prefix . self::KEYWORD_TABLE;
-
-        $values       = [];
-        $placeholders = [];
-
-        foreach ($keywords as $keyword) {
-            $values[]       = $replyId;
-            $values[]       = $keyword;
-            $placeholders[] = '(%d, %s)';
-        }
-
-        $sql      = "INSERT INTO {$table} (reply_id, keyword) VALUES " . implode(', ', $placeholders);
-        $prepared = $wpdb->prepare($sql, $values);
-
-        if (false === $wpdb->query($prepared)) {
-            throw new Exception('Batch insert keywords failed');
-        }
-    }
-
     public static function getReply(string $keyword)
     {
         if (empty($keyword)) {
@@ -1077,8 +905,8 @@ class WechatOAService {
                 break;
             default:
                 // 默认回复
-                $reply = __('Hello, thanks for your message!', 'G3');
-                error_log('WeChat OA - Default reply: ' . __('Hello, thanks for your message!', 'G3'));
+                $reply = 'Hello, thanks for your message!';
+                error_log('WeChat OA - Default reply: ' . 'Hello, thanks for your message!');
                 break;
         }
         error_log('WeChat OA - Final reply content: ' . ($reply ?? 'null'));
@@ -1101,7 +929,7 @@ class WechatOAService {
         if ($reply !== false) {
             // 检查启用状态
             if ($reply['status'] == '1') {
-                $result = $reply['content'] ?? __('Message received, thank you!', 'G3');
+                $result = $reply['content'] ?? 'Message received, thank you!';
                 error_log('WeChat OA - Hit keyword rule, reply content: ' . $result);
                 return $result;
             } else {
@@ -1117,8 +945,8 @@ class WechatOAService {
         }
 
         // 默认回复
-        error_log('WeChat OA - Return default reply: ' . __('Message received, thank you!', 'G3'));
-        return __('Message received, thank you!', 'G3');
+        error_log('WeChat OA - Return default reply: ' . 'Message received, thank you!');
+        return 'Message received, thank you!';
     }
 
     private function handleEventMessage(array $message): ?string
@@ -1128,7 +956,7 @@ class WechatOAService {
         switch ($event) {
             case 'subscribe':
                 // 关注事件
-                return __('Welcome! Thanks for subscribing to our account.', 'G3');
+                return 'Welcome! Thanks for subscribing to our account.';
             case 'unsubscribe':
                 // 取消关注事件
                 return null; // 不回复
@@ -1172,6 +1000,501 @@ class WechatOAService {
     {
         $option = get_option(self::OPTION_KEY)['search'] ?? false;
         return $option === '1';
+    }
+
+    /************************************************************
+     * 
+     * Wechat OA Reply Handle
+     * 
+     ************************************************************/
+
+    /**
+     * Update a reply rule. If id is 0 or does not exist, a new rule will be inserted.
+     *
+     * 更新一条自动回复规则，如果 id 为 0 或 不存在 则插入新规则
+     *
+     * @param array $data {
+     *     @type string|array $keywords  关键词（字符串逗号分隔 或 数组）
+     *     @type string       $content   回复内容
+     *     @type string       $type      类型（如 'text', 'news'）
+     *     @type int          $status    状态（1=启用, 0=禁用）
+     * }
+     * @return int|WP_Error reply_id | WP_Error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function updateReply(array $data): int|WP_Error
+    {
+        global $wpdb;
+
+        // Normalize and validate keywords (max 100 chars per keyword)
+        $keywords = self::normalizeKeywords($data['keywords'] ?? '');
+        if (empty($keywords)) {
+            return new WP_Error(
+                'no_keywords',
+                __('At least one keyword is required', 'G3')
+            );
+        }
+
+        // Validate reply content
+        $content = trim($data['content'] ?? '');
+        if (empty($content)) {
+            return new WP_Error(
+                'empty_content',
+                __('Reply content cannot be empty', 'G3')
+            );
+        }
+
+        // Determine if it's an update or insert based on $data['id']
+        $id        = $data['id'] ?? null;
+        $isValidId = (is_numeric($id) && ($id = (int) $id) > 0);
+
+        // === Keyword uniqueness check ===
+        if ($isValidId) {
+            // Update: allow self-keywords, exclude current reply_id
+            foreach ($keywords as $keyword) {
+                if (self::isKeywordExistsExcluding($keyword, $id)) {
+                    return new WP_Error(
+                        'keyword_exists',
+                        sprintf(
+                            __('Keyword %s already exists', 'G3'),
+                            esc_html($keyword)
+                        )
+                    );
+                }
+            }
+        } else {
+            // Insert: strict global uniqueness
+            foreach ($keywords as $keyword) {
+                if (self::isKeywordExists($keyword)) {
+                    return new WP_Error(
+                        'keyword_exists',
+                        sprintf(
+                            __('Keyword %s already exists', 'G3'),
+                            esc_html($keyword)
+                        )
+                    );
+                }
+            }
+        }
+
+        // Start transaction
+        $wpdb->query('START TRANSACTION');
+
+        try {
+            if ($isValidId) {
+                $result = self::_updateReply($id, $data, $keywords);
+            } else {
+                $result = self::_insertReply($data, $keywords);
+            }
+
+            if (is_wp_error($result)) {
+                throw new Exception($result->get_error_message());
+            }
+
+            // Cache preheating with TTL (5 minutes)
+            foreach ($keywords as $keyword) {
+                wp_cache_set("keyword:{$keyword}", $result, self::CACHE_GROUP, 300);
+            }
+
+            $wpdb->query('COMMIT');
+            return $result;
+        }
+        catch (Exception $e) {
+            $wpdb->query('ROLLBACK');
+            error_log('G3 WeChat OA - updateReply failed: ' . $e->getMessage());
+            return new WP_Error(
+                'db_error',
+                __('Save failed, please try again later', 'G3')
+            );
+        }
+    }
+
+    /**
+     * Normalize keyword input
+     * 
+     * 标准化关键词输入
+     * 
+     * @param mixed $input
+     * @return array 去重、去空、trim 后的关键词数组（每个 ≤100 字符）
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function normalizeKeywords($input): array
+    {
+        $keywords = [];
+
+        if (is_array($input)) {
+            $keywords = $input;
+        } elseif (is_string($input)) {
+            $keywords = explode(',', $input);
+        }
+
+        $keywords = array_map('trim', $keywords);
+        $keywords = array_filter($keywords, function ($kw) {
+            return !empty($kw) && strlen($kw) <= 100; // VARCHAR(100)
+        });
+
+        return array_unique($keywords);
+    }
+
+    /**
+     * Check if keyword exists in keyword table (global uniqueness)
+     * 
+     * 检查关键词是否已存在于 keyword 表（全局唯一）
+     * 
+     * @param string $keyword
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function isKeywordExists(string $keyword): bool
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT 1 FROM {$table} WHERE keyword = %s",
+            $keyword
+        ));
+    }
+
+    /**
+     * Check if keyword exists for another reply_id (excluding self)
+     * 
+     * 检查关键词是否被其他 reply_id 占用（排除自身）
+     * 
+     * @param string $keyword
+     * @param int $excludeReplyId
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function isKeywordExistsExcluding(string $keyword, int $excludeReplyId): bool
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT 1 FROM {$table} WHERE keyword = %s AND reply_id != %d",
+            $keyword,
+            $excludeReplyId
+        ));
+    }
+
+    /**
+     * Insert a new reply rule
+     * 
+     * 插入新回复规则
+     * 
+     * @param array $data
+     * @param array $keywords
+     * @return int|WP_Error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function _insertReply(array $data, array $keywords): int|WP_Error
+    {
+        $replyId = self::insertReply([
+            'type'    => sanitize_text_field($data['type'] ?? 'text'),
+            'content' => trim($data['content']),
+            'status'  => (int) ($data['status'] ?? 1),
+            'created' => current_time('mysql', true),
+            'updated' => current_time('mysql', true)
+        ]);
+
+        if (!$replyId) {
+            return new WP_Error('db_error', __('Failed to insert reply into main table', 'G3'));
+        }
+
+        self::batchInsertKeywords($replyId, $keywords);
+        return $replyId;
+    }
+
+    /**
+     * Update an existing reply rule
+     * 
+     * 更新现有回复规则
+     * 
+     * @param int $id
+     * @param array $data
+     * @param array $keywords
+     * @return int|WP_Error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function _updateReply(int $id, array $data, array $keywords): int|WP_Error
+    {
+        global $wpdb;
+        $updated = $wpdb->update(
+            $wpdb->prefix . self::REPLY_TABLE,
+            [
+                'type'    => sanitize_text_field($data['type'] ?? 'text'),
+                'content' => trim($data['content']),
+                'status'  => (int) ($data['status'] ?? 1),
+                'updated' => current_time('mysql', true)
+            ],
+            ['id' => $id],
+            ['%s', '%s', '%d', '%s'],
+            ['%d']
+        );
+
+        if ($updated === false) {
+            return new WP_Error('db_error', __('Failed to update reply in main table', 'G3'));
+        }
+
+        if ($updated === 0) {
+            return new WP_Error('not_found', __('Reply not found', 'G3'));
+        }
+
+        // Synchronize keywords: delete all then re-insert
+        self::batchUpdateKeywords($id, $keywords);
+
+        return $id;
+    }
+
+    /**
+     * Insert a new reply record into the main table
+     * 
+     * 插入主表记录
+     * 
+     * @param array $data
+     * @return int|false
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function insertReply(array $data): bool|int
+    {
+        global $wpdb;
+        $table  = $wpdb->prefix . self::REPLY_TABLE;
+        $result = $wpdb->insert($table, $data, ['%s', '%s', '%d', '%s', '%s']);
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Batch insert keywords (for new records)
+     * 
+     * 批量插入关键词（用于新增场景）
+     * 
+     * @param int $replyId
+     * @param array $keywords
+     * @return void
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function batchInsertKeywords(int $replyId, array $keywords): void
+    {
+        if (empty($keywords)) {
+            return;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+
+        $values       = [];
+        $placeholders = [];
+
+        foreach ($keywords as $keyword) {
+            $values[]       = $replyId;
+            $values[]       = $keyword;
+            $placeholders[] = '(%d, %s)';
+        }
+
+        $sql      = "INSERT INTO {$table} (reply_id, keyword) VALUES " . implode(', ', $placeholders);
+        $prepared = $wpdb->prepare($sql, $values);
+
+        if (false === $wpdb->query($prepared)) {
+            throw new Exception(__('Batch insert keywords failed', 'G3'));
+        }
+    }
+
+    /**
+     * Batch update keywords (for existing records)
+     * 
+     * 批量更新关键词（先删除该 reply_id 的所有关键词，再重新插入）
+     * 
+     * @param int $replyId
+     * @param array $keywords
+     * @return void
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function batchUpdateKeywords(int $replyId, array $keywords): void
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::KEYWORD_TABLE;
+
+        /**
+         * 先删除后插入，替代差异同步。
+         */
+
+        // Delete all existing keywords for this reply_id
+        $wpdb->delete($table, ['reply_id' => $replyId], ['%d']);
+
+        // Re-insert new keywords
+        if (!empty($keywords)) {
+            self::batchInsertKeywords($replyId, $keywords);
+        }
+    }
+
+    /**
+     * Delete one or multiple reply rules by ID(s).
+     *
+     * 删除一条或多条自动回复规则及其所有关联关键词
+     *
+     * @param array $data {
+     *     @type int    $id  可选，单个 reply ID
+     *     @type int[]  $ids 可选，多个 reply IDs
+     * }
+     * @return true|WP_Error
+     */
+    public static function deleteReply(array $data): bool|WP_Error
+    {
+        global $wpdb;
+
+        // 解析 ID 列表
+        $ids = [];
+        if (isset($data['id']) && is_numeric($data['id'])) {
+            $ids[] = (int) $data['id'];
+        }
+        if (isset($data['ids']) && is_array($data['ids'])) {
+            foreach ($data['ids'] as $id) {
+                if (is_numeric($id) && ($id = (int) $id) > 0) {
+                    $ids[] = $id;
+                }
+            }
+        }
+
+        $ids = array_unique(array_filter($ids, fn($id) => $id > 0));
+
+        if (empty($ids)) {
+            return new WP_Error('invalid_ids', __('No valid reply ID(s) provided.', 'G3'));
+        }
+
+        // Start transaction
+        $wpdb->query('START TRANSACTION');
+
+        try {
+            $replyTable   = $wpdb->prefix . self::REPLY_TABLE;
+            $keywordTable = $wpdb->prefix . self::KEYWORD_TABLE;
+
+            // 检查所有 ID 是否都存在（可选，提升用户体验）
+            $placeholders  = implode(',', array_fill(0, count($ids), '%d'));
+            $existingCount = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$replyTable} WHERE id IN ({$placeholders})",
+                $ids
+            ));
+
+            if ((int) $existingCount !== count($ids)) {
+                // 可选择是否严格要求全部存在；这里允许部分不存在？但通常应全存在
+                // 为安全起见，我们要求全部存在，否则报错
+                throw new Exception('One or more replies not found.');
+            }
+
+            // Step 1: Delete all associated keywords for these reply_ids
+            $deletedKeywords = $wpdb->query($wpdb->prepare(
+                "DELETE FROM {$keywordTable} WHERE reply_id IN ({$placeholders})",
+                $ids
+            ));
+
+            // Step 2: Delete the main reply records
+            $deletedReplies = $wpdb->query($wpdb->prepare(
+                "DELETE FROM {$replyTable} WHERE id IN ({$placeholders})",
+                $ids
+            ));
+
+            if ($deletedReplies === false) {
+                throw new Exception(__('Failed to delete replies from main table.', 'G3'));
+            }
+
+            $wpdb->query('COMMIT');
+            return true;
+
+        }
+        catch (Exception $e) {
+            $wpdb->query('ROLLBACK');
+            error_log('G3 WeChat OA - deleteReply failed: ' . $e->getMessage());
+            return new WP_Error('db_error', $e->getMessage() ?: __('Failed to delete reply(s).', 'G3'));
+        }
+    }
+
+    /**
+     * 批量启用自动回复规则
+     *
+     * @param array $data {
+     *     @type int[] $ids 要启用的 reply ID 列表
+     * }
+     * @return true|WP_Error
+     */
+    public static function enableReply(array $data): bool|WP_Error
+    {
+        return self::batchUpdateStatus($data['ids'] ?? [], 1);
+    }
+
+    /**
+     * 批量禁用自动回复规则
+     *
+     * @param array $data {
+     *     @type int[] $ids 要禁用的 reply ID 列表
+     * }
+     * @return true|WP_Error
+     */
+    public static function disableReply(array $data): bool|WP_Error
+    {
+        return self::batchUpdateStatus($data['ids'] ?? [], 0);
+    }
+
+    /**
+     * 内部方法：批量更新回复规则状态
+     *
+     * @param array $ids
+     * @param int   $status (0 或 1)
+     * @return true|WP_Error
+     */
+    private static function batchUpdateStatus(array $ids, int $status): bool|WP_Error
+    {
+        if (empty($ids)) {
+            return new WP_Error('no_ids', __('No reply IDs provided', 'G3'));
+        }
+
+        // 过滤并转为整数，去重
+        $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
+        $ids = array_unique($ids);
+
+        if (empty($ids)) {
+            return new WP_Error('invalid_ids', __('All provided IDs are invalid', 'G3'));
+        }
+
+        global $wpdb;
+        $table        = $wpdb->prefix . self::REPLY_TABLE;
+        $keywordTable = $wpdb->prefix . self::KEYWORD_TABLE;
+
+        // 构造 IN 占位符
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+
+        // Get keywords for these reply IDs
+        $keywords = $wpdb->get_col($wpdb->prepare(
+            "SELECT keyword FROM {$keywordTable} WHERE reply_id IN ({$placeholders})",
+            $ids
+        ));
+
+        // Update status in the main table
+        $sql    = "UPDATE {$table} SET status = %d, updated = %s WHERE id IN ({$placeholders})";
+        $result = $wpdb->query($wpdb->prepare(
+            $sql,
+            array_merge([$status, current_time('mysql', true)], $ids)
+        ));
+
+        if ($result === false) {
+            error_log('G3 WeChat OA - batchUpdateStatus failed');
+            return new WP_Error('db_error', __('Failed to update reply status', 'G3'));
+        }
+
+        // Clear cache for these keywords
+        foreach ($keywords as $keyword) {
+            $cacheKey = 'reply:' . md5($keyword);
+            wp_cache_delete($cacheKey, self::CACHE_GROUP);
+        }
+
+        return true;
     }
 
 }
