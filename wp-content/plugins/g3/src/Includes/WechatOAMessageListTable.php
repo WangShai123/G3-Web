@@ -175,13 +175,9 @@ class WechatOAMessageListTable extends WP_List_Table {
                         echo '<p>Successfully deleted message(s).</p>';
                         echo '</div>';
                     });
-                    $new_page     = max(1, $current_page - 1);
-                    $redirect_url = remove_query_arg(['_wpnonce', '_wp_http_referer'], wp_unslash($_SERVER['REQUEST_URI']));
-                    $redirect_url = remove_query_arg('paged', $redirect_url);
-                    if ($new_page > 1) {
-                        $redirect_url = add_query_arg('paged', $new_page, $redirect_url);
-                    }
-                    wp_redirect($redirect_url);
+                    $new_page = max(1, $current_page - 1);
+                    //重定向当前页面，且$paged=$new_page
+                    wp_redirect(add_query_arg('paged', $new_page, $_SERVER['REQUEST_URI']));
                     exit;
                 } else {
                     // 设置错误消息
