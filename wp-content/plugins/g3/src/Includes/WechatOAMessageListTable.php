@@ -166,13 +166,9 @@ class WechatOAMessageListTable extends WP_List_Table {
                 $deleted = WechatOAService::deleteMessages($messages);
 
                 if ($deleted !== false) {
-                    // 设置成功消息
-                    // add_action('admin_notices', function () use ($deleted) {
-                    //     echo '<div class="notice notice-success is-dismissible">';
-                    //     echo '<p>Successfully deleted message(s).</p>';
-                    //     echo '</div>';
-                    // });
-                    wp_safe_redirect(admin_url('admin.php?page=wechat-oa&tab=message'));
+                    // wp_safe_redirect(admin_url('admin.php?page=wechat-oa&tab=message'));
+                    // 使用js跳转
+                    echo '<script>window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";</script>';
                 } else {
                     // 设置错误消息
                     add_action('admin_notices', function () {
