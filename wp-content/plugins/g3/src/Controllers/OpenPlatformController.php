@@ -83,22 +83,22 @@ class OpenPlatformController {
             // }
 
             // Let EasyWeChat handle both GET (verification) and POST (messages)
-            $response = $service->app->getServer()->serve();
+            // $response = $service->app->getServer()->serve();
 
-            // ✅ 正确获取响应内容（PSR-7）
-            $body = $response->getBody()->__toString();
+            // Let EasyWeChat handle everything
+            $psr7Response = $service->app->getServer()->serve();
 
-            // ✅ 正确获取响应头（PSR-7）
-            $headers = $response->getHeaders(); // 返回 ['Header-Name' => ['value1', 'value2'], ...]
+            // --- Convert PSR-7 Response to WP_REST_Response ---
+            $body   = $psr7Response->getBody()->__toString();
+            $status = $psr7Response->getStatusCode();
 
-            // 转换为 WordPress 可用的 header 格式（扁平化）
-            $wp_headers = [];
-            foreach ($headers as $name => $values) {
-                // 多个值用逗号合并（如 'Cache-Control: no-cache, no-store'）
-                $wp_headers[$name] = implode(', ', $values);
+            // Flatten headers for WordPress (array of strings)
+            $headers = [];
+            foreach ($psr7Response->getHeaders() as $name => $values) {
+                $headers[$name] = implode(', ', $values);
             }
 
-            return new WP_REST_Response($body, $response->getStatusCode(), $wp_headers);
+            return new WP_REST_Response($body, $status, $headers);
 
 
         }
