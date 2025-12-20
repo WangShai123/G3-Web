@@ -1,6 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\WechatOAService;
 use Psr\Http\Message\ResponseInterface;
 
@@ -14,22 +15,20 @@ try {
         exit('Service not available');
     }
 
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'CLI';
+
     // ======================
-    // 1. 处理 GET：仅做 Token 验证
+    // Handle WeChat server verification (GET request)
     // ======================
     if ($method === 'GET') {
+        // Manual verification - more reliable approach
         $signature = $_GET['signature'] ?? '';
         $timestamp = $_GET['timestamp'] ?? '';
         $nonce     = $_GET['nonce'] ?? '';
         $echostr   = $_GET['echostr'] ?? '';
 
-        if (empty($echostr)) {
-            http_response_code(400);
-            exit('Missing echostr');
-        }
-
-        // 从 WordPress 选项中读取 token（不初始化完整服务）
-        $config = get_option('g3_wechat_oa_settings', []);
+        // Get token from service config - FIXED: Use the correct option key
+        $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
         $token  = $config['token'] ?? '';
 
         if (empty($token)) {
@@ -38,22 +37,30 @@ try {
             exit('Token missing');
         }
 
-        // 验证签名
-        $tmpArr = [$token, $timestamp, $nonce];
-        sort($tmpArr, SORT_STRING);
-        $signatureCalculated = sha1(implode('', $tmpArr));
+        // Sort parameters lexicographically
+        $params = [$token, $timestamp, $nonce];
+        sort($params, SORT_STRING);
 
-        if ($signatureCalculated === $signature) {
-            error_log('WeChat callback: Token verification SUCCESS');
-            // 清除缓冲，直接输出 echostr
-            while (ob_get_level()) ob_end_clean();
+        // Concatenate parameters
+        $concatenated = implode('', $params);
+
+        // Generate SHA1 hash
+        $hash = sha1($concatenated);
+
+        // Compare with signature
+        if ($hash === $signature) {
+            // return new WP_REST_Response($echostr, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
             header('Content-Type: text/plain; charset=utf-8');
             echo $echostr;
             exit;
         } else {
-            error_log('WeChat callback: Token verification FAILED');
-            http_response_code(403);
-            exit('Forbidden');
+            // return new WP_REST_Response('Forbidden', 403);
+            header('HTTP/1.1 403 Forbidden');
+            echo 'Forbidden';
+            exit;
         }
     }
 
