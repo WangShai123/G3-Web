@@ -23,14 +23,14 @@ class OpenPlatformController {
      * WeChat Official Account Platform callback
      *
      * @param WP_REST_Request $request
-     * @return ResponseInterface|WP_REST_Response
+     * @return 
      */
     #[RestRouter(
         namespace: 'api/v1',
         route: 'wechat_oa/callback',
         methods: ['GET', 'POST']
     )]
-    public function wechatOACallback(WP_REST_Request $request): ResponseInterface|WP_REST_Response
+    public function wechatOACallback(WP_REST_Request $request)
     {
         try {
             $service = WechatOAService::run();
@@ -92,10 +92,10 @@ class OpenPlatformController {
 
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
-            return $response;
+            // return $response;
             // // 获取实际的响应内容（只获取一次）
-            // $responseBody = $response->getBody();
-            // $content      = '';
+            $responseBody = $response->getBody();
+            $content      = '';
 
             // if (method_exists($responseBody, '__toString')) {
             //     $content = (string) $responseBody;
@@ -108,10 +108,14 @@ class OpenPlatformController {
             // }
 
             // 重置指针位置以确保能读取内容
-            // $responseBody->rewind();
-            // $content = $responseBody->getContents();
+            $responseBody->rewind();
+            $content = $responseBody->getContents();
 
-            // error_log('WeChat OA - Actual response body: ' . $content);
+
+
+            error_log('WeChat OA - Actual response body: ' . $content);
+
+            return $content;
 
             // Get response status code
             // $statusCode = $response->getStatusCode();
