@@ -117,6 +117,8 @@ class WechatOAService {
      */
     public Application $app;
 
+    public array $option;
+
     public function __construct()
     {
         $this->init();
@@ -124,18 +126,15 @@ class WechatOAService {
 
     private function init()
     {
-        $data          = get_option(self::OPTION_KEY);
-        $serviceEnable = $data['service'] ?? false;
+        $this->option  = get_option(self::OPTION_KEY);
+        $serviceEnable = $this->option['service'] ?? false;
 
         if ($serviceEnable) {
             $this->app = new Application($this->config());
             $server    = $this->app->getServer();
 
             // Subscribe Handle
-            $server->addEventListener('subscribe', function ($message) use ($data) {
-                $followMessage = $data['followMessage'] ?? __('Welcome', 'G3');
-                return $followMessage;
-            });
+            $server->addEventListener('subscribe', [$this, 'subscribeHandle']);
 
             // Messages Handle
             $server->withHandler(function ($message) {
@@ -143,6 +142,13 @@ class WechatOAService {
                 return $this->handleReply($message);
             });
         }
+    }
+
+    private function subscribeHandle($message)
+    {
+        error_log('Wechat OA: Subscribe Event');
+        $followMessage = $this->option['followMessage'] ?? __('Welcome', 'G3');
+        return $followMessage;
     }
 
     public function isAvailable(): bool
