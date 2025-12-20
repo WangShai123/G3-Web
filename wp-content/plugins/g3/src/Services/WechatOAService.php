@@ -1216,10 +1216,6 @@ class WechatOAService {
 
             if (false === $user_info) {
                 $response = $this->app->getClient()->get('cgi-bin/user/info', [
-                    // 'query' => [
-                    //     'openid' => $openid,
-                    //     'lang'   => 'zh_CN'
-                    // ]
                     'openid' => $openid,
                     'lang'   => 'zh_CN'
                 ]);
@@ -1232,8 +1228,8 @@ class WechatOAService {
                 }
 
                 $user_info = $result;
-                // Cache for 30 minutes
-                wp_cache_set($cache_key, $user_info, self::CACHE_GROUP, 1800);
+                // Cache for 1 hour
+                wp_cache_set($cache_key, $user_info, self::CACHE_GROUP, 3600);
             }
 
             return $user_info ?: null;
