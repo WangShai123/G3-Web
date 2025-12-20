@@ -11,6 +11,7 @@ use WP_REST_Response;
 use WP_Error;
 
 class ThemeGeneratorController {
+
     #[RestRouter(
         namespace: 'api/v1',
         route: 'theme/generate',
