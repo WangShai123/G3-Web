@@ -93,9 +93,8 @@ class OpenPlatformController {
 
             error_log('WeChat OA - Full response: ' . print_r($response, true));
 
-            $response->send();
-
-            return $response;
+            // return $response;
+            return 'test';
 
             // // 获取实际的响应内容（只获取一次）
             // $responseBody = $response->getBody();
