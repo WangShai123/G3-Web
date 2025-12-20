@@ -124,11 +124,21 @@ class WechatOAService {
 
     private function init()
     {
-        $service = get_option(self::OPTION_KEY)['service'] ?? false;
-        if ($service) {
+        $data          = get_option(self::OPTION_KEY);
+        $serviceEnable = $data['service'] ?? false;
+
+        if ($serviceEnable) {
             $this->app = new Application($this->config());
+            $server    = $this->app->getServer();
+
+            // Subscribe Handle
+            $server->addEventListener('subscribe', function ($message) use ($data) {
+                $followMessage = $data['followMessage'] ?? __('Welcome', 'G3');
+                return $followMessage;
+            });
+
             // Messages Handle
-            $this->app->getServer()->withHandler(function ($message) {
+            $server->withHandler(function ($message) {
                 $this->processIncomingMessage($message);
                 return $this->handleReply($message);
             });
