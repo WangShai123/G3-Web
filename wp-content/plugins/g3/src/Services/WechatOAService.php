@@ -186,294 +186,6 @@ class WechatOAService {
     }
 
     /**
-     * Create menus for Wechat OA
-     * 
-     * 创建微信公众号菜单
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function createMenus(): bool
-    {
-        $buttons = self::formatMenusToTree(self::getMenus());
-        $result  = $this->app->getClient()->postJson('cgi-bin/menu/create', [
-            'button' => $buttons
-        ])->toArray();
-
-        return $result['errcode'] == 0 ? true : false;
-    }
-
-    /**
-     * Delete menus for Wechat OA
-     * 
-     * 删除微信公众号菜单
-     * 
-     * @param int $menuId Menu ID
-     * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function deleteMenus(int $menuId = 0): bool
-    {
-        if ($menuId == 0) {
-            $result = $this->app->getClient()->get('cgi-bin/menu/delete')->toArray();
-        } else {
-            $result = $this->app->getClient()->postJson('cgi-bin/menu/delconditional', [
-                'menuid' => $menuId
-            ]);
-        }
-        return isset($result['errcode']) && $result['errcode'] == 0 ? true : false;
-    }
-
-    /**
-     * Get all menus from cache or database
-     * 
-     * 获取所有菜单数据
-     * 
-     * @return array Formatted menu data
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function getMenus(): array
-    {
-        $menus = [];
-        $menus = wp_cache_get(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-        if (false === $menus) {
-            global $wpdb;
-            $table = $wpdb->prefix . self::MENU_TABLE;
-            $menus = $wpdb->get_results("SELECT * FROM $table", ARRAY_A);
-            if (!empty($menus)) {
-                wp_cache_set(self::MENU_CACHE_KEY, $menus, self::CACHE_GROUP);
-            }
-        }
-        return $menus;
-    }
-
-    /**
-     * Format menus to tree
-     * 
-     * 将菜单数据格式化为树形结构，满足微信公众号菜单创建的数据格式要求
-     * 
-     * @param array $menus Menu data
-     * @return array Tree structure
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function formatMenusToTree(array $menus): array
-    {
-        // Build a group with parent as the key
-        $grouped = [];
-        foreach ($menus as $menu) {
-            $grouped[$menu['parent']][] = $menu;
-        }
-
-        // Build tree according to parent=0
-        return self::buildTree($grouped, 0);
-    }
-
-    /**
-     * Recursively build tree
-     * 
-     * 递归构建树结构
-     * 
-     * @param array $grouped Grouped menu data
-     * @param int $parentId Parent ID
-     * @return array Tree structure
-     */
-    private static function buildTree(array &$grouped, int $parentId): array
-    {
-        if (!isset($grouped[$parentId])) {
-            return [];
-        }
-
-        // Sort by sort
-        usort($grouped[$parentId], function ($a, $b) {
-            return ($a['sort'] ?? 0) <=> ($b['sort'] ?? 0);
-        });
-
-        $tree = [];
-
-        foreach ($grouped[$parentId] as $item) {
-            $node = [];
-
-            // Has sub menu
-            if (isset($grouped[$item['id']])) {
-                $node['name']       = $item['name'];
-                $node['sub_button'] = self::buildTree($grouped, $item['id']);
-            } else {
-                // Last level button
-                $node['type'] = self::renderMenuType($item['type']);
-                $node['name'] = $item['name'];
-
-                // Set corresponding fields according to type
-                match ($node['type']) {
-                    'view' => $node['url'] = $item['value'],
-                    'click' => $node['key'] = $item['value'],
-                    default => $node['key'] = $item['value'],
-                };
-            }
-
-            $tree[] = $node;
-        }
-
-        return $tree;
-    }
-
-    /**
-     * Get menu by ID
-     * 
-     * 通过ID获取菜单数据
-     * 
-     * @param int $id Menu ID
-     * @return array Menu data
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function getMenuById(int $id): array
-    {
-        if ($id == 0) return [];
-
-        $key = 'menus:' . $id;
-
-        $menu = [];
-        $menu = wp_cache_get($key, self::CACHE_GROUP);
-        if (false === $menu) {
-            global $wpdb;
-            $table = $wpdb->prefix . self::MENU_TABLE;
-            $menu  = $wpdb->get_row("SELECT * FROM $table WHERE id = $id", ARRAY_A);
-            if (!empty($menu)) {
-                wp_cache_set($key, $menu, self::CACHE_GROUP);
-            }
-        }
-        return $menu;
-    }
-
-    /**
-     * Update menu
-     * 
-     * 更新菜单数据
-     * 
-     * @param int $id Menu ID
-     * @param array $data Menu data
-     * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function updateMenu(int $id, array $data): bool|int
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::MENU_TABLE;
-        if ($id == 0) {
-            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
-            return $wpdb->insert($table, $data);
-        }
-        $result = $wpdb->update($table, $data, ['id' => $id]);
-        if ($result) {
-            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
-        }
-        return $result;
-    }
-
-    /**
-     * Delete Menu
-     * 
-     * 删除菜单
-     * 
-     * @param int $id Menu ID
-     * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function deleteMenu(int $id): bool|int
-    {
-        if ($id == 0) return false;
-
-        global $wpdb;
-        $table  = $wpdb->prefix . self::MENU_TABLE;
-        $result = $wpdb->delete($table, ['id' => $id]);
-        if ($result) {
-            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
-        }
-        return $result;
-    }
-
-    /**
-     * Format menus data and build hierarchical structure
-     * 
-     * 格式化菜单数据并构建层级结构
-     * 
-     * @param array $menus Raw menu data
-     * @return array Formatted menu data with hierarchy indentation
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function formatMenus(array $menus): array
-    {
-        // Sort menus by parent and sort
-        usort($menus, function ($a, $b) {
-            if ($a['parent'] == $b['parent']) {
-                return $a['sort'] <=> $b['sort'];
-            }
-            return $a['parent'] <=> $b['parent'];
-        });
-
-        // Build parent-child menu relationship
-        $menuMap = [];
-        $result  = [];
-
-        // Build ID map
-        foreach ($menus as $menu) {
-            $menuMap[$menu['id']] = $menu;
-        }
-
-        // Build hierarchical structure
-        foreach ($menus as $menu) {
-            $menu['type'] = self::renderMenuType($menu['type']);
-
-            if ($menu['parent'] == '0') {
-                // Add top-level menu directly
-                $result[] = $menu;
-
-                // Find and add child menus
-                foreach ($menus as $child) {
-                    if ($child['parent'] == $menu['id']) {
-                        // reRender child menu
-                        $child['name'] = '└─ ' . $child['name'];
-                        $child['sort'] = '└─ ' . $child['sort'];
-                        $child['type'] = self::renderMenuType($child['type']);
-                        $result[]      = $child;
-                    }
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Render menu type
-     * 
-     * 渲染菜单类型
-     * 
-     * @param string $type Menu type
-     * @return string Formatted menu type
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private static function renderMenuType(string $type): string
-    {
-        return match ($type) {
-            '1' => 'view',
-            '2' => 'click',
-            default => '-'
-        };
-    }
-
-
-    /**
      * Save received message to database
      * 
      * 保存接收到的消息到数据库
@@ -783,37 +495,6 @@ class WechatOAService {
         }
     }
 
-    public static function getReply(string $keyword)
-    {
-        if (empty($keyword)) {
-            return false;
-        }
-
-        $cacheKey = 'reply:' . md5($keyword);
-        $reply    = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if (false === $reply) {
-            global $wpdb;
-
-            $keywordTable = $wpdb->prefix . self::KEYWORD_TABLE;
-            $replyId      = $wpdb->get_var($wpdb->prepare(
-                "SELECT reply_id FROM {$keywordTable} WHERE keyword = %s",
-                $keyword
-            ));
-            if (!$replyId) return false;
-
-            $replyTable = $wpdb->prefix . self::REPLY_TABLE;
-            $reply      = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM {$replyTable} WHERE id = %d",
-                $replyId
-            ), ARRAY_A);
-            if (!$reply) return false;
-            wp_cache_set($cacheKey, $reply, self::CACHE_GROUP);
-        }
-
-        return $reply;
-    }
-
     /**
      * Process incoming message from WeChat server
      * 
@@ -854,53 +535,6 @@ class WechatOAService {
         }
     }
 
-    /**
-     * Get user information by OpenID
-     * 
-     * 根据OpenID获取用户信息
-     * 
-     * @param string $openid User OpenID
-     * @return array|null User information or null if failed
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function getUserInfo(string $openid): ?array
-    {
-        if (empty($openid)) {
-            return null;
-        }
-
-        try {
-            $cache_key = 'users:' . md5($openid);
-            $user_info = wp_cache_get($cache_key, self::CACHE_GROUP);
-
-            if (false === $user_info) {
-                $response = $this->app->getClient()->get('cgi-bin/user/info', [
-                    'query' => [
-                        'openid' => $openid,
-                        'lang'   => 'zh_CN'
-                    ]
-                ]);
-
-                $result = $response->toArray();
-
-                if (isset($result['errcode']) && $result['errcode'] != 0) {
-                    error_log('Failed to get user info: ' . $result['errmsg']);
-                    return null;
-                }
-
-                $user_info = $result;
-                // Cache for 30 minutes
-                wp_cache_set($cache_key, $user_info, self::CACHE_GROUP, 1800);
-            }
-
-            return $user_info ?: null;
-        }
-        catch (\Exception $e) {
-            error_log('Error getting user info: ' . $e->getMessage());
-            return null;
-        }
-    }
     private function handleReply($message): ?string
     {
         $messageArray = $this->normalizeMessage($message);
@@ -1029,6 +663,37 @@ class WechatOAService {
      * Wechat OA Reply Handle
      * 
      ************************************************************/
+
+    public static function getReply(string $keyword)
+    {
+        if (empty($keyword)) {
+            return false;
+        }
+
+        $cacheKey = 'reply:' . md5($keyword);
+        $reply    = wp_cache_get($cacheKey, self::CACHE_GROUP);
+
+        if (false === $reply) {
+            global $wpdb;
+
+            $keywordTable = $wpdb->prefix . self::KEYWORD_TABLE;
+            $replyId      = $wpdb->get_var($wpdb->prepare(
+                "SELECT reply_id FROM {$keywordTable} WHERE keyword = %s",
+                $keyword
+            ));
+            if (!$replyId) return false;
+
+            $replyTable = $wpdb->prefix . self::REPLY_TABLE;
+            $reply      = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$replyTable} WHERE id = %d",
+                $replyId
+            ), ARRAY_A);
+            if (!$reply) return false;
+            wp_cache_set($cacheKey, $reply, self::CACHE_GROUP);
+        }
+
+        return $reply;
+    }
 
     /**
      * Update a reply rule. If id is 0 or does not exist, a new rule will be inserted.
@@ -1519,4 +1184,353 @@ class WechatOAService {
         return true;
     }
 
+
+
+    /************************************************************
+     * 
+     * Wechat OA User Handle
+     * 
+     ************************************************************/
+
+    /**
+     * Get user information by OpenID
+     * 
+     * 根据OpenID获取用户信息
+     * 
+     * @param string $openid User OpenID
+     * @return array|null User information or null if failed
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function getUserInfo(string $openid): ?array
+    {
+        if (empty($openid)) {
+            return null;
+        }
+
+        try {
+            $cache_key = 'users:' . md5($openid);
+            $user_info = wp_cache_get($cache_key, self::CACHE_GROUP);
+
+            if (false === $user_info) {
+                $response = $this->app->getClient()->get('cgi-bin/user/info', [
+                    'query' => [
+                        'openid' => $openid,
+                        'lang'   => 'zh_CN'
+                    ]
+                ]);
+
+                $result = $response->toArray();
+
+                if (isset($result['errcode']) && $result['errcode'] != 0) {
+                    error_log('Failed to get user info: ' . $result['errmsg']);
+                    return null;
+                }
+
+                $user_info = $result;
+                // Cache for 30 minutes
+                wp_cache_set($cache_key, $user_info, self::CACHE_GROUP, 1800);
+            }
+
+            return $user_info ?: null;
+        }
+        catch (\Exception $e) {
+            error_log('Error getting user info: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+
+    /************************************************************
+     * 
+     * Wechat OA Menus Handle
+     * 
+     ************************************************************/
+
+    /**
+     * Create menus for Wechat OA
+     * 
+     * 创建微信公众号菜单
+     * 
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function createMenus(): bool
+    {
+        $buttons = self::formatMenusToTree(self::getMenus());
+        $result  = $this->app->getClient()->postJson('cgi-bin/menu/create', [
+            'button' => $buttons
+        ])->toArray();
+
+        return $result['errcode'] == 0 ? true : false;
+    }
+
+    /**
+     * Delete menus for Wechat OA
+     * 
+     * 删除微信公众号菜单
+     * 
+     * @param int $menuId Menu ID
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function deleteMenus(int $menuId = 0): bool
+    {
+        if ($menuId == 0) {
+            $result = $this->app->getClient()->get('cgi-bin/menu/delete')->toArray();
+        } else {
+            $result = $this->app->getClient()->postJson('cgi-bin/menu/delconditional', [
+                'menuid' => $menuId
+            ]);
+        }
+        return isset($result['errcode']) && $result['errcode'] == 0 ? true : false;
+    }
+
+    /**
+     * Get all menus from cache or database
+     * 
+     * 获取所有菜单数据
+     * 
+     * @return array Formatted menu data
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function getMenus(): array
+    {
+        $menus = [];
+        $menus = wp_cache_get(self::MENU_CACHE_KEY, self::CACHE_GROUP);
+        if (false === $menus) {
+            global $wpdb;
+            $table = $wpdb->prefix . self::MENU_TABLE;
+            $menus = $wpdb->get_results("SELECT * FROM $table", ARRAY_A);
+            if (!empty($menus)) {
+                wp_cache_set(self::MENU_CACHE_KEY, $menus, self::CACHE_GROUP);
+            }
+        }
+        return $menus;
+    }
+
+    /**
+     * Format menus to tree
+     * 
+     * 将菜单数据格式化为树形结构，满足微信公众号菜单创建的数据格式要求
+     * 
+     * @param array $menus Menu data
+     * @return array Tree structure
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function formatMenusToTree(array $menus): array
+    {
+        // Build a group with parent as the key
+        $grouped = [];
+        foreach ($menus as $menu) {
+            $grouped[$menu['parent']][] = $menu;
+        }
+
+        // Build tree according to parent=0
+        return self::buildTree($grouped, 0);
+    }
+
+    /**
+     * Recursively build tree
+     * 
+     * 递归构建树结构
+     * 
+     * @param array $grouped Grouped menu data
+     * @param int $parentId Parent ID
+     * @return array Tree structure
+     */
+    private static function buildTree(array &$grouped, int $parentId): array
+    {
+        if (!isset($grouped[$parentId])) {
+            return [];
+        }
+
+        // Sort by sort
+        usort($grouped[$parentId], function ($a, $b) {
+            return ($a['sort'] ?? 0) <=> ($b['sort'] ?? 0);
+        });
+
+        $tree = [];
+
+        foreach ($grouped[$parentId] as $item) {
+            $node = [];
+
+            // Has sub menu
+            if (isset($grouped[$item['id']])) {
+                $node['name']       = $item['name'];
+                $node['sub_button'] = self::buildTree($grouped, $item['id']);
+            } else {
+                // Last level button
+                $node['type'] = self::renderMenuType($item['type']);
+                $node['name'] = $item['name'];
+
+                // Set corresponding fields according to type
+                match ($node['type']) {
+                    'view' => $node['url'] = $item['value'],
+                    'click' => $node['key'] = $item['value'],
+                    default => $node['key'] = $item['value'],
+                };
+            }
+
+            $tree[] = $node;
+        }
+
+        return $tree;
+    }
+
+    /**
+     * Get menu by ID
+     * 
+     * 通过ID获取菜单数据
+     * 
+     * @param int $id Menu ID
+     * @return array Menu data
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function getMenuById(int $id): array
+    {
+        if ($id == 0) return [];
+
+        $key = 'menus:' . $id;
+
+        $menu = [];
+        $menu = wp_cache_get($key, self::CACHE_GROUP);
+        if (false === $menu) {
+            global $wpdb;
+            $table = $wpdb->prefix . self::MENU_TABLE;
+            $menu  = $wpdb->get_row("SELECT * FROM $table WHERE id = $id", ARRAY_A);
+            if (!empty($menu)) {
+                wp_cache_set($key, $menu, self::CACHE_GROUP);
+            }
+        }
+        return $menu;
+    }
+
+    /**
+     * Update menu
+     * 
+     * 更新菜单数据
+     * 
+     * @param int $id Menu ID
+     * @param array $data Menu data
+     * @return bool|int Number of rows affected, or false on error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function updateMenu(int $id, array $data): bool|int
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::MENU_TABLE;
+        if ($id == 0) {
+            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
+            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+            return $wpdb->insert($table, $data);
+        }
+        $result = $wpdb->update($table, $data, ['id' => $id]);
+        if ($result) {
+            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
+            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+        }
+        return $result;
+    }
+
+    /**
+     * Delete Menu
+     * 
+     * 删除菜单
+     * 
+     * @param int $id Menu ID
+     * @return bool|int Number of rows affected, or false on error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function deleteMenu(int $id): bool|int
+    {
+        if ($id == 0) return false;
+
+        global $wpdb;
+        $table  = $wpdb->prefix . self::MENU_TABLE;
+        $result = $wpdb->delete($table, ['id' => $id]);
+        if ($result) {
+            wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
+            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+        }
+        return $result;
+    }
+
+    /**
+     * Format menus data and build hierarchical structure
+     * 
+     * 格式化菜单数据并构建层级结构
+     * 
+     * @param array $menus Raw menu data
+     * @return array Formatted menu data with hierarchy indentation
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function formatMenus(array $menus): array
+    {
+        // Sort menus by parent and sort
+        usort($menus, function ($a, $b) {
+            if ($a['parent'] == $b['parent']) {
+                return $a['sort'] <=> $b['sort'];
+            }
+            return $a['parent'] <=> $b['parent'];
+        });
+
+        // Build parent-child menu relationship
+        $menuMap = [];
+        $result  = [];
+
+        // Build ID map
+        foreach ($menus as $menu) {
+            $menuMap[$menu['id']] = $menu;
+        }
+
+        // Build hierarchical structure
+        foreach ($menus as $menu) {
+            $menu['type'] = self::renderMenuType($menu['type']);
+
+            if ($menu['parent'] == '0') {
+                // Add top-level menu directly
+                $result[] = $menu;
+
+                // Find and add child menus
+                foreach ($menus as $child) {
+                    if ($child['parent'] == $menu['id']) {
+                        // reRender child menu
+                        $child['name'] = '└─ ' . $child['name'];
+                        $child['sort'] = '└─ ' . $child['sort'];
+                        $child['type'] = self::renderMenuType($child['type']);
+                        $result[]      = $child;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Render menu type
+     * 
+     * 渲染菜单类型
+     * 
+     * @param string $type Menu type
+     * @return string Formatted menu type
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private static function renderMenuType(string $type): string
+    {
+        return match ($type) {
+            '1' => 'view',
+            '2' => 'click',
+            default => '-'
+        };
+    }
 }
