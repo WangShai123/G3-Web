@@ -173,7 +173,6 @@ class WechatOAMessageListTable extends WP_List_Table {
                     //     echo '</div>';
                     // });
                     wp_safe_redirect(admin_url('admin.php?page=wechat-oa&tab=message'));
-                    exit;
                 } else {
                     // 设置错误消息
                     add_action('admin_notices', function () {
