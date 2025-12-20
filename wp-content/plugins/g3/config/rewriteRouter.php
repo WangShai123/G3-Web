@@ -67,6 +67,18 @@ return [
         ]
     ],
 
+    // Wechat OA Callback
+    'api/v1/wechat_oa/([^/]+)/?$' => [
+        'var'      => 'callback',
+        'priority' => [
+            [
+                'value' => 'callback',
+                'path'  => 'wechat/callback.php'
+            ]
+        ]
+    ],
+
+
     // 单个 query var 示例
     'test/one/([^/]+)/?$'         => [
         'var'  => 'test_id',
