@@ -133,23 +133,12 @@ class WechatOAService {
             $this->app = new Application($this->config());
             $server    = $this->app->getServer();
 
-            // Subscribe Handle
-            // $server->addEventListener('subscribe', [$this, 'subscribeHandle']);
-
             // Messages Handle
             $server->withHandler(function ($message) {
                 $this->processIncomingMessage($message);
                 return $this->handleReply($message);
             });
         }
-    }
-
-    public function subscribeHandle($message)
-    {
-        error_log('Wechat OA: Subscribe Event');
-        $followMessage = $this->option['followMessage'] ?? __('Welcome', 'G3');
-        error_log('Wechat OA: Return Message - ' . $followMessage);
-        return $followMessage;
     }
 
     public function isAvailable(): bool
@@ -512,7 +501,6 @@ class WechatOAService {
 
             // Validate message
             if (empty($messageArray['FromUserName']) || empty($messageArray['MsgType'])) {
-                error_log('Invalid WeChat message: missing required fields');
                 return false;
             }
 
@@ -520,7 +508,6 @@ class WechatOAService {
             $result = $this->saveMessage($messageArray);
 
             if (false === $result) {
-                error_log('Failed to save WeChat message to database');
                 return false;
             }
 
@@ -539,28 +526,22 @@ class WechatOAService {
     {
         $messageArray = $this->normalizeMessage($message);
 
-        error_log('WeChat OA - Handling message type: ' . ($messageArray['MsgType'] ?? 'unknown'));
-
         // 根据消息类型进行回复
         $reply = null;
         switch ($messageArray['MsgType']) {
             case 'text':
                 // 文本消息处理
                 $reply = $this->handleTextMessage($messageArray);
-                error_log('WeChat OA - Text message reply: ' . $reply);
                 break;
             case 'event':
                 // 事件消息处理
                 $reply = $this->handleEventMessage($messageArray);
-                error_log('WeChat OA - Event message reply: ' . $reply);
                 break;
             default:
                 // 默认回复
                 $reply = 'Hello, thanks for your message!';
-                error_log('WeChat OA - Default reply: ' . 'Hello, thanks for your message!');
                 break;
         }
-        error_log('WeChat OA - Final reply content: ' . ($reply ?? 'null'));
         return $reply;
     }
 
@@ -572,8 +553,6 @@ class WechatOAService {
     {
         $content = $message['Content'] ?? '';
 
-        error_log('WeChat OA - Received text message: ' . $content);
-
         // 尝试根据消息内容获取自动回复
         $reply = self::getReply($content);
 
@@ -581,41 +560,27 @@ class WechatOAService {
             // 检查启用状态
             if ($reply['status'] == '1') {
                 $result = $reply['content'] ?? 'Message received, thank you!';
-                error_log('WeChat OA - Hit keyword rule, reply content: ' . $result);
                 return $result;
-            } else {
-                error_log('WeChat OA - Keyword matched but reply is disabled');
             }
-        } else {
-            error_log('WeChat OA - No keyword matched');
         }
 
         if ($this->isSearchEnabled()) {
-            error_log('WeChat OA - Search enabled, return search URL: ' . $this->searchUrl($content));
             return $this->searchUrl($content);
         }
 
         // 默认回复
-        error_log('WeChat OA - Return default reply: ' . 'Message received, thank you!');
         return 'Message received, thank you!';
     }
 
     private function handleEventMessage(array $message): ?string
     {
-        error_log('WeChat OA - Print handling message: ' . print_r($message, true));
-
-        $event = $message['Event'] ?? '';
-        error_log('WeChat OA - Event Param: ' . $event);
+        $event     = $message['Event'] ?? '';
+        $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
 
         switch ($event) {
             case 'subscribe':
-                // 关注事件
-                error_log('WeChat OA - Subscribe Event');
-                return 'Welcome! Thanks for subscribing to our account.';
+                return $subscribe;
             case 'unsubscribe':
-                error_log('WeChat OA - Unsubscribe Event');
-                // 取消关注事件
-                return 'Goodbye.';
             default:
                 return null;
         }
@@ -1171,7 +1136,6 @@ class WechatOAService {
         ));
 
         if ($result === false) {
-            error_log('G3 WeChat OA - batchUpdateStatus failed');
             return new WP_Error('db_error', __('Failed to update reply status', 'G3'));
         }
 
@@ -1208,8 +1172,6 @@ class WechatOAService {
             return null;
         }
 
-        error_log('getUserInfo Notice, OpenID: ' . $openid);
-
         try {
             $cache_key = 'users:' . md5($openid);
             $user_info = wp_cache_get($cache_key, self::CACHE_GROUP);
@@ -1223,7 +1185,6 @@ class WechatOAService {
                 $result = $response->toArray();
 
                 if (isset($result['errcode']) && $result['errcode'] != 0) {
-                    error_log('userInfo Notice, Failed to get user info: ' . $result['errmsg']);
                     return null;
                 }
 
