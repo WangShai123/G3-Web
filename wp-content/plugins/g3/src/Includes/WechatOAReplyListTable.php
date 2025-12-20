@@ -28,7 +28,7 @@ class WechatOAReplyListTable extends WP_List_Table {
             'content'  => __('Content'),
             'type'     => __('Type'),
             'status'   => __('Status'),
-            'modified' => __('Modified'),
+            'modified' => __('Last Modified'),
             'action'   => __('Action'),
         ];
     }
