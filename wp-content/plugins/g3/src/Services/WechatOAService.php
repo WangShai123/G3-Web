@@ -134,7 +134,7 @@ class WechatOAService {
             $server    = $this->app->getServer();
 
             // Subscribe Handle
-            $server->addEventListener('subscribe', [$this, 'subscribeHandle']);
+            // $server->addEventListener('subscribe', [$this, 'subscribeHandle']);
 
             // Messages Handle
             $server->withHandler(function ($message) {
@@ -976,8 +976,10 @@ class WechatOAService {
         switch ($event) {
             case 'subscribe':
                 // 关注事件
+                error_log('WeChat OA - Subscribe Event');
                 return 'Welcome! Thanks for subscribing to our account.';
             case 'unsubscribe':
+                error_log('WeChat OA - Unsubscribe Event');
                 // 取消关注事件
                 return 'Goodbye.';
             default:
