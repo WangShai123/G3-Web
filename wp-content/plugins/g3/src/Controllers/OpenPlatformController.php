@@ -25,7 +25,7 @@ class OpenPlatformController {
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'wechat_oa/callback',
+        route: 'wechat_oa/callback1',
         methods: ['GET', 'POST']
     )]
     public function wechatOACallback(WP_REST_Request $request)
