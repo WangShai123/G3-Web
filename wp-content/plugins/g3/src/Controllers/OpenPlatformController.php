@@ -115,7 +115,9 @@ class OpenPlatformController {
 
             error_log('WeChat OA - Actual response body: ' . $content);
 
-            return $content;
+            // return $content;
+            echo $content;
+            exit;
 
             // Get response status code
             // $statusCode = $response->getStatusCode();
