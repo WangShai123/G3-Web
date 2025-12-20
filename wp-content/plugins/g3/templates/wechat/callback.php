@@ -21,20 +21,19 @@ try {
     // Handle WeChat server verification (GET request)
     // ======================
     if ($method === 'GET') {
-        // Manual verification - more reliable approach
+        // Get parameters from GET request
         $signature = $_GET['signature'] ?? '';
         $timestamp = $_GET['timestamp'] ?? '';
         $nonce     = $_GET['nonce'] ?? '';
         $echostr   = $_GET['echostr'] ?? '';
 
-        // Get token from service config - FIXED: Use the correct option key
+        // Get token from service config
         $config = get_option(SystemService::OPEN_WECHAT_OA_KEY);
         $token  = $config['token'] ?? '';
 
         if (empty($token)) {
-            error_log('WeChat callback: Token not configured');
-            http_response_code(500);
-            exit('Token missing');
+            http_response_code(403);
+            exit('Forbidden');
         }
 
         // Sort parameters lexicographically
@@ -49,18 +48,19 @@ try {
 
         // Compare with signature
         if ($hash === $signature) {
-            // return new WP_REST_Response($echostr, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+            // Clean any output buffer
             while (ob_get_level()) {
                 ob_end_clean();
             }
+
+            // Set proper content type and return echostr with 200 status
+            http_response_code(200);
             header('Content-Type: text/plain; charset=utf-8');
             echo $echostr;
             exit;
         } else {
-            // return new WP_REST_Response('Forbidden', 403);
-            header('HTTP/1.1 403 Forbidden');
-            echo 'Forbidden';
-            exit;
+            http_response_code(403);
+            exit('Forbidden');
         }
     }
 
@@ -69,36 +69,28 @@ try {
     // ======================
     if ($method === 'POST') {
         try {
-            $service = WechatOAService::run();
-
-            if (!$service->isAvailable()) {
-                error_log('WeChat callback: Service not available');
-                http_response_code(503);
-                exit('Service not available');
-            }
-
-            /** @var ResponseInterface $response */
+            // Serve the request and get response
             $response = $service->app->getServer()->serve();
 
-            // 发送 PSR-7 响应
-            http_response_code($response->getStatusCode());
-
-            foreach ($response->getHeaders() as $name => $values) {
-                foreach ($values as $value) {
-                    header(sprintf('%s: %s', $name, $value), false);
-                }
-            }
-
+            // Clean any output buffer
             while (ob_get_level()) {
                 ob_end_clean();
             }
 
+            // Set proper headers from the response
+            foreach ($response->getHeaders() as $header => $values) {
+                header($header . ': ' . implode(', ', $values));
+            }
+
+            // Set response code
+            http_response_code($response->getStatusCode());
+
+            // Output response body directly
             echo $response->getBody();
             exit;
-
         }
         catch (Exception $e) {
-            error_log('WeChat Callback Error (POST): ' . $e->getMessage());
+            error_log('WeChat Callback POST Error: ' . $e->getMessage());
             http_response_code(500);
             exit('error');
         }
