@@ -148,6 +148,7 @@ class WechatOAService {
     {
         error_log('Wechat OA: Subscribe Event');
         $followMessage = $this->option['followMessage'] ?? __('Welcome', 'G3');
+        error_log('Wechat OA: Return Message - ' . $followMessage);
         return $followMessage;
     }
 
@@ -967,8 +968,10 @@ class WechatOAService {
 
     private function handleEventMessage(array $message): ?string
     {
+        error_log('WeChat OA - Print handling message: ' . print_r($message, true));
+
         $event = $message['Event'] ?? '';
-        error_log('WeChat OA - Event: ' . $event);
+        error_log('WeChat OA - Event Param: ' . $event);
 
         switch ($event) {
             case 'subscribe':
@@ -976,7 +979,7 @@ class WechatOAService {
                 return 'Welcome! Thanks for subscribing to our account.';
             case 'unsubscribe':
                 // 取消关注事件
-                return null; // 不回复
+                return 'Goodbye.';
             default:
                 return null;
         }
