@@ -8,7 +8,10 @@ if (array_key_exists($key, $_POST) && $_POST[$key]) {
     add_settings_error('general', '1', __('Updated', 'G3'), 'updated');
 }
 settings_errors('general');
-$message = __('Before activating the service, please ensure that you have completed <a href="%s">the open platform setup</a>.', 'G3');
+$message = sprintf(
+    __('Before activating the service, please ensure that you have completed <a href="%s">the open platform setup</a>.', 'G3'),
+    admin_url('admin.php?page=open-platform')
+);
 $message = '<div>' . $message . '</div>';
 echo Container::tip(
     $message,
