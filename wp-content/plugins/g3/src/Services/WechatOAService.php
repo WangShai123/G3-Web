@@ -144,7 +144,7 @@ class WechatOAService {
         }
     }
 
-    private function subscribeHandle($message)
+    public function subscribeHandle($message)
     {
         error_log('Wechat OA: Subscribe Event');
         $followMessage = $this->option['followMessage'] ?? __('Welcome', 'G3');
