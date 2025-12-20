@@ -83,46 +83,65 @@ class OpenPlatformController {
             }
 
             // Handle WeChat server push messages
-            // error_log('WeChat OA - Processing incoming message from ' . $_SERVER['REMOTE_ADDR']);
+            error_log('WeChat OA - Processing incoming message from ' . $_SERVER['REMOTE_ADDR']);
             $response = $service->app->getServer()->serve();
 
-            // error_log('WeChat OA - Full response: ' . print_r($response, true));
+            error_log('WeChat OA - Full response: ' . print_r($response, true));
 
             // 获取实际的响应内容（只获取一次）
             $responseBody = $response->getBody();
             $content      = '';
-            if (method_exists($responseBody, '__toString')) {
-                $content = (string) $responseBody;
-                // error_log('WeChat OA - Actual response body: ' . $content);
-            } else {
-                // 保存当前位置以便可以重新读取
-                $responseBody->rewind();
-                $content = $responseBody->getContents();
-                // error_log('WeChat OA - Actual response contents: ' . $content);
-            }
+
+            // if (method_exists($responseBody, '__toString')) {
+            //     $content = (string) $responseBody;
+            //     // error_log('WeChat OA - Actual response body: ' . $content);
+            // } else {
+            //     // 保存当前位置以便可以重新读取
+            //     $responseBody->rewind();
+            //     $content = $responseBody->getContents();
+            //     // error_log('WeChat OA - Actual response contents: ' . $content);
+            // }
+
+            // 重置指针位置以确保能读取内容
+            $responseBody->rewind();
+            $content = $responseBody->getContents();
+
+            error_log('WeChat OA - Actual response body: ' . $content);
 
             // Get response status code
             $statusCode = $response->getStatusCode();
 
-            // error_log('WeChat OA - Response content length: ' . strlen($content));
-            // error_log('WeChat OA - Response status code: ' . $statusCode);
+            error_log('WeChat OA - Response content length: ' . strlen($content));
+            error_log('WeChat OA - Response status code: ' . $statusCode);
             // error_log('WeChat OA - First 200 chars of response: ' . substr($content, 0, 200));
 
-            // Create WordPress REST response
-            $wpResponse = new WP_REST_Response($content, $statusCode);
+            // // Create WordPress REST response
+            // $wpResponse = new WP_REST_Response($content, $statusCode);
 
-            // Set response headers
-            foreach ($response->getHeaders() as $header => $values) {
-                $wpResponse->header($header, implode(', ', $values));
+            // // Set response headers
+            // foreach ($response->getHeaders() as $header => $values) {
+            //     $wpResponse->header($header, implode(', ', $values));
+            // }
+
+            // $wpResponse->header('Content-Type', 'application/xml; charset=utf-8');
+
+            // // error_log('WeChat OA - Sending response with headers: ' . json_encode($wpResponse->get_headers()));
+
+            // // error_log('WeChat OA - Sending response: ' . $content);
+
+            // return $wpResponse;
+
+            // 直接输出响应内容，不使用WP_REST_Response包装
+            while (ob_get_level()) {
+                ob_end_clean();
             }
 
-            $wpResponse->header('Content-Type', 'application/xml; charset=utf-8');
+            // 设置正确的Content-Type头
+            header('Content-Type: application/xml; charset=utf-8');
 
-            // error_log('WeChat OA - Sending response with headers: ' . json_encode($wpResponse->get_headers()));
-
-            // error_log('WeChat OA - Sending response: ' . $content);
-
-            return $wpResponse;
+            // 输出响应内容
+            echo $content;
+            exit;
 
         }
         catch (\Exception $e) {
