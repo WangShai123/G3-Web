@@ -138,7 +138,9 @@ class WechatOAMessageListTable extends WP_List_Table {
     public function display()
     {
         $this->prepare_items();
+        echo '<form id="list-form" method="post">';
         parent::display();
+        echo '</form>';
     }
 
     public function process_bulk_action()
@@ -166,8 +168,6 @@ class WechatOAMessageListTable extends WP_List_Table {
                 $deleted = WechatOAService::deleteMessages($messages);
 
                 if ($deleted !== false) {
-                    // wp_safe_redirect(admin_url('admin.php?page=wechat-oa&tab=message'));
-                    // 使用js跳转
                     echo '<script>window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";</script>';
                 } else {
                     // 设置错误消息

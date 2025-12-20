@@ -5,6 +5,7 @@ use JEALER\G3\Utilities\Container;
 use JEALER\G3\Includes\WechatOAMessageListTable;
 
 Frontend::loadStyle('jui');
+Frontend::loadScript('jui');
 $table = new WechatOAMessageListTable();
 
 $option = Components::getProperty('WechatOA', 'option');
@@ -17,7 +18,5 @@ if (!$enable) :
         'mt-4'
     );
 else :
-    echo '<form id="list-form" method="post">';
     $table->display();
-    echo '</form>';
 endif;
