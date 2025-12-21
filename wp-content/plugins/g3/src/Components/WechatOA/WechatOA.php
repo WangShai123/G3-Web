@@ -279,6 +279,7 @@ class WechatOA extends Components {
             Request::ajaxUpdated();
         });
 
+        // sync menus
         add_action('wp_ajax_g3_create_wechatOA_menus', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
@@ -298,6 +299,7 @@ class WechatOA extends Components {
                 Request::ajaxFailed();
             }
         });
+        // flush menus
         add_action('wp_ajax_g3_flush_wechatOA_menus', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
@@ -309,6 +311,41 @@ class WechatOA extends Components {
             $result = WechatOAService::run()->deleteMenus();
             if ($result) {
                 Request::ajaxSuccess(__('Data Flush Complete', 'G3'));
+            } else {
+                Request::ajaxFailed();
+            }
+        });
+
+        // get message content
+        add_action('wp_ajax_g3_get_wechatOA_message_content', function () {
+            $this->checkServiceInAjax();
+            if (!is_admin() || !current_user_can('manage_options')) {
+                Request::ajaxForbidden();
+            }
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_get_wechatOA_message_content')) {
+                Request::ajaxForbidden();
+            }
+            $id     = $_POST['id'] ?? 0;
+            $result = WechatOAService::getMessageContent($id);
+            if ($result) {
+                Request::ajaxSuccess($result);
+            } else {
+                Request::ajaxFailed();
+            }
+        });
+        // delete message
+        add_action('wp_ajax_g3_delete_wechatOA_message', function () {
+            $this->checkServiceInAjax();
+            if (!is_admin() || !current_user_can('manage_options')) {
+                Request::ajaxForbidden();
+            }
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_delete_wechatOA_message')) {
+                Request::ajaxForbidden();
+            }
+            $id     = $_POST['id'] ?? 0;
+            $result = WechatOAService::deleteMessage($id);
+            if ($result) {
+                Request::ajaxSuccess(__('Success', 'G3'));
             } else {
                 Request::ajaxFailed();
             }

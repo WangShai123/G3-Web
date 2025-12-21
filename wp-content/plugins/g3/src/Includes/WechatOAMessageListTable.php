@@ -7,7 +7,8 @@ use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Validator;
 
 class WechatOAMessageListTable extends WP_List_Table {
-    private $perPage = 20;
+    private int $perPage;
+    private string $table;
 
     public function __construct()
     {
@@ -16,9 +17,17 @@ class WechatOAMessageListTable extends WP_List_Table {
             'plural'   => 'messages',
             'ajax'     => true
         ]);
+        $this->init();
     }
 
-    public function get_columns()
+    private function init(): void
+    {
+        global $wpdb;
+        $this->table   = $wpdb->prefix . WechatOAService::MESSAGES_TABLE;
+        $this->perPage = 20;
+    }
+
+    public function get_columns(): array
     {
         return [
             'cb'       => '<input type="checkbox" />',
@@ -31,14 +40,41 @@ class WechatOAMessageListTable extends WP_List_Table {
         ];
     }
 
-    public function get_bulk_actions()
+    public function prepare_items(): void
     {
-        return [
-            'delete' => __('Delete')
-        ];
+        $columns               = $this->get_columns();
+        $hidden                = [];
+        $sortable              = $this->get_sortable_columns();
+        $this->_column_headers = [$columns, $hidden, $sortable];
+
+        $currentPage = $this->get_pagenum();
+        $offset      = ($currentPage - 1) * $this->perPage;
+
+        $search     = isset($_REQUEST['s']) ? sanitize_text_field($_REQUEST['s']) : '';
+        $totalItems = $this->getCount($search);
+
+        $perPage     = $this->perPage;
+        $this->items = $this->getData(compact('search', 'perPage', 'offset'));
+        $this->set_pagination_args([
+            'total_items' => $totalItems,
+            'per_page'    => $this->perPage,
+        ]);
     }
 
-    public function column_cb($item)
+    public function column_default($item, $column_name): mixed
+    {
+        return match ($column_name) {
+            'openid' => Common::truncate($item->openid, 20),
+            'nickname' => !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-',
+            'type' => $item->type,
+            // 'content' => $this->renderContent($item->content),
+            'content' => Common::truncateHtml($item->content, 50),
+            'created' => wp_date('Y-m-d H:i:s', strtotime($item->created)),
+            default => isset($item->$column_name) ? $item->$column_name : '-',
+        };
+    }
+
+    public function column_cb($item): string
     {
         return sprintf(
             '<input type="checkbox" name="messages[]" value="%s" />',
@@ -52,125 +88,35 @@ class WechatOAMessageListTable extends WP_List_Table {
         }
     }
 
-    public function column_default($item, $column_name)
+    public function get_bulk_actions(): array
     {
-        switch ($column_name) {
-            case 'openid':
-                return Common::truncate($item->openid, 20);
-            case 'nickname':
-                return !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-';
-            case 'type':
-                return ucfirst($item->type);
-            case 'content':
-                $content = Common::truncate($item->content, 50);
-                return esc_html($content);
-            case 'created':
-                return wp_date('Y-m-d H:i:s', strtotime($item->created));
-            default:
-                return isset($item->$column_name) ? $item->$column_name : '-';
-        }
+        return [
+            'delete' => __('Delete')
+        ];
     }
 
-    private function renderContent($content)
+    public function process_bulk_action(): void
     {
-        if (Validator::isImage($content)) {
-            return '<img src="' . $content . '" alt="Image" width="160" height="80" />';
-        }
-        $content = Common::truncate($content, 50);
-        return esc_html($content);
-    }
-
-    public function prepare_items()
-    {
-        // 处理批量操作
-        $this->process_bulk_action();
-
-        $columns  = $this->get_columns();
-        $hidden   = [];
-        $sortable = $this->get_sortable_columns();
-
-        $this->_column_headers = [$columns, $hidden, $sortable];
-
-        // 获取数据总数
-        $total_items = $this->get_total_items();
-
-        // 获取当前页码
-        $current_page = $this->get_pagenum();
-
-        // 设置分页参数
-        $this->set_pagination_args([
-            'total_items' => $total_items,
-            'per_page'    => $this->perPage,
-            'total_pages' => ceil($total_items / $this->perPage)
-        ]);
-
-        // 获取当前页数据
-        $this->items = $this->get_data($current_page, $this->perPage);
-    }
-
-    private function get_total_items()
-    {
-        return WechatOAService::getMessageCount();
-    }
-
-    private function get_data($current_page, $perPage)
-    {
-        // 计算偏移量
-        $offset = ($current_page - 1) * $perPage;
-
-        // 获取消息数据
-        $messages = WechatOAService::getMessages($current_page, $perPage);
-
-        // 将关联数组转换为对象数组，以匹配现有代码的使用方式
-        $result = [];
-        foreach ($messages as $message) {
-            $result[] = (object) $message;
-        }
-
-        return $result;
-    }
-
-    public function no_items()
-    {
-        _e('No data found.', 'G3');
-    }
-
-    public function display()
-    {
-        $this->prepare_items();
-        echo '<form id="list-form" method="post">';
-        parent::display();
-        echo '</form>';
-    }
-
-    public function process_bulk_action()
-    {
-        // 处理删除操作（单个或多个）
         if ('delete' === $this->current_action()) {
-            // 获取要删除的消息ID（单个或多个）
             $messages = [];
 
-            // 检查 bulk actions 的参数
+            // Check if the request contains message IDs
             if (isset($_REQUEST['messages']) && is_array($_REQUEST['messages'])) {
                 $messages = $_REQUEST['messages'];
             } elseif (isset($_GET['messages'])) {
-                // 单个消息删除
                 $messages = [$_GET['messages']];
             }
 
             if (!empty($messages)) {
-                // 验证nonce
+                // validate nonce
                 $nonce = wp_unslash($_REQUEST['_wpnonce'] ?? $_REQUEST['_wpnonce'] ?? '');
                 if (!wp_verify_nonce($nonce, 'bulk-' . $this->_args['plural'])) {
                     wp_die('Security check failed');
                 }
-                // 删除消息
                 $deleted = WechatOAService::deleteMessages($messages);
-
                 if ($deleted !== false) {
                     echo '<script>window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";</script>';
                 } else {
-                    // 设置错误消息
                     add_action('admin_notices', function () {
                         echo '<div class="notice notice-error is-dismissible">';
                         echo '<p>Failed to delete message(s)</p>';
@@ -181,19 +127,108 @@ class WechatOAMessageListTable extends WP_List_Table {
         }
     }
 
-    public function column_action($item)
+    public function search_box($text, $input_id): void
+    {
+        if (empty($_REQUEST['s']) && !$this->has_items()) {
+            return;
+        }
+
+        $input_id = $input_id . '-search-input';
+
+        if (!empty($_REQUEST['orderby'])) {
+            echo '<input type="hidden" name="orderby" value="' . esc_attr($_REQUEST['orderby']) . '" />';
+        }
+        if (!empty($_REQUEST['order'])) {
+            echo '<input type="hidden" name="order" value="' . esc_attr($_REQUEST['order']) . '" />';
+        }
+        if (!empty($_REQUEST['post_mime_type'])) {
+            echo '<input type="hidden" name="post_mime_type" value="' . esc_attr($_REQUEST['post_mime_type']) . '" />';
+        }
+        if (!empty($_REQUEST['detached'])) {
+            echo '<input type="hidden" name="detached" value="' . esc_attr($_REQUEST['detached']) . '" />';
+        }
+        ?>
+        <p class="search-box">
+            <label class="screen-reader-text" for="<?php echo esc_attr($input_id); ?>"><?php echo esc_html($text); ?>:</label>
+            <input type="search" id="<?php echo esc_attr($input_id); ?>" name="s" value="<?php _admin_search_query(); ?>" />
+            <?php submit_button($text, '', '', false, array('id' => 'search-submit')); ?>
+        </p>
+        <?php
+    }
+
+    public function display(): void
+    {
+        $this->prepare_items();
+
+        echo '<h3 class="float-left">' . __('Messages', 'G3') . '</h3>';
+        echo '<form id="list-form" method="post">';
+        $this->search_box(__('Search'), 'message');
+        parent::display();
+        echo '</form>';
+
+        $this->process_bulk_action();
+    }
+
+    public function no_items(): void
+    {
+        _e('No data found.', 'G3');
+    }
+
+    public function column_action($item): string
     {
         $actions = [
             'view'   => sprintf(
-                '<span id="view-message-%s" class="cursor-pointer color-link">' . __('View', 'G3') . '</span>',
+                '<span data-id="%s" class="view-message cursor-pointer color-link">' . __('View') . '</span>',
                 $item->id
             ),
             'delete' => sprintf(
-                '<span id="delete-message-%s" class="cursor-pointer color-error">' . __('Delete') . '</span>',
+                '<span data-id="%s" class="delete-message cursor-pointer color-error">' . __('Delete') . '</span>',
                 $item->id
             )
         ];
 
         return join(' | ', $actions);
+    }
+
+
+    private function renderContent($content): string
+    {
+        if (Validator::isImage($content)) {
+            return '<img src="' . $content . '" alt="Image" width="160" height="80" />';
+        }
+        $content = Common::truncateHtml($content, 50);
+        return $content;
+    }
+
+    private function getData($args): array
+    {
+        global $wpdb;
+
+        $search  = $args['search'] ?? '';
+        $perPage = $args['perPage'] ?? $this->perPage;
+        $offset  = $args['offset'] ?? 0;
+
+        if ($search) {
+            $sql    = "SELECT * FROM $this->table WHERE content LIKE %s OR nickname LIKE %s LIMIT %d OFFSET %d";
+            $like   = '%' . $wpdb->esc_like($search) . '%';
+            $result = $wpdb->get_results($wpdb->prepare($sql, $like, $like, $perPage, $offset));
+        } else {
+            $sql    = "SELECT * FROM $this->table LIMIT %d OFFSET %d";
+            $result = $wpdb->get_results($wpdb->prepare($sql, $perPage, $offset));
+        }
+        return $result;
+    }
+
+    private function getCount($search = ''): int
+    {
+        global $wpdb;
+        if ($search) {
+            $sql   = "SELECT COUNT(*) FROM $this->table WHERE content LIKE %s OR nickname LIKE %s";
+            $like  = '%' . $wpdb->esc_like($search) . '%';
+            $query = $wpdb->get_var($wpdb->prepare($sql, $like, $like));
+        } else {
+            $query = $wpdb->get_var("SELECT COUNT(*) FROM $this->table");
+        }
+        return (int) $query;
     }
 }

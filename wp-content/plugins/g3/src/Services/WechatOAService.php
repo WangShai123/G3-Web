@@ -265,6 +265,14 @@ class WechatOAService {
         return $result;
     }
 
+    public static function getMessageContent(int $id): string
+    {
+        global $wpdb;
+        $table   = $wpdb->prefix . self::MESSAGES_TABLE;
+        $message = $wpdb->get_row($wpdb->prepare("SELECT content FROM $table WHERE id = %d", $id), ARRAY_A);
+        return $message['content'] ?? '';
+    }
+
     /**
      * Get messages from database
      * 
@@ -736,17 +744,20 @@ class WechatOAService {
         try {
             if ($isValidId) {
                 $result = self::_updateReply($id, $data, $keywords);
+                foreach ($keywords as $keyword) {
+                    $cacheKey = 'reply:' . md5($keyword);
+                    wp_cache_delete($cacheKey, self::CACHE_GROUP);
+                }
             } else {
                 $result = self::_insertReply($data, $keywords);
+                foreach ($keywords as $keyword) {
+                    $cacheKey = 'reply:' . md5($keyword);
+                    wp_cache_set($cacheKey, $result, self::CACHE_GROUP);
+                }
             }
 
             if (is_wp_error($result)) {
                 throw new Exception($result->get_error_message());
-            }
-
-            // Cache preheating with TTL (5 minutes)
-            foreach ($keywords as $keyword) {
-                wp_cache_set("keyword:{$keyword}", $result, self::CACHE_GROUP, 300);
             }
 
             $wpdb->query('COMMIT');

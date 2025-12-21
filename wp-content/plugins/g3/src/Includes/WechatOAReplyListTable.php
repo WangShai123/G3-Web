@@ -35,15 +35,16 @@ class WechatOAReplyListTable extends WP_List_Table {
 
     public function prepare_items(): void
     {
-        $currentPage = $this->get_pagenum();
-        $offset      = ($currentPage - 1) * $this->perPage;
-        $search      = isset($_REQUEST['s']) ? sanitize_text_field($_REQUEST['s']) : '';
-        $totalItems  = $this->getCount($search);
-
         $columns               = $this->get_columns();
         $hidden                = [];
         $sortable              = $this->get_sortable_columns();
         $this->_column_headers = [$columns, $hidden, $sortable];
+
+        $currentPage = $this->get_pagenum();
+        $offset      = ($currentPage - 1) * $this->perPage;
+
+        $search     = isset($_REQUEST['s']) ? sanitize_text_field($_REQUEST['s']) : '';
+        $totalItems = $this->getCount($search);
 
         $perPage     = $this->perPage;
         $this->items = $this->getData(compact('search', 'perPage', 'offset'));

@@ -5,16 +5,14 @@ use JEALER\G3\Includes\WechatOAReplyListTable;
 
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
-$table = new WechatOAReplyListTable();
 
-// echo '<form id="list-form" method="post">';
+$table = new WechatOAReplyListTable();
 $table->display();
-// echo '</form>';
 ?>
 
 <script>
-    jQuery(document).ready(function () {
-        const $ = jQuery;
+    const $ = jQuery;
+    $(document).ready(function () {
         $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
         const addReply = $('#add-reply');
         const editReply = $('.edit-reply');
@@ -22,8 +20,8 @@ $table->display();
 
         addReply.on('click', function () {
             const modal = new JUI.Modal({
-                title: "<?php _e('Add'); ?>",
-                confirmText: "<?php _e('Add'); ?>",
+                title: "<?php _e('Add New', 'G3'); ?>",
+                confirmText: "<?php _e('Add New', 'G3'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
                 formData: [
                     {
@@ -142,14 +140,14 @@ $table->display();
                     }
                 ],
                 onSubmit: function (formData) {
-                    editModal.showLoading();
+                    editModal.showLoading()
                     const data = {
                         id: id,
                         keywords: formData.keywords,
                         content: formData.reply,
                         status: formData.status,
                         type: 'text'
-                    };
+                    }
                     $.ajax({
                         url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/update'); ?>',
                         type: 'POST',

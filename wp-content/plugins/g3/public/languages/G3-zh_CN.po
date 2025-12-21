@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2025-12-20 18:53+0000\n"
+"PO-Revision-Date: 2025-12-21 14:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -156,7 +156,7 @@ msgstr "活动功能"
 msgid "Activity Sidebar"
 msgstr "活动侧边栏"
 
-#: src/Includes/WechatOAReplyListTable.php:78
+#: src/Includes/WechatOAReplyListTable.php:79
 #: src/Includes/SwiperListTable.php:163 src/Includes/SwiperLocationTable.php:61
 #: src/Includes/WechatOAMenuListTable.php:93
 #: src/Components/Activity/Activity.php:13
@@ -327,7 +327,7 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Services/WechatOAService.php:1463
+#: src/Services/WechatOAService.php:1123
 msgid "All provided IDs are invalid"
 msgstr "非法的IDs"
 
@@ -445,7 +445,7 @@ msgstr "您确认要清空所有线上的菜单数据吗？"
 msgid "Array %s[%s] must be type %s."
 msgstr "%s[%s] 必需是 %s 类型。"
 
-#: src/Services/WechatOAService.php:1035
+#: src/Services/WechatOAService.php:695
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
@@ -484,11 +484,11 @@ msgstr "后台表单字段项演示"
 msgid "Balance Management"
 msgstr "余额管理"
 
-#: src/Services/WechatOAService.php:1305
+#: src/Services/WechatOAService.php:965
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
-#: src/Components/WechatOA/views/tab-general.php:11
+#: src/Components/WechatOA/views/tab-general.php:12
 #, php-format
 msgid ""
 "Before activating the service, please ensure that you have completed <a "
@@ -620,6 +620,10 @@ msgstr "评论列表"
 msgid "Community System"
 msgstr "社区系统"
 
+#: src/Components/WechatOA/views/tab-message.php:45
+msgid "Confirm"
+msgstr "确认"
+
 #: src/Components/Mail/views/tab-test.php:6
 msgid ""
 "Congratulations! If you receive this email, the email configuration is "
@@ -713,7 +717,7 @@ msgstr "自定义数据已更新"
 msgid "Custom interaction data"
 msgstr "自定义交互数据"
 
-#: src/Includes/WechatOAReplyListTable.php:185
+#: src/Includes/WechatOAReplyListTable.php:186
 #: src/Components/WechatOA/WechatOA.php:70
 msgid "Custom Reply"
 msgstr "自定义回复"
@@ -726,7 +730,7 @@ msgstr "自定义文本"
 msgid "Customize the title that will be displayed when shared on WeChat."
 msgstr "自定义内容被分享到微信后显示的标题"
 
-#: src/Components/WechatOA/WechatOA.php:311
+#: src/Components/WechatOA/WechatOA.php:313
 msgid "Data Flush Complete"
 msgstr "数据刷新成功"
 
@@ -752,7 +756,7 @@ msgid ""
 "new view."
 msgstr "设置同一访客在多少时间内重复访问不重新计数浏览次数。"
 
-#: src/Includes/WechatOAReplyListTable.php:142
+#: src/Includes/WechatOAReplyListTable.php:143
 #: src/Controllers/AdminController.php:88
 msgid "Deleted"
 msgstr "已删除"
@@ -1045,11 +1049,11 @@ msgstr "失败"
 msgid "Failed to active G3-Web plugin!"
 msgstr "G3-Web 插件启用失败！"
 
-#: src/Services/WechatOAService.php:1405
+#: src/Services/WechatOAService.php:1065
 msgid "Failed to delete replies from main table."
 msgstr "回复数据删除失败"
 
-#: src/Services/WechatOAService.php:1415
+#: src/Services/WechatOAService.php:1075
 msgid "Failed to delete reply(s)."
 msgstr "回复数据删除失败"
 
@@ -1060,7 +1064,7 @@ msgid ""
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Services/WechatOAService.php:1205
+#: src/Services/WechatOAService.php:865
 msgid "Failed to insert reply into main table"
 msgstr "回复数据插入失败"
 
@@ -1072,11 +1076,11 @@ msgstr "PHPMailer库加载失败。"
 msgid "Failed to send test email!"
 msgstr "测试邮件发送失败！"
 
-#: src/Services/WechatOAService.php:1241
+#: src/Services/WechatOAService.php:901
 msgid "Failed to update reply in main table"
 msgstr "回复数据更新失败"
 
-#: src/Services/WechatOAService.php:1488
+#: src/Services/WechatOAService.php:1147
 msgid "Failed to update reply status"
 msgstr "回复状态更新失败"
 
@@ -1175,7 +1179,7 @@ msgstr "刷新重写规则"
 msgid "Flush Setting Options"
 msgstr "刷新设置选项"
 
-#: src/Controllers/ThemeGeneratorController.php:75
+#: src/Controllers/ThemeGeneratorController.php:76
 #, php-format
 msgid "Folder exists: %s"
 msgstr "文件夹已存在：%s"
@@ -1437,7 +1441,7 @@ msgstr "数据错误"
 msgid "Invalid data"
 msgstr "非法数据"
 
-#: src/Includes/WechatOAReplyListTable.php:113
+#: src/Includes/WechatOAReplyListTable.php:114
 msgid "Invalid IDs selected."
 msgstr "非法的IDs"
 
@@ -1457,7 +1461,7 @@ msgstr "用户名或密码不正确。"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: src/Services/WechatOAService.php:1060 src/Services/WechatOAService.php:1073
+#: src/Services/WechatOAService.php:720 src/Services/WechatOAService.php:733
 #, php-format
 msgid "Keyword %s already exists"
 msgstr "关键词 %s 已存在"
@@ -1579,12 +1583,13 @@ msgstr "菜单类型"
 msgid "Message"
 msgstr "消息"
 
-#: src/Components/WechatOA/views/tab-message.php:15
+#: src/Components/WechatOA/views/tab-message.php:17
 msgid ""
 "Message is unavailable. Because the WechatOA message storage function has "
 "been disabled."
 msgstr "消息不可用。因为微信公众号消息存储功能已被禁用。"
 
+#: src/Includes/WechatOAMessageListTable.php:163
 #: src/Components/WechatOA/WechatOA.php:69
 msgid "Messages"
 msgstr "消息"
@@ -1694,7 +1699,7 @@ msgid "No categories found."
 msgstr "未发现任何分类"
 
 #: src/Includes/SwiperListTable.php:246 src/Includes/RewriteRulesTable.php:164
-#: src/Includes/WechatOAMessageListTable.php:135
+#: src/Includes/WechatOAMessageListTable.php:174
 #: src/Includes/SwiperLocationTable.php:107
 #: src/Includes/WechatOAMenuListTable.php:87
 msgid "No data found."
@@ -1704,7 +1709,7 @@ msgstr "未发现任何数据。"
 msgid "No Encryption"
 msgstr "不加密"
 
-#: src/Includes/WechatOAReplyListTable.php:106
+#: src/Includes/WechatOAReplyListTable.php:107
 msgid "No items selected."
 msgstr "未选中任何数据"
 
@@ -1724,11 +1729,11 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Services/WechatOAService.php:1455
+#: src/Services/WechatOAService.php:1115
 msgid "No reply IDs provided"
 msgstr "未提供任何IDs"
 
-#: src/Services/WechatOAService.php:1369
+#: src/Services/WechatOAService.php:1029
 msgid "No valid reply ID(s) provided."
 msgstr "Invalid IDs selected."
 
@@ -2211,11 +2216,11 @@ msgstr "移除管理后台中的工具菜单页面。"
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
 
-#: src/Services/WechatOAService.php:1044
+#: src/Services/WechatOAService.php:704
 msgid "Reply content cannot be empty"
 msgstr "回复内容不能为空"
 
-#: src/Services/WechatOAService.php:1245
+#: src/Services/WechatOAService.php:905
 msgid "Reply not found"
 msgstr "未发现回复数据"
 
@@ -2290,7 +2295,7 @@ msgstr "默哀模式"
 msgid "Safe Session"
 msgstr "安全会话"
 
-#: src/Services/WechatOAService.php:1108
+#: src/Services/WechatOAService.php:768
 msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
 
@@ -2675,7 +2680,7 @@ msgstr "低端浏览器主题"
 msgid "Theme for mobile"
 msgstr "手机端主题"
 
-#: src/Controllers/ThemeGeneratorController.php:87
+#: src/Controllers/ThemeGeneratorController.php:88
 msgid "Theme generated successfully!"
 msgstr "主题创建成功！"
 
@@ -2869,7 +2874,6 @@ msgstr "授权认证成功！重定向中..."
 msgid "Verify License"
 msgstr "验证授权"
 
-#: src/Includes/WechatOAMessageListTable.php:192
 #: src/Components/Post/Post.php:281
 msgid "View"
 msgstr "浏览"
@@ -2981,6 +2985,10 @@ msgstr "欢迎面板"
 #| msgid "Welcome to"
 msgid "Welcome!"
 msgstr "欢迎！"
+
+#: src/Services/WechatOAService.php:586
+msgid "Welcome! Thanks for your attention."
+msgstr "欢迎！感谢您的关注。"
 
 #: src/Components/Developer/views/tab-form.php:15
 msgid ""
