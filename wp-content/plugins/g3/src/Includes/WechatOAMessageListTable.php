@@ -121,12 +121,6 @@ class WechatOAMessageListTable extends WP_List_Table {
                             window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";
                         }, 1000);
                     })</script>';
-                } else {
-                    add_action('admin_notices', function () {
-                        echo '<div class="notice notice-error is-dismissible">';
-                        echo '<p>Failed to delete message(s)</p>';
-                        echo '</div>';
-                    });
                 }
             }
         }

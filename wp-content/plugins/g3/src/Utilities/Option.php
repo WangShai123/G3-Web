@@ -23,9 +23,7 @@ final class Option {
     }
 
     /**
-     * Update option cache.
-     * 
-     * After submitting the form, update the option cache with the new value.
+     * Update option cache. After submitting the form, update the option cache with the new value.
      * 
      * 更新选项缓存
      * 
@@ -44,9 +42,7 @@ final class Option {
     }
 
     /**
-     * Get option value.
-     * 
-     * If the option does not exist, initialize it with the default value.
+     * Get option value. If the option does not exist, initialize it with the default value.
      * 
      * 获取选项值
      * 
@@ -95,6 +91,14 @@ final class Option {
         return $optionValue;
     }
 
+    /**
+     * Get option value as an array.
+     * @param string $optionName Option name
+     * @param array $default Default option value.
+     * @return array Option value
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function array(string $optionName, array $default = []): array
     {
         $value = get_option($optionName, $default);

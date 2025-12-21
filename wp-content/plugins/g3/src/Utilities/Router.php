@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Utilities;
 final class Router {
+
     /**
      * Extract query_var from query
      * 

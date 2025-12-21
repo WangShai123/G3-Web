@@ -3,13 +3,13 @@ namespace JEALER\G3\Utilities;
 
 final class Validator {
 
-    /*
+    /**
      * Sanitize output to prevent XSS.
      * 
      * 防止 XSS 攻击。
      *
      * @param string $data The data to sanitize.
-     * @param string $context The context of the data.
+     * @param string $context The context of the data. Options: html, attr, post.
      * @return string The sanitized data.
      * @since 1.0.0
      * @author Wang Shai
@@ -18,14 +18,13 @@ final class Validator {
     {
         $result = match ($context) {
             'attr' => esc_attr($data),
-            'html' => esc_html($data),
             'post' => wp_kses_post($data),
             default => esc_html($data),
         };
         return $result;
     }
 
-    /*
+    /**
      * Sanitize input to prevent XSS.
      * 
      * 防止 XSS 攻击。
@@ -40,7 +39,7 @@ final class Validator {
         return sanitize_text_field($input);
     }
 
-    /*
+    /**
      * Sanitize textarea input to prevent XSS.
      * 
      * 防止 XSS 攻击。
@@ -118,7 +117,6 @@ final class Validator {
      * Check if the string is a valid URL.
      * 
      * 检查字符串是否为有效的 URL。
-     * 
      *
      * @param string $url The URL to check.
      * @return bool True if the string is a valid URL, false otherwise.

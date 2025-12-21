@@ -97,7 +97,7 @@ global $wpdb;
                 'WP_DEBUG_DISPLAY'    => defined('WP_DEBUG_DISPLAY') ? (WP_DEBUG_DISPLAY ? 'enabled' : 'disabled') : 'Not set',
                 'SCRIPT_DEBUG'        => defined('SCRIPT_DEBUG') ? (SCRIPT_DEBUG ? 'enabled' : 'disabled') : 'Not set',
                 'WP_ENVIRONMENT_TYPE' => defined('WP_ENVIRONMENT_TYPE') ? WP_ENVIRONMENT_TYPE : 'Not set',
-                'ERROR_LOG PATH'      => System::getErrorLogPath(),
+                'ERROR_LOG PATH'      => System::errorLogPath(),
             ];
             foreach ($data4 as $key => $value) {
                 echo '<tr><td>' . $key . '</td><td>' . $value . '</td></tr>';

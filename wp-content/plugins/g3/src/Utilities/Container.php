@@ -12,6 +12,8 @@ final class Container {
      * @param string $defaultTabName Default tab name
      * @param array $args Tab list ['key'=>'name']
      * @return void
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function tab(string $componentName, string $defaultTabName, array $args = []): void
     {
