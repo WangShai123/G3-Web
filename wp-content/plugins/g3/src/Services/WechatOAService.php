@@ -530,7 +530,7 @@ class WechatOAService {
         }
     }
 
-    private function handleReply($message): ?string
+    private function handleReply($message)
     {
         $messageArray = $this->normalizeMessage($message);
 
@@ -597,7 +597,7 @@ class WechatOAService {
         return 'Message received, thank you!';
     }
 
-    private function handleEventMessage(array $message): ?string
+    private function handleEventMessage(array $message)
     {
         $event     = $message['Event'] ?? '';
         $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
