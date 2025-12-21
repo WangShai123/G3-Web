@@ -1,9 +1,9 @@
 <?php
 namespace JEALER\G3\Services;
 
-use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
+use EasyWeChat\OfficialAccount\Application;
 use WP_Error;
 use Exception;
 
@@ -587,18 +587,15 @@ class WechatOAService {
         // $xml .= "<Url><![CDATA[{$url}]]></Url>";
         // $xml .= "</xml>";
         // return $xml;
-        // 返回单条图文消息
-        return [
-            'MsgType'  => 'news',
-            'Articles' => [
-                [
-                    'Title'       => $title,
-                    'Description' => $description,
-                    'PicUrl'      => '', // 可以设置一张默认图片URL
-                    'Url'         => $url
-                ]
-            ]
-        ];
+        // 构造带链接的文本回复
+        $text = sprintf(
+            "%s %s\n\n%s: %s",
+            __('Search for: ', 'G3'),
+            $message['Content'],
+            $description,
+            $url
+        );
+        return $text;
     }
     private function handleTextMessage(array $message)
     {
