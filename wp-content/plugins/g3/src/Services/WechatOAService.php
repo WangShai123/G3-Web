@@ -557,7 +557,23 @@ class WechatOAService {
     {
         return home_url('/') . '?s=' . urlencode($keyword);
     }
-    private function handleTextMessage(array $message): ?string
+    private function searchMessage(array $message): array
+    {
+        /**
+         * 构建消息链接
+         * MsgType: link
+         * Title
+         * Description
+         * Url: $this->searchUrl($message['Content'])
+         */
+        return [
+            'MsgType'     => 'link',
+            'Title'       => '搜索',
+            'Description' => '',
+            'Url'         => $this->searchUrl($message['Content'])
+        ];
+    }
+    private function handleTextMessage(array $message)
     {
         $content = $message['Content'] ?? '';
 
@@ -573,7 +589,8 @@ class WechatOAService {
         }
 
         if ($this->isSearchEnabled()) {
-            return $this->searchUrl($content);
+            // return $this->searchUrl($content);
+            return $this->searchMessage($message);
         }
 
         // 默认回复
