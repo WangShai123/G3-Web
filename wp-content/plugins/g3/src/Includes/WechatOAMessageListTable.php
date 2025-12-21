@@ -209,11 +209,11 @@ class WechatOAMessageListTable extends WP_List_Table {
         $offset  = $args['offset'] ?? 0;
 
         if ($search) {
-            $sql    = "SELECT * FROM $this->table WHERE content LIKE %s OR nickname LIKE %s LIMIT %d OFFSET %d";
+            $sql    = "SELECT * FROM $this->table WHERE content LIKE %s OR nickname LIKE %s ORDER BY id DESC LIMIT %d OFFSET %d";
             $like   = '%' . $wpdb->esc_like($search) . '%';
             $result = $wpdb->get_results($wpdb->prepare($sql, $like, $like, $perPage, $offset));
         } else {
-            $sql    = "SELECT * FROM $this->table LIMIT %d OFFSET %d";
+            $sql    = "SELECT * FROM $this->table ORDER BY id DESC LIMIT %d OFFSET %d";
             $result = $wpdb->get_results($wpdb->prepare($sql, $perPage, $offset));
         }
         return $result;
