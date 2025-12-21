@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2025-12-21 14:50+0000\n"
+"PO-Revision-Date: 2025-12-21 16:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -164,6 +164,8 @@ msgstr "活动侧边栏"
 #: src/Components/Product/Product.php:79
 #: src/Components/Announcement/Announcement.php:21
 #: src/Components/Swiper/views/tab-locations.php:22
+#: src/Components/WechatOA/views/tab-reply.php:23
+#: src/Components/WechatOA/views/tab-reply.php:24
 msgid "Add New"
 msgstr "新建"
 
@@ -327,7 +329,7 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Services/WechatOAService.php:1123
+#: src/Services/WechatOAService.php:1139
 msgid "All provided IDs are invalid"
 msgstr "非法的IDs"
 
@@ -426,17 +428,18 @@ msgstr "公告列表导航"
 msgid "Archive Sidebar"
 msgstr "归档页侧边栏"
 
-#: src/Components/WechatOA/views/tab-menus.php:68
+#: src/Components/WechatOA/views/tab-menus.php:59
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr "您确认要创建微信公众号菜单吗？"
 
 #: src/Components/WechatOA/views/tab-menus.php:40
-#: src/Components/WechatOA/views/tab-reply.php:180
+#: src/Components/WechatOA/views/tab-message.php:53
+#: src/Components/WechatOA/views/tab-reply.php:178
 #| msgid "Are you sure you want to delete this menu?"
 msgid "Are you sure you want to delete it?"
 msgstr "您确定要删除它吗？"
 
-#: src/Components/WechatOA/views/tab-menus.php:100
+#: src/Components/WechatOA/views/tab-menus.php:81
 msgid "Are you sure you want to flush the menus online?"
 msgstr "您确认要清空所有线上的菜单数据吗？"
 
@@ -445,7 +448,7 @@ msgstr "您确认要清空所有线上的菜单数据吗？"
 msgid "Array %s[%s] must be type %s."
 msgstr "%s[%s] 必需是 %s 类型。"
 
-#: src/Services/WechatOAService.php:695
+#: src/Services/WechatOAService.php:708
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
@@ -484,7 +487,7 @@ msgstr "后台表单字段项演示"
 msgid "Balance Management"
 msgstr "余额管理"
 
-#: src/Services/WechatOAService.php:965
+#: src/Services/WechatOAService.php:981
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
@@ -605,6 +608,10 @@ msgstr "净化WordPress模板渲染后的头部数据。"
 #, php-format
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr "点击 <a href=\"%s\"><b>此处</b></a> 来激活。"
+
+#: src/Services/WechatOAService.php:561
+msgid "Click here to view search results."
+msgstr "点击此处浏览搜索结果。"
 
 #: src/Components/Wallet/views/tab-withdrawal.php:12
 #: src/Components/Wallet/views/tab-cryptocurrency.php:12
@@ -981,8 +988,8 @@ msgstr "开关选择器"
 msgid "Enable Wallet, if you want balance feature."
 msgstr "如果您想要余额管理功能，请启用它。"
 
-#: src/Components/WechatOA/views/tab-reply.php:34
-#: src/Components/WechatOA/views/tab-reply.php:113
+#: src/Components/WechatOA/views/tab-reply.php:32
+#: src/Components/WechatOA/views/tab-reply.php:111
 msgid "Enter keywords please"
 msgstr "请输入关键词"
 
@@ -998,8 +1005,8 @@ msgstr "请输入属性名"
 msgid "Enter property value"
 msgstr "请输入属性值"
 
-#: src/Components/WechatOA/views/tab-reply.php:42
-#: src/Components/WechatOA/views/tab-reply.php:122
+#: src/Components/WechatOA/views/tab-reply.php:40
+#: src/Components/WechatOA/views/tab-reply.php:120
 msgid "Enter reply please"
 msgstr "请输入回复内容"
 
@@ -1049,11 +1056,11 @@ msgstr "失败"
 msgid "Failed to active G3-Web plugin!"
 msgstr "G3-Web 插件启用失败！"
 
-#: src/Services/WechatOAService.php:1065
+#: src/Services/WechatOAService.php:1081
 msgid "Failed to delete replies from main table."
 msgstr "回复数据删除失败"
 
-#: src/Services/WechatOAService.php:1075
+#: src/Services/WechatOAService.php:1091
 msgid "Failed to delete reply(s)."
 msgstr "回复数据删除失败"
 
@@ -1064,7 +1071,7 @@ msgid ""
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Services/WechatOAService.php:865
+#: src/Services/WechatOAService.php:881
 msgid "Failed to insert reply into main table"
 msgstr "回复数据插入失败"
 
@@ -1076,11 +1083,11 @@ msgstr "PHPMailer库加载失败。"
 msgid "Failed to send test email!"
 msgstr "测试邮件发送失败！"
 
-#: src/Services/WechatOAService.php:901
+#: src/Services/WechatOAService.php:917
 msgid "Failed to update reply in main table"
 msgstr "回复数据更新失败"
 
-#: src/Services/WechatOAService.php:1147
+#: src/Services/WechatOAService.php:1163
 msgid "Failed to update reply status"
 msgstr "回复状态更新失败"
 
@@ -1461,7 +1468,7 @@ msgstr "用户名或密码不正确。"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: src/Services/WechatOAService.php:720 src/Services/WechatOAService.php:733
+#: src/Services/WechatOAService.php:733 src/Services/WechatOAService.php:746
 #, php-format
 msgid "Keyword %s already exists"
 msgstr "关键词 %s 已存在"
@@ -1729,11 +1736,11 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Services/WechatOAService.php:1115
+#: src/Services/WechatOAService.php:1131
 msgid "No reply IDs provided"
 msgstr "未提供任何IDs"
 
-#: src/Services/WechatOAService.php:1029
+#: src/Services/WechatOAService.php:1045
 msgid "No valid reply ID(s) provided."
 msgstr "Invalid IDs selected."
 
@@ -2216,11 +2223,11 @@ msgstr "移除管理后台中的工具菜单页面。"
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
 
-#: src/Services/WechatOAService.php:704
+#: src/Services/WechatOAService.php:717
 msgid "Reply content cannot be empty"
 msgstr "回复内容不能为空"
 
-#: src/Services/WechatOAService.php:905
+#: src/Services/WechatOAService.php:921
 msgid "Reply not found"
 msgstr "未发现回复数据"
 
@@ -2295,7 +2302,7 @@ msgstr "默哀模式"
 msgid "Safe Session"
 msgstr "安全会话"
 
-#: src/Services/WechatOAService.php:768
+#: src/Services/WechatOAService.php:784
 msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
 
@@ -2319,6 +2326,10 @@ msgstr "搜索品牌"
 #: src/Components/Activity/Activity.php:80
 msgid "Search Categories"
 msgstr "搜索分类"
+
+#: src/Services/WechatOAService.php:560
+msgid "Search for: "
+msgstr "搜索："
 
 #: src/Components/Product/Product.php:135
 msgid "Search Product Categories"
@@ -2544,6 +2555,7 @@ msgid "Subscription Account"
 msgstr "订阅号"
 
 #: src/Components/WechatOA/WechatOA.php:250
+#: src/Components/WechatOA/WechatOA.php:348
 msgid "Success"
 msgstr "成功"
 
@@ -2986,7 +2998,7 @@ msgstr "欢迎面板"
 msgid "Welcome!"
 msgstr "欢迎！"
 
-#: src/Services/WechatOAService.php:586
+#: src/Services/WechatOAService.php:599
 msgid "Welcome! Thanks for your attention."
 msgstr "欢迎！感谢您的关注。"
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-21 14:50+0000\n"
+"POT-Creation-Date: 2025-12-21 16:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -164,6 +164,8 @@ msgstr ""
 #: src/Components/Product/Product.php:79
 #: src/Components/Announcement/Announcement.php:21
 #: src/Components/Swiper/views/tab-locations.php:22
+#: src/Components/WechatOA/views/tab-reply.php:23
+#: src/Components/WechatOA/views/tab-reply.php:24
 msgid "Add New"
 msgstr ""
 
@@ -322,7 +324,7 @@ msgstr ""
 msgid "All Products"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1123
+#: src/Services/WechatOAService.php:1139
 msgid "All provided IDs are invalid"
 msgstr ""
 
@@ -419,16 +421,17 @@ msgstr ""
 msgid "Archive Sidebar"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-menus.php:68
+#: src/Components/WechatOA/views/tab-menus.php:59
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr ""
 
 #: src/Components/WechatOA/views/tab-menus.php:40
-#: src/Components/WechatOA/views/tab-reply.php:180
+#: src/Components/WechatOA/views/tab-message.php:53
+#: src/Components/WechatOA/views/tab-reply.php:178
 msgid "Are you sure you want to delete it?"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-menus.php:100
+#: src/Components/WechatOA/views/tab-menus.php:81
 msgid "Are you sure you want to flush the menus online?"
 msgstr ""
 
@@ -437,7 +440,7 @@ msgstr ""
 msgid "Array %s[%s] must be type %s."
 msgstr ""
 
-#: src/Services/WechatOAService.php:695
+#: src/Services/WechatOAService.php:708
 msgid "At least one keyword is required"
 msgstr ""
 
@@ -475,7 +478,7 @@ msgstr ""
 msgid "Balance Management"
 msgstr ""
 
-#: src/Services/WechatOAService.php:965
+#: src/Services/WechatOAService.php:981
 msgid "Batch insert keywords failed"
 msgstr ""
 
@@ -594,6 +597,10 @@ msgstr ""
 #: templates/developer/w.php:27
 #, php-format
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
+msgstr ""
+
+#: src/Services/WechatOAService.php:561
+msgid "Click here to view search results."
 msgstr ""
 
 #: src/Components/Wallet/views/tab-withdrawal.php:12
@@ -960,8 +967,8 @@ msgstr ""
 msgid "Enable Wallet, if you want balance feature."
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-reply.php:34
-#: src/Components/WechatOA/views/tab-reply.php:113
+#: src/Components/WechatOA/views/tab-reply.php:32
+#: src/Components/WechatOA/views/tab-reply.php:111
 msgid "Enter keywords please"
 msgstr ""
 
@@ -977,8 +984,8 @@ msgstr ""
 msgid "Enter property value"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-reply.php:42
-#: src/Components/WechatOA/views/tab-reply.php:122
+#: src/Components/WechatOA/views/tab-reply.php:40
+#: src/Components/WechatOA/views/tab-reply.php:120
 msgid "Enter reply please"
 msgstr ""
 
@@ -1026,11 +1033,11 @@ msgstr ""
 msgid "Failed to active G3-Web plugin!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1065
+#: src/Services/WechatOAService.php:1081
 msgid "Failed to delete replies from main table."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1075
+#: src/Services/WechatOAService.php:1091
 msgid "Failed to delete reply(s)."
 msgstr ""
 
@@ -1041,7 +1048,7 @@ msgid ""
 "%s."
 msgstr ""
 
-#: src/Services/WechatOAService.php:865
+#: src/Services/WechatOAService.php:881
 msgid "Failed to insert reply into main table"
 msgstr ""
 
@@ -1053,11 +1060,11 @@ msgstr ""
 msgid "Failed to send test email!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:901
+#: src/Services/WechatOAService.php:917
 msgid "Failed to update reply in main table"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1147
+#: src/Services/WechatOAService.php:1163
 msgid "Failed to update reply status"
 msgstr ""
 
@@ -1427,7 +1434,7 @@ msgstr ""
 msgid "JEALER"
 msgstr ""
 
-#: src/Services/WechatOAService.php:720 src/Services/WechatOAService.php:733
+#: src/Services/WechatOAService.php:733 src/Services/WechatOAService.php:746
 #, php-format
 msgid "Keyword %s already exists"
 msgstr ""
@@ -1690,11 +1697,11 @@ msgstr ""
 msgid "No products found."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1115
+#: src/Services/WechatOAService.php:1131
 msgid "No reply IDs provided"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1029
+#: src/Services/WechatOAService.php:1045
 msgid "No valid reply ID(s) provided."
 msgstr ""
 
@@ -2158,11 +2165,11 @@ msgstr ""
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr ""
 
-#: src/Services/WechatOAService.php:704
+#: src/Services/WechatOAService.php:717
 msgid "Reply content cannot be empty"
 msgstr ""
 
-#: src/Services/WechatOAService.php:905
+#: src/Services/WechatOAService.php:921
 msgid "Reply not found"
 msgstr ""
 
@@ -2235,7 +2242,7 @@ msgstr ""
 msgid "Safe Session"
 msgstr ""
 
-#: src/Services/WechatOAService.php:768
+#: src/Services/WechatOAService.php:784
 msgid "Save failed, please try again later"
 msgstr ""
 
@@ -2258,6 +2265,10 @@ msgstr ""
 
 #: src/Components/Activity/Activity.php:80
 msgid "Search Categories"
+msgstr ""
+
+#: src/Services/WechatOAService.php:560
+msgid "Search for: "
 msgstr ""
 
 #: src/Components/Product/Product.php:135
@@ -2479,6 +2490,7 @@ msgid "Subscription Account"
 msgstr ""
 
 #: src/Components/WechatOA/WechatOA.php:250
+#: src/Components/WechatOA/WechatOA.php:348
 msgid "Success"
 msgstr ""
 
@@ -2909,7 +2921,7 @@ msgstr ""
 msgid "Welcome!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:586
+#: src/Services/WechatOAService.php:599
 msgid "Welcome! Thanks for your attention."
 msgstr ""
 
