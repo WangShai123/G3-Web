@@ -534,66 +534,39 @@ class WechatOAService {
     {
         $messageArray = $this->normalizeMessage($message);
 
-        error_log('income message array: ' . print_r($messageArray, true));
-
         // Handle reply based on message type
         $reply = null;
         switch ($messageArray['MsgType']) {
             case 'text':
-                // 文本消息处理
                 $reply = $this->handleTextMessage($messageArray);
                 break;
             case 'event':
-                // 事件消息处理
                 $reply = $this->handleEventMessage($messageArray);
                 break;
             default:
-                // 默认回复
                 $reply = 'Hello, thanks for your message!';
                 break;
         }
-        error_log('out message: ' . $reply);
 
         return $reply;
     }
 
-    private function searchUrl(string $keyword)
+    private function searchUrl(string $keyword): string
     {
         return home_url('/') . '?s=' . urlencode($keyword);
     }
-    private function searchMessage(array $message)
+    private function searchMessage(array $message): string
     {
-        /**
-         * 构建消息链接
-         * MsgType: link
-         * Title
-         * Description
-         * Url: $this->searchUrl($message['Content'])
-         */
-        // return [
-        //     'MsgType'     => 'link',
-        //     'Title'       => __('Search for: ', 'G3') . $message['Content'],
-        //     'Description' => __('Click to view search results', 'G3'),
-        //     'Url'         => $this->searchUrl($message['Content'])
-        // ];
         $title       = __('Search for: ', 'G3') . $message['Content'];
-        $description = __('Click to view search results', 'G3');
+        $description = __('Click here to view search results.', 'G3');
         $url         = $this->searchUrl($message['Content']);
 
-        // $xml  = "<xml>";
-        // $xml .= "<MsgType><![CDATA[link]]></MsgType>";
-        // $xml .= "<Title><![CDATA[{$title}]]></Title>";
-        // $xml .= "<Description><![CDATA[{$description}]]></Description>";
-        // $xml .= "<Url><![CDATA[{$url}]]></Url>";
-        // $xml .= "</xml>";
-        // return $xml;
-        // 构造带链接的文本回复
+        // Build text with link
         $text = sprintf(
-            "%s %s\n\n%s: %s",
-            __('Search for: ', 'G3'),
-            $message['Content'],
+            "%s\n\n<a href=\"%s\">%s</a>",
+            $title,
+            $url,
             $description,
-            $url
         );
         return $text;
     }
@@ -601,11 +574,11 @@ class WechatOAService {
     {
         $content = $message['Content'] ?? '';
 
-        // 尝试根据消息内容获取自动回复
+        // Try to get auto reply by content
         $reply = self::getReply($content);
 
         if ($reply !== false) {
-            // 检查启用状态
+            // Check if reply is enabled
             if ($reply['status'] == '1') {
                 $result = $reply['content'] ?? 'Message received, thank you!';
                 return $result;
@@ -613,11 +586,10 @@ class WechatOAService {
         }
 
         if ($this->isSearchEnabled()) {
-            // return $this->searchUrl($content);
             return $this->searchMessage($message);
         }
 
-        // 默认回复
+        // Default reply
         return 'Message received, thank you!';
     }
 
