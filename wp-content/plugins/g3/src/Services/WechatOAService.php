@@ -580,14 +580,25 @@ class WechatOAService {
         $description = __('Click to view search results', 'G3');
         $url         = $this->searchUrl($message['Content']);
 
-        $xml  = "<xml>";
-        $xml .= "<MsgType><![CDATA[link]]></MsgType>";
-        $xml .= "<Title><![CDATA[{$title}]]></Title>";
-        $xml .= "<Description><![CDATA[{$description}]]></Description>";
-        $xml .= "<Url><![CDATA[{$url}]]></Url>";
-        $xml .= "</xml>";
-
-        return $xml;
+        // $xml  = "<xml>";
+        // $xml .= "<MsgType><![CDATA[link]]></MsgType>";
+        // $xml .= "<Title><![CDATA[{$title}]]></Title>";
+        // $xml .= "<Description><![CDATA[{$description}]]></Description>";
+        // $xml .= "<Url><![CDATA[{$url}]]></Url>";
+        // $xml .= "</xml>";
+        // return $xml;
+        // 返回单条图文消息
+        return [
+            'MsgType'  => 'news',
+            'Articles' => [
+                [
+                    'Title'       => $title,
+                    'Description' => $description,
+                    'PicUrl'      => '', // 可以设置一张默认图片URL
+                    'Url'         => $url
+                ]
+            ]
+        ];
     }
     private function handleTextMessage(array $message)
     {
