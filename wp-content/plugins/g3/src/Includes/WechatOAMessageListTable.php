@@ -115,12 +115,12 @@ class WechatOAMessageListTable extends WP_List_Table {
                 }
                 $deleted = WechatOAService::deleteMessages($messages);
                 if ($deleted !== false) {
-                    echo '<script>
-                    JUI.Toast.success("' . __('Deleted', 'G3') . '");
-                    setTimeout(function() {
-                        window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";
-                    }, 3000);
-                    </script>';
+                    echo '<script>jQuery(document).ready(function () {
+                        JUI.Toast.success("' . __('Deleted', 'G3') . '");
+                        setTimeout(function() {
+                            window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";
+                        }, 1000);
+                    })</script>';
                 } else {
                     add_action('admin_notices', function () {
                         echo '<div class="notice notice-error is-dismissible">';
