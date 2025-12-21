@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2025-12-21 16:27+0000\n"
+"PO-Revision-Date: 2025-12-21 16:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -329,7 +329,7 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Services/WechatOAService.php:1139
+#: src/Services/WechatOAService.php:1140
 msgid "All provided IDs are invalid"
 msgstr "非法的IDs"
 
@@ -448,7 +448,7 @@ msgstr "您确认要清空所有线上的菜单数据吗？"
 msgid "Array %s[%s] must be type %s."
 msgstr "%s[%s] 必需是 %s 类型。"
 
-#: src/Services/WechatOAService.php:708
+#: src/Services/WechatOAService.php:709
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
@@ -487,7 +487,7 @@ msgstr "后台表单字段项演示"
 msgid "Balance Management"
 msgstr "余额管理"
 
-#: src/Services/WechatOAService.php:981
+#: src/Services/WechatOAService.php:982
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
@@ -609,9 +609,11 @@ msgstr "净化WordPress模板渲染后的头部数据。"
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr "点击 <a href=\"%s\"><b>此处</b></a> 来激活。"
 
-#: src/Services/WechatOAService.php:561
-msgid "Click here to view search results."
-msgstr "点击此处浏览搜索结果。"
+#: src/Services/WechatOAService.php:562
+#, php-format
+#| msgid "Click here to view search results."
+msgid "Click here to view \"%s\" search results."
+msgstr "点击此处浏览 [%s] 的搜索结果。"
 
 #: src/Components/Wallet/views/tab-withdrawal.php:12
 #: src/Components/Wallet/views/tab-cryptocurrency.php:12
@@ -1056,11 +1058,11 @@ msgstr "失败"
 msgid "Failed to active G3-Web plugin!"
 msgstr "G3-Web 插件启用失败！"
 
-#: src/Services/WechatOAService.php:1081
+#: src/Services/WechatOAService.php:1082
 msgid "Failed to delete replies from main table."
 msgstr "回复数据删除失败"
 
-#: src/Services/WechatOAService.php:1091
+#: src/Services/WechatOAService.php:1092
 msgid "Failed to delete reply(s)."
 msgstr "回复数据删除失败"
 
@@ -1071,7 +1073,7 @@ msgid ""
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Services/WechatOAService.php:881
+#: src/Services/WechatOAService.php:882
 msgid "Failed to insert reply into main table"
 msgstr "回复数据插入失败"
 
@@ -1083,11 +1085,11 @@ msgstr "PHPMailer库加载失败。"
 msgid "Failed to send test email!"
 msgstr "测试邮件发送失败！"
 
-#: src/Services/WechatOAService.php:917
+#: src/Services/WechatOAService.php:918
 msgid "Failed to update reply in main table"
 msgstr "回复数据更新失败"
 
-#: src/Services/WechatOAService.php:1163
+#: src/Services/WechatOAService.php:1164
 msgid "Failed to update reply status"
 msgstr "回复状态更新失败"
 
@@ -1468,7 +1470,7 @@ msgstr "用户名或密码不正确。"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: src/Services/WechatOAService.php:733 src/Services/WechatOAService.php:746
+#: src/Services/WechatOAService.php:734 src/Services/WechatOAService.php:747
 #, php-format
 msgid "Keyword %s already exists"
 msgstr "关键词 %s 已存在"
@@ -1736,11 +1738,11 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Services/WechatOAService.php:1131
+#: src/Services/WechatOAService.php:1132
 msgid "No reply IDs provided"
 msgstr "未提供任何IDs"
 
-#: src/Services/WechatOAService.php:1045
+#: src/Services/WechatOAService.php:1046
 msgid "No valid reply ID(s) provided."
 msgstr "Invalid IDs selected."
 
@@ -2223,11 +2225,11 @@ msgstr "移除管理后台中的工具菜单页面。"
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
 
-#: src/Services/WechatOAService.php:717
+#: src/Services/WechatOAService.php:718
 msgid "Reply content cannot be empty"
 msgstr "回复内容不能为空"
 
-#: src/Services/WechatOAService.php:921
+#: src/Services/WechatOAService.php:922
 msgid "Reply not found"
 msgstr "未发现回复数据"
 
@@ -2302,7 +2304,7 @@ msgstr "默哀模式"
 msgid "Safe Session"
 msgstr "安全会话"
 
-#: src/Services/WechatOAService.php:784
+#: src/Services/WechatOAService.php:785
 msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
 
@@ -2998,7 +3000,7 @@ msgstr "欢迎面板"
 msgid "Welcome!"
 msgstr "欢迎！"
 
-#: src/Services/WechatOAService.php:599
+#: src/Services/WechatOAService.php:600
 msgid "Welcome! Thanks for your attention."
 msgstr "欢迎！感谢您的关注。"
 

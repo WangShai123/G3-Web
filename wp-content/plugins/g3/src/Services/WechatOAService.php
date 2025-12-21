@@ -557,8 +557,9 @@ class WechatOAService {
     }
     private function searchMessage(array $message): string
     {
-        $title       = __('Search for: ', 'G3') . $message['Content'];
-        $description = __('Click here to view search results.', 'G3');
+        $title = __('Search for: ', 'G3') . $message['Content'];
+        // $description = __('Click here to view search results.', 'G3');
+        $description = sprintf(__('Click here to view "%s" search results.', 'G3'), $message['Content']);
         $url         = $this->searchUrl($message['Content']);
 
         // Build text with link
