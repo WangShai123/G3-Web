@@ -557,7 +557,7 @@ class WechatOAService {
     {
         return home_url('/') . '?s=' . urlencode($keyword);
     }
-    private function searchMessage(array $message): array
+    private function searchMessage(array $message)
     {
         /**
          * 构建消息链接
@@ -566,12 +566,22 @@ class WechatOAService {
          * Description
          * Url: $this->searchUrl($message['Content'])
          */
-        return [
-            'MsgType'     => 'link',
-            'Title'       => __('Search for: ', 'G3') . $message['Content'],
-            'Description' => '',
-            'Url'         => $this->searchUrl($message['Content'])
-        ];
+        // return [
+        //     'MsgType'     => 'link',
+        //     'Title'       => __('Search for: ', 'G3') . $message['Content'],
+        //     'Description' => __('Click to view search results', 'G3'),
+        //     'Url'         => $this->searchUrl($message['Content'])
+        // ];
+        $title       = __('Search for: ', 'G3') . $message['Content'];
+        $description = __('Click to view search results', 'G3');
+        $url         = $this->searchUrl($message['Content']);
+
+        $xml  = "<MsgType><![CDATA[link]]></MsgType>";
+        $xml .= "<Title><![CDATA[{$title}]]></Title>";
+        $xml .= "<Description><![CDATA[{$description}]]></Description>";
+        $xml .= "<Url><![CDATA[{$url}]]></Url>";
+
+        return $xml;
     }
     private function handleTextMessage(array $message)
     {

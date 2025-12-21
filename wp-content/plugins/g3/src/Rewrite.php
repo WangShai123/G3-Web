@@ -313,7 +313,6 @@ class Rewrite {
                     // Look for a matching value in the priority rules
                     foreach ($route['priority'] as $param) {
                         if (isset($param['value']) && $param['value'] == $matchedValue) {
-                            error_log('test priority callback: ' . $param['value']);
                             $templateFile = $param['path'];
                             break;
                         }
