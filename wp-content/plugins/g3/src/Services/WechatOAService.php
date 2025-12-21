@@ -580,10 +580,12 @@ class WechatOAService {
         $description = __('Click to view search results', 'G3');
         $url         = $this->searchUrl($message['Content']);
 
-        $xml  = "<MsgType><![CDATA[link]]></MsgType>";
+        $xml  = "<xml>";
+        $xml .= "<MsgType><![CDATA[link]]></MsgType>";
         $xml .= "<Title><![CDATA[{$title}]]></Title>";
         $xml .= "<Description><![CDATA[{$description}]]></Description>";
         $xml .= "<Url><![CDATA[{$url}]]></Url>";
+        $xml .= "</xml>";
 
         return $xml;
     }
