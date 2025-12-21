@@ -568,7 +568,7 @@ class WechatOAService {
          */
         return [
             'MsgType'     => 'link',
-            'Title'       => '搜索',
+            'Title'       => __('Search for: ', 'G3') . $message['Content'],
             'Description' => '',
             'Url'         => $this->searchUrl($message['Content'])
         ];
