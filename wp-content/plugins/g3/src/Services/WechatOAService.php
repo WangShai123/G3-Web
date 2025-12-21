@@ -534,7 +534,9 @@ class WechatOAService {
     {
         $messageArray = $this->normalizeMessage($message);
 
-        // 根据消息类型进行回复
+        error_log('income message array: ' . print_r($messageArray, true));
+
+        // Handle reply based on message type
         $reply = null;
         switch ($messageArray['MsgType']) {
             case 'text':
@@ -550,6 +552,8 @@ class WechatOAService {
                 $reply = 'Hello, thanks for your message!';
                 break;
         }
+        error_log('out message: ' . $reply);
+
         return $reply;
     }
 
