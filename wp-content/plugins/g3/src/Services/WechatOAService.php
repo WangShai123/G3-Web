@@ -569,7 +569,7 @@ class WechatOAService {
 
     private function handleReply($message)
     {
-        $messageArray = $this->normalizeMessage($message);
+        $message = $this->normalizeMessage($message);
 
         // Handle reply based on message type
         $reply = null;
