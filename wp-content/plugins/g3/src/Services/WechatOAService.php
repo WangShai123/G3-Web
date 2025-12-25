@@ -1636,29 +1636,63 @@ class WechatOAService {
      * 
      * 获取最新文章列表作为图文消息
      * 
-     * @return mixed Formatted news message for WeChat
+     * @return array Formatted news message for WeChat
      * @since 1.0.0
      * @author Wang Shai
      */
-    private function getLatestPosts()
+    private function getLatestPosts(): array
     {
+        // return [
+        //     'MsgType'      => 'news',
+        //     'ArticleCount' => 2,
+        //     'Articles'     => [
+        //         [
+        //             'Title'       => '点击事件',
+        //             'Description' => '点击事件描述',
+        //             'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+        //             'Url'         => 'https://www.example.com'
+        //         ],
+        //         [
+        //             'Title'       => '点击事件2',
+        //             'Description' => '点击事件描述2',
+        //             'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+        //             'Url'         => 'https://www.example.com'
+        //         ]
+        //     ]
+        // ];
+        $posts = get_posts([
+            'numberposts' => 5,
+            'post_status' => 'publish',
+            'post_type'   => 'post',
+            'orderby'     => 'date',
+            'order'       => 'DESC'
+        ]);
+
+        $articles = [];
+
+        foreach ($posts as $post) {
+            $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
+            if (!$thumbnail) {
+                $thumbnail = get_option(self::OPTION_KEY)['cover'] ?? '';
+            }
+
+            $excerpt = $post->post_excerpt;
+            if (empty($excerpt)) {
+                $excerpt = Common::truncate($post->post_content, 20);
+            }
+
+            $articles[] = [
+                'Title'       => $post->post_title,
+                'Description' => $excerpt,
+                'PicUrl'      => $thumbnail,
+                'Url'         => get_permalink($post->ID)
+            ];
+        }
+
         return [
             'MsgType'      => 'news',
-            'ArticleCount' => 2,
-            'Articles'     => [
-                [
-                    'Title'       => '点击事件',
-                    'Description' => '点击事件描述',
-                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                    'Url'         => 'https://www.example.com'
-                ],
-                [
-                    'Title'       => '点击事件2',
-                    'Description' => '点击事件描述2',
-                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                    'Url'         => 'https://www.example.com'
-                ]
-            ]
+            'ArticleCount' => count($articles),
+            'Articles'     => $articles
         ];
     }
 }
