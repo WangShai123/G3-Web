@@ -141,38 +141,40 @@ class WechatOAService {
             $server->withHandler(function ($message, Closure $next) {
                 $this->processIncomingMessage($message);
                 return $next($message);
-            })->with(function ($message, Closure $next) {
-                error_log('中间件处理消息，打印 $message: ' . print_r($message, true));
-                // 处理 event click
-                if ($message->MsgType === 'event' && $message->Event === 'CLICK') {
-                    error_log('中间件处理消息，Event === CLICK:');
-                    // 如果 key = n
-                    if ($message->EventKey === 'n') {
-                        error_log('中间件处理消息，EventKey === n:');
-                        return [
-                            'MsgType'      => 'news',
-                            'ArticleCount' => 2,
-                            'Articles'     => [
-                                [
-                                    'Title'       => '点击事件',
-                                    'Description' => '点击事件描述',
-                                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                                    'Url'         => 'https://www.example.com'
-                                ],
-                                [
-                                    'Title'       => '点击事件2',
-                                    'Description' => '点击事件描述2',
-                                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                                    'Url'         => 'https://www.example.com'
-                                ]
-                            ]
-                        ];
-                    }
-                }
-            })->with(function ($message, Closure $next) {
-                error_log('中间件最后一步处理消息，打印 $message: ' . print_r($message, true));
-                return $this->handleReply($message);
-            });
+            })
+                // ->with(function ($message, Closure $next) {
+                //     error_log('中间件处理消息，打印 $message: ' . print_r($message, true));
+                //     // 处理 event click
+                //     if ($message->MsgType === 'event' && $message->Event === 'CLICK') {
+                //         error_log('中间件处理消息，Event === CLICK:');
+                //         // 如果 key = n
+                //         if ($message->EventKey === 'n') {
+                //             error_log('中间件处理消息，EventKey === n:');
+                //             return [
+                //                 'MsgType'      => 'news',
+                //                 'ArticleCount' => 2,
+                //                 'Articles'     => [
+                //                     [
+                //                         'Title'       => '点击事件',
+                //                         'Description' => '点击事件描述',
+                //                         'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                //                         'Url'         => 'https://www.example.com'
+                //                     ],
+                //                     [
+                //                         'Title'       => '点击事件2',
+                //                         'Description' => '点击事件描述2',
+                //                         'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                //                         'Url'         => 'https://www.example.com'
+                //                     ]
+                //                 ]
+                //             ];
+                //         }
+                //     }
+                // })
+                ->with(function ($message, Closure $next) {
+                    // error_log('中间件最后一步处理消息，打印 $message: ' . print_r($message, true));
+                    return $this->handleReply($message);
+                });
         }
     }
 
@@ -571,18 +573,25 @@ class WechatOAService {
 
         // Handle reply based on message type
         $reply = null;
-        switch ($messageArray['MsgType']) {
-            case 'text':
-                $reply = $this->handleTextMessage($messageArray);
-                break;
-            case 'event':
-                $reply = $this->handleEventMessage($messageArray);
-                break;
-            default:
-                $reply = 'Hello, thanks for your message!';
-                break;
-        }
 
+        // switch ($messageArray['MsgType']) {
+        //     case 'text':
+        //         $reply = $this->handleTextMessage($messageArray);
+        //         break;
+        //     case 'event':
+        //         $reply = $this->handleEventMessage($messageArray);
+        //         break;
+        //     default:
+        //         $reply = 'Hello, thanks for your message!';
+        //         break;
+        // }
+        // return $reply;
+
+        $reply = match ($message['MsgType']) {
+            'text' => $this->handleTextMessage($message),
+            'event' => $this->handleEventMessage($message),
+            default => 'Hello, thanks for your message!',
+        };
         return $reply;
     }
 
@@ -605,15 +614,16 @@ class WechatOAService {
         );
         return $text;
     }
-    private function handleTextMessage(array $message)
+    private function handleTextMessage($message)
     {
         $content = $message['Content'] ?? '';
+        // $content = $message->Content ?? '';
 
         // Try to get auto reply by content
         $reply = self::getReply($content);
 
         if ($reply !== false) {
-            // Check if reply is enabled
+            // Check if the keyword reply is enabled
             if ($reply['status'] == '1') {
                 $result = $reply['content'] ?? 'Message received, thank you!';
                 return $result;
@@ -633,15 +643,21 @@ class WechatOAService {
         $event     = $message['Event'] ?? '';
         $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
 
-        switch ($event) {
-            case 'subscribe':
-                return $subscribe;
-            // case 'CLICK':
-            //     return $this->handleClickEvent($message);
-            case 'unsubscribe':
-            default:
-                return null;
-        }
+        // switch ($event) {
+        //     case 'subscribe':
+        //         return $subscribe;
+        //     case 'CLICK':
+        //         return $this->handleClickEvent($message);
+        //     case 'unsubscribe':
+        //     default:
+        //         return null;
+        // }
+
+        return match ($event) {
+            'subscribe' => $subscribe,
+            'CLICK' => $this->handleClickEvent($message),
+            default => null,
+        };
     }
 
     /**
@@ -1641,5 +1657,23 @@ class WechatOAService {
      */
     private function getLatestPosts()
     {
+        return [
+            'MsgType'      => 'news',
+            'ArticleCount' => 2,
+            'Articles'     => [
+                [
+                    'Title'       => '点击事件',
+                    'Description' => '点击事件描述',
+                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                    'Url'         => 'https://www.example.com'
+                ],
+                [
+                    'Title'       => '点击事件2',
+                    'Description' => '点击事件描述2',
+                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                    'Url'         => 'https://www.example.com'
+                ]
+            ]
+        ];
     }
 }
