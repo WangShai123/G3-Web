@@ -569,30 +569,24 @@ class WechatOAService {
 
     private function handleReply($message)
     {
-        $message = $this->normalizeMessage($message);
+        // $message = $this->normalizeMessage($message);
 
         // Handle reply based on message type
         $reply = null;
 
-        // switch ($messageArray['MsgType']) {
-        //     case 'text':
-        //         $reply = $this->handleTextMessage($messageArray);
-        //         break;
-        //     case 'event':
-        //         $reply = $this->handleEventMessage($messageArray);
-        //         break;
-        //     default:
-        //         $reply = 'Hello, thanks for your message!';
-        //         break;
-        // }
-        // return $reply;
-
-        $reply = match ($message['MsgType']) {
+        $reply = match ($message->MsgType) {
             'text' => $this->handleTextMessage($message),
             'event' => $this->handleEventMessage($message),
             default => 'Hello, thanks for your message!',
         };
         return $reply;
+
+        // $reply = match ($message['MsgType']) {
+        //     'text' => $this->handleTextMessage($message),
+        //     'event' => $this->handleEventMessage($message),
+        //     default => 'Hello, thanks for your message!',
+        // };
+        // return $reply;
     }
 
     private function searchUrl(string $keyword): string
@@ -638,20 +632,11 @@ class WechatOAService {
         return 'Message received, thank you!';
     }
 
-    private function handleEventMessage(array $message)
+    private function handleEventMessage($message)
     {
-        $event     = $message['Event'] ?? '';
+        // $event     = $message['Event'] ?? '';
+        $event     = $message->Event ?? '';
         $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
-
-        // switch ($event) {
-        //     case 'subscribe':
-        //         return $subscribe;
-        //     case 'CLICK':
-        //         return $this->handleClickEvent($message);
-        //     case 'unsubscribe':
-        //     default:
-        //         return null;
-        // }
 
         return match ($event) {
             'subscribe' => $subscribe,
@@ -665,14 +650,14 @@ class WechatOAService {
      * 
      * 处理微信菜单点击事件
      * 
-     * @param array $message Message data from WeChat
+     * @param 
      * @return 
      * @since 1.0.0
      * @author Wang Shai
      */
-    private function handleClickEvent(array $message)
+    private function handleClickEvent($message)
     {
-        $eventKey = $message['EventKey'] ?? '';
+        $eventKey = $message->EventKey ?? '';
 
         switch ($eventKey) {
             case 'n': // 获取最新文章列表
