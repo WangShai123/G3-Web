@@ -34,6 +34,7 @@ class Mail extends Components {
     protected function init(): void
     {
         add_action('phpmailer_init', [$this, 'smtpInit']);
+        add_filter('wp_mail_from', [$this, 'wpMailFrom']);
     }
     #[\Override]
     protected function admin(): void
@@ -391,5 +392,13 @@ class Mail extends Components {
         add_action('wp_mail_succeeded', function ($mail_data) {
             error_log('Mail succeeded: ' . print_r($mail_data, true));
         });
+    }
+
+    public function wpMailFrom($original_email)
+    {
+        if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
+            return $original_email;
+        }
+        return is_email($this->option['address']) ? $this->option['address'] : $original_email;
     }
 }
