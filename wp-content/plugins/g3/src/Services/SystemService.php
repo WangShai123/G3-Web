@@ -319,6 +319,7 @@ class SystemService {
                 `sort` tinyint(4) NOT NULL,
                 `type` tinyint(4) NOT NULL,
                 `value` varchar(255) NOT NULL,
+                `app_id` varchar(64) NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `parent` (`parent`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA menus table';";

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2025-12-21 16:30+0000\n"
+"PO-Revision-Date: 2025-12-22 16:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -93,7 +93,7 @@ msgid ""
 "means the data does not exist."
 msgstr "：如果<code>checkbox</code>未勾选，它不会提交任何值。"
 
-#: src/Activator.php:144
+#: src/Activator.php:120
 #, php-format
 msgid ""
 "<h3>Failed to active G3-Web plugin!</h3>G3-Web requires <b>%s</b>.<br>Please "
@@ -103,7 +103,7 @@ msgstr ""
 "<h3>G3-Web 插件启用失败！</h3>G3-Web 需要 PHP 扩展：<b>%s</b>。<br>请安装它，并在 <strong>php."
 "ini</strong> 文件中配置它，然后重启 PHP 服务。"
 
-#: src/Activator.php:135
+#: src/Activator.php:111
 #, php-format
 msgid ""
 "<h3>Failed to active G3-Web plugin!</h3>G3-Web requires JEALER PHP extension."
@@ -120,11 +120,6 @@ msgstr "关于G3系统"
 #: src/Components/Developer/views/tab-help.php:12
 msgid "About G3 Web"
 msgstr "关于 G3 Web"
-
-#: src/Components/Swiper/Swiper.php:74 src/Components/Swiper/Swiper.php:108
-#| msgid "Access Denied."
-msgid "Access Denied!"
-msgstr "拒绝访问"
 
 #: src/Components/Activity/Activity.php:9
 #: src/Components/Activity/Activity.php:11
@@ -157,7 +152,7 @@ msgid "Activity Sidebar"
 msgstr "活动侧边栏"
 
 #: src/Includes/WechatOAReplyListTable.php:79
-#: src/Includes/SwiperListTable.php:163 src/Includes/SwiperLocationTable.php:61
+#: src/Includes/SwiperListTable.php:165 src/Includes/SwiperLocationTable.php:62
 #: src/Includes/WechatOAMenuListTable.php:93
 #: src/Components/Activity/Activity.php:13
 #: src/Components/Activity/Activity.php:15
@@ -185,7 +180,7 @@ msgstr "新建品牌"
 msgid "Add New Category"
 msgstr "新建分类"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:26
+#: src/Components/WechatOA/views/view-menu-edit.php:45
 #: src/Components/WechatOA/views/tab-menus.php:20
 #| msgid "Add New Feed"
 msgid "Add New Menu"
@@ -207,14 +202,10 @@ msgstr "添加属性"
 msgid "Add Sku"
 msgstr "添加 SKU"
 
-#: src/Components/Swiper/Swiper.php:57 src/Components/Swiper/Swiper.php:58
+#: src/Components/Swiper/Swiper.php:59 src/Components/Swiper/Swiper.php:60
 #: src/Components/Swiper/views/page-edit.php:12
 msgid "Add Swiper"
 msgstr "添加轮播图"
-
-#: src/Components/Swiper/Swiper.php:165
-msgid "Added!"
-msgstr "添加成功！"
 
 #: src/Components/Developer/Developer.php:348
 #: src/Components/Developer/Developer.php:350
@@ -240,17 +231,17 @@ msgstr "后台页面标题"
 msgid "Ads Management"
 msgstr "广告管理"
 
-#: src/Components/WechatOA/WechatOA.php:71
+#: src/Components/WechatOA/WechatOA.php:73
 msgid "Advanced Replay"
 msgstr "高级回复"
 
-#: src/Components/WechatOA/WechatOA.php:126
+#: src/Components/WechatOA/WechatOA.php:128
 msgid ""
 "After activating it, the messages sent to the WeChat Official Account will "
 "be stored in the database."
 msgstr "启用后，用户在微信公众号里发送的信息，将被存储进数据库。"
 
-#: src/Components/WechatOA/WechatOA.php:110
+#: src/Components/WechatOA/WechatOA.php:112
 #| msgid ""
 #| "After activating the search, users who send messages to the WeChat "
 #| "Official Account will automatically search for the content on the website "
@@ -329,7 +320,7 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Services/WechatOAService.php:1140
+#: src/Services/WechatOAService.php:1139
 msgid "All provided IDs are invalid"
 msgstr "非法的IDs"
 
@@ -448,7 +439,17 @@ msgstr "您确认要清空所有线上的菜单数据吗？"
 msgid "Array %s[%s] must be type %s."
 msgstr "%s[%s] 必需是 %s 类型。"
 
-#: src/Services/WechatOAService.php:709
+#: src/Services/WechatOAService.php:1553
+#: src/Components/WechatOA/views/view-menu-edit.php:307
+msgid "Article ID"
+msgstr "图文 ID"
+
+#: src/Services/WechatOAService.php:1552
+#: src/Components/WechatOA/views/view-menu-edit.php:294
+msgid "Article URL"
+msgstr "图文 URL"
+
+#: src/Services/WechatOAService.php:708
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
@@ -487,7 +488,7 @@ msgstr "后台表单字段项演示"
 msgid "Balance Management"
 msgstr "余额管理"
 
-#: src/Services/WechatOAService.php:982
+#: src/Services/WechatOAService.php:981
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
@@ -609,7 +610,12 @@ msgstr "净化WordPress模板渲染后的头部数据。"
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr "点击 <a href=\"%s\"><b>此处</b></a> 来激活。"
 
-#: src/Services/WechatOAService.php:562
+#: src/Services/WechatOAService.php:1543
+#: src/Components/WechatOA/views/view-menu-edit.php:177
+msgid "Click Event"
+msgstr "点击事件"
+
+#: src/Services/WechatOAService.php:561
 #, php-format
 #| msgid "Click here to view search results."
 msgid "Click here to view \"%s\" search results."
@@ -629,6 +635,7 @@ msgstr "评论列表"
 msgid "Community System"
 msgstr "社区系统"
 
+#: src/Components/Swiper/views/tab-swipers.php:28
 #: src/Components/WechatOA/views/tab-message.php:45
 msgid "Confirm"
 msgstr "确认"
@@ -662,8 +669,8 @@ msgstr "版权声明"
 msgid "Count"
 msgstr "数量"
 
-#: src/Components/WechatOA/WechatOA.php:135
-#: src/Components/WechatOA/WechatOA.php:141
+#: src/Components/WechatOA/WechatOA.php:137
+#: src/Components/WechatOA/WechatOA.php:143
 msgid "Count in Search Result"
 msgstr "搜索结果显示数量"
 
@@ -690,8 +697,8 @@ msgstr "积分系统"
 msgid "Cryptocurrency"
 msgstr "加密货币"
 
-#: src/Includes/SwiperListTable.php:60
-#: src/Components/Swiper/views/page-edit.php:80
+#: src/Includes/SwiperListTable.php:62
+#: src/Components/Swiper/views/page-edit.php:82
 msgid "Current Tab"
 msgstr "当前标签页"
 
@@ -727,7 +734,7 @@ msgid "Custom interaction data"
 msgstr "自定义交互数据"
 
 #: src/Includes/WechatOAReplyListTable.php:186
-#: src/Components/WechatOA/WechatOA.php:70
+#: src/Components/WechatOA/WechatOA.php:72
 msgid "Custom Reply"
 msgstr "自定义回复"
 
@@ -739,7 +746,7 @@ msgstr "自定义文本"
 msgid "Customize the title that will be displayed when shared on WeChat."
 msgstr "自定义内容被分享到微信后显示的标题"
 
-#: src/Components/WechatOA/WechatOA.php:313
+#: src/Components/WechatOA/WechatOA.php:317
 msgid "Data Flush Complete"
 msgstr "数据刷新成功"
 
@@ -752,8 +759,8 @@ msgstr "数据类型"
 msgid "Default Avatar"
 msgstr "默认头像"
 
-#: src/Components/WechatOA/WechatOA.php:179
-#: src/Components/WechatOA/WechatOA.php:185
+#: src/Components/WechatOA/WechatOA.php:181
+#: src/Components/WechatOA/WechatOA.php:187
 #: src/Components/Setting/Setting.php:164
 #: src/Components/Setting/Setting.php:170
 msgid "Default Cover"
@@ -766,6 +773,9 @@ msgid ""
 msgstr "设置同一访客在多少时间内重复访问不重新计数浏览次数。"
 
 #: src/Includes/WechatOAReplyListTable.php:143
+#: src/Includes/SwiperListTable.php:181
+#: src/Includes/WechatOAMessageListTable.php:119
+#: src/Includes/SwiperLocationTable.php:103 src/Utilities/Request.php:117
 #: src/Controllers/AdminController.php:88
 msgid "Deleted"
 msgstr "已删除"
@@ -810,7 +820,7 @@ msgstr "开发"
 msgid "Development Env"
 msgstr "开发环境"
 
-#: src/Utilities/Container.php:92
+#: src/Utilities/Container.php:94
 msgid "Disable"
 msgstr "禁用"
 
@@ -923,7 +933,7 @@ msgid ""
 "Attribute."
 msgstr "通过 AOP 配置和AOP注解，轻松实现拦截、日志等切面逻辑。"
 
-#: src/Includes/SwiperListTable.php:137
+#: src/Includes/SwiperListTable.php:139
 msgid "Edit"
 msgstr "编辑"
 
@@ -955,7 +965,7 @@ msgstr "编辑商品品类"
 msgid "Edit Swiper"
 msgstr "编辑轮播图"
 
-#: src/Components/Swiper/Swiper.php:47
+#: src/Components/Swiper/Swiper.php:49
 msgid "Edit Swipers"
 msgstr "编辑轮播图"
 
@@ -972,7 +982,7 @@ msgstr "邮件模板"
 msgid "Email Test"
 msgstr "邮件测试"
 
-#: src/Utilities/Container.php:93 src/Components/Developer/Developer.php:601
+#: src/Utilities/Container.php:95 src/Components/Developer/Developer.php:601
 #: src/Components/Mail/Mail.php:97
 msgid "Enable"
 msgstr "启用"
@@ -1049,20 +1059,20 @@ msgid ""
 "                website development."
 msgstr "即使您不懂任何技术，我们的课程仍然可以帮助您在 7-14 天，系统地认识互联网应用技术，并有能力自主完成网站开发。"
 
-#: src/Utilities/Request.php:76 src/Components/WechatOA/WechatOA.php:248
+#: src/Utilities/Request.php:149 src/Components/WechatOA/WechatOA.php:250
 msgid "Failed"
 msgstr "失败"
 
-#: src/Activator.php:72 src/Activator.php:85 src/Activator.php:138
-#: src/Activator.php:147
+#: src/Activator.php:50 src/Activator.php:63 src/Activator.php:114
+#: src/Activator.php:123
 msgid "Failed to active G3-Web plugin!"
 msgstr "G3-Web 插件启用失败！"
 
-#: src/Services/WechatOAService.php:1082
+#: src/Services/WechatOAService.php:1081
 msgid "Failed to delete replies from main table."
 msgstr "回复数据删除失败"
 
-#: src/Services/WechatOAService.php:1092
+#: src/Services/WechatOAService.php:1091
 msgid "Failed to delete reply(s)."
 msgstr "回复数据删除失败"
 
@@ -1073,7 +1083,7 @@ msgid ""
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Services/WechatOAService.php:882
+#: src/Services/WechatOAService.php:881
 msgid "Failed to insert reply into main table"
 msgstr "回复数据插入失败"
 
@@ -1085,11 +1095,11 @@ msgstr "PHPMailer库加载失败。"
 msgid "Failed to send test email!"
 msgstr "测试邮件发送失败！"
 
-#: src/Services/WechatOAService.php:918
+#: src/Services/WechatOAService.php:917
 msgid "Failed to update reply in main table"
 msgstr "回复数据更新失败"
 
-#: src/Services/WechatOAService.php:1164
+#: src/Services/WechatOAService.php:1163
 msgid "Failed to update reply status"
 msgstr "回复状态更新失败"
 
@@ -1201,8 +1211,8 @@ msgstr "文件夹名称"
 msgid "Follow Login"
 msgstr "关注登录"
 
-#: src/Components/WechatOA/WechatOA.php:195
-#: src/Components/WechatOA/WechatOA.php:201
+#: src/Components/WechatOA/WechatOA.php:197
+#: src/Components/WechatOA/WechatOA.php:203
 msgid "Follow Message"
 msgstr "关注消息"
 
@@ -1241,9 +1251,9 @@ msgid ""
 "tools to help you create professional-level WordPress themes quickly."
 msgstr "对于主题设计师：G3-Web 提供了一套全面的开发工具，帮助您快速创建专业级别的 WordPress 主题。"
 
-#: src/Middleware/RoleMiddleware.php:51 src/Utilities/Request.php:70
+#: src/Middleware/RoleMiddleware.php:51 src/Utilities/Request.php:133
 #: src/Components/Developer/Developer.php:901
-#: src/Components/WechatOA/WechatOA.php:244
+#: src/Components/WechatOA/WechatOA.php:246
 msgid "Forbidden"
 msgstr "禁止访问"
 
@@ -1300,17 +1310,17 @@ msgid ""
 "G3-Web helps you easily create a clean, modern and full-fledged website."
 msgstr "G3-Web 帮助您更加便捷地构建安全、现代、功能齐全的网站。"
 
-#: src/Activator.php:71
+#: src/Activator.php:49
 msgid "G3-Web requires PHP 8.3+. Please upgrade your PHP version."
 msgstr "G3-Web 需要 PHP 版本大于等于 8.3。请升级您的 PHP 版本。"
 
-#: src/Activator.php:84
+#: src/Activator.php:62
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr "G3-Web 需要 WordPress 版本大于等于 6.5。请升级您的 WordPress 版本。"
 
 #: src/Components/Security/Security.php:80
 #: src/Components/Product/Product.php:50
-#: src/Components/WechatOA/WechatOA.php:67 src/Components/Menu/Menu.php:89
+#: src/Components/WechatOA/WechatOA.php:69 src/Components/Menu/Menu.php:89
 #: src/Components/Wallet/Wallet.php:46 src/Components/Setting/Setting.php:100
 #: src/Components/Setting/Setting.php:101
 #: src/Components/Setting/Setting.php:111
@@ -1442,11 +1452,11 @@ msgid ""
 "template and its features."
 msgstr "安装并激活 <a href=\"%s\">G3-Web 主题</a> 来预览桌面端的各类功能和效果。"
 
-#: src/Components/Swiper/Swiper.php:123
+#: src/Components/Swiper/Swiper.php:108
 msgid "Invalid Data"
 msgstr "数据错误"
 
-#: src/Components/Swiper/Swiper.php:84
+#: src/Components/Swiper/Swiper.php:82
 msgid "Invalid data"
 msgstr "非法数据"
 
@@ -1454,11 +1464,11 @@ msgstr "非法数据"
 msgid "Invalid IDs selected."
 msgstr "非法的IDs"
 
-#: src/Components/Swiper/Swiper.php:129
+#: src/Components/Swiper/Swiper.php:111
 msgid "Invalid Image"
 msgstr "图片不正确"
 
-#: src/Components/Swiper/Swiper.php:135
+#: src/Components/Swiper/Swiper.php:114
 msgid "Invalid Link"
 msgstr "链接地址不正确"
 
@@ -1470,7 +1480,7 @@ msgstr "用户名或密码不正确。"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: src/Services/WechatOAService.php:734 src/Services/WechatOAService.php:747
+#: src/Services/WechatOAService.php:733 src/Services/WechatOAService.php:746
 #, php-format
 msgid "Keyword %s already exists"
 msgstr "关键词 %s 已存在"
@@ -1515,7 +1525,12 @@ msgstr "授权已过期"
 msgid "Like"
 msgstr "喜欢"
 
-#: src/Includes/SwiperListTable.php:26
+#: src/Services/WechatOAService.php:1554
+#: src/Components/WechatOA/views/view-menu-edit.php:320
+msgid "Limited Article URL"
+msgstr "受限图文URL"
+
+#: src/Includes/SwiperListTable.php:28
 msgid "Link"
 msgstr "链接"
 
@@ -1528,12 +1543,17 @@ msgstr "链接"
 msgid "Local Env"
 msgstr "本地环境"
 
-#: src/Includes/SwiperListTable.php:28
-#: src/Components/Swiper/views/page-edit.php:88
-#: src/Components/Swiper/views/page-edit.php:91
+#: src/Includes/SwiperListTable.php:30
+#: src/Components/Swiper/views/page-edit.php:90
 #: src/Components/Swiper/views/page-edit.php:93
+#: src/Components/Swiper/views/page-edit.php:95
 msgid "Location"
 msgstr "位置"
+
+#: src/Services/WechatOAService.php:1549
+#: src/Components/WechatOA/views/view-menu-edit.php:255
+msgid "Location Selector"
+msgstr "位置选择器"
 
 #: src/Services/PostService.php:302 src/Components/Security/Security.php:130
 #: src/Components/Login/Login.php:41 src/Components/Login/Login.php:42
@@ -1563,7 +1583,7 @@ msgstr "忘记密码"
 msgid "Mailer service is not configured."
 msgstr "邮件服务未配置成功。"
 
-#: src/Components/Swiper/Swiper.php:48
+#: src/Components/Swiper/Swiper.php:50
 msgid "Manage Locations"
 msgstr "管理位置"
 
@@ -1571,14 +1591,19 @@ msgstr "管理位置"
 msgid "Marketing Tools"
 msgstr "营销工具"
 
-#: src/Components/WechatOA/WechatOA.php:162
-#: src/Components/WechatOA/WechatOA.php:168
+#: src/Components/WechatOA/WechatOA.php:164
+#: src/Components/WechatOA/WechatOA.php:170
 msgid "Max Length of Search Keyword"
 msgstr "搜索关键词的最大长度"
 
-#: src/Includes/SwiperListTable.php:25
+#: src/Includes/SwiperListTable.php:27
 msgid "Media"
 msgstr "媒体"
+
+#: src/Services/WechatOAService.php:1551
+#: src/Components/WechatOA/views/view-menu-edit.php:281
+msgid "Media Library"
+msgstr "素材库"
 
 #: templates/developer/w.php:107
 msgid "Membership System"
@@ -1598,8 +1623,8 @@ msgid ""
 "been disabled."
 msgstr "消息不可用。因为微信公众号消息存储功能已被禁用。"
 
-#: src/Includes/WechatOAMessageListTable.php:163
-#: src/Components/WechatOA/WechatOA.php:69
+#: src/Includes/WechatOAMessageListTable.php:162
+#: src/Components/WechatOA/WechatOA.php:71
 msgid "Messages"
 msgstr "消息"
 
@@ -1614,6 +1639,11 @@ msgstr "消息"
 #: src/Components/Developer/Developer.php:587
 msgid "Method"
 msgstr "方法"
+
+#: src/Services/WechatOAService.php:1550
+#: src/Components/WechatOA/views/view-menu-edit.php:268
+msgid "Mini Program"
+msgstr "小程序"
 
 #: src/Components/Menu/Menu.php:31
 msgid "Mobile Menu"
@@ -1666,8 +1696,8 @@ msgstr "新建商品"
 msgid "New Product Category Name"
 msgstr "添加新商品品类名称"
 
-#: src/Includes/SwiperListTable.php:60
-#: src/Components/Swiper/views/page-edit.php:81
+#: src/Includes/SwiperListTable.php:62
+#: src/Components/Swiper/views/page-edit.php:83
 msgid "New Tab"
 msgstr "新标签页"
 
@@ -1707,9 +1737,13 @@ msgstr "未发现任何品牌"
 msgid "No categories found."
 msgstr "未发现任何分类"
 
-#: src/Includes/SwiperListTable.php:246 src/Includes/RewriteRulesTable.php:164
-#: src/Includes/WechatOAMessageListTable.php:174
-#: src/Includes/SwiperLocationTable.php:107
+#: src/Components/Swiper/views/tab-locations.php:91
+msgid "No data changed"
+msgstr "无数据变更"
+
+#: src/Includes/SwiperListTable.php:198 src/Includes/RewriteRulesTable.php:164
+#: src/Includes/WechatOAMessageListTable.php:173
+#: src/Includes/SwiperLocationTable.php:110
 #: src/Includes/WechatOAMenuListTable.php:87
 msgid "No data found."
 msgstr "未发现任何数据。"
@@ -1738,11 +1772,11 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Services/WechatOAService.php:1132
+#: src/Services/WechatOAService.php:1131
 msgid "No reply IDs provided"
 msgstr "未提供任何IDs"
 
-#: src/Services/WechatOAService.php:1046
+#: src/Services/WechatOAService.php:1045
 msgid "No valid reply ID(s) provided."
 msgstr "Invalid IDs selected."
 
@@ -1767,13 +1801,13 @@ msgstr "对象缓存文件 object_cache.php 已存在。"
 msgid "Official Account Type"
 msgstr "公众号类型"
 
-#: src/Includes/SwiperListTable.php:56 src/Includes/SwiperListTable.php:148
-#: src/Components/Swiper/views/page-edit.php:130
+#: src/Includes/SwiperListTable.php:58 src/Includes/SwiperListTable.php:150
+#: src/Components/Swiper/views/page-edit.php:132
 msgid "Offline"
 msgstr "下线"
 
-#: src/Includes/SwiperListTable.php:56 src/Includes/SwiperListTable.php:147
-#: src/Components/Swiper/views/page-edit.php:129
+#: src/Includes/SwiperListTable.php:58 src/Includes/SwiperListTable.php:149
+#: src/Components/Swiper/views/page-edit.php:131
 msgid "Online"
 msgstr "上线"
 
@@ -1786,10 +1820,10 @@ msgstr "在线课程"
 msgid "Only one option"
 msgstr "仅一个选项"
 
-#: src/Includes/SwiperListTable.php:27
-#: src/Components/Swiper/views/page-edit.php:74
-#: src/Components/Swiper/views/page-edit.php:77
+#: src/Includes/SwiperListTable.php:29
+#: src/Components/Swiper/views/page-edit.php:76
 #: src/Components/Swiper/views/page-edit.php:79
+#: src/Components/Swiper/views/page-edit.php:81
 msgid "Open Method"
 msgstr "打开方式"
 
@@ -1857,8 +1891,8 @@ msgstr "父级分类"
 msgid "Parent Category:"
 msgstr "父级分类："
 
-#: src/Components/WechatOA/views/view-menu-edit.php:46
-#: src/Components/WechatOA/views/view-menu-edit.php:49
+#: src/Components/WechatOA/views/view-menu-edit.php:65
+#: src/Components/WechatOA/views/view-menu-edit.php:68
 msgid "Parent Menu"
 msgstr "父级菜单"
 
@@ -1889,6 +1923,11 @@ msgstr "支付系统"
 #: src/Components/Developer/Developer.php:336
 msgid "Permalinks"
 msgstr "固定链接"
+
+#: src/Services/WechatOAService.php:1547
+#: src/Components/WechatOA/views/view-menu-edit.php:229
+msgid "Photo or Album"
+msgstr "拍照或相册"
 
 #: src/Services/MailerService.php:65
 msgid "PHPMailer library not found."
@@ -1944,14 +1983,14 @@ msgid ""
 "."
 msgstr "请填写邮件服务器的SMTP端口，如<code>465</code>。"
 
-#: src/Utilities/Container.php:174 src/Utilities/Container.php:227
-#: src/Utilities/Container.php:284 src/Utilities/Container.php:346
-#: src/Utilities/Container.php:399
+#: src/Utilities/Container.php:176 src/Utilities/Container.php:229
+#: src/Utilities/Container.php:286 src/Utilities/Container.php:348
+#: src/Utilities/Container.php:401
 #| msgid "Please input the order"
 msgid "Please Input the Field"
 msgstr "请输入选项"
 
-#: src/Utilities/Container.php:86 src/Components/Developer/Developer.php:1391
+#: src/Utilities/Container.php:88 src/Components/Developer/Developer.php:1391
 msgid "Please Select"
 msgstr "请选择"
 
@@ -2225,11 +2264,11 @@ msgstr "移除管理后台中的工具菜单页面。"
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
 
-#: src/Services/WechatOAService.php:718
+#: src/Services/WechatOAService.php:717
 msgid "Reply content cannot be empty"
 msgstr "回复内容不能为空"
 
-#: src/Services/WechatOAService.php:922
+#: src/Services/WechatOAService.php:921
 msgid "Reply not found"
 msgstr "未发现回复数据"
 
@@ -2304,16 +2343,26 @@ msgstr "默哀模式"
 msgid "Safe Session"
 msgstr "安全会话"
 
-#: src/Services/WechatOAService.php:785
+#: src/Services/WechatOAService.php:784
 msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
+
+#: src/Services/WechatOAService.php:1545
+#: src/Components/WechatOA/views/view-menu-edit.php:203
+msgid "Scan & Alert"
+msgstr "扫码&提醒"
+
+#: src/Services/WechatOAService.php:1544
+#: src/Components/WechatOA/views/view-menu-edit.php:190
+msgid "Scan Code"
+msgstr "扫码"
 
 #: src/Middleware/SchemaMiddleware.php:56
 msgid "Schema validation failed"
 msgstr "Schema验证失败"
 
 #: src/Components/Activity/Activity.php:19
-#: src/Components/WechatOA/WechatOA.php:109
+#: src/Components/WechatOA/WechatOA.php:111
 msgid "Search"
 msgstr "搜索"
 
@@ -2493,7 +2542,7 @@ msgstr "站点地图"
 msgid "SKU System"
 msgstr "库存管理系统"
 
-#: src/Components/Swiper/Swiper.php:91
+#: src/Components/Swiper/Swiper.php:86
 msgid "Slug: Only supports English Letter"
 msgstr "别名：仅支持英文字母"
 
@@ -2513,12 +2562,12 @@ msgstr "社交账号"
 msgid "Social Login"
 msgstr "社交登录"
 
-#: src/Includes/SwiperListTable.php:29
+#: src/Includes/SwiperListTable.php:31
 #: src/Includes/WechatOAMenuListTable.php:20
-#: src/Components/Swiper/views/page-edit.php:111
-#: src/Components/Swiper/views/page-edit.php:114
-#: src/Components/WechatOA/views/view-menu-edit.php:69
-#: src/Components/WechatOA/views/view-menu-edit.php:72
+#: src/Components/Swiper/views/page-edit.php:113
+#: src/Components/Swiper/views/page-edit.php:116
+#: src/Components/WechatOA/views/view-menu-edit.php:88
+#: src/Components/WechatOA/views/view-menu-edit.php:91
 msgid "Sort"
 msgstr "排序"
 
@@ -2536,10 +2585,10 @@ msgid ""
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr "从WP5.5版本开始，多层级多页面的XML站点地图功能已经作为核心功能默认载入。"
 
-#: src/Includes/SwiperListTable.php:30
-#: src/Components/Swiper/views/page-edit.php:123
-#: src/Components/Swiper/views/page-edit.php:126
+#: src/Includes/SwiperListTable.php:32
+#: src/Components/Swiper/views/page-edit.php:125
 #: src/Components/Swiper/views/page-edit.php:128
+#: src/Components/Swiper/views/page-edit.php:130
 msgid "Status"
 msgstr "状态"
 
@@ -2547,8 +2596,8 @@ msgstr "状态"
 msgid "Store Management System"
 msgstr "门店管理系统"
 
-#: src/Components/WechatOA/WechatOA.php:119
-#: src/Components/WechatOA/WechatOA.php:125
+#: src/Components/WechatOA/WechatOA.php:121
+#: src/Components/WechatOA/WechatOA.php:127
 msgid "Store Messages"
 msgstr "消息存储"
 
@@ -2556,13 +2605,13 @@ msgstr "消息存储"
 msgid "Subscription Account"
 msgstr "订阅号"
 
-#: src/Components/WechatOA/WechatOA.php:250
-#: src/Components/WechatOA/WechatOA.php:348
+#: src/Components/WechatOA/WechatOA.php:252
+#: src/Components/WechatOA/WechatOA.php:352
 msgid "Success"
 msgstr "成功"
 
-#: src/Components/Swiper/Swiper.php:34 src/Components/Swiper/Swiper.php:35
-#: src/Components/Swiper/Swiper.php:45
+#: src/Components/Swiper/Swiper.php:36 src/Components/Swiper/Swiper.php:37
+#: src/Components/Swiper/Swiper.php:47
 msgid "Swiper"
 msgstr "轮播图"
 
@@ -2579,11 +2628,16 @@ msgid ""
 "WeChat official account to log in."
 msgstr "当用户首次关注微信公众号并访问时，系统自动发送的消息。"
 
+#: src/Services/WechatOAService.php:1546
+#: src/Components/WechatOA/views/view-menu-edit.php:216
+msgid "System Camera"
+msgstr "系统相机"
+
 #: src/Components/Mail/Mail.php:103
 msgid "System Email"
 msgstr "系统邮件"
 
-#: src/Utilities/Container.php:43
+#: src/Utilities/Container.php:45
 #, php-format
 #| msgid "Template file does not exist: "
 msgid "Template file does not exist: %s"
@@ -2606,7 +2660,7 @@ msgstr "测试邮件发送成功！"
 msgid "Textarea"
 msgstr "文本域"
 
-#: src/Components/WechatOA/WechatOA.php:21
+#: src/Components/WechatOA/WechatOA.php:23
 msgid "Thanks for your attention."
 msgstr "感谢您的关注。"
 
@@ -2620,31 +2674,31 @@ msgid ""
 "sure you have a backup before performing the action."
 msgstr "下面的系列操作将强制刷新 重写规则、配置选项、缓存数据，操作前请先备份对应数据。"
 
-#: src/Components/WechatOA/WechatOA.php:186
+#: src/Components/WechatOA/WechatOA.php:188
 msgid "The default cover image for search results."
 msgstr "搜索结果的默认封面图。"
 
-#: src/Components/Swiper/views/page-edit.php:149
-#: src/Components/Swiper/views/page-edit.php:155
-#: src/Components/Swiper/views/page-edit.php:161
-#: src/Components/Swiper/views/page-edit.php:169
+#: src/Components/Swiper/views/page-edit.php:154
+#: src/Components/Swiper/views/page-edit.php:160
+#: src/Components/Swiper/views/page-edit.php:166
+#: src/Components/Swiper/views/page-edit.php:174
 #| msgid "The field cannot be empty."
 msgid "The field cannot be empty"
 msgstr "该选项不能为空"
 
-#: src/Components/WechatOA/WechatOA.php:169
+#: src/Components/WechatOA/WechatOA.php:171
 msgid "The maximum length of the search keyword. Default: 16."
 msgstr "搜索关键词的最大长度。默认 16。"
 
-#: src/Components/WechatOA/WechatOA.php:202
+#: src/Components/WechatOA/WechatOA.php:204
 msgid "The message sent to users when they follow the WeChat Official Account."
 msgstr "用户在关注微信公众号时所接收到的系统消息。"
 
-#: src/Components/WechatOA/WechatOA.php:218
+#: src/Components/WechatOA/WechatOA.php:220
 msgid "The message sent to users when they visit the WeChat Official Account."
 msgstr "用户在访问微信公众号时所接收到的系统消息。"
 
-#: src/Components/WechatOA/WechatOA.php:142
+#: src/Components/WechatOA/WechatOA.php:144
 msgid "The number of search results returned. Default: 5."
 msgstr "搜索结果返回条数。默认 5。"
 
@@ -2718,10 +2772,11 @@ msgstr "当前选项卡是关于Caddy服务器安全配置建议。"
 msgid "This tab is for Nginx security configuration advice."
 msgstr "当前选项卡是关于Nginx服务器安全配置建议。"
 
-#: templates/developer/w.php:17 src/Utilities/Container.php:623
+#: templates/developer/w.php:17 src/Utilities/Container.php:625
 #: src/Components/Developer/Developer.php:587
 #: src/Components/Developer/Developer.php:601
 #: src/Components/Setting/Setting.php:610
+#: src/Components/WechatOA/views/view-menu-edit.php:159
 msgid "Tip"
 msgstr "提示"
 
@@ -2735,7 +2790,7 @@ msgstr "提示：您可以根据运营需求自定义交互数据。"
 msgid "Tips for First Time Users"
 msgstr "新用户提示"
 
-#: src/Includes/SwiperListTable.php:24 src/Components/Setting/Setting.php:505
+#: src/Includes/SwiperListTable.php:26 src/Components/Setting/Setting.php:505
 msgid "Title"
 msgstr "标题"
 
@@ -2759,8 +2814,8 @@ msgid "Translations API"
 msgstr "翻译 API"
 
 #: src/Includes/WechatOAMenuListTable.php:21
-#: src/Components/WechatOA/views/view-menu-edit.php:81
-#: src/Components/WechatOA/views/view-menu-edit.php:84
+#: src/Components/WechatOA/views/view-menu-edit.php:100
+#: src/Components/WechatOA/views/view-menu-edit.php:103
 msgid "Type"
 msgstr "类型"
 
@@ -2786,13 +2841,12 @@ msgstr "更新线上菜单"
 msgid "Update Product Category"
 msgstr "更新商品品类"
 
-#: src/Includes/SwiperListTable.php:31
+#: src/Includes/SwiperListTable.php:33
 msgid "Update Time"
 msgstr "更新时间"
 
-#: src/Includes/SwiperListTable.php:195 src/Utilities/Request.php:64
-#: src/Controllers/AdminController.php:53 src/Components/Swiper/Swiper.php:100
-#: src/Components/Swiper/Swiper.php:173
+#: src/Includes/SwiperListTable.php:178 src/Utilities/Request.php:101
+#: src/Controllers/AdminController.php:53
 #: src/Components/Developer/views/tab-form.php:9
 #: src/Components/Developer/views/tab-setting.php:8
 #: src/Components/Developer/views/tab-wechatOA.php:6
@@ -2816,7 +2870,7 @@ msgstr "更新时间"
 msgid "Updated"
 msgstr "更新成功"
 
-#: src/Utilities/Container.php:230 src/Utilities/Container.php:287
+#: src/Utilities/Container.php:232 src/Utilities/Container.php:289
 msgid "Upload"
 msgstr "上传"
 
@@ -2861,12 +2915,90 @@ msgstr "用户中心页侧边栏"
 msgid "User Registration Notification Template"
 msgstr "用户注册通知模板"
 
+#. 用户点击后会推送一个事件到开发者服务器
+#: src/Components/WechatOA/views/view-menu-edit.php:184
+msgid "Users click and an event will be pushed to the developer server."
+msgstr "用户点击后会推送一个事件到开发者服务器。"
+
+#: src/Components/WechatOA/views/view-menu-edit.php:171
+msgid "Users click and jump directly to the specified web link."
+msgstr "用户点击后直接跳转到指定的网页链接。"
+
+#. 用户点击后跳转到指定的小程序
+#: src/Components/WechatOA/views/view-menu-edit.php:275
+msgid "Users click and jump to the specified mini program."
+msgstr "用户点击后跳转到指定的小程序。"
+
+#. 用户点击后返回指定id的素材。
+#: src/Components/WechatOA/views/view-menu-edit.php:288
+#| msgid "Users click and return the media file of the specified id."
+msgid "Users click and return the media content of the specified id."
+msgstr "用户点击后返回指定id的素材。"
+
+#. 用户点击后会调起扫一扫功能，扫描完成后除了推送结果外，还会弹出“消息接收中”提示框。
+#: src/Components/WechatOA/views/view-menu-edit.php:210
+msgid ""
+"Users click and scan code, the scan result will be pushed to the developer "
+"server, then popup a notify box with message \"Message receiving\"."
+msgstr "用户点击后会调起扫一扫功能，扫描完成后除了推送结果外，还会弹出“消息接收中”提示框。"
+
+#. 用户点击后会调起扫一扫功能，扫描完成后将扫码结果推送给开发者服务器。
+#: src/Components/WechatOA/views/view-menu-edit.php:197
+msgid ""
+"Users click and scan code, the scan result will be pushed to the developer "
+"server."
+msgstr "用户点击后会调起扫一扫功能，扫描完成后将扫码结果推送给开发者服务器。"
+
+#. 用户点击后调起地理位置选择器，选择完成后将位置信息发送给开发者服务器
+#: src/Components/WechatOA/views/view-menu-edit.php:262
+msgid ""
+"Users click and select a location from the Wechat map, the location "
+"information will be sent to the developer server."
+msgstr "用户点击后调起地理位置选择器，选择完成后将位置信息发送给开发者服务器。"
+
+#. 用户点击后直接进入微信相册选择图片，选择完成后将图片发送给开发者服务器
+#: src/Components/WechatOA/views/view-menu-edit.php:249
+msgid ""
+"Users click and select a photo from the Wechat album, the photo will be sent "
+"to the developer server."
+msgstr "用户点击后直接进入微信相册选择图片，选择完成后将图片发送给开发者服务器。"
+
+#. 用户点击后调起系统相机拍照，拍照完成后将图片发送给开发者服务器
+#: src/Components/WechatOA/views/view-menu-edit.php:223
+msgid ""
+"Users click and take a photo with the system camera, the photo will be sent "
+"to the developer server."
+msgstr "用户点击后调起系统相机拍照，拍照完成后将图片发送给开发者服务器。"
+
+#. 用户点击后可以选择拍照或从相册选择图片，选择完成后将图片发送给开发者服务器
+#: src/Components/WechatOA/views/view-menu-edit.php:236
+msgid ""
+"Users click and take a photo, or select a photo from the album, the photo "
+"will be sent to the developer server."
+msgstr "用户点击后可以选择拍照或从相册选择图片，选择完成后将图片发送给开发者服务器。"
+
+#. 用户点击后跳转到指定ID的图文消息。
+#: src/Components/WechatOA/views/view-menu-edit.php:314
+msgid "Users click and view the article of the specified ID."
+msgstr "用户点击后跳转到指定ID的图文消息。"
+
+#. 用户点击后跳转到指定URL且特定权限控制的图文消息。
+#: src/Components/WechatOA/views/view-menu-edit.php:327
+msgid ""
+"Users click and view the article of the specified URL with limited access."
+msgstr "用户点击后跳转到指定URL且特定权限控制的图文消息。"
+
+#. 用户点击后跳转到指定URL的图文消息。
+#: src/Components/WechatOA/views/view-menu-edit.php:301
+msgid "Users click and view the article of the specified URL."
+msgstr "用户点击后跳转到指定URL的图文消息。"
+
 #: src/Components/Security/Security.php:157
 #: src/Components/Security/Security.php:163
 msgid "Users SiteMap"
 msgstr "用户站点地图"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:99
+#: src/Components/WechatOA/views/view-menu-edit.php:125
 #| msgid "Male"
 msgid "Value"
 msgstr "值"
@@ -2914,6 +3046,11 @@ msgstr "查看商品"
 msgid "View Statistics"
 msgstr "浏览量统计"
 
+#: src/Services/WechatOAService.php:1542
+#: src/Components/WechatOA/views/view-menu-edit.php:165
+msgid "View URL"
+msgstr "浏览 URL"
+
 #: src/Components/Post/Post.php:316 src/Components/Post/Post.php:329
 msgid "Views"
 msgstr "浏览量"
@@ -2926,8 +3063,8 @@ msgstr "仅登录可见"
 msgid "Visible only when not logged in"
 msgstr "仅未登录可见"
 
-#: src/Components/WechatOA/WechatOA.php:211
-#: src/Components/WechatOA/WechatOA.php:217
+#: src/Components/WechatOA/WechatOA.php:213
+#: src/Components/WechatOA/WechatOA.php:219
 msgid "Visit Message"
 msgstr "访问消息"
 
@@ -2936,6 +3073,11 @@ msgstr "访问消息"
 #: src/Components/Wallet/Wallet.php:69
 msgid "Wallet"
 msgstr "钱包"
+
+#: src/Services/WechatOAService.php:1548
+#: src/Components/WechatOA/views/view-menu-edit.php:242
+msgid "WeChat Album"
+msgstr "微信相册"
 
 #: src/Components/Login/Login.php:54
 msgid "Wechat Follow Login"
@@ -2947,7 +3089,7 @@ msgid "Wechat ID"
 msgstr "微信号"
 
 #: src/Components/Developer/Developer.php:1364
-#: src/Components/WechatOA/WechatOA.php:45
+#: src/Components/WechatOA/WechatOA.php:47
 #| msgid "Wechat OP"
 msgid "Wechat OA"
 msgstr "微信公众号"
@@ -2958,8 +3100,8 @@ msgstr "微信公众号"
 msgid "Wechat OA Media Library"
 msgstr "微信公众号素材库"
 
-#: src/Components/WechatOA/WechatOA.php:88
-#: src/Components/WechatOA/WechatOA.php:94
+#: src/Components/WechatOA/WechatOA.php:90
+#: src/Components/WechatOA/WechatOA.php:96
 msgid "Wechat OA Service"
 msgstr "微信公众号服务"
 
@@ -2967,15 +3109,20 @@ msgstr "微信公众号服务"
 msgid "Wechat OA Support"
 msgstr "微信公众号支持"
 
-#: src/Components/WechatOA/WechatOA.php:44
-#: src/Components/WechatOA/WechatOA.php:65
+#: src/Components/WechatOA/WechatOA.php:46
+#: src/Components/WechatOA/WechatOA.php:67
 #| msgid "WeChat Official Account"
 msgid "Wechat Official Account"
 msgstr "微信公众号"
 
-#: src/Components/WechatOA/WechatOA.php:234
+#: src/Components/WechatOA/WechatOA.php:236
 msgid "Wechat Official Account service is not enabled"
 msgstr "微信公众号服务未启用"
+
+#: src/Components/WechatOA/views/view-menu-edit.php:162
+#| msgid "Wechat Official Account supports 12 types of menu:"
+msgid "Wechat Official Account supports 13 types of menu:"
+msgstr "微信公众号支持 13 种菜单类型："
 
 #: src/Components/Share/Share.php:114 src/Components/Share/Share.php:120
 #: src/Components/Share/Share.php:204 src/Components/Share/Share.php:213
@@ -2987,7 +3134,7 @@ msgstr "微信标题"
 msgid "Welcome"
 msgstr "欢迎"
 
-#: src/Components/WechatOA/WechatOA.php:22
+#: src/Components/WechatOA/WechatOA.php:24
 msgid "Welcome back, my friend."
 msgstr "欢迎回来，我的朋友。"
 
@@ -3000,7 +3147,7 @@ msgstr "欢迎面板"
 msgid "Welcome!"
 msgstr "欢迎！"
 
-#: src/Services/WechatOAService.php:600
+#: src/Services/WechatOAService.php:599
 msgid "Welcome! Thanks for your attention."
 msgstr "欢迎！感谢您的关注。"
 
@@ -3028,6 +3175,13 @@ msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."
 msgstr "同一用户多处登录时，仅保留最近一次登录的有效会话。"
+
+#. 当想跳转小程序时，需要填写小程序的 App ID。
+#: src/Components/WechatOA/views/view-menu-edit.php:145
+msgid ""
+"When you want to jump to a mini program, you need to fill in the App ID of "
+"the mini program."
+msgstr "当想跳转小程序时，需要填写小程序的 App ID。"
 
 #: src/Components/Share/Share.php:90
 msgid ""

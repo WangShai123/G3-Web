@@ -19,15 +19,19 @@ echo '</form>';
 <script>
     jQuery(document).ready(function ($) {
         $('.swiperPreview').on('click', function (e) {
-            $('html').addClass('j-theme-indigo j-radius-sm');
+            $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
             e.preventDefault();
             const src = $(this).attr('src');
             const preview = new JUI.Modal({
                 title: '<?php _e("Preview"); ?>',
                 content: '<div class="flex justify-center align-center w-full h-screen" style="margin: -1rem -0.75rem"><img src="' + src + '" style="height: 100%;"></div>',
+                confirmText: '<?php _e("Confirm", "G3"); ?>',
                 fullscreen: true,
                 escClose: true,
-                showCancel: false
+                showCancel: false,
+                onHidden: function () {
+                    $('html').removeClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
+                }
             });
             preview.show();
         });

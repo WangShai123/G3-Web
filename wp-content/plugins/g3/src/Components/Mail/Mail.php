@@ -38,26 +38,12 @@ class Mail extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         $this->systemEmailHandle();
-        add_action('wp_mail_failed', function ($wp_error) {
-            error_log('Mail failed: ' . print_r($wp_error, true));
-        });
-
-        add_action('wp_mail_succeeded', function ($mail_data) {
-            error_log('Mail succeeded: ' . print_r($mail_data, true));
-        });
     }
     #[\Override]
     protected function adminMenu(): void
     {
-        $this->submenu();
-    }
-
-    private function submenu()
-    {
         add_submenu_page(
-            // 'options-general.php',
             'g3-settings',
             __('Email', 'G3'),
             __('Email', 'G3'),
@@ -79,7 +65,8 @@ class Mail extends Components {
         Container::tab('Mail', 'set', $tabs);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             $this->setGroup,
@@ -393,5 +380,16 @@ class Mail extends Components {
 
         add_filter('site_admin_email_change_email', '__return_false');
         add_filter('send_site_admin_email_change_email', '__return_false');
+    }
+
+    #[\Override]
+    protected function debug(): void
+    {
+        add_action('wp_mail_failed', function ($wp_error) {
+            error_log('Mail failed: ' . print_r($wp_error, true));
+        });
+        add_action('wp_mail_succeeded', function ($mail_data) {
+            error_log('Mail succeeded: ' . print_r($mail_data, true));
+        });
     }
 }

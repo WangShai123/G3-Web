@@ -21,17 +21,12 @@ class Product extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
         $this->saveGallery();
         $this->saveProperties();
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-    }
-    private function submenu(): void
     {
         add_submenu_page(
             'digital-operations',
@@ -52,7 +47,8 @@ class Product extends Components {
         Container::tab('Product', 'general', $args);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'general',

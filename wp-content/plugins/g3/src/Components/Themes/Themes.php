@@ -39,15 +39,10 @@ class Themes extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         $this->themeHandle();
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-    }
-    private function submenu(): void
     {
         add_submenu_page(
             'themes.php',
@@ -59,13 +54,12 @@ class Themes extends Components {
             5
         );
     }
-
     public function render()
     {
         return require_once __DIR__ . "/views/page-multiple-themes.php";
     }
-
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'section_themes',

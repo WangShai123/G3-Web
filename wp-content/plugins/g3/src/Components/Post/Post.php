@@ -39,7 +39,6 @@ class Post extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
 
@@ -53,11 +52,6 @@ class Post extends Components {
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-    }
-
-    private function submenu(): void
     {
         add_submenu_page(
             'g3-settings',
@@ -78,7 +72,8 @@ class Post extends Components {
         Container::tab('Post', 'general', $args);
         echo '</div>';
     }
-    public function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         register_setting(
             'reading',
@@ -110,7 +105,6 @@ class Post extends Components {
             ],
             [
                 'id'       => 'viewInterval',
-                // 浏览计数间隔
                 'title'    => __('View Interval', 'G3'),
                 'callback' => function () {
                     echo Container::select(

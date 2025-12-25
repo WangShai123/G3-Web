@@ -2,6 +2,7 @@
 namespace JEALER\G3\Includes;
 
 use Psr\SimpleCache\CacheInterface;
+use DateInterval;
 
 class EasyWechatCache implements CacheInterface {
     private $prefix = 'easywechat:';
@@ -13,14 +14,14 @@ class EasyWechatCache implements CacheInterface {
         return false !== $value ? $value : $default;
     }
 
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
-        if ($ttl instanceof \DateInterval) {
+        if ($ttl instanceof DateInterval) {
             $ttl = $ttl->s;
         }
 
-        // unit: seconds
-        return wp_cache_set($this->prefix . $key, $value, $this->group, $ttl ?: 7200);
+        // unit: seconds, 12 hour
+        return wp_cache_set($this->prefix . $key, $value, $this->group, $ttl ?: 43200);
     }
 
     public function delete(string $key): bool
@@ -44,7 +45,7 @@ class EasyWechatCache implements CacheInterface {
         return $values;
     }
 
-    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
     {
         $results = [];
         foreach ($values as $key => $value) {

@@ -35,6 +35,7 @@ echo Container::tip(
     "~*python-httpx"      1;
     "~*python-requests"   1;
     "~*Go-http-client"    1;
+    "~*libwww-perl"       1;
 }
 server {
     if ($block_ua) {
@@ -47,7 +48,7 @@ server {
 <div class="j-tip is-default mt-2">
     <div class="tip-content">
         <div><?php _e('Block access to sensitive files or directories.', 'G3'); ?></div>
-        <pre><code>location ~ ^/(\.user.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README.md)
+        <pre><code>location ~ ^/(\.user.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README.md|package.json|package-lock.json)
 {
     return 404;
 }</code></pre>

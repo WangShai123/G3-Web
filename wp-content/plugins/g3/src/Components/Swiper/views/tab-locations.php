@@ -15,7 +15,7 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
-        $('html').addClass('j-theme-indigo j-radius-sm');
+        $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
         $('#addNew').on('click', function (e) {
             e.preventDefault();
             const modal = new JUI.Modal({
@@ -38,33 +38,22 @@ echo '</form>';
                 cancelText: '<?php _e('Cancel'); ?>',
                 escClose: true,
                 onSubmit: function (data) {
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'edit_location',
-                            key: data.key,
-                            name: data.name
-                        },
-                        beforeSend: function () {
-                            modal.showLoading();
-                        },
-                        success: function (res) {
-                            setTimeout(function () {
-                                modal.hideLoading();
-                                if (res.success) {
-                                    modal.hide();
-                                    JUI.Toast.success(res.data.message, 1000)
-                                    setTimeout(function () {
-                                        window.location.reload();
-                                    }, 1000)
-                                } else {
-                                    JUI.Toast.error(res.data.message, 2000)
-                                }
-                            }, 500)
-                        },
-                        error: function (xhr, status, error) {
+                    $.post(ajaxurl, {
+                        action: 'edit_location',
+                        key: data.key,
+                        name: data.name
+                    }, function (res) {
+                        modal.showLoading();
+                        if (res.success) {
                             modal.hideLoading();
+                            modal.hide();
+                            JUI.Toast.success(res.data.message, 1000)
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+                        } else {
+                            modal.hideLoading();
+                            JUI.Toast.error(res.data.message, 2000)
                         }
                     })
                 }
@@ -99,36 +88,25 @@ echo '</form>';
                     const newKey = (data.key || '').trim();
                     const newName = (data.name || '').trim();
                     if (String(key) === newKey && String(name) === newName) {
-                        JUI.Toast.warning('<?php _e('No changes were made'); ?>', 1500);
+                        JUI.Toast.warning('<?php _e('No data changed', 'G3'); ?>', 1500);
                         return;
                     }
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'edit_location',
-                            key: newKey,
-                            name: newName
-                        },
-                        beforeSend: function () {
-                            modal.showLoading();
-                        },
-                        success: function (res) {
-                            setTimeout(function () {
-                                modal.hideLoading();
-                                if (res.success) {
-                                    modal.hide();
-                                    JUI.Toast.success(res.data.message, 1000)
-                                    setTimeout(function () {
-                                        window.location.reload();
-                                    }, 1000)
-                                } else {
-                                    JUI.Toast.error(res.data.message, 2000)
-                                }
-                            }, 500)
-                        },
-                        error: function (xhr, status, error) {
+                    $.post(ajaxurl, {
+                        action: 'edit_location',
+                        key: newKey,
+                        name: newName
+                    }, function (res) {
+                        modal.showLoading();
+                        if (res.success) {
                             modal.hideLoading();
+                            modal.hide();
+                            JUI.Toast.success(res.data.message, 1000)
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+                        } else {
+                            modal.hideLoading();
+                            JUI.Toast.error(res.data.message, 2000)
                         }
                     })
                 }

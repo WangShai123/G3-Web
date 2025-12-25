@@ -160,4 +160,53 @@ class SwiperService {
             return false;
         }
     }
+
+    public static function updateStatus(array $ids, int $status): bool|int
+    {
+        if (!is_array($ids) || !count($ids)) return false;
+
+        global $wpdb;
+        $table  = $wpdb->prefix . self::TABLE;
+        $result = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE $table SET `status` = %d WHERE `id` IN (" . implode(',', array_map('intval', $ids)) . ")",
+                $status
+            )
+        );
+        foreach ($ids as $id) {
+            wp_cache_delete($id, self::CACHE_GROUP);
+        }
+        return $result;
+    }
+
+    public static function deleteSwipers(int|array $ids): bool|int
+    {
+        if (!$ids) return false;
+
+        global $wpdb;
+        $table  = $wpdb->prefix . self::TABLE;
+        $result = false;
+
+        if (is_array($ids)) {
+            $ids     = array_map('intval', $ids);
+            $ids_str = implode(',', $ids);
+            $result  = $wpdb->query("DELETE FROM {$table} WHERE id IN ({$ids_str})");
+        } else {
+            $result = $wpdb->delete($table, ['id' => $ids]);
+        }
+
+        if ($result) {
+            if (is_array($ids)) {
+                foreach ($ids as $id) {
+                    wp_cache_delete($id, self::CACHE_GROUP);
+                }
+            } else {
+                wp_cache_delete($ids, self::CACHE_GROUP);
+            }
+            self::clearQueryCache();
+            wp_cache_delete(self::CACHE_KEY, self::CACHE_GROUP);
+        }
+
+        return $result;
+    }
 }

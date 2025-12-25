@@ -39,6 +39,7 @@ respond @blockedPHP "Forbidden" 403</code></pre>
     header User-Agent *python-httpx*
     header User-Agent *python-requests*
     header User-Agent *Go-http-client*
+    header User-Agent *libwww-perl*
 }
 respond @blockUA 403</code></pre>
     </div>
@@ -47,7 +48,7 @@ respond @blockUA 403</code></pre>
 <div class="j-tip is-default mt-2">
     <div class="tip-content">
         <div><?php _e('Block access to sensitive files or directories.', 'G3'); ?></div>
-        <pre><code>@sensitive path_regexp sensitive ^/(\.user\.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README\.md)$
+        <pre><code>@sensitive path_regexp sensitive ^/(\.user\.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README\.md|package\.json|package-lock\.json)$
 respond @sensitive 404</code></pre>
     </div>
 </div>

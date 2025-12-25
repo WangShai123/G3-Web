@@ -374,6 +374,7 @@ class Components {
     }
     public function adminInitActions(): void
     {
+        $this->settings();
         $this->admin();
     }
     public function adminMenuActions(): void
@@ -446,6 +447,9 @@ class Components {
     {
     }
     protected function taxonomy(): void
+    {
+    }
+    protected function settings(): void
     {
     }
 }

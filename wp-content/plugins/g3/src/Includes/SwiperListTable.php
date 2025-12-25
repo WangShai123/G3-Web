@@ -1,7 +1,9 @@
 <?php
 namespace JEALER\G3\Includes;
+
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
+use JEALER\G3\Utilities\Common;
 
 class SwiperListTable extends WP_List_Table {
     private array $columns;
@@ -60,7 +62,7 @@ class SwiperListTable extends WP_List_Table {
                 return $item->{$column_name} == 0 ? __('Current Tab', 'G3') : __('New Tab', 'G3');
             case 'link':
                 $link = $item->{$column_name};
-                $text = mb_substr($link, 0, 50) > 50 ? mb_substr($link, 0, 50) . '...' : mb_substr($link, 0, 50);
+                $text = Common::truncateHtml($item->{$column_name}, 50);
                 return $link == '' ? '-' : '<a href="' . $link . '" target="_blank">' . $text . '</a>';
             case 'location':
                 $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
@@ -166,81 +168,31 @@ class SwiperListTable extends WP_List_Table {
 
     public function process_bulk_actions()
     {
-        $doaction = $this->current_action();
+        $action = $this->current_action();
+        $ids    = isset($_REQUEST['swiper']) ? (array) $_REQUEST['swiper'] : [];
 
-        $ids = isset($_REQUEST['swiper']) ? (array) $_REQUEST['swiper'] : [];
-
-        if (!$doaction || empty($ids)) {
+        if (!$action || empty($ids)) {
             return;
         }
 
-        switch ($doaction) {
+        $msg = __('Updated', 'G3');
+        switch ($action) {
             case 'delete':
-                $deleted = 0;
-                foreach ($ids as $id) {
-                    if ($this->deleteRow($id)) {
-                        $deleted++;
-                    }
-                }
+                $msg = __('Deleted', 'G3');
+                SwiperService::deleteSwipers($ids);
                 break;
 
             case 'offline':
-                $this->updateStatus($ids, 0);
+                SwiperService::updateStatus($ids, 0);
                 break;
 
             case 'online':
-                $this->updateStatus($ids, 1);
+                SwiperService::updateStatus($ids, 1);
                 break;
         }
-        $msg = __('Updated', 'G3');
-        wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},1000)');
+        wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
     }
 
-    /**
-     * delete row
-     * 
-     * 删除数据
-     *
-     * @param int $id
-     * @return bool|int
-     */
-    private function deleteRow(int $id): bool|int
-    {
-        if (!$id) {
-            return false;
-        }
-
-        global $wpdb;
-        $table  = $wpdb->prefix . SwiperService::TABLE;
-        $result = $wpdb->delete($table, ['id' => $id]);
-
-        wp_cache_delete($id, SwiperService::CACHE_GROUP);
-
-        // flush swipers query cache
-        SwiperService::clearQueryCache();
-
-        return $result;
-    }
-
-    private function updateStatus(array $ids, int $status): bool|int
-    {
-        if (!\is_array($ids) || !\count($ids)) {
-            return false;
-        }
-
-        global $wpdb;
-        $table  = $wpdb->prefix . SwiperService::TABLE;
-        $result = $wpdb->query(
-            $wpdb->prepare(
-                "UPDATE $table SET `status` = %d WHERE `id` IN (" . implode(',', array_map('intval', $ids)) . ")",
-                $status
-            )
-        );
-        foreach ($ids as $id) {
-            wp_cache_delete($id, SwiperService::CACHE_GROUP);
-        }
-        return $result;
-    }
     public function no_items()
     {
         _e('No data found.', 'G3');

@@ -5,12 +5,14 @@ use WP_REST_Request;
 final class Request {
 
     /**
-     * Get REST API URL
+     * Get standard WordPress REST API URL
      * 
-     * 获取REST API URL
+     * 获取标准的 WordPress REST API URL
      *
      * @param string $router
      * @return string
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function restApi(string $router = ''): string
     {
@@ -18,12 +20,14 @@ final class Request {
     }
 
     /**
-     * Get AJAX API URL
+     * Get standard WordPress AJAX API URL
      * 
-     * 获取AJAX API URL
+     * 获取标准的 WordPress AJAX API URL
      *
      * @param string $endpoint
      * @return string
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function ajaxApi(string $endpoint = ''): string
     {
@@ -37,6 +41,8 @@ final class Request {
      *
      * @param WP_REST_Request $request
      * @return int
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function count(WP_REST_Request $request): int
     {
@@ -46,34 +52,4 @@ final class Request {
         return $count === false ? 0 : $count;
     }
 
-    public static function ajaxSuccess(string $message): void
-    {
-        wp_send_json_success([
-            'message' => $message
-        ]);
-    }
-    public static function ajaxError(string $message): void
-    {
-        wp_send_json_error([
-            'message' => $message
-        ]);
-    }
-    public static function ajaxUpdated(): void
-    {
-        wp_send_json_success([
-            'message' => __('Updated', 'G3')
-        ]);
-    }
-    public static function ajaxForbidden(): void
-    {
-        wp_send_json_error([
-            'message' => __('Forbidden', 'G3')
-        ]);
-    }
-    public static function ajaxFailed(): void
-    {
-        wp_send_json_error([
-            'message' => __('Failed', 'G3')
-        ]);
-    }
 }

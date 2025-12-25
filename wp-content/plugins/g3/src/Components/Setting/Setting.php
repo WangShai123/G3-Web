@@ -56,7 +56,6 @@ class Setting extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
             // SEO: add field in edit form for post
@@ -75,16 +74,6 @@ class Setting extends Components {
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->menu();
-    }
-    #[\Override]
-    protected function system(): void
-    {
-        add_action('wp_head', [$this, 'redirectLinkHandle']);
-        $this->rssHandle();
-    }
-    private function menu(): void
     {
         add_menu_page(
             __('Operation Settings', 'G3'),
@@ -105,6 +94,12 @@ class Setting extends Components {
             1
         );
     }
+    #[\Override]
+    protected function system(): void
+    {
+        add_action('wp_head', [$this, 'redirectLinkHandle']);
+        $this->rssHandle();
+    }
     public function render(): void
     {
         $tabs = [
@@ -117,7 +112,8 @@ class Setting extends Components {
         Container::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'general',

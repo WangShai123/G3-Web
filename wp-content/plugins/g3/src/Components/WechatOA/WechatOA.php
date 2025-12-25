@@ -1,10 +1,12 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Utilities\Request;
+use JEALER\G3\Utilities\Response;
+
 class WechatOA extends Components {
     public array $option = [];
 
@@ -12,32 +14,25 @@ class WechatOA extends Components {
     protected function options(): void
     {
         $option       = Option::get(WechatOAService::OPTION_KEY, [
-            'service'       => '0',
-            'search'        => '0',
-            'storeMessages' => '0',
-            'count'         => '5',
-            'length'        => '16',
-            'cover'         => '',
-            'followMessage' => __('Thanks for your attention.', 'G3'),
-            'visitMessage'  => __('Welcome back, my friend.', 'G3'),
+            'service'        => '0',
+            'search'         => '0',
+            'storeMessages'  => '0',
+            'count'          => '5',
+            'length'         => '16',
+            'cover'          => '',
+            'followMessage'  => __('Welcome! Thanks for your attention.', 'G3'),
+            'visitMessage'   => __('Welcome back, my friend.', 'G3'),
+            'defaultMessage' => __('Message received! Thanks for your advice.', 'G3')
         ]);
         $this->option = Option::cache(WechatOAService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         $this->wpAjax();
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-        add_action('admin_head', function () {
-            remove_submenu_page('g3-settings', 'wechat-oa-menu-edit');
-        });
-    }
-    private function submenu(): void
     {
         add_submenu_page(
             'g3-settings',
@@ -58,6 +53,9 @@ class WechatOA extends Components {
                 require_once __DIR__ . '/views/view-menu-edit.php';
             }
         );
+        add_action('admin_head', function () {
+            remove_submenu_page('g3-settings', 'wechat-oa-menu-edit');
+        });
     }
     public function render(): void
     {
@@ -73,7 +71,8 @@ class WechatOA extends Components {
         Container::tab('WechatOA', 'general', $tabs);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'wechatOA',
@@ -207,21 +206,37 @@ class WechatOA extends Components {
                 ]
             ],
             [
-                'id'       => 'visitMessage',
-                'title'    => __('Visit Message', 'G3'),
+                'id'       => 'defaultMessage',
+                'title'    => __('Default Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
                         WechatOAService::OPTION_KEY,
                         $this->option,
-                        'visitMessage',
-                        __('Visit Message', 'G3'),
-                        __('The message sent to users when they visit the WeChat Official Account.', 'G3')
+                        'defaultMessage',
+                        __('Default Message', 'G3'),
+                        __('The default message replied to users when the search is disabled and no message is found.', 'G3')
                     );
                 },
                 'args'     => [
-                    'label_for' => 'visitMessage',
+                    'label_for' => 'defaultMessage',
                 ]
-            ]
+            ],
+            // [
+            //     'id'       => 'visitMessage',
+            //     'title'    => __('Visit Message', 'G3'),
+            //     'callback' => function () {
+            //         echo Container::textarea(
+            //             WechatOAService::OPTION_KEY,
+            //             $this->option,
+            //             'visitMessage',
+            //             __('Visit Message', 'G3'),
+            //             __('The message sent to users when they visit the WeChat Official Account.', 'G3')
+            //         );
+            //     },
+            //     'args'     => [
+            //         'label_for' => 'visitMessage',
+            //     ]
+            // ],
         ]);
     }
     private function serviceAvailable(): bool
@@ -231,7 +246,7 @@ class WechatOA extends Components {
     private function checkServiceInAjax(): void
     {
         if (!$this->serviceAvailable()) {
-            Request::ajaxError(__('Wechat Official Account service is not enabled', 'G3'));
+            Response::ajaxError(__('Wechat Official Account service is not enabled', 'G3'));
         }
     }
     private function wpAjax(): void
@@ -241,28 +256,29 @@ class WechatOA extends Components {
             $this->checkServiceInAjax();
             $id = $_POST['id'] ?? 0;
             if (!current_user_can('manage_options') || !$id || !is_admin()) {
-                Request::ajaxError(__('Forbidden', 'G3'));
+                Response::ajaxForbidden();
             }
             $result = WechatOAService::deleteMenu($id);
             if (!$result) {
-                Request::ajaxError(__('Failed', 'G3'));
+                Response::ajaxFailed();
             }
-            Request::ajaxSuccess(__('Success', 'G3'));
+            Response::ajaxDeleted();
         });
 
         // edit menu
         add_action('wp_ajax_g3_edit_wechatOA_menu', function () {
             $this->checkServiceInAjax();
 
-            $id     = $_POST['id'] ?? 0;
+            $id     = (int) $_POST['id'] ?? 0;
+            $parent = (int) $_POST['parent'] ?? 0;
+            $sort   = (int) $_POST['sort'] ?? 1;
+            $type   = (int) $_POST['type'] ?? 1;
             $name   = $_POST['name'] ?? '';
-            $parent = $_POST['parent'] ?? 0;
-            $sort   = $_POST['sort'] ?? 1;
-            $type   = $_POST['type'] ?? 1;
             $value  = $_POST['value'] ?? '';
+            $appId  = $_POST['appId'] ?? '';
 
             if (!current_user_can('manage_options') || empty($name) || empty($value) || !is_admin()) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
 
             $data   = [
@@ -270,23 +286,24 @@ class WechatOA extends Components {
                 'parent' => $parent,
                 'sort'   => $sort,
                 'type'   => $type,
-                'value'  => $value
+                'value'  => $value,
+                'app_id' => $appId,
             ];
             $result = WechatOAService::updateMenu($id, $data);
             if (!$result) {
-                Request::ajaxFailed();
+                Response::ajaxFailed();
             }
-            Request::ajaxUpdated();
+            Response::ajaxUpdated();
         });
 
         // sync menus
         add_action('wp_ajax_g3_create_wechatOA_menus', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             if (!wp_verify_nonce($_POST['nonce'], 'g3_create_wechatOA_menus')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
 
             $service = WechatOAService::run();
@@ -294,25 +311,25 @@ class WechatOA extends Components {
             $result = $service->createMenus();
 
             if ($result) {
-                Request::ajaxUpdated();
+                Response::ajaxUpdated();
             } else {
-                Request::ajaxFailed();
+                Response::ajaxFailed();
             }
         });
         // flush menus
         add_action('wp_ajax_g3_flush_wechatOA_menus', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             if (!wp_verify_nonce($_POST['nonce'], 'g3_flush_wechatOA_menus')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             $result = WechatOAService::run()->deleteMenus();
             if ($result) {
-                Request::ajaxSuccess(__('Data Flush Complete', 'G3'));
+                Response::ajaxSuccess(__('Data Flush Complete', 'G3'));
             } else {
-                Request::ajaxFailed();
+                Response::ajaxFailed();
             }
         });
 
@@ -320,34 +337,34 @@ class WechatOA extends Components {
         add_action('wp_ajax_g3_get_wechatOA_message_content', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             if (!wp_verify_nonce($_POST['nonce'], 'g3_get_wechatOA_message_content')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             $id     = $_POST['id'] ?? 0;
             $result = WechatOAService::getMessageContent($id);
             if ($result) {
-                Request::ajaxSuccess($result);
+                Response::ajaxSuccess($result);
             } else {
-                Request::ajaxFailed();
+                Response::ajaxFailed();
             }
         });
         // delete message
         add_action('wp_ajax_g3_delete_wechatOA_message', function () {
             $this->checkServiceInAjax();
             if (!is_admin() || !current_user_can('manage_options')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             if (!wp_verify_nonce($_POST['nonce'], 'g3_delete_wechatOA_message')) {
-                Request::ajaxForbidden();
+                Response::ajaxForbidden();
             }
             $id     = $_POST['id'] ?? 0;
             $result = WechatOAService::deleteMessage($id);
             if ($result) {
-                Request::ajaxSuccess(__('Success', 'G3'));
+                Response::ajaxDeleted();
             } else {
-                Request::ajaxFailed();
+                Response::ajaxFailed();
             }
         });
     }

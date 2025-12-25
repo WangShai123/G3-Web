@@ -19,14 +19,9 @@ class Wallet extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->menu();
-    }
-    private function menu(): void
     {
         add_submenu_page(
             'g3-settings',
@@ -50,7 +45,8 @@ class Wallet extends Components {
         Container::tab('Wallet', 'general', $tabs);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'sectionGeneral',

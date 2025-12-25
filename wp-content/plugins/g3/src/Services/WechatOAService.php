@@ -1,9 +1,11 @@
 <?php
 namespace JEALER\G3\Services;
 
+use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
-use EasyWeChat\OfficialAccount\Application;
+use JEALER\G3\Services\PostService;
+use JEALER\G3\Utilities\Common;
 use WP_Error;
 use Exception;
 
@@ -601,9 +603,44 @@ class WechatOAService {
         switch ($event) {
             case 'subscribe':
                 return $subscribe;
+            case 'CLICK':
+                return $this->handleClickEvent($message);
             case 'unsubscribe':
             default:
                 return null;
+        }
+    }
+
+    /**
+     * Handle click event from WeChat menu
+     * 
+     * 处理微信菜单点击事件
+     * 
+     * @param array $message Message data from WeChat
+     * @return string Response message
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function handleClickEvent(array $message): string
+    {
+        $eventKey = $message['EventKey'] ?? '';
+
+        switch ($eventKey) {
+            case 'n': // 获取最新文章列表
+                return $this->getLatestPosts();
+            // case 'h': // 获取热门文章
+            //     return $this->getHotPosts();
+            // case 'c': // 获取分类文章
+            //     return $this->getCategoryPosts();
+            // case 's': // 搜索功能
+            //     return $this->showSearchTips();
+            default:
+                // 尝试匹配自定义回复
+                $reply = self::getReply($eventKey);
+                if ($reply !== false && $reply['status'] == '1') {
+                    return $reply['content'] ?? 'Event received, thank you!';
+                }
+                return 'Event received, thank you!';
         }
     }
 
@@ -1356,6 +1393,16 @@ class WechatOAService {
                 match ($node['type']) {
                     'view' => $node['url'] = $item['value'],
                     'click' => $node['key'] = $item['value'],
+                    'scancode_push' => $node['key'] = $item['value'],
+                    'scancode_waitmsg' => $node['key'] = $item['value'],
+                    'pic_sysphoto' => $node['key'] = $item['value'],
+                    'pic_photo_or_album' => $node['key'] = $item['value'],
+                    'pic_weixin' => $node['key'] = $item['value'],
+                    'location_select' => $node['key'] = $item['value'],
+                    'media_id' => $node['media_id'] = $item['value'],
+                    'view_limited' => $node['media_id'] = $item['value'],
+                    'article_id' => $node['article_id'] = $item['value'],
+                    'article_view_limited' => $node['article_id'] = $item['value'],
                     default => $node['key'] = $item['value'],
                 };
             }
@@ -1412,13 +1459,13 @@ class WechatOAService {
         $table = $wpdb->prefix . self::MENU_TABLE;
         if ($id == 0) {
             wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+            wp_cache_delete(self::MENU_CACHE_KEY . ':' . $id, self::CACHE_GROUP);
             return $wpdb->insert($table, $data);
         }
         $result = $wpdb->update($table, $data, ['id' => $id]);
         if ($result) {
             wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+            wp_cache_delete(self::MENU_CACHE_KEY . ':' . $id, self::CACHE_GROUP);
         }
         return $result;
     }
@@ -1442,7 +1489,7 @@ class WechatOAService {
         $result = $wpdb->delete($table, ['id' => $id]);
         if ($result) {
             wp_cache_delete(self::MENU_CACHE_KEY, self::CACHE_GROUP);
-            wp_cache_delete('menus:' . $id, self::CACHE_GROUP);
+            wp_cache_delete(self::MENU_CACHE_KEY . ':' . $id, self::CACHE_GROUP);
         }
         return $result;
     }
@@ -1510,12 +1557,79 @@ class WechatOAService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    private static function renderMenuType(string $type): string
+    public static function renderMenuType(string $type): string
     {
         return match ($type) {
-            '1' => 'view',
-            '2' => 'click',
+            '1' => __('View URL', 'G3'),                // view
+            '2' => __('Click Event', 'G3'),             // click
+            '3' => __('Scan Code', 'G3'),               // scancode_push
+            '4' => __('Scan & Alert', 'G3'),            // scancode_waitmsg
+            '5' => __('System Camera', 'G3'),           // pic_sysphoto
+            '6' => __('Photo or Album', 'G3'),          // pic_photo_or_album
+            '7' => __('WeChat Album', 'G3'),            // pic_weixin
+            '8' => __('Location Selector', 'G3'),       // location_select
+            '9' => __('Mini Program', 'G3'),            // view_miniprogram
+            '10' => __('Media Library', 'G3'),          // media_id
+            '11' => __('Article URL', 'G3'),            // view_limited
+            '12' => __('Article ID', 'G3'),             // article_id
+            '13' => __('Limited Article URL', 'G3'),    // article_view_limited
             default => '-'
         };
+    }
+
+    /**
+     * Get latest posts as news message
+     * 
+     * 获取最新文章列表作为图文消息
+     * 
+     * @return array Formatted news message for WeChat
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function getLatestPosts(): array
+    {
+        $posts = get_posts([
+            // 微信最多支持8条图文消息，5条是一个合理的选择
+            'numberposts' => 5,
+            'post_status' => 'publish',
+            'post_type'   => 'post',
+            'orderby'     => 'date',
+            'order'       => 'DESC'
+        ]);
+
+        if (empty($posts)) {
+            return [
+                'Content' => __('No posts found.', 'G3')
+            ];
+        }
+
+        $articles = [];
+
+        foreach ($posts as $post) {
+            $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
+            if (!$thumbnail) {
+                $thumbnail = get_option(self::OPTION_KEY)['cover'] ?? '';
+            }
+
+            $excerpt = $post->post_excerpt;
+            if (empty($excerpt)) {
+                $excerpt = Common::truncate($post->post_content, 20);
+            }
+
+            $articles[] = [
+                'title'       => $post->post_title,
+                'description' => $excerpt,
+                'url'         => get_permalink($post->ID),
+                'image'       => $thumbnail
+            ];
+        }
+
+        // 构建图文消息
+        $news                 = [];
+        $news['MsgType']      = 'news';
+        $news['Articles']     = $articles;
+        $news['ArticleCount'] = count($articles);
+
+        return $news;
     }
 }

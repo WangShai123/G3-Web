@@ -33,16 +33,10 @@ class Share extends Components {
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
         $this->saveWechatTitle();
     }
     #[\Override()]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-    }
-
-    private function submenu(): void
     {
         add_submenu_page(
             'g3-settings',
@@ -64,7 +58,7 @@ class Share extends Components {
         Container::tab('Share', 'general', $args);
         echo '</div>';
     }
-
+    #[\Override]
     public function settings(): void
     {
         add_settings_section(

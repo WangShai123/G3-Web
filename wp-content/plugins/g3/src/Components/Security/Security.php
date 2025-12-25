@@ -55,11 +55,6 @@ class Security extends Components {
     #[\Override]
     protected function adminMenu(): void
     {
-        $this->submenu();
-    }
-
-    private function submenu()
-    {
         add_submenu_page(
             'g3-settings',
             __('Security', 'G3'),
@@ -70,10 +65,8 @@ class Security extends Components {
             18
         );
     }
-
-    public function render()
+    public function render(): void
     {
-        // @require_once __DIR__ . '/views/page-security.php';
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . __('Security', 'G3') . '</h1>';
         $args = [
@@ -84,8 +77,8 @@ class Security extends Components {
         Container::tab('Security', 'general', $args);
         echo '</div>';
     }
-
-    private function settings()
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             $this->section,

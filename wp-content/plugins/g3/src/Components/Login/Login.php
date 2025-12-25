@@ -6,35 +6,23 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\AuthService;
 class Login extends Components {
     public array $option;
-    public array $followOption;
 
     #[\Override]
     protected function options(): void
     {
         $option       = Option::get(AuthService::OPTION_KEY, [
             'wechatQRCode' => '0',
-            'wechatClient' => '0'
+            'wechatClient' => '0',
+            'wechatOA'     => '0',
         ]);
         $this->option = Option::cache(AuthService::OPTION_KEY, $option);
-
-        $followOption       = Option::get(AuthService::FOLLOW_OPTION_KEY, [
-            'wechatOA' => '0',
-            'message'  => __('Welcome'),
-            'unionId'  => '0'
-        ]);
-        $this->followOption = Option::cache(AuthService::FOLLOW_OPTION_KEY, $followOption);
     }
     #[\Override]
     protected function admin(): void
     {
-        $this->settings();
     }
     #[\Override]
     protected function adminMenu(): void
-    {
-        $this->submenu();
-    }
-    private function submenu(): void
     {
         add_submenu_page(
             'g3-settings',
@@ -56,7 +44,8 @@ class Login extends Components {
         Container::tab('Login', 'general', $args);
         echo '</div>';
     }
-    private function settings(): void
+    #[\Override]
+    protected function settings(): void
     {
         add_settings_section(
             'general',
@@ -109,7 +98,7 @@ class Login extends Components {
         );
         register_setting(
             'follow',
-            AuthService::FOLLOW_OPTION_KEY,
+            AuthService::OPTION_KEY,
         );
         Container::settingFields('login-setting&tab=follow', 'follow', [
             [
@@ -117,47 +106,14 @@ class Login extends Components {
                 'title'    => __('Follow Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        AuthService::FOLLOW_OPTION_KEY,
-                        $this->followOption,
+                        AuthService::OPTION_KEY,
+                        $this->option,
                         'wechatOA',
                         __('Follow Login', 'G3')
                     );
                 },
                 'args'     => [
                     'label_for' => 'wechatOA'
-                ]
-            ],
-            [
-                'id'       => 'message',
-                'title'    => __('Message'),
-                'callback' => function () {
-                    echo Container::input(
-                        AuthService::FOLLOW_OPTION_KEY,
-                        $this->followOption,
-                        'message',
-                        __('Message', 'G3'),
-                        //用户首次关注微信公众号来登录时，系统自动发送的消息
-                        __('System automatically sends a message to the user when they first follow the WeChat official account to log in.', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'message'
-                ]
-            ],
-            [
-                'id'       => 'unionId',
-                'title'    => 'UnionID',
-                'callback' => function () {
-                    echo Container::enable(
-                        AuthService::FOLLOW_OPTION_KEY,
-                        $this->followOption,
-                        'unionId',
-                        'UnionID',
-                        __('Whether to store user UnionID. UnionID is the unique identity identifier of a user in the WeChat system, and it can accurately identify WeChat users.', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'unionId'
                 ]
             ],
             [

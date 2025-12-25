@@ -5,7 +5,6 @@ use JEALER\G3\Services\SwiperService;
 class SwiperLocationTable extends WP_List_Table {
     private string $key;
     private array $locations;
-    private array $columns;
     public function __construct($args = [])
     {
         parent::__construct();
@@ -25,13 +24,15 @@ class SwiperLocationTable extends WP_List_Table {
 
     public function prepare_items()
     {
-        $perPage               = 50;
-        $totalItems            = count($this->locations);
-        $this->columns         = $this->get_columns();
+        $perPage    = 50;
+        $totalItems = count($this->locations);
+
+        $columns               = $this->get_columns();
         $hidden                = [];
         $sortable              = [];
-        $this->_column_headers = array($this->columns, $hidden, $sortable);
-        $this->items           = $this->getCurrentData();
+        $this->_column_headers = array($columns, $hidden, $sortable);
+
+        $this->items = $this->getData();
         $this->set_pagination_args(
             array(
                 'total_items' => $totalItems,
@@ -45,7 +46,7 @@ class SwiperLocationTable extends WP_List_Table {
         return $item[$column_name];
     }
 
-    private function getCurrentData(): array
+    private function getData(): array
     {
         $data = [];
         foreach ($this->locations as $key => $value) {
@@ -98,7 +99,9 @@ class SwiperLocationTable extends WP_List_Table {
                 }
 
                 update_option($this->key, $this->locations);
-                echo '<script>window.location.reload();</script>';
+
+                $msg = __('Deleted', 'G3');
+                wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
             }
         }
     }

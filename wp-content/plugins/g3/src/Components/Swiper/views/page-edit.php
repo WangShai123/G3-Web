@@ -24,6 +24,8 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo $pageTitle; ?></h1>
+    <a href="<?php echo admin_url('themes.php?page=swipers'); ?>" class="page-title-action"><?php _e('Back'); ?></a>
+    <hr class="wp-header-end">
     <table class="form-table" role="presentation">
         <tbody>
             <tr class="item-input-long">
@@ -135,8 +137,11 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
             </tr>
         </tbody>
     </table>
-    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary"
-            value="<?php _e('Save Changes'); ?>"></p>
+    <p class="submit">
+        <button type="button" id="submit" class="button button-primary">
+            <?php _e('Save Changes'); ?>
+        </button>
+    </p>
 </div>
 
 <script>
@@ -170,34 +175,24 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 return false;
             }
             const status = $('#status').val();
-
-            $.ajax({
-                type: 'POST',
-                url: ajaxurl,
-                data: {
-                    action: 'edit_swiper',
-                    id: '<?php echo $id; ?>',
-                    title: title,
-                    media: media,
-                    link: link,
-                    target: target,
-                    location: location,
-                    sort: sort,
-                    status: status
-                },
-                success: function (res) {
-                    if (res.success) {
-                        JUI.Toast.success(res.data.message, 1000);
-                        setTimeout(function () {
-                            window.location.href = '<?php echo admin_url('themes.php?page=swipers'); ?>';
-                        }, 1000);
-                    } else {
-                        JUI.Toast.error(res.data.message, 1500);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.log(xhr.responseText);
-                    console.log('error: ', error);
+            $.post(ajaxurl, {
+                action: 'edit_swiper',
+                id: '<?php echo $id; ?>',
+                title: title,
+                media: media,
+                link: link,
+                target: target,
+                location: location,
+                sort: sort,
+                status: status
+            }, function (res) {
+                if (res.success) {
+                    JUI.Toast.success(res.data.message, 1000);
+                    setTimeout(function () {
+                        window.location.href = '<?php echo admin_url('themes.php?page=swipers'); ?>';
+                    }, 1000);
+                } else {
+                    JUI.Toast.error(res.data.message, 1500);
                 }
             })
         });

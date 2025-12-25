@@ -122,7 +122,7 @@ class WechatOAReplyListTable extends WP_List_Table {
                 if (is_wp_error($result)) {
                     $this->errorNotice($result->get_error_message());
                 } else {
-                    $this->successNotice(__('Updated'));
+                    $this->successNotice(__('Updated', 'G3'));
                 }
                 break;
 
@@ -131,7 +131,7 @@ class WechatOAReplyListTable extends WP_List_Table {
                 if (is_wp_error($result)) {
                     $this->errorNotice($result->get_error_message());
                 } else {
-                    $this->successNotice(__('Updated'));
+                    $this->successNotice(__('Updated', 'G3'));
                 }
                 break;
 

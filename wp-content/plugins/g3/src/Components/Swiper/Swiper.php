@@ -2,10 +2,12 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
+use JEALER\G3\Services\SwiperService;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
-use JEALER\G3\Services\SwiperService;
+use JEALER\G3\Utilities\Response;
+
 class Swiper extends Components {
     public array $option;
     protected function options(): void
@@ -21,14 +23,6 @@ class Swiper extends Components {
     }
     protected function adminMenu(): void
     {
-        $this->submenu();
-        $this->edit();
-        add_action('admin_head', function () {
-            remove_submenu_page('themes.php', 'swiper');
-        });
-    }
-    private function submenu(): void
-    {
         add_submenu_page(
             'themes.php',
             __('Swiper', 'G3'),
@@ -38,6 +32,17 @@ class Swiper extends Components {
             [$this, 'render'],
             4
         );
+        add_submenu_page(
+            'themes.php',
+            __('Add Swiper', 'G3'),
+            __('Add Swiper', 'G3'),
+            'manage_options',
+            'swiper',
+            [$this, 'editSwiper']
+        );
+        add_action('admin_head', function () {
+            remove_submenu_page('themes.php', 'swiper');
+        });
     }
     public function render(): void
     {
@@ -50,63 +55,37 @@ class Swiper extends Components {
         Container::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
-    public function edit(): void
-    {
-        add_submenu_page(
-            'themes.php',
-            __('Add Swiper', 'G3'),
-            __('Add Swiper', 'G3'),
-            'manage_options',
-            'swiper',
-            [$this, 'editSwiper']
-        );
-    }
     public function editSwiper(): void
     {
         @require_once __DIR__ . '/views/page-edit.php';
     }
-    public function wpAjax()
+
+    private function wpAjax(): void
     {
         add_action('wp_ajax_edit_location', function () {
             if (!current_user_can('manage_options')) {
-                wp_send_json_error([
-                    'code'    => 403,
-                    'message' => __('Access Denied!', 'G3'),
-                ], 403);
+                Response::ajaxForbidden();
             }
 
             $key  = $_POST['key'] ?? null;
             $name = $_POST['name'] ?? null;
 
             if (!$key || !$name) {
-                wp_send_json_error([
-                    'code'    => 400,
-                    'message' => __('Invalid data', 'G3'),
-                ], 400);
+                Response::ajaxError(__('Invalid data', 'G3'));
             }
 
             if (!preg_match('/^[a-zA-Z]+$/', $key)) {
-                wp_send_json_error([
-                    'code'    => 400,
-                    'message' => __('Slug: Only supports English Letter', 'G3')
-                ], 400);
+                Response::ajaxError(__('Slug: Only supports English Letter', 'G3'));
             }
 
             $this->option[$key] = $name;
             update_option(SwiperService::LOCATION_OPTION_KEY, $this->option);
-
-            wp_send_json_success([
-                'code'    => 200,
-                'message' => __('Updated', 'G3'),
-            ]);
+            Response::ajaxUpdated();
         });
 
         add_action('wp_ajax_edit_swiper', function () {
             if (!current_user_can('manage_options')) {
-                wp_send_json_error([
-                    'code'    => 403,
-                    'message' => __('Access Denied!', 'G3'),
-                ], 403);
+                Response::ajaxForbidden();
             }
             $id       = $_POST['id'] ?? null;
             $title    = $_POST['title'] ?? null;
@@ -118,30 +97,20 @@ class Swiper extends Components {
             $status   = $_POST['status'] ?? null;
 
             if (!$title || !$location || !$sort || !$status) {
-                wp_send_json_error([
-                    'code'    => 400,
-                    'message' => __('Invalid Data', 'G3'),
-                ], 400);
+                Response::ajaxError(__('Invalid Data', 'G3'));
             }
             if (!Validator::isImage($media)) {
-                wp_send_json_error([
-                    'code'    => 400,
-                    'message' => __('Invalid Image', 'G3'),
-                ], 400);
+                Response::ajaxError(__('Invalid Image', 'G3'));
             }
             if (!Validator::isURL($link)) {
-                wp_send_json_error([
-                    'code'    => 400,
-                    'message' => __('Invalid Link', 'G3'),
-                ], 400);
+                Response::ajaxError(__('Invalid Link', 'G3'));
             }
 
             $dateTime = date('Y-m-d H:i:s');
             $user     = wp_get_current_user()->ID;
 
             global $wpdb;
-            $table = $wpdb->prefix . 'g3_swipers';
-            $group = 'g3_swiper';
+            $table = $wpdb->prefix . SwiperService::TABLE;
 
             $data = [
                 'title'    => $title,
@@ -159,20 +128,11 @@ class Swiper extends Components {
                 $data['created'] = $dateTime;
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
-
-                wp_send_json_success([
-                    'code'    => 200,
-                    'message' => __('Added!', 'G3'),
-                    'id'      => $id,
-                ]);
+                Response::ajaxUpdated();
             }
             $wpdb->update($table, $data, ['id' => $id]);
-            wp_cache_set($id, $data, $group);
-            wp_send_json_success([
-                'code'    => 200,
-                'message' => __('Updated', 'G3'),
-                'id'      => $id,
-            ]);
+            wp_cache_set($id, $data, SwiperService::CACHE_GROUP);
+            Response::ajaxUpdated();
         });
     }
 

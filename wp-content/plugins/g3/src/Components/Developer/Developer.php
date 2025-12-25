@@ -130,7 +130,15 @@ class Developer extends Components {
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
         } else {
-            $this->submenu();
+            add_submenu_page(
+                'g3-settings',
+                __('Developer Mode', 'G3'),
+                __('Developer Mode', 'G3'),
+                'manage_options',
+                'developer-mode',
+                [$this, 'render'],
+                20
+            );
         }
     }
     #[\Override]
@@ -187,19 +195,6 @@ class Developer extends Components {
         if (isset($option['environment']) && in_array($option['environment'], ['local', 'development', 'staging', 'production'])) {
             define('WP_ENVIRONMENT_TYPE', $option['environment']);
         }
-    }
-
-    public function submenu(): void
-    {
-        add_submenu_page(
-            'g3-settings',
-            __('Developer Mode', 'G3'),
-            __('Developer Mode', 'G3'),
-            'manage_options',
-            'developer-mode',
-            [$this, 'render'],
-            20
-        );
     }
 
     public function render(): void
