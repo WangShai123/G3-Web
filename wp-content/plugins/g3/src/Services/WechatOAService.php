@@ -9,6 +9,7 @@ use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\Common;
 use WP_Error;
 use Exception;
+use Closure;
 
 class WechatOAService {
 
@@ -137,8 +138,28 @@ class WechatOAService {
             $server    = $this->app->getServer();
 
             // Messages Handle
-            $server->withHandler(function ($message) {
+            $server->withHandler(function ($message, Closure $next) {
                 $this->processIncomingMessage($message);
+                return $next($message);
+            })->with(function ($message, Closure $next) {
+                // 处理 event click
+                if ($message->MsgType === 'event' && $message->Event === 'CLICK') {
+                    // 如果 key = n
+                    if ($message->EventKey === 'n') {
+                        return [
+                            'MsgType'  => 'news',
+                            'NewsItem' => [
+                                [
+                                    'Title'       => '点击事件',
+                                    'Description' => '点击事件描述',
+                                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                                    'Url'         => 'https://www.example.com'
+                                ]
+                            ]
+                        ];
+                    }
+                }
+            })->with(function ($message, Closure $next) {
                 return $this->handleReply($message);
             });
         }
@@ -604,8 +625,8 @@ class WechatOAService {
         switch ($event) {
             case 'subscribe':
                 return $subscribe;
-            case 'CLICK':
-                return $this->handleClickEvent($message);
+            // case 'CLICK':
+            //     return $this->handleClickEvent($message);
             case 'unsubscribe':
             default:
                 return null;
@@ -1609,48 +1630,5 @@ class WechatOAService {
      */
     private function getLatestPosts()
     {
-        $posts = get_posts([
-            'numberposts' => 5,
-            'post_status' => 'publish',
-            'post_type'   => 'post',
-            'orderby'     => 'date',
-            'order'       => 'DESC'
-        ]);
-
-        if (empty($posts)) {
-            return __('No posts found.', 'G3');
-        }
-
-        $articles = [];
-
-        foreach ($posts as $post) {
-            // 获取文章特色图片
-            $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
-            if (!$thumbnail) {
-                // 如果没有特色图片，可以使用默认图片
-                $thumbnail = home_url('/wp-content/plugins/g3/public/images/default-thumbnail.jpg');
-            }
-
-            // 获取文章摘要，如果没有摘要则截取内容前100个字符
-            $excerpt = $post->post_excerpt;
-            if (empty($excerpt)) {
-                $excerpt = wp_trim_words($post->post_content, 20, '...');
-            }
-
-            $articles[] = [
-                'title'       => $post->post_title,
-                'description' => $excerpt,
-                'url'         => get_permalink($post->ID),
-                'image'       => $thumbnail
-            ];
-        }
-
-        // 返回图文消息数组，让EasyWeChat处理
-        return [
-            'msgtype' => 'news',
-            'news'    => [
-                'articles' => $articles
-            ]
-        ];
     }
 }
