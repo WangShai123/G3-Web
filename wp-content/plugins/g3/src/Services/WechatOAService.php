@@ -1602,11 +1602,11 @@ class WechatOAService {
      * 
      * 获取最新文章列表作为图文消息
      * 
-     * @return array Formatted news message for WeChat
+     * @return string Formatted news message XML for WeChat
      * @since 1.0.0
      * @author Wang Shai
      */
-    private function getLatestPosts(): array
+    private function getLatestPosts(): string
     {
         $posts = get_posts([
             // 微信最多支持8条图文消息，5条是一个合理的选择
@@ -1618,38 +1618,40 @@ class WechatOAService {
         ]);
 
         if (empty($posts)) {
-            return [
-                'Content' => __('No posts found.', 'G3')
-            ];
+            return __('No posts found.', 'G3');
         }
 
-        $articles = [];
+        // 构建图文消息XML
+        $xml  = '<xml>';
+        $xml .= '<MsgType><![CDATA[news]]></MsgType>';
+        $xml .= '<ArticleCount>' . count($posts) . '</ArticleCount>';
+        $xml .= '<Articles>';
 
         foreach ($posts as $post) {
+            // 获取文章特色图片
             $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
             if (!$thumbnail) {
-                $thumbnail = get_option(self::OPTION_KEY)['cover'] ?? '';
+                // 如果没有特色图片，可以使用默认图片
+                $thumbnail = home_url('/wp-content/plugins/g3/public/images/default-thumbnail.jpg');
             }
 
+            // 获取文章摘要，如果没有摘要则截取内容前100个字符
             $excerpt = $post->post_excerpt;
             if (empty($excerpt)) {
-                $excerpt = Common::truncate($post->post_content, 20);
+                $excerpt = wp_trim_words($post->post_content, 20, '...');
             }
 
-            $articles[] = [
-                'title'       => $post->post_title,
-                'description' => $excerpt,
-                'url'         => get_permalink($post->ID),
-                'image'       => $thumbnail
-            ];
+            $xml .= '<item>';
+            $xml .= '<Title><![CDATA[' . $post->post_title . ']]></Title>';
+            $xml .= '<Description><![CDATA[' . $excerpt . ']]></Description>';
+            $xml .= '<PicUrl><![CDATA[' . $thumbnail . ']]></PicUrl>';
+            $xml .= '<Url><![CDATA[' . get_permalink($post->ID) . ']]></Url>';
+            $xml .= '</item>';
         }
 
-        // 构建图文消息
-        $news                 = [];
-        $news['MsgType']      = 'news';
-        $news['Articles']     = $articles;
-        $news['ArticleCount'] = count($articles);
+        $xml .= '</Articles>';
+        $xml .= '</xml>';
 
-        return $news;
+        return $xml;
     }
 }
