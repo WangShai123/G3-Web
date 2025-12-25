@@ -151,11 +151,17 @@ class WechatOAService {
                         error_log('中间件处理消息，EventKey === n:');
                         return [
                             'MsgType'      => 'news',
-                            'ArticleCount' => 1,
+                            'ArticleCount' => 2,
                             'Articles'     => [
-                                'item' => [
+                                'item'  => [
                                     'Title'       => '点击事件',
                                     'Description' => '点击事件描述',
+                                    'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
+                                    'Url'         => 'https://www.example.com'
+                                ],
+                                'item2' => [
+                                    'Title'       => '点击事件2',
+                                    'Description' => '点击事件描述2',
                                     'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
                                     'Url'         => 'https://www.example.com'
                                 ]
