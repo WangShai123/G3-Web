@@ -2,6 +2,7 @@
 namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
+use EasyWeChat\Kernel\Message;
 use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\PostService;
@@ -1644,24 +1645,12 @@ class WechatOAService {
             ];
         }
 
-        // 使用EasyWeChat的消息对象
-        try {
-            $app  = $this->app;
-            $news = $app->message_builder()->news($articles);
-            return $news;
-        }
-        catch (\Exception $e) {
-            // 如果创建图文消息失败，返回文本消息
-            $response = __('Latest posts:', 'G3') . "\n\n";
-            foreach ($posts as $index => $post) {
-                $response .= sprintf(
-                    "%d. %s\n%s\n\n",
-                    $index + 1,
-                    $post->post_title,
-                    get_permalink($post->ID)
-                );
-            }
-            return $response;
-        }
+        // 返回图文消息数组，让EasyWeChat处理
+        return [
+            'msgtype' => 'news',
+            'news'    => [
+                'articles' => $articles
+            ]
+        ];
     }
 }
