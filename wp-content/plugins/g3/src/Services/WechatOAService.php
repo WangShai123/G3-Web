@@ -666,11 +666,11 @@ class WechatOAService {
      * 处理微信菜单点击事件
      * 
      * @param array $message Message data from WeChat
-     * @return string Response message
+     * @return 
      * @since 1.0.0
      * @author Wang Shai
      */
-    private function handleClickEvent(array $message): string
+    private function handleClickEvent(array $message)
     {
         $eventKey = $message['EventKey'] ?? '';
 
