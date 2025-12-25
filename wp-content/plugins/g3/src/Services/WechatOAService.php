@@ -142,10 +142,13 @@ class WechatOAService {
                 $this->processIncomingMessage($message);
                 return $next($message);
             })->with(function ($message, Closure $next) {
+                error_log('中间件处理消息，打印 $message: ' . print_r($message, true));
                 // 处理 event click
                 if ($message->MsgType === 'event' && $message->Event === 'CLICK') {
+                    error_log('中间件处理消息，Event === CLICK:');
                     // 如果 key = n
                     if ($message->EventKey === 'n') {
+                        error_log('中间件处理消息，EventKey === n:');
                         return [
                             'MsgType'  => 'news',
                             'NewsItem' => [
