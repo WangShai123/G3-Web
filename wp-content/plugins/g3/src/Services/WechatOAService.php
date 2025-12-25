@@ -1602,14 +1602,13 @@ class WechatOAService {
      * 
      * 获取最新文章列表作为图文消息
      * 
-     * @return string Formatted news message XML for WeChat
+     * @return mixed Formatted news message for WeChat
      * @since 1.0.0
      * @author Wang Shai
      */
-    private function getLatestPosts(): string
+    private function getLatestPosts()
     {
         $posts = get_posts([
-            // 微信最多支持8条图文消息，5条是一个合理的选择
             'numberposts' => 5,
             'post_status' => 'publish',
             'post_type'   => 'post',
@@ -1621,11 +1620,7 @@ class WechatOAService {
             return __('No posts found.', 'G3');
         }
 
-        // 构建图文消息XML
-        $xml  = '<xml>';
-        $xml .= '<MsgType><![CDATA[news]]></MsgType>';
-        $xml .= '<ArticleCount>' . count($posts) . '</ArticleCount>';
-        $xml .= '<Articles>';
+        $articles = [];
 
         foreach ($posts as $post) {
             // 获取文章特色图片
@@ -1641,17 +1636,32 @@ class WechatOAService {
                 $excerpt = wp_trim_words($post->post_content, 20, '...');
             }
 
-            $xml .= '<item>';
-            $xml .= '<Title><![CDATA[' . $post->post_title . ']]></Title>';
-            $xml .= '<Description><![CDATA[' . $excerpt . ']]></Description>';
-            $xml .= '<PicUrl><![CDATA[' . $thumbnail . ']]></PicUrl>';
-            $xml .= '<Url><![CDATA[' . get_permalink($post->ID) . ']]></Url>';
-            $xml .= '</item>';
+            $articles[] = [
+                'title'       => $post->post_title,
+                'description' => $excerpt,
+                'url'         => get_permalink($post->ID),
+                'image'       => $thumbnail
+            ];
         }
 
-        $xml .= '</Articles>';
-        $xml .= '</xml>';
-
-        return $xml;
+        // 使用EasyWeChat的消息对象
+        try {
+            $app  = $this->app;
+            $news = $app->message_builder()->news($articles);
+            return $news;
+        }
+        catch (\Exception $e) {
+            // 如果创建图文消息失败，返回文本消息
+            $response = __('Latest posts:', 'G3') . "\n\n";
+            foreach ($posts as $index => $post) {
+                $response .= sprintf(
+                    "%d. %s\n%s\n\n",
+                    $index + 1,
+                    $post->post_title,
+                    get_permalink($post->ID)
+                );
+            }
+            return $response;
+        }
     }
 }
