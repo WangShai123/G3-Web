@@ -130,6 +130,8 @@ class MailerService {
             $mail->SMTPAuth   = true;
             $mail->Host       = $config['server'];
             $mail->Port       = (int) $config['port'];
+            $mail->From       = $config['address'];
+            $mail->FromName   = $config['nickname'];
             $mail->Username   = $config['address'];
             $mail->Password   = $config['secret'];
             $mail->SMTPSecure = $config['encryption'];
