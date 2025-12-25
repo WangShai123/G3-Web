@@ -47,11 +47,9 @@ final class Option {
      */
     public static function get(string $name, mixed $default = '', bool $autoload = false): mixed
     {
-        self::notSet();
+        $value = get_option($name);
 
-        $value = get_option($name, self::$notSetMarker);
-
-        if ($value === self::$notSetMarker) {
+        if (!$value) {
             add_option($name, $default, '', $autoload);
             return $default;
         }
