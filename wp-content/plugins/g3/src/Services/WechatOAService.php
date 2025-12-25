@@ -1386,7 +1386,7 @@ class WechatOAService {
                 $node['sub_button'] = self::buildTree($grouped, $item['id']);
             } else {
                 // Last level button
-                $node['type'] = self::renderMenuType($item['type']);
+                $node['type'] = self::getMenuType($item['type']);
                 $node['name'] = $item['name'];
 
                 // Set corresponding fields according to type
@@ -1573,6 +1573,26 @@ class WechatOAService {
             '11' => __('Article URL', 'G3'),            // view_limited
             '12' => __('Article ID', 'G3'),             // article_id
             '13' => __('Limited Article URL', 'G3'),    // article_view_limited
+            default => '-'
+        };
+    }
+
+    public static function getMenuType(string $type): string
+    {
+        return match ($type) {
+            '1' => 'view',
+            '2' => 'click',
+            '3' => 'scancode_push',
+            '4' => 'scancode_waitmsg',
+            '5' => 'pic_sysphoto',
+            '6' => 'pic_photo_or_album',
+            '7' => 'pic_weixin',
+            '8' => 'location_select',
+            '9' => 'view_miniprogram',
+            '10' => 'media_id',
+            '11' => 'view_limited',
+            '12' => 'article_id',
+            '13' => 'article_view_limited',
             default => '-'
         };
     }
