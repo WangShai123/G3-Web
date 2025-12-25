@@ -153,13 +153,13 @@ class WechatOAService {
                             'MsgType'      => 'news',
                             'ArticleCount' => 2,
                             'Articles'     => [
-                                'item'  => [
+                                [
                                     'Title'       => '点击事件',
                                     'Description' => '点击事件描述',
                                     'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
                                     'Url'         => 'https://www.example.com'
                                 ],
-                                'item2' => [
+                                [
                                     'Title'       => '点击事件2',
                                     'Description' => '点击事件描述2',
                                     'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
