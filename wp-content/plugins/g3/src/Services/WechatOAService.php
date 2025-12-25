@@ -164,6 +164,7 @@ class WechatOAService {
                     }
                 }
             })->with(function ($message, Closure $next) {
+                error_log('中间件最后一步处理消息，打印 $message: ' . print_r($message, true));
                 return $this->handleReply($message);
             });
         }
