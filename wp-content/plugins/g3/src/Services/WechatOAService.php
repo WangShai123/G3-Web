@@ -128,7 +128,7 @@ class WechatOAService {
         $this->init();
     }
 
-    private function init()
+    private function init(): void
     {
         $this->option  = get_option(self::OPTION_KEY);
         $serviceEnable = $this->option['service'] ?? false;
@@ -137,44 +137,15 @@ class WechatOAService {
             $this->app = new Application($this->config());
             $server    = $this->app->getServer();
 
-            // Messages Handle
-            $server->withHandler(function ($message, Closure $next) {
+            // Middleware to process incoming message
+            $server->with(function ($message, Closure $next) {
+                // Process incoming message
                 $this->processIncomingMessage($message);
                 return $next($message);
-            })
-                // ->with(function ($message, Closure $next) {
-                //     error_log('中间件处理消息，打印 $message: ' . print_r($message, true));
-                //     // 处理 event click
-                //     if ($message->MsgType === 'event' && $message->Event === 'CLICK') {
-                //         error_log('中间件处理消息，Event === CLICK:');
-                //         // 如果 key = n
-                //         if ($message->EventKey === 'n') {
-                //             error_log('中间件处理消息，EventKey === n:');
-                //             return [
-                //                 'MsgType'      => 'news',
-                //                 'ArticleCount' => 2,
-                //                 'Articles'     => [
-                //                     [
-                //                         'Title'       => '点击事件',
-                //                         'Description' => '点击事件描述',
-                //                         'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                //                         'Url'         => 'https://www.example.com'
-                //                     ],
-                //                     [
-                //                         'Title'       => '点击事件2',
-                //                         'Description' => '点击事件描述2',
-                //                         'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-                //                         'Url'         => 'https://www.example.com'
-                //                     ]
-                //                 ]
-                //             ];
-                //         }
-                //     }
-                // })
-                ->with(function ($message, Closure $next) {
-                    // error_log('中间件最后一步处理消息，打印 $message: ' . print_r($message, true));
-                    return $this->handleReply($message);
-                });
+            })->with(function ($message, Closure $next) {
+                // Handle reply
+                return $this->handleReply($message);
+            });
         }
     }
 
@@ -221,7 +192,7 @@ class WechatOAService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function saveMessage(array $message)
+    public function saveMessage(array $message): bool|int
     {
         global $wpdb;
         $table = $wpdb->prefix . self::MESSAGES_TABLE;
@@ -557,7 +528,7 @@ class WechatOAService {
             }
 
             // Trigger action for other plugins or modules to hook into
-            do_action('g3_wechat_message_received', $messageArray);
+            do_action('g3_action_wechat_message_received', $messageArray);
 
             return true;
         }
@@ -567,11 +538,23 @@ class WechatOAService {
         }
     }
 
+    /**
+     * Handle reply for WeChat
+     * 
+     * 处理微信回复
+     * 
+     * @param $message
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     private function handleReply($message)
     {
+        /**
+         * @deprecated use $message directly instead
+         */
         // $message = $this->normalizeMessage($message);
 
-        // Handle reply based on message type
         $reply = null;
 
         $reply = match ($message->MsgType) {
@@ -580,24 +563,37 @@ class WechatOAService {
             default => 'Hello, thanks for your message!',
         };
         return $reply;
-
-        // $reply = match ($message['MsgType']) {
-        //     'text' => $this->handleTextMessage($message),
-        //     'event' => $this->handleEventMessage($message),
-        //     default => 'Hello, thanks for your message!',
-        // };
-        // return $reply;
     }
 
+    /**
+     * Build Search URL
+     * 
+     * 构建搜索URL
+     * 
+     * @param string $keyword
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     private function searchUrl(string $keyword): string
     {
         return home_url('/') . '?s=' . urlencode($keyword);
     }
-    private function searchMessage(array $message): string
+    /**
+     * Search message reply
+     * 
+     * 搜索消息回复
+     * 
+     * @param string $content
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function searchReply(string $content): string
     {
-        $title       = __('Search for: ', 'G3') . $message['Content'];
-        $description = sprintf(__('Click here to view "%s" search results.', 'G3'), $message['Content']);
-        $url         = $this->searchUrl($message['Content']);
+        $title       = __('Search for: ', 'G3') . $content;
+        $description = sprintf(__('Click here to view "%s" search results.', 'G3'), $content);
+        $url         = $this->searchUrl($content);
 
         // Build text with link
         $text = sprintf(
@@ -608,33 +604,73 @@ class WechatOAService {
         );
         return $text;
     }
-    private function handleTextMessage($message)
+
+    /**
+     * Handle text message from WeChat
+     * 
+     * 处理微信文本消息
+     * 
+     * @param $message
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function handleTextMessage($message): string
     {
-        $content = $message['Content'] ?? '';
-        // $content = $message->Content ?? '';
+        $content = $message->Content ?? '';
 
-        // Try to get auto reply by content
-        $reply = self::getReply($content);
-
-        if ($reply !== false) {
-            // Check if the keyword reply is enabled
-            if ($reply['status'] == '1') {
-                $result = $reply['content'] ?? 'Message received, thank you!';
-                return $result;
-            }
+        // Check keyword length
+        if ($this->checkKeywordLength($content) !== true) {
+            return $this->checkKeywordLength($content);
         }
 
-        if ($this->isSearchEnabled()) {
-            return $this->searchMessage($message);
-        }
+        $defaultReply = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
 
-        // Default reply
-        return 'Message received, thank you!';
+        return $this->handleTextReply($content, $defaultReply);
     }
 
+    /**
+     * Handle text message reply from WeChat
+     * 
+     * 处理微信文本消息回复
+     * 
+     * @param string $content
+     * @param string $defaultReply
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function handleTextReply(string $content, string $defaultReply): string
+    {
+        // Try to get auto reply by content
+        $reply  = self::getReply($content);
+        $status = (int) $reply['status'] ?? 0;
+
+        // Check if the keyword reply is enabled
+        if ($reply !== false && $status === 1) {
+            return $reply['content'] ?? $defaultReply;
+        }
+
+        // Check if search is enabled
+        if ($this->isSearchEnabled()) {
+            return $this->searchReply($content);
+        }
+
+        return $defaultReply;
+    }
+
+    /**
+     * Handle event message from WeChat
+     * 
+     * 处理微信事件消息
+     * 
+     * @param $message
+     * @return string
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     private function handleEventMessage($message)
     {
-        // $event     = $message['Event'] ?? '';
         $event     = $message->Event ?? '';
         $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
 
@@ -659,23 +695,28 @@ class WechatOAService {
     {
         $eventKey = $message->EventKey ?? '';
 
-        switch ($eventKey) {
-            case 'n': // 获取最新文章列表
-                return $this->getLatestPosts();
-            // case 'h': // 获取热门文章
-            //     return $this->getHotPosts();
-            // case 'c': // 获取分类文章
-            //     return $this->getCategoryPosts();
-            // case 's': // 搜索功能
-            //     return $this->showSearchTips();
-            default:
-                // 尝试匹配自定义回复
-                $reply = self::getReply($eventKey);
-                if ($reply !== false && $reply['status'] == '1') {
-                    return $reply['content'] ?? 'Event received, thank you!';
-                }
-                return 'Event received, thank you!';
-        }
+        return match ($eventKey) {
+            'n' => $this->getLatestPosts(),
+            default => 'Event received, thank you!',
+        };
+
+        // switch ($eventKey) {
+        //     case 'n': // 获取最新文章列表
+        //         return $this->getLatestPosts();
+        //     // case 'h': // 获取热门文章
+        //     //     return $this->getHotPosts();
+        //     // case 'c': // 获取分类文章
+        //     //     return $this->getCategoryPosts();
+        //     // case 's': // 搜索功能
+        //     //     return $this->showSearchTips();
+        //     default:
+        //         // 尝试匹配自定义回复
+        //         $reply = self::getReply($eventKey);
+        //         if ($reply !== false && $reply['status'] == '1') {
+        //             return $reply['content'] ?? 'Event received, thank you!';
+        //         }
+        //         return 'Event received, thank you!';
+        // }
     }
 
     /**
@@ -711,7 +752,7 @@ class WechatOAService {
 
     public function isSearchEnabled(): bool
     {
-        $option = get_option(self::OPTION_KEY)['search'] ?? false;
+        $option = $this->option['search'] ?? false;
         return $option === '1';
     }
 
@@ -1164,6 +1205,8 @@ class WechatOAService {
     }
 
     /**
+     * Batch enable auto reply rules
+     * 
      * 批量启用自动回复规则
      *
      * @param array $data {
@@ -1177,6 +1220,8 @@ class WechatOAService {
     }
 
     /**
+     * Batch disable auto reply rules
+     * 
      * 批量禁用自动回复规则
      *
      * @param array $data {
@@ -1190,7 +1235,9 @@ class WechatOAService {
     }
 
     /**
-     * 内部方法：批量更新回复规则状态
+     * Batch update reply status in the main table
+     * 
+     * 批量更新回复规则状态
      *
      * @param array $ids
      * @param int   $status (0 或 1)
@@ -1202,7 +1249,7 @@ class WechatOAService {
             return new WP_Error('no_ids', __('No reply IDs provided', 'G3'));
         }
 
-        // 过滤并转为整数，去重
+        // Filter and convert to integer, remove duplicates
         $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
         $ids = array_unique($ids);
 
@@ -1632,6 +1679,28 @@ class WechatOAService {
     }
 
     /**
+     * Check keyword length
+     * 
+     * 检查关键词长度
+     * 
+     * @param string $keyword Keyword
+     * @return bool|string True if valid, or error message
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function checkKeywordLength(string $keyword): bool|string
+    {
+        $valid = $this->option['length'] ?? false;
+        if ($valid && mb_strlen($keyword, 'UTF-8') > $valid) {
+            return sprintf(
+                __('Keyword too long, max %s characters.', 'G3'),
+                $valid
+            );
+        }
+        return true;
+    }
+
+    /**
      * Get latest posts as news message
      * 
      * 获取最新文章列表作为图文消息
@@ -1642,39 +1711,20 @@ class WechatOAService {
      */
     private function getLatestPosts(): array
     {
-        // return [
-        //     'MsgType'      => 'news',
-        //     'ArticleCount' => 2,
-        //     'Articles'     => [
-        //         [
-        //             'Title'       => '点击事件',
-        //             'Description' => '点击事件描述',
-        //             'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-        //             'Url'         => 'https://www.example.com'
-        //         ],
-        //         [
-        //             'Title'       => '点击事件2',
-        //             'Description' => '点击事件描述2',
-        //             'PicUrl'      => 'https://www.g3system.com/wp-content/uploads/2025/12/cropped-1764835485_avatar-large.png',
-        //             'Url'         => 'https://www.example.com'
-        //         ]
-        //     ]
-        // ];
         $posts = get_posts([
-            'numberposts' => 5,
+            'numberposts' => $this->option['count'] ?? 5,
             'post_status' => 'publish',
             'post_type'   => 'post',
             'orderby'     => 'date',
             'order'       => 'DESC'
         ]);
 
-        $articles = [];
+        $articles     = [];
+        $defaultCover = get_option(SystemService::OPTION_KEY)['cover'] ?? '';
 
         foreach ($posts as $post) {
             $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
-            if (!$thumbnail) {
-                $thumbnail = get_option(self::OPTION_KEY)['cover'] ?? '';
-            }
+            $thumbnail = !$thumbnail ? $defaultCover : $thumbnail;
 
             $excerpt = $post->post_excerpt;
             if (empty($excerpt)) {
@@ -1695,4 +1745,5 @@ class WechatOAService {
             'Articles'     => $articles
         ];
     }
+
 }

@@ -19,10 +19,10 @@ class WechatOA extends Components {
             'storeMessages'  => '0',
             'count'          => '5',
             'length'         => '16',
-            'cover'          => '',
             'followMessage'  => __('Welcome! Thanks for your attention.', 'G3'),
             'visitMessage'   => __('Welcome back, my friend.', 'G3'),
-            'defaultMessage' => __('Message received! Thanks for your advice.', 'G3')
+            'defaultMessage' => __('Message received, thanks for your advice!', 'G3'),
+            'lastestPosts'   => 'n'
         ]);
         $this->option = Option::cache(WechatOAService::OPTION_KEY, $option);
     }
@@ -62,11 +62,11 @@ class WechatOA extends Components {
         echo '<div class="wrap">';
         echo '<h1>' . __('Wechat Official Account', 'G3') . '</h1>';
         $tabs = [
-            'general'  => __('General', 'G3'),
-            'menus'    => __('Menus'),
-            'message'  => __('Messages', 'G3'),
-            'reply'    => __('Custom Reply', 'G3'),
-            'advanced' => __('Advanced Replay', 'G3'),
+            'general' => __('General', 'G3'),
+            'menus'   => __('Menus'),
+            'message' => __('Messages', 'G3'),
+            'reply'   => __('Custom Reply', 'G3'),
+            'event'   => __('Event Replay', 'G3'),
         ];
         Container::tab('WechatOA', 'general', $tabs);
         echo '</div>';
@@ -131,14 +131,14 @@ class WechatOA extends Components {
             ],
             [
                 'id'       => 'count',
-                'title'    => __('Count in Search Result', 'G3'),
+                'title'    => __('News Count', 'G3'),
                 'callback' => function () {
                     echo Container::select(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'count',
-                        __('Count in Search Result', 'G3'),
-                        __('The number of search results returned. Default: 5.', 'G3'),
+                        __('News Count', 'G3'),
+                        __('The maximum number of news items returned in the Key-Event message. Default: 5.', 'G3'),
                         '',
                         [
                             '1' => '1',
@@ -171,22 +171,6 @@ class WechatOA extends Components {
                 },
                 'args'     => [
                     'label_for' => 'length',
-                ]
-            ],
-            [
-                'id'       => 'cover',
-                'title'    => __('Default Cover', 'G3'),
-                'callback' => function () {
-                    echo Container::imageInput(
-                        WechatOAService::OPTION_KEY,
-                        $this->option,
-                        'cover',
-                        __('Default Cover', 'G3'),
-                        __('The default cover image for search results.', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'cover',
                 ]
             ],
             [
@@ -237,6 +221,32 @@ class WechatOA extends Components {
             //         'label_for' => 'visitMessage',
             //     ]
             // ],
+        ]);
+
+        add_settings_section(
+            'eventReply',
+            null,
+            '__return_false',
+            'wechat-oa&tab=event'
+        );
+        register_setting('eventReply', WechatOAService::OPTION_KEY);
+        Container::settingFields('wechat-oa&tab=event', 'eventReply', [
+            [
+                'id'       => 'lastestPosts',
+                'title'    => __('Latest Posts', 'G3'),
+                'callback' => function () {
+                    echo Container::input(
+                        WechatOAService::OPTION_KEY,
+                        $this->option,
+                        'lastestPosts',
+                        __('Latest Posts', 'G3'),
+                        __('The Key that will call the latest posts. Default: n', 'G3')
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'lastestPosts',
+                ]
+            ],
         ]);
     }
     private function serviceAvailable(): bool
