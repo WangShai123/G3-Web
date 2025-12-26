@@ -13,10 +13,9 @@ class Product extends Components {
     #[\Override]
     protected function options(): void
     {
-        $option       = Option::get(ProductService::OPTION_KEY, [
+        $this->option = Option::init(ProductService::OPTION_KEY, [
 
         ]);
-        $this->option = Option::cache(ProductService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void

@@ -76,4 +76,21 @@ final class Option {
         return $optionValue;
     }
 
+    /**
+     * Initialize the option value, use in component & setting.
+     * 
+     * 初始化选项值
+     * 
+     * @param string $name Option name
+     * @param mixed $default Default option value.
+     * @param bool $autoload
+     * @return mixed Option Value
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function init(string $name, mixed $default = '', bool $autoload = false)
+    {
+        $value = self::get($name, $default, $autoload);
+        return self::cache($name, $value);
+    }
 }

@@ -159,6 +159,11 @@ final class Frontend {
              * @link https://github.com/highlightjs/highlight.js
              */
             'highlight'          => [G3_JS_URL . '/highlight.min.js', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/common.min.js'],
+            /**
+             * qrcodeJS: Cross-browser QRCode generator for javascript.
+             * @link https://github.com/davidshimjs/qrcodejs
+             */
+            'qrcode'             => [G3_JS_URL . '/qrcode.min.js', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js']
         ];
 
         /**
@@ -213,7 +218,16 @@ final class Frontend {
             'jui.offcanvas' => [G3_JS_URL . '/es/jui.offcanvas.js', [], '1.0.0'],
             'jui.drop'      => [G3_JS_URL . '/es/jui.drop.js', [], '1.0.0'],
             'jui.tooltip'   => [G3_JS_URL . '/es/jui.tooltip.js', [], '1.0.0'],
-            'ky'            => [G3_JS_URL . '/es/ky.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/distribution/index.js'],
+            /**
+             * ky: Tiny & elegant JavaScript HTTP client based on the Fetch API
+             * @link: https://github.com/sindresorhus/ky
+             */
+            'ky'            => [G3_JS_URL . '/ky.esm.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/+esm'],
+            /**
+             * qrcodeJS: Cross-browser QRCode generator for javascript
+             * @link: https://github.com/davidshimjs/qrcodejs
+             */
+            'qrcode'        => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm']
         ];
 
         /**

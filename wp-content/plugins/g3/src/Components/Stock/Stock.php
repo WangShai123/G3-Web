@@ -5,10 +5,6 @@ use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 class Stock extends Components {
     private bool $dep;
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     #[\Override]
     protected function options(): void

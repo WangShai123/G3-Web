@@ -10,12 +10,11 @@ class Login extends Components {
     #[\Override]
     protected function options(): void
     {
-        $option       = Option::get(AuthService::OPTION_KEY, [
+        $this->option = Option::init(AuthService::OPTION_KEY, [
             'wechatQRCode' => '0',
             'wechatClient' => '0',
             'wechatOA'     => '0',
         ]);
-        $this->option = Option::cache(AuthService::OPTION_KEY, $option);
     }
     #[\Override]
     protected function admin(): void

@@ -1,8 +1,11 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\SystemService;
+use WP_User;
+
 class User extends Components {
     #[\Override]
     protected function init(): void

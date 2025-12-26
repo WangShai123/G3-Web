@@ -92,19 +92,41 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                     <fieldset>
                         <legend class="screen-reader-text"><span><?php _e('Location', 'G3'); ?></span></legend>
                         <label for="location">
-                            <select id="location" name="location" class="" title="<?php _e('Location', 'G3'); ?>">
-                                <?php
-                                $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
-                                if ($option) {
-                                    $location = explode(',', $item->{$column_name});
-                                    foreach ($option as $key => $value) {
-                                        ?>
-                                        <option value="<?php echo $key; ?>" <?php echo in_array($key, $location) ? 'selected="selected"' : ''; ?>><?php echo $value; ?></option>
-                                        <?php
+                            <?php
+                            echo '<select id="location" name="location" class="" title="' . __('Location', 'G3') . ' ">';
+                            $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
+                            if ($option) {
+                                $location     = explode(',', $item['location']);
+                                $selected_any = false;
+                                // check if any option is selected
+                                foreach ($option as $key => $value) {
+                                    if (in_array($key, $location)) {
+                                        $selected_any = true;
+                                        break;
                                     }
                                 }
-                                ?>
-                            </select>
+                                // iterate through options and set selected status
+                                foreach ($option as $key => $value) {
+                                    $selected = '';
+                                    // select if there is a match
+                                    if (in_array($key, $location)) {
+                                        $selected = 'selected="selected"';
+                                    }
+                                    // select first option if there is no match
+                                    elseif (!$selected_any && $key === array_key_first($option)) {
+                                        $selected = 'selected="selected"';
+                                    }
+                                    echo '<option value="' . esc_attr($key) . '" ' . $selected . '>' . esc_html($value) . '</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                $smg = sprintf(
+                                    __('No Position Data Found. Please configure <a href="%s">the Swiper Position</a> first.', 'G3'),
+                                    admin_url('themes.php?page=swipers&tab=locations')
+                                );
+                                echo "</select><p class='description'>{$smg}</p>";
+                            }
+                            ?>
                         </label>
                     </fieldset>
                 </td>

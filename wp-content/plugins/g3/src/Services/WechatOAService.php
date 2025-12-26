@@ -10,6 +10,7 @@ use JEALER\G3\Utilities\Common;
 use WP_Error;
 use Exception;
 use Closure;
+use WP_User_Query;
 
 class WechatOAService {
 
@@ -74,6 +75,18 @@ class WechatOAService {
     public const OPTION_KEY = 'g3_option_wechatOA';
 
     /**
+     * Option Key for Wechat OA Event
+     * 
+     * 微信公众号事件选项键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const EVENT_OPTION_KEY = 'g3_option_wechatOA_event';
+
+    /**
      * Cache Group for Wechat Official Account
      * 
      * 微信公众号缓存组
@@ -96,6 +109,18 @@ class WechatOAService {
      * @author Wang Shai
      */
     public const MENU_CACHE_KEY = 'menus';
+
+    /**
+     * Callback URL for Wechat Official Account
+     * 
+     * 微信公众号回调URL
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const CALLBACK = '/dev/wechat_oa/callback';
 
     /**
      * Instance of WechatOAService
@@ -671,14 +696,35 @@ class WechatOAService {
      */
     private function handleEventMessage($message)
     {
-        $event     = $message->Event ?? '';
-        $subscribe = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
+        $event = $message->Event ?? '';
 
         return match ($event) {
-            'subscribe' => $subscribe,
+            'subscribe' => $this->handleSubscribeEvent($message),
             'CLICK' => $this->handleClickEvent($message),
             default => null,
         };
+    }
+    private function handleSubscribeEvent($message)
+    {
+        $message  = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
+        $sceneStr = $message->EventKey ?? '';
+
+        if (strpos($sceneStr, 'qrscene_') === 0) {
+            $realScene = substr($sceneStr, 8);
+            if ($realScene === 'g3_login_subscribe') {
+                $openid = $message->FromUserName;
+                $this->triggerLoginAfterSubscribe($openid);
+            }
+            return;
+        } else {
+            return $message;
+        }
+    }
+    private function triggerLoginAfterSubscribe(string $openid)
+    {
+        // Notify AuthService: this openid user has subscribed, please login
+        $authService = AuthService::run();
+        $authService->handlePostSubscribeLogin($openid);
     }
 
     /**
@@ -1746,4 +1792,66 @@ class WechatOAService {
         ];
     }
 
+
+    /**
+     * 获取用于“关注即登录”的永久二维码（全局唯一，长期有效）
+     *
+     * @return array{ticket: string, url: string}|WP_Error
+     */
+    public function getFollowLoginQrCode()
+    {
+        if (!$this->isAvailable()) {
+            return new WP_Error(
+                'wechat_unavailable',
+                __('WeChat service is not available.', 'G3')
+            );
+        }
+
+        // 使用固定场景字符串
+        $sceneStr = 'g3_login_subscribe';
+
+        // 先尝试从缓存读取（避免重复创建）
+        $cacheKey = 'g3_wechat_follow_login_qrcode';
+        $cached   = get_option($cacheKey, false);
+
+        if ($cached && isset($cached['ticket'], $cached['url'])) {
+            // 可选：验证 ticket 是否仍有效（通常永久有效）
+            return $cached;
+        }
+
+        try {
+            // 调用微信 API 创建永久字符串二维码
+            $url    = 'https://api.weixin.qq.com/cgi-bin/qrcode/create';
+            $params = [
+                'action_name' => 'QR_LIMIT_STR_SCENE',
+                'action_info' => [
+                    'scene' => ['scene_str' => $sceneStr]
+                ]
+            ];
+
+            $response = $this->app->getClient()->post($url, $params);
+            $data     = $response->toArray();
+
+            if (isset($data['errcode']) && $data['errcode'] !== 0) {
+                throw new \Exception($data['errmsg'] ?? 'Unknown error');
+            }
+
+            $qrcodeUrl = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']);
+
+            $result = [
+                'ticket'    => $data['ticket'],
+                'url'       => $qrcodeUrl,
+                'scene_str' => $sceneStr,
+            ];
+
+            // 永久缓存到数据库（除非手动清除）
+            update_option($cacheKey, $result, false); // false = 不自动加载
+
+            return $result;
+        }
+        catch (\Exception $e) {
+            error_log('Failed to create permanent login QR code: ' . $e->getMessage());
+            return new WP_Error('qrcode_permanent_error', $e->getMessage());
+        }
+    }
 }

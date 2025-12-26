@@ -2,6 +2,8 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 class Activity extends Components {
+    private string $postType = 'activity';
+
     #[\Override]
     public function postType(): void
     {
@@ -46,7 +48,7 @@ class Activity extends Components {
             //是否可以查询，和publicly_queryable一起使用
             'query_var'          => true,
             //重写url
-            'rewrite'            => ['slug' => 'activity'],
+            'rewrite'            => ['slug' => $this->postType],
             //该文章类型的权限
             'capability_type'    => 'post',
             //是否有归档
@@ -59,7 +61,7 @@ class Activity extends Components {
             'supports'           => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
             'menu_icon'          => 'dashicons-universal-access-alt',
         ];
-        register_post_type('activity', $args);
+        register_post_type($this->postType, $args);
     }
 
     #[\Override]
@@ -67,7 +69,7 @@ class Activity extends Components {
     {
         register_taxonomy(
             'activity_category',
-            ['activity'],
+            $this->postType,
             [
                 'hierarchical'      => true,
                 'show_ui'           => true,
@@ -92,7 +94,7 @@ class Activity extends Components {
         );
         register_taxonomy(
             'activity_tag',
-            ['activity'],
+            $this->postType,
             [
                 'hierarchical'      => false,
                 'public'            => true,

@@ -20,7 +20,7 @@ class Setting extends Components {
     protected function options(): void
     {
         $siteName     = get_bloginfo('name');
-        $option       = Option::get(SystemService::OPTION_KEY, [
+        $this->option = Option::init(SystemService::OPTION_KEY, [
             'sad'          => '0',
             'avatar'       => G3_IMG_URL . '/avatar.png',
             'cover'        => G3_IMG_URL . '/cover-placeholder.png',
@@ -30,19 +30,16 @@ class Setting extends Components {
             'links'        => '',
             'redirectLink' => '0',
         ]);
-        $this->option = Option::cache(SystemService::OPTION_KEY, $option);
-        $seo          = Option::get(SystemService::SEO_OPTION_KEY, [
+        $this->seo    = Option::init(SystemService::SEO_OPTION_KEY, [
             'seo'      => '1',
             'keywords' => "{$siteName},G3 Web,G3 System,JEALER",
         ]);
-        $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $seo);
-        $rss          = Option::get(SystemService::RSS_OPTION_KEY, [
+        $this->rss    = Option::init(SystemService::RSS_OPTION_KEY, [
             'rss'  => '1',
             'rss1' => get_bloginfo('rss_url'),
             'rss2' => get_bloginfo('rss2_url'),
             'atom' => get_bloginfo('atom_url'),
         ]);
-        $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $rss);
     }
     #[\Override]
     protected function init(): void

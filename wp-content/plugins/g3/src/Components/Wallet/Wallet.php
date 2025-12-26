@@ -10,11 +10,10 @@ class Wallet extends Components {
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get(PaymentService::WALLET_OPTION_KEY, [
+        $this->option = Option::init(PaymentService::WALLET_OPTION_KEY, [
             'enable'   => '0',
             'recharge' => '0',
         ]);
-        $this->option = Option::cache(PaymentService::WALLET_OPTION_KEY, $default);
     }
     #[\Override]
     protected function admin(): void

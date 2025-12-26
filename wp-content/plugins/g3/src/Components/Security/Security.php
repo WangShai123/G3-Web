@@ -14,7 +14,7 @@ class Security extends Components {
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get(SystemService::SECURITY_OPTION_KEY, [
+        $this->option = Option::init(SystemService::SECURITY_OPTION_KEY, [
             'login'       => '0',
             'url'         => Common::hash(8),
             'upload'      => '1',
@@ -25,7 +25,6 @@ class Security extends Components {
             'csp'         => '0',
             'xPoweredBy'  => '1'
         ]);
-        $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $default);
     }
     #[\Override]
     protected function front(): void

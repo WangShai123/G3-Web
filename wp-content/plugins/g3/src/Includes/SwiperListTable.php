@@ -4,6 +4,7 @@ namespace JEALER\G3\Includes;
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Validator;
 
 class SwiperListTable extends WP_List_Table {
     private array $columns;
@@ -48,48 +49,30 @@ class SwiperListTable extends WP_List_Table {
             'per_page'    => $this->perPage,
             'total_pages' => ceil($totalItems / $this->perPage)
         ]);
-        $this->items = $this->getCurrentData($this->perPage, $currentPage);
+        $this->items = $this->getData($this->perPage, $currentPage);
     }
 
     public function column_default($item, $column_name)
     {
         switch ($column_name) {
             case 'status':
-                return $item->{$column_name} == 1 ? __('Online', 'G3') : __('Offline', 'G3');
+                return $this->renderStatus($item, $column_name);
             case 'media':
-                return '<img class="object-cover cursor-pointer swiperPreview" style="width:100px;height:60px" src="' . $item->{$column_name} . '" draggable="false"></img>';
+                return $this->renderMedia($item, $column_name);
             case 'target':
-                return $item->{$column_name} == 0 ? __('Current Tab', 'G3') : __('New Tab', 'G3');
+                return $this->renderTarget($item, $column_name);
             case 'link':
-                $link = $item->{$column_name};
-                $text = Common::truncateHtml($item->{$column_name}, 50);
-                return $link == '' ? '-' : '<a href="' . $link . '" target="_blank">' . $text . '</a>';
+                return $this->renderLink($item, $column_name);
             case 'location':
-                $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
-                if ($option) {
-                    $location     = explode(',', $item->{$column_name});
-                    $location_str = '';
-                    foreach ($location as $key => $value) {
-                        foreach ($option as $k => $v) {
-                            if ($k == $value) {
-                                $location_str .= $v . ',';
-                            }
-                        }
-                    }
-                    return rtrim($location_str, ',');
-                }
-                return '-';
+                return $this->renderLocation($item, $column_name);
             case 'updated':
-                if (strtotime($item->{$column_name}) == false) {
-                    return '-';
-                }
-                return wp_date('Y-m-d H:i:s', strtotime($item->{$column_name}));
+                $this->renderUpdated($item, $column_name);
             default:
-                return isset($item->{$column_name}) ? $item->{$column_name} : '-';
+                return $item->{$column_name} ?? '-';
         }
     }
 
-    private function getCurrentData($per_page, $current_page): array|object|null
+    private function getData($per_page, $current_page): array|object|null
     {
         global $wpdb;
 
@@ -122,7 +105,7 @@ class SwiperListTable extends WP_List_Table {
         return $wpdb->get_results($sql);
     }
 
-    public function get_sortable_columns()
+    public function get_sortable_columns(): array
     {
         return [
             'target'   => ['target', false],
@@ -133,7 +116,7 @@ class SwiperListTable extends WP_List_Table {
         ];
     }
 
-    public function column_title($item)
+    public function column_title($item): string
     {
         $actions = [
             'edit' => sprintf('<a href="themes.php?page=swiper&t=edit&id=%s" class="swiper-edit">%s</a>', $item->{"id"}, __('Edit', 'G3')),
@@ -142,7 +125,7 @@ class SwiperListTable extends WP_List_Table {
         return sprintf('%1$s %2$s', $item->{"title"}, $this->row_actions($actions));
     }
 
-    public function get_bulk_actions()
+    public function get_bulk_actions(): array
     {
         return [
             'delete'  => __('Delete'),
@@ -151,7 +134,7 @@ class SwiperListTable extends WP_List_Table {
         ];
     }
 
-    public function column_cb($item)
+    public function column_cb($item): string
     {
         return sprintf(
             '<input type="checkbox" name="swiper[]" value="%s" />',
@@ -166,7 +149,7 @@ class SwiperListTable extends WP_List_Table {
         }
     }
 
-    public function process_bulk_actions()
+    public function process_bulk_actions(): void
     {
         $action = $this->current_action();
         $ids    = isset($_REQUEST['swiper']) ? (array) $_REQUEST['swiper'] : [];
@@ -193,8 +176,64 @@ class SwiperListTable extends WP_List_Table {
         wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
     }
 
-    public function no_items()
+    public function no_items(): void
     {
         _e('No data found.', 'G3');
+    }
+
+    private function renderStatus($item, $columnName): string
+    {
+        return $item->{$columnName} == 1 ? __('Online', 'G3') : __('Offline', 'G3');
+    }
+    private function renderMedia($item, $columnName): string
+    {
+        if (Validator::isImage($item->{$columnName})) {
+            return '<img class="object-cover cursor-pointer swiperPreview" style="width:100px;height:60px" src="' . $item->{$columnName} . '" draggable="false"></img>';
+        }
+        return '-';
+    }
+    private function renderTarget($item, $columnName): string
+    {
+        return $item->{$columnName} == 0 ? __('Current Tab', 'G3') : __('New Tab', 'G3');
+    }
+    private function renderLink($item, $columnName): string
+    {
+        $link = $item->{$columnName};
+        return Validator::isURL($link)
+            ? '<a href="' . $link . '" target="_blank">' . Common::truncateHtml($link, 50) . '</a>'
+            : '-';
+    }
+    private function renderLocation($item, $columnName): string
+    {
+        $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
+        if (!$option) {
+            return '-';
+        }
+
+        $location     = explode(',', $item->{$columnName});
+        $location_str = '';
+        $found        = false;
+
+        foreach ($location as $value) {
+            foreach ($option as $key => $label) {
+                if ($key === $value) {
+                    if ($location_str !== '') {
+                        $location_str .= ',';
+                    }
+                    $location_str .= $label;
+                    $found         = true;
+                    break;
+                }
+            }
+        }
+
+        return $found ? $location_str : '-';
+    }
+    private function renderUpdated($item, $columnName): string
+    {
+        if (strtotime($item->{$columnName}) == false) {
+            return '-';
+        }
+        return wp_date('Y-m-d H:i:s', strtotime($item->{$columnName}));
     }
 }

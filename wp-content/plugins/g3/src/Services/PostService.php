@@ -97,8 +97,8 @@ class PostService {
 
     public static function getViewsKey(): string
     {
-        if (defined('G3_POST_VIEWS_KEY') && is_string(G3_POST_VIEWS_KEY) && G3_POST_VIEWS_KEY !== '') {
-            return G3_POST_VIEWS_KEY;
+        if (defined('G3_POST_VIEWS_KEY') && is_string(constant('G3_POST_VIEWS_KEY')) && constant('G3_POST_VIEWS_KEY') !== '') {
+            return constant('G3_POST_VIEWS_KEY');
         } else {
             return self::VIEW_KEY;
         }

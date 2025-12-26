@@ -9,11 +9,12 @@ use JEALER\G3\Utilities\Response;
 
 class WechatOA extends Components {
     public array $option = [];
+    public array $eventOption = [];
 
     #[\override]
     protected function options(): void
     {
-        $option       = Option::get(WechatOAService::OPTION_KEY, [
+        $this->option      = Option::init(WechatOAService::OPTION_KEY, [
             'service'        => '0',
             'search'         => '0',
             'storeMessages'  => '0',
@@ -22,14 +23,15 @@ class WechatOA extends Components {
             'followMessage'  => __('Welcome! Thanks for your attention.', 'G3'),
             'visitMessage'   => __('Welcome back, my friend.', 'G3'),
             'defaultMessage' => __('Message received, thanks for your advice!', 'G3'),
-            'lastestPosts'   => 'n'
         ]);
-        $this->option = Option::cache(WechatOAService::OPTION_KEY, $option);
+        $this->eventOption = Option::init(WechatOAService::EVENT_OPTION_KEY, [
+            'lastestPosts' => 'n'
+        ]);
     }
+
     #[\Override]
     protected function admin(): void
     {
-        $this->wpAjax();
     }
     #[\Override]
     protected function adminMenu(): void
@@ -229,15 +231,15 @@ class WechatOA extends Components {
             '__return_false',
             'wechat-oa&tab=event'
         );
-        register_setting('eventReply', WechatOAService::OPTION_KEY);
+        register_setting('eventReply', WechatOAService::EVENT_OPTION_KEY);
         Container::settingFields('wechat-oa&tab=event', 'eventReply', [
             [
                 'id'       => 'lastestPosts',
                 'title'    => __('Latest Posts', 'G3'),
                 'callback' => function () {
                     echo Container::input(
-                        WechatOAService::OPTION_KEY,
-                        $this->option,
+                        WechatOAService::EVENT_OPTION_KEY,
+                        $this->eventOption,
                         'lastestPosts',
                         __('Latest Posts', 'G3'),
                         __('The Key that will call the latest posts. Default: n', 'G3')
@@ -259,7 +261,8 @@ class WechatOA extends Components {
             Response::ajaxError(__('Wechat Official Account service is not enabled', 'G3'));
         }
     }
-    private function wpAjax(): void
+    #[\Override]
+    protected function ajax(): void
     {
         // delete menu
         add_action('wp_ajax_g3_delete_wechatOA_menu', function () {

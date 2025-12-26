@@ -40,7 +40,7 @@ class Announcement extends Components {
             'items_list'            => __('Announcements List', 'G3'),
         ];
         register_post_type(
-            'announcement',
+            $this->postType,
             [
                 'labels'          => $labels,
                 'public'          => true,
@@ -56,11 +56,11 @@ class Announcement extends Components {
         );
     }
     #[\Override]
-    public function taxonomy(): void
+    protected function taxonomy(): void
     {
         register_taxonomy(
             'announcement_category',
-            'announcement',
+            $this->postType,
             [
                 'hierarchical'      => true,
                 'show_ui'           => true,

@@ -12,14 +12,12 @@ class Swiper extends Components {
     public array $option;
     protected function options(): void
     {
-        $default      = Option::get(SwiperService::LOCATION_OPTION_KEY, [
+        $this->option = Option::init(SwiperService::LOCATION_OPTION_KEY, [
             'home' => __('Home')
         ]);
-        $this->option = Option::cache(SwiperService::LOCATION_OPTION_KEY, $default);
     }
     protected function admin(): void
     {
-        $this->wpAjax();
     }
     protected function adminMenu(): void
     {
@@ -60,7 +58,8 @@ class Swiper extends Components {
         @require_once __DIR__ . '/views/page-edit.php';
     }
 
-    private function wpAjax(): void
+    #[\Override]
+    protected function ajax(): void
     {
         add_action('wp_ajax_edit_location', function () {
             if (!current_user_can('manage_options')) {

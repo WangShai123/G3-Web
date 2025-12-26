@@ -14,14 +14,12 @@ class Post extends Components {
     #[\Override]
     protected function options(): void
     {
-        $default      = Option::get(PostService::OPTION_KEY, [
+        $this->option   = Option::init(PostService::OPTION_KEY, [
             'enable'       => '1',
             'viewInterval' => '60',
             'copyright'    => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
             'autoNotice'   => '0',
         ]);
-        $this->option = Option::cache(PostService::OPTION_KEY, $default);
-
         $this->viewsKey = PostService::getViewsKey();
     }
     #[\Override]

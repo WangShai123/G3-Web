@@ -10,7 +10,7 @@ class ShareService {
      * @var string
      * @access public
      * @since 1.0.0
-     * @author WangShai
+     * @author Wang Shai
      */
     public const OPTION_KEY = 'g3_option_social_share';
 
@@ -22,7 +22,7 @@ class ShareService {
      * @var string
      * @access public
      * @since 1.0.0
-     * @author WangShai
+     * @author Wang Shai
      */
     public const ACCOUNT_OPTION_KEY = 'g3_option_social_accounts';
 
@@ -34,7 +34,7 @@ class ShareService {
      * @var string
      * @access public
      * @since 1.0.0
-     * @author WangShai
+     * @author Wang Shai
      */
     public const WECHAT_TITLE_KEY = 'g3_wechat_title';
 }

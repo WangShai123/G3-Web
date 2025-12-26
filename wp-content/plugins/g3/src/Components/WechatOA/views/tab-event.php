@@ -2,11 +2,9 @@
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Services\WechatOAService;
 
-$key = WechatOAService::OPTION_KEY;
+$key = WechatOAService::EVENT_OPTION_KEY;
 if (array_key_exists($key, $_POST) && $_POST[$key]) {
-    $option = get_option($key);
-    $option = array_merge($option, $_POST[$key]);
-    update_option($key, $option);
+    update_option($key, $_POST[$key]);
     add_settings_error('eventReply', '1', __('Updated', 'G3'), 'updated');
 }
 settings_errors('eventReply');

@@ -374,6 +374,7 @@ class Components {
     }
     public function adminInitActions(): void
     {
+        $this->ajax();
         $this->settings();
         $this->admin();
     }
@@ -447,6 +448,9 @@ class Components {
     {
     }
     protected function taxonomy(): void
+    {
+    }
+    protected function ajax(): void
     {
     }
     protected function settings(): void
