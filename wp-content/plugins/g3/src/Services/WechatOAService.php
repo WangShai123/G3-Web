@@ -1817,6 +1817,7 @@ class WechatOAService {
         }
 
         try {
+
             /**
              * @link https://developers.weixin.qq.com/doc/service/api/qrcode/qrcodes/api_createqrcode.html
              * 最大支持 2592000 秒（30 天）
@@ -1828,11 +1829,20 @@ class WechatOAService {
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
-                    // 'expire_seconds' => $expireSeconds,
-                    'action_name' => 'QR_LIMIT_STR_SCENE', // 临时字符串类型 QR_STR_SCENE
-                    'action_info' => [
-                        'scene' => [
-                            'scene_str' => $sceneStr
+                    // // 'expire_seconds' => $expireSeconds,
+                    // 'action_name' => 'QR_LIMIT_STR_SCENE',
+                    // 'action_info' => [
+                    //     'scene' => [
+                    //         'scene_str' => $sceneStr
+                    //     ]
+                    // ]
+                    'json' => [
+                        'expire_seconds' => $expireSeconds,
+                        'action_name'    => 'QR_STR_SCENE',
+                        'action_info'    => [
+                            'scene' => [
+                                'scene_str' => $sceneStr
+                            ]
                         ]
                     ]
                 ]
