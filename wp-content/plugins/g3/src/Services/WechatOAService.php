@@ -698,12 +698,12 @@ class WechatOAService {
      */
     private function handleEventMessage($message)
     {
-        $event = $message->Event ?? '';
+        $event = strtoupper($message->Event ?? '');
 
         return match ($event) {
-            'subscribe' => $this->handleSubscribeEvent($message),
+            'SUBSCRIBE' => $this->handleSubscribeEvent($message),
             'CLICK' => $this->handleClickEvent($message),
-            'scan' => $this->handleScanEvent($message),
+            'SCAN' => $this->handleScanEvent($message),
             default => null,
         };
     }
@@ -714,12 +714,14 @@ class WechatOAService {
 
         if (strpos($sceneStr, 'qrscene_') === 0) {
             error_log('[G3]error: FULL Scene: ' . print_r($sceneStr, true));
-            $realScene = substr($sceneStr, 8);
-            if ($realScene === self::FOLLOW_LOGIN_SCENE) {
-                $openid = $message->FromUserName;
-                error_log('[G3]error: FULL Openid: ' . print_r($openid, true));
-                $this->triggerLoginAfterSubscribe($openid);
+
+            $hash = substr($sceneStr, 8);
+            // Validate Scene
+            if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
+                return null;
             }
+            $openid = $message->FromUserName;
+            $this->triggerLoginAfterSubscribe($openid, $hash);
             return;
         } else {
             return $defaultMessage;
@@ -728,19 +730,20 @@ class WechatOAService {
     private function handleScanEvent($message)
     {
         error_log('[G3]error: Scan Event: ' . print_r($message, true));
-        $sceneId = $message->EventKey;
-        if (preg_match('/^qrscene_(\d+)$/', $sceneId, $matches)) {
-            $sceneId = $matches[1];
-            $openid  = $message->FromUserName;
-            error_log('[G3]error: Scan Event: match true');
-            $this->triggerLoginAfterSubscribe($openid);
+        $hash   = $message->EventKey ?? '';
+        $openid = $message->FromUserName ?? '';
+        if ($hash) {
+            error_log("[G3] Scan event from followed user, openid: {$openid}");
+
+            $this->triggerLoginAfterSubscribe($openid, $hash);
+            return __('Login Success', 'G3');
         }
     }
-    private function triggerLoginAfterSubscribe(string $openid)
+    private function triggerLoginAfterSubscribe(string $openid, string $hash)
     {
         // Notify AuthService: this openid user has subscribed, please login
         $authService = AuthService::run();
-        $authService->handlePostSubscribeLogin($openid);
+        $authService->handlePostSubscribeLogin($openid, $hash);
     }
 
     /**
@@ -1814,16 +1817,18 @@ class WechatOAService {
      * 
      ************************************************************/
     /**
-     * Get QR Code for Follow Login
+     * Get temporary QR Code for Subscribe Login
      * 
-     * 获取用于 关注登录 的永久二维码
+     * 获取用于 关注登录 的临时二维码
      *
+     * @param string $hash
+     * @param int $seconds
      * @return array|WP_Error
      * @throws Exception
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function getFollowLoginQrCode()
+    public function getSubscribeLoginQrCode(string $hash, int $seconds)
     {
         if (!$this->isAvailable()) {
             return new WP_Error(
@@ -1832,7 +1837,7 @@ class WechatOAService {
             );
         }
 
-        $cacheKey = 'g3_wechat_follow_login_qrcode';
+        $cacheKey = 'g3_wechat_qrcode_' . $hash;
         $cached   = get_transient($cacheKey);
 
         // Validate cache
@@ -1841,7 +1846,6 @@ class WechatOAService {
         }
 
         try {
-
             /**
              * @link https://developers.weixin.qq.com/doc/service/api/qrcode/qrcodes/api_createqrcode.html
              * 最大支持 2592000 秒（30 天）
@@ -1850,10 +1854,11 @@ class WechatOAService {
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
                     'json' => [
-                        'action_name' => 'QR_STR_SCENE',
-                        'action_info' => [
+                        'expire_seconds' => $seconds,
+                        'action_name'    => 'QR_STR_SCENE',
+                        'action_info'    => [
                             'scene' => [
-                                'scene_str' => self::FOLLOW_LOGIN_SCENE
+                                'scene_str' => $hash
                             ]
                         ]
                     ]
@@ -1879,8 +1884,8 @@ class WechatOAService {
             ];
         }
         catch (Exception $e) {
-            error_log('Failed to create login QR code: ' . $e->getMessage());
-            return new WP_Error('qrcode_permanent_error', $e->getMessage());
+            error_log('Failed to create Subscribe Login QR code: ' . $e->getMessage());
+            return new WP_Error('qrcode_error', $e->getMessage());
         }
     }
 }

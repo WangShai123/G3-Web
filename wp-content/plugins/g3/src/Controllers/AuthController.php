@@ -72,9 +72,7 @@ class AuthController {
     }
 
     /**
-     * Get Wechat OA Subscribe Login QRCode URL
-     * 
-     * 获取微信公众号关注登录的永久二维码URL
+     * Get temporary Wechat OA Subscribe Login QRCode
      *
      * @param WP_REST_Request $request
      * @return WP_REST_Response|WP_Error
@@ -84,17 +82,38 @@ class AuthController {
     #[RestRouter(
         namespace: 'api/v1',
         route: 'auth/wechat/login/subscribe/qrcode',
-        methods: 'GET'
+        methods: 'POST'
     )]
-    public function getFollowLoginQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['hash'],
+        'properties' => [
+            'hash' => [
+                'type'   => 'string',
+                'length' => 36,
+            ],
+        ]
+    ])]
+    #[Middleware(RateLimitMiddleware::class, [6, 60])]
+    public function getSubscribeQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $service  = AuthService::run();
-        $qrResult = $service->getFollowLoginQrCode();
+        $params = $request->get_json_params();
+        $hash   = sanitize_text_field($params['hash'] ?? '');
 
-        if (is_wp_error($qrResult)) {
+        // Validate the hash (UUID v4)
+        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
+            return new WP_Error(400, 'Invalid hash format');
+        }
+        // 30分钟过期 空 transient
+        set_transient("g3_SubscribeLoginHash_{$hash}", '', 1800);
+
+        $service = AuthService::run();
+        $result  = $service->getSubscribeLoginQrCode($hash, 1800);
+
+        if (is_wp_error($result)) {
             return new WP_Error(
                 500,
-                $qrResult->get_error_message(),
+                $result->get_error_message(),
                 ['status' => 500]
             );
         }
@@ -102,163 +121,72 @@ class AuthController {
         return rest_ensure_response([
             'code' => 200,
             'data' => [
-                'url' => $qrResult['url']
+                'url' => $result['url']
             ]
         ]);
     }
 
     /**
-     * Get Follow Login URL for qrcode
-     *
+     * Validate login status in WeChat OA subscribe login mode.
+     * 
      * @param WP_REST_Request $request
-     * @return WP_Error|WP_REST_Response
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return WP_REST_Response|WP_Error
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'auth/wechat/follow/url',
-        methods: 'GET'
+        route: 'auth/wechat/login/subscribe/validate',
+        methods: 'POST'
     )]
-    #[Middleware(RateLimitMiddleware::class, [10, 60])]
-    public function getFollowAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['hash'],
+        'properties' => [
+            'hash' => [
+                'type'   => 'string',
+                'length' => 36,
+            ],
+        ]
+    ])]
+    #[Middleware(RateLimitMiddleware::class, [30, 60])]
+    public function validateSubscribeLogin(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $service = AuthService::run();
-        if (!$service->wechatOAService->isAvailable()) {
-            return new WP_Error(
-                503,
-                __('WeChat service is not configured.', 'G3'),
-                ['status' => 503]
-            );
+        $params = $request->get_json_params();
+        $hash   = sanitize_text_field($params['hash'] ?? '');
+
+        // Validate the hash (UUID v4)
+        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
+            return new WP_Error(400, 'Invalid hash');
         }
 
-        $redirectUri = home_url(AuthService::WECHAT_CALLBACK);
-        $authUrl     = $service->getOAuthUrl($redirectUri, 'login');
+        $userId = get_transient("g3_login_hash_{$hash}");
 
-        if (empty($authUrl)) {
-            return new WP_Error(
-                500,
-                __('Failed to generate WeChat auth URL.', 'G3'),
-                ['status' => 500]
-            );
+        // Hash expired
+        if ($userId === false) {
+            return rest_ensure_response([
+                'success' => false,
+                'message' => __('Quest expired', 'G3')
+            ]);
+        }
+        // Hash waiting for validation
+        if ($userId === '') {
+            return rest_ensure_response([
+                'success' => false,
+                'message' => __('Quest pending', 'G3')
+            ]);
         }
 
+        $user = new WP_User((int) $userId);
+        if (!$user->exists()) {
+            return new WP_Error(400, 'User not found');
+        }
+
+        AuthService::performWpLogin($user);
         return rest_ensure_response([
-            'code'    => 200,
-            'message' => __('Success'),
-            'data'    => ['url' => $authUrl]
+            'success' => true,
+            'message' => __('Login Success', 'G3')
         ]);
     }
 
-    /**
-     * Handle WeChat OAuth2 Callback
-     *
-     * @param WP_REST_Request $request
-     * @return WP_Error|WP_REST_Response
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    #[RestRouter(
-        namespace: 'api/v1',
-        route: 'auth/wechat/callback',
-        methods: 'GET'
-    )]
-    public function handleWechatCallback(WP_REST_Request $request): WP_Error|WP_REST_Response
-    {
-        $code  = $request->get_param('code');
-        $state = $request->get_param('state') ?: '';
-
-        if (empty($code)) {
-            return new WP_Error(
-                400,
-                __('Authorization code is missing.', 'G3'),
-                ['status' => 400]
-            );
-        }
-
-        $service = AuthService::run();
-        if (!$service->wechatOAService->isAvailable()) {
-            return new WP_Error(
-                503,
-                __('WeChat service is not configured.', 'G3'),
-                ['status' => 503]
-            );
-        }
-
-        // Get OpenID by code
-        $openid = $service->getOpenIdByCode($code);
-        if (is_wp_error($openid)) {
-            return new WP_Error(500, $openid->get_error_message(), ['status' => 500]);
-        }
-
-        // By state param, decide login or bind
-        if ($state === 'bind') {
-            // --- Bind Flow ---
-            if (!is_user_logged_in()) {
-                // 这里可以选择重定向到登录页，或者返回错误
-                /**
-                 * @todo custom user login page
-                 */
-                $redirectUrl = add_query_arg('error', 'session_expired', wp_login_url());
-                return rest_ensure_response([
-                    'code'         => 200,
-                    'redirect_url' => $redirectUrl,
-                    'message'      => __('Session expired.')
-                ]);
-            }
-
-            $currentUserId = get_current_user_id();
-            $bindResult    = AuthService::bindOpenIdToUser($currentUserId, $openid);
-
-            if (is_wp_error($bindResult)) {
-                $redirectUrl = add_query_arg('error', 'bind_failed', home_url('/profile'));
-                return rest_ensure_response([
-                    'code'         => 200,
-                    'redirect_url' => $redirectUrl,
-                    'message'      => $bindResult->get_error_message()
-                ]);
-            }
-
-            // Bind success, redirect to frontend success page
-            $redirectUrl = add_query_arg('wechat_bind', 'success', home_url('/profile'));
-            return rest_ensure_response([
-                'code'         => 200,
-                'redirect_url' => $redirectUrl,
-                'message'      => __('WeChat account bound successfully.')
-            ]);
-
-        } else {
-            // --- Login/Register Flow ---
-            $user = AuthService::findUserByOpenId($openid);
-
-            if ($user instanceof WP_User) {
-                // Login if the user exists
-                AuthService::performWpLogin($user);
-            } else {
-                // Generate a new WordPress user if the user does not exist
-                $newUserId = AuthService::createWpUserByOpenId($openid);
-                if (is_wp_error($newUserId)) {
-                    return new WP_Error(
-                        500,
-                        __('Failed to create new user.', 'G3'),
-                        ['status' => 500]
-                    );
-                }
-                $user = new WP_User($newUserId);
-                AuthService::performWpLogin($user);
-            }
-
-            // Login Success, redirect to frontend user center
-            $redirectUrl = add_query_arg('login', 'wechat_success', home_url('/user-dashboard'));
-            return rest_ensure_response([
-                'code'    => 200,
-                'message' => __('Success'),
-                'data'    => [
-                    'redirect' => $redirectUrl
-                ]
-            ]);
-        }
-    }
 
     /**
      * Get Wechat Bind Auth URL

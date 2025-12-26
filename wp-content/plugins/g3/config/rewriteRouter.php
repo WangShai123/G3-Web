@@ -53,7 +53,7 @@ return [
 
     // User Register Page
     'user/([^/]+)/?$'             => [
-        'var'      => 'user_call',
+        'var'      => 'user_action',
         'path'     => 'user/user.php',
         'priority' => [
             [

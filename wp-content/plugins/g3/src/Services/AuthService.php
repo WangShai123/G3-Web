@@ -104,20 +104,22 @@ class AuthService {
      * 
      ************************************************************/
     /**
-     * Get WeChat OA Follow Login QRCode
+     * Get temporary WeChat OA Follow Login QRCode
      * 
-     * 获取微信公众号关注登录用的永久二维码
+     * 获取微信公众号关注登录用的临时二维码
      * 
+     * @param string $hash
+     * @param int $seconds
      * @return array|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function getFollowLoginQrCode(): array|WP_Error
+    public function getSubscribeLoginQrCode(string $hash, int $seconds): array|WP_Error
     {
-        return $this->wechatOAService->getFollowLoginQrCode();
+        return $this->wechatOAService->getSubscribeLoginQrCode($hash, $seconds);
     }
 
-    public function handlePostSubscribeLogin(string $openid)
+    public function handlePostSubscribeLogin(string $openid, string $hash)
     {
         error_log("handlePostSubscribeLogin with openid: " . $openid);
 
@@ -130,8 +132,11 @@ class AuthService {
                 $user = new WP_User($userId);
             }
         }
-        error_log("handlePostSubscribeLogin: user found, auto login");
-        self::performWpLogin($user);
+        if (!$user instanceof WP_User) {
+            return;
+        }
+
+        set_transient("g3_SubscribeLoginHash_{$hash}", $user->ID, 1800);
         // 方案：仅标记用户已绑定，前端轮询 /api/v1/auth/me
         // （只要 openid 绑定成功，/me 就会返回用户信息）
     }
