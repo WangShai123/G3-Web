@@ -102,8 +102,7 @@ class AuthController {
         return rest_ensure_response([
             'code' => 200,
             'data' => [
-                'qrcode_url' => $qrResult['url'],
-                'note'       => 'Scan to follow and auto-login'
+                'url' => $qrResult['url']
             ]
         ]);
     }

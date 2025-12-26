@@ -1794,9 +1794,9 @@ class WechatOAService {
 
 
     /**
-     * 获取用于“关注即登录”的永久二维码（全局唯一，长期有效）
+     * 获取用于“关注登录”的临时二维码
      *
-     * @return array{ticket: string, url: string}|WP_Error
+     * @return 
      */
     public function getFollowLoginQrCode()
     {
@@ -1807,12 +1807,9 @@ class WechatOAService {
             );
         }
 
-        // 使用固定场景字符串
-        $sceneStr = 'g3_login_subscribe';
-
         // 先尝试从缓存读取（避免重复创建）
         $cacheKey = 'g3_wechat_follow_login_qrcode';
-        $cached   = get_option($cacheKey, false);
+        $cached   = get_transient($cacheKey);
 
         if ($cached && isset($cached['ticket'], $cached['url'])) {
             // 可选：验证 ticket 是否仍有效（通常永久有效）
@@ -1820,37 +1817,70 @@ class WechatOAService {
         }
 
         try {
-            // 调用微信 API 创建永久字符串二维码
-            $url    = 'https://api.weixin.qq.com/cgi-bin/qrcode/create';
-            $params = [
-                'action_name' => 'QR_LIMIT_STR_SCENE',
-                'action_info' => [
-                    'scene' => ['scene_str' => $sceneStr]
+            // 创建新的 30 分钟临时码
+            $expireSeconds = 1800;
+            // 固定场景值
+            $sceneId = crc32('g3_login_subscribe') & 0x7FFFFFFF;
+
+            $response = $this->app->getClient()->post(
+                'https://api.weixin.qq.com/cgi-bin/qrcode/create',
+                [
+                    'expire_seconds' => $expireSeconds,
+                    'action_name'    => 'QR_SCENE',
+                    'action_info'    => ['scene' => ['scene_id' => $sceneId]]
                 ]
-            ];
+            );
 
-            $response = $this->app->getClient()->post($url, $params);
-            $data     = $response->toArray();
+            $data = $response->toArray();
 
-            if (isset($data['errcode']) && $data['errcode'] !== 0) {
+            if (!empty($data['errcode'])) {
                 throw new \Exception($data['errmsg'] ?? 'Unknown error');
             }
 
-            $qrcodeUrl = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']);
-
             $result = [
-                'ticket'    => $data['ticket'],
-                'url'       => $qrcodeUrl,
-                'scene_str' => $sceneStr,
+                'ticket'     => $data['ticket'],
+                'url'        => 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']),
+                'expires_at' => time() + $expireSeconds,
             ];
 
-            // 永久缓存到数据库（除非手动清除）
-            update_option($cacheKey, $result, false); // false = 不自动加载
+            set_transient($cacheKey, $result, $expireSeconds);
 
-            return $result;
+            return [
+                'ticket' => $result['ticket'],
+                'url'    => $result['url'],
+            ];
+
+
+            // $url    = 'https://api.weixin.qq.com/cgi-bin/qrcode/create';
+            // $params = [
+            //     'action_name' => 'QR_LIMIT_STR_SCENE',
+            //     'action_info' => [
+            //         'scene' => ['scene_str' => $sceneStr]
+            //     ]
+            // ];
+
+            // $response = $this->app->getClient()->post($url, $params);
+            // $data     = $response->toArray();
+
+            // if (isset($data['errcode']) && $data['errcode'] !== 0) {
+            //     throw new \Exception($data['errmsg'] ?? 'Unknown error');
+            // }
+
+            // $qrcodeUrl = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']);
+
+            // $result = [
+            //     'ticket'    => $data['ticket'],
+            //     'url'       => $qrcodeUrl,
+            //     'scene_str' => $sceneStr,
+            // ];
+
+            // // 永久缓存到数据库（除非手动清除）
+            // update_option($cacheKey, $result, false); // false = 不自动加载
+
+            // return $result;
         }
         catch (\Exception $e) {
-            error_log('Failed to create permanent login QR code: ' . $e->getMessage());
+            error_log('Failed to create login QR code: ' . $e->getMessage());
             return new WP_Error('qrcode_permanent_error', $e->getMessage());
         }
     }
