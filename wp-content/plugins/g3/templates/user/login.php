@@ -84,7 +84,10 @@ login
       `;
 
                 // 5. 开始轮询验证
-                startPolling();
+                // startPolling();
+                setTimeout(() => {
+                    startPolling(loginHash);
+                }, 1000); // 👈 关键：避免立即轮询
             } catch (err) {
                 console.error('初始化失败:', err);
                 app.innerHTML = `<p style="color:red; text-align:center;">❌ ${err.message}</p>`;
