@@ -720,7 +720,7 @@ class WechatOAService {
             }
             $openid = $message->FromUserName;
             $this->triggerLoginAfterSubscribe($openid, $hash);
-            return;
+            return __('Login Success', 'G3');
         } else {
             return $defaultMessage;
         }
