@@ -68,7 +68,7 @@ class AuthController {
 
         return rest_ensure_response([
             'code'    => 200,
-            'message' => __('Success')
+            'message' => __('Login Success', 'G3')
         ]);
     }
 
