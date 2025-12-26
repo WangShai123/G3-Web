@@ -287,6 +287,8 @@ class WechatOAService {
                 );
                 break;
             case 'event':
+                error_log('Event message: ' . $message['Event']);
+                error_log('EventKey message: ' . $message['EventKey']);
                 $data['content'] = sprintf(
                     'Event: %s, EventKey: %s',
                     $message['Event'] ?? '',
