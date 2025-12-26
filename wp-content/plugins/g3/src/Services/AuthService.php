@@ -119,19 +119,19 @@ class AuthService {
 
     public function handlePostSubscribeLogin(string $openid)
     {
+        error_log("handlePostSubscribeLogin with openid: " . $openid);
+
         // Find or Create WordPress User
         $user = self::findUserByOpenId($openid);
         if (!$user) {
+            error_log("handlePostSubscribeLogin: user not found, create one");
             $userId = self::createWpUserByOpenId($openid);
             if (!is_wp_error($userId)) {
                 $user = new WP_User($userId);
             }
         }
-
-        if (!$user instanceof WP_User) {
-            return;
-        }
-
+        error_log("handlePostSubscribeLogin: user found, auto login");
+        self::performWpLogin($user);
         // 方案：仅标记用户已绑定，前端轮询 /api/v1/auth/me
         // （只要 openid 绑定成功，/me 就会返回用户信息）
     }

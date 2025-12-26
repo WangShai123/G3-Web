@@ -703,6 +703,7 @@ class WechatOAService {
         return match ($event) {
             'subscribe' => $this->handleSubscribeEvent($message),
             'CLICK' => $this->handleClickEvent($message),
+            'scan' => $this->handleScanEvent($message),
             default => null,
         };
     }
@@ -722,6 +723,17 @@ class WechatOAService {
             return;
         } else {
             return $defaultMessage;
+        }
+    }
+    private function handleScanEvent($message)
+    {
+        error_log('[G3]error: Scan Event: ' . print_r($message, true));
+        $sceneId = $message->EventKey;
+        if (preg_match('/^qrscene_(\d+)$/', $sceneId, $matches)) {
+            $sceneId = $matches[1];
+            $openid  = $message->FromUserName;
+            error_log('[G3]error: Scan Event: match true');
+            $this->triggerLoginAfterSubscribe($openid);
         }
     }
     private function triggerLoginAfterSubscribe(string $openid)
