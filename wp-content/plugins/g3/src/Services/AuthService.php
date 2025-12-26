@@ -46,6 +46,8 @@ class AuthService {
      */
     public const OPENID_META_KEY = 'g3_wechat_openId';
 
+    public const SUBSCRIBE_HASH_PREFIX = 'g3_SubscribeLoginHash_';
+
     public const WECHAT_CALLBACK = '/wp-json/api/v1/auth/wechat/callback';
 
     /**
@@ -121,12 +123,9 @@ class AuthService {
 
     public function handlePostSubscribeLogin(string $openid, string $hash)
     {
-        error_log("handlePostSubscribeLogin with openid: " . $openid);
-
         // Find or Create WordPress User
         $user = self::findUserByOpenId($openid);
         if (!$user) {
-            error_log("handlePostSubscribeLogin: user not found, create one");
             $userId = self::createWpUserByOpenId($openid);
             if (!is_wp_error($userId)) {
                 $user = new WP_User($userId);
@@ -187,7 +186,6 @@ class AuthService {
 
         try {
             $oauth = $this->wechatOAService->app->getOAuth();
-            // 在 EasyWeChat 6.x 中，user() 方法会自动处理 code 并返回用户信息
             // 由于我们使用的是 snsapi_base，user 对象只包含 openid
             $user = $oauth->userFromCode($code); // 更明确的方法
             return $user->getId(); // 返回 OpenID
@@ -248,7 +246,6 @@ class AuthService {
         ];
 
         $result = wp_insert_user($userData);
-        error_log('[G3]auth: insert user result: ' . print_r($result, true));
         return $result;
     }
 

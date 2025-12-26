@@ -9,6 +9,7 @@ use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\AuthService;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Validator;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -101,15 +102,17 @@ class AuthController {
         $hash   = sanitize_text_field($params['hash'] ?? '');
 
         // Validate the hash (UUID v4)
-        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
-            return new WP_Error(400, 'Invalid hash format');
+        if (!Validator::isUUIDv4($hash)) {
+            return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
-        error_log("hash in [getSubscribeQrCode]: {$hash}");
-        // 30分钟过期 空 transient
-        set_transient("g3_SubscribeLoginHash_{$hash}", '', 1800);
+
+        // 30 mins expires, empty transient
+        $cacheKey   = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
+        $expiration = 1800;
+        set_transient($cacheKey, '', $expiration);
 
         $service = AuthService::run();
-        $result  = $service->getSubscribeLoginQrCode($hash, 1800);
+        $result  = $service->getSubscribeLoginQrCode($hash, $expiration);
 
         if (is_wp_error($result)) {
             return new WP_Error(
@@ -155,20 +158,18 @@ class AuthController {
         $hash   = sanitize_text_field($params['hash'] ?? '');
 
         // Validate the hash (UUID v4)
-        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
-            return new WP_Error(400, 'Invalid hash');
+        if (!Validator::isUUIDv4($hash)) {
+            return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
 
-        error_log('[G3] [Login] [Subscribe] [Validate] [Hash]: ' . $hash);
-
-        $userId = get_transient("g3_SubscribeLoginHash_{$hash}");
-
-        error_log('[G3] [Login] [Subscribe] [Validate] [User ID]: ' . $userId);
+        $cacheKey = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
+        $userId   = get_transient($cacheKey);
 
         // Hash expired
         if ($userId === false) {
             return rest_ensure_response([
                 'success' => false,
+                'status'  => 'expired',
                 'message' => __('Quest expired', 'G3')
             ]);
         }
@@ -176,6 +177,7 @@ class AuthController {
         if ($userId === '') {
             return rest_ensure_response([
                 'success' => false,
+                'status'  => 'pending',
                 'message' => __('Quest pending', 'G3')
             ]);
         }
@@ -186,6 +188,7 @@ class AuthController {
         }
 
         AuthService::performWpLogin($user);
+        delete_transient($cacheKey);
         return rest_ensure_response([
             'success' => true,
             'message' => __('Login Success', 'G3')

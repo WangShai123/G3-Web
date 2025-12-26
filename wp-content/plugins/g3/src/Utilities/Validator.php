@@ -128,4 +128,19 @@ final class Validator {
         $url = trim($url);
         return (bool) wp_http_validate_url($url);
     }
+
+    /**
+     * Check if the string is a valid UUIDv4.
+     * 
+     * 检查字符串是否为有效的 UUIDv4。
+     *
+     * @param string $uuid The UUID to check.
+     * @return bool True if the string is a valid UUIDv4, false otherwise.
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function isUUIDv4(string $uuid)
+    {
+        return preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $uuid);
+    }
 }

@@ -5,9 +5,10 @@ login
 <script>
     (function () {
         const app = document.querySelector('#app');
+        const subscribeCookie = 'g3_wechat_login_hash';
 
         // ✅ 安全生成 UUID v4（兼容旧版 Safari）
-        function generateLoginHash() {
+        function UUID() {
             if (typeof crypto.randomUUID === 'function') {
                 return crypto.randomUUID();
             }
@@ -30,8 +31,6 @@ login
             ].join('-');
         }
 
-        let loginHash;
-
         // 工具函数：发送 JSON POST 请求
         async function postJson(url, body) {
             const res = await fetch(url, {
@@ -44,17 +43,16 @@ login
 
         // 初始化登录流程
         async function initLogin() {
-            // 1. 生成唯一登录凭证（UUID v4）
-            // if (!window.crypto || !crypto.randomUUID) {
-            //     app.innerHTML = '<p style="color:red;">浏览器不支持安全随机数生成，请升级浏览器。</p>';
-            //     return;
-            // }
-            // loginHash = crypto.randomUUID();
-            try {
-                loginHash = generateLoginHash();
-            } catch (err) {
-                app.innerHTML = `<p style="color:red;text-align:center;">${err.message}</p>`;
-                return;
+            let hash = getCookie(subscribeCookie);
+            // 1. 生成唯一登录凭证（UUID）
+            if (!hash) {
+                try {
+                    hash = UUID();
+                    setCookie(subscribeCookie, hash, 30);
+                } catch (err) {
+                    app.innerHTML = `<p style="color:red;text-align:center;">${err.message}</p>`;
+                    return;
+                }
             }
 
             // 2. 显示加载状态
@@ -63,7 +61,7 @@ login
             try {
                 // 3. 请求后端创建临时二维码
                 const qrRes = await postJson('/wp-json/api/v1/auth/wechat/login/subscribe/qrcode', {
-                    hash: loginHash
+                    hash: hash
                 });
 
                 if (qrRes.code !== 200 || !qrRes.data?.url) {
@@ -83,11 +81,10 @@ login
         <p id="status" style="text-align:center; color:#666; margin-top:12px;">扫码后自动登录...</p>
       `;
 
-                // 5. 开始轮询验证
-                // startPolling();
+                // 5. 延迟轮询验证
                 setTimeout(() => {
-                    startPolling(loginHash);
-                }, 1000); // 👈 关键：避免立即轮询
+                    startPolling(hash);
+                }, 2000);
             } catch (err) {
                 console.error('初始化失败:', err);
                 app.innerHTML = `<p style="color:red; text-align:center;">❌ ${err.message}</p>`;
@@ -95,29 +92,28 @@ login
         }
 
         // 轮询验证登录状态
-        function startPolling() {
+        function startPolling(hash) {
             const statusEl = document.querySelector('#status');
-            const pollInterval = 2000; // 2秒轮询一次
+            const pollInterval = 3000; // 3秒轮询一次
 
             const poll = async () => {
                 try {
                     const res = await postJson('/wp-json/api/v1/auth/wechat/login/subscribe/validate', {
-                        hash: loginHash
+                        hash: hash
                     });
 
                     if (res.success === true) {
-                        // 登录成功（后端已设置 Cookie）
                         statusEl.textContent = '✅ 登录成功！';
                         statusEl.style.color = 'green';
+                        deleteCookie(subscribeCookie);
                         setTimeout(() => {
-                            window.location.href = '/dashboard'; // ← 修改为你自己的跳转地址
+                            window.location.href = '/dashboard';
                         }, 500);
                     } else {
-                        console.log(res);
-                        console.log(res.message);
-                        if (res.message && res.message.includes('expired')) {
+                        if (res.status && res.status == 'expired') {
                             statusEl.textContent = '⚠️ 二维码已过期';
                             statusEl.style.color = '#d97706';
+                            deleteCookie(subscribeCookie);
                             return; // 停止轮询
                         }
                         // 继续等待（Quest pending）
@@ -134,6 +130,25 @@ login
 
         // 启动整个流程
         initLogin();
+
+        function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    return cookie.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
+        function setCookie(name, value, minutes) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (minutes * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+        }
+        function deleteCookie(name) {
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+        }
     })();
 </script>
 

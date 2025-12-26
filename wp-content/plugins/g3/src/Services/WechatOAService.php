@@ -713,8 +713,6 @@ class WechatOAService {
         $sceneStr       = $message->EventKey ?? '';
 
         if (strpos($sceneStr, 'qrscene_') === 0) {
-            error_log('[G3]error: FULL Scene: ' . print_r($sceneStr, true));
-
             $hash = substr($sceneStr, 8);
             // Validate Scene
             if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
@@ -729,12 +727,9 @@ class WechatOAService {
     }
     private function handleScanEvent($message)
     {
-        error_log('[G3]error: Scan Event: ' . print_r($message, true));
         $hash   = $message->EventKey ?? '';
         $openid = $message->FromUserName ?? '';
         if ($hash) {
-            error_log("[G3] Scan event from followed user, openid: {$openid}");
-
             $this->triggerLoginAfterSubscribe($openid, $hash);
             return __('Login Success', 'G3');
         }
