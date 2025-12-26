@@ -85,6 +85,9 @@ class WechatOAMessageListTable extends WP_List_Table {
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
+            echo '<button type="button" class="button button-error" id="flush-wechat-oa-messages">'
+                . __('Delete old messages', 'G3')
+                . '</button>';
         }
     }
 
