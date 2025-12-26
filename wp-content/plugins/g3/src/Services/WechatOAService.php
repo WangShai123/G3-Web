@@ -1826,7 +1826,7 @@ class WechatOAService {
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
                     'expire_seconds' => $expireSeconds,
-                    'action_name'    => 'QR_LIMIT_STR_SCENE',
+                    'action_name'    => 'QR_STR_SCENE',
                     'action_info'    => [
                         'scene' => ['scene_str' => $scene_str]
                     ]
