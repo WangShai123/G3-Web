@@ -233,8 +233,8 @@ class WechatOAService {
                 $userInfo = $this->getUserInfo($openid);
                 $nickname = $userInfo['nickname'] ?? '-';
             }
-            catch (Exception $e) {
-                error_log('saveMessage Notice, Failed to get user info: ' . $e->getMessage());
+            catch (Exception $event) {
+                error_log('saveMessage Notice, Failed to get user info: ' . $event->getMessage());
             }
         }
 
@@ -271,29 +271,19 @@ class WechatOAService {
                 $data['content'] = $message['MediaId'] ?? '';
                 break;
             case 'location':
-                $data['content'] = sprintf(
-                    'Location: (%s, %s), Label: %s',
-                    $message['Location_X'] ?? '',
-                    $message['Location_Y'] ?? '',
-                    $message['Label'] ?? ''
-                );
+                $x = $message['Location_X'] ?? '';
+                $y = $message['Location_Y'] ?? '';
+                $label = $message['Label'] ?? '';
+                $data['content'] = $x . ', ' . $y . ', ' . $label;
                 break;
             case 'link':
-                $data['content'] = sprintf(
-                    'Title: %s, Description: %s, Url: %s',
-                    $message['Title'] ?? '',
-                    $message['Description'] ?? '',
-                    $message['Url'] ?? ''
-                );
+                $url = $message['Url'] ?? '';
+                $data['content'] = $url;
                 break;
             case 'event':
-                error_log('Event message: ' . $message['Event']);
-                error_log('EventKey message: ' . $message['EventKey']);
-                $data['content'] = sprintf(
-                    'Event: %s, EventKey: %s',
-                    $message['Event'] ?? '',
-                    $message['EventKey'] ?? ''
-                );
+                $event = $message['Event'] ?? '';
+                $key = $message['EventKey'] ?? '';
+                $data['content'] = $event . ' - ' . $key;
                 break;
             default:
                 $data['content'] = 'Unsupported message type';
