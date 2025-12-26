@@ -553,12 +553,10 @@ class WechatOAService {
 
             // Save message to database, ignore event message: subscribe, unsubscribe, click
             $result = false;
-            if ($messageArray['MsgType'] == 'event') {
-                $event = strtoupper($messageArray['Event']);
+            $event  = strtoupper($messageArray['Event']);
+            if (!in_array($event, ['SUBSCRIBE', 'UNSUBSCRIBE', 'CLICK'])) {
                 error_log('message event: ' . print_r($event, true));
-                if (!in_array($event, ['SUBSCRIBE', 'UNSUBSCRIBE', 'SCAN'])) {
-                    $result = $this->saveMessage($messageArray);
-                }
+                $result = $this->saveMessage($messageArray);
             }
 
             if (false === $result) {
