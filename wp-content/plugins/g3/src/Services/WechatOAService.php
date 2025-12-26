@@ -285,6 +285,13 @@ class WechatOAService {
                     $message['Url'] ?? ''
                 );
                 break;
+            case 'event':
+                $data['content'] = sprintf(
+                    'Event: %s, EventKey: %s',
+                    $message['Event'] ?? '',
+                    $message['EventKey'] ?? ''
+                );
+                break;
             default:
                 $data['content'] = 'Unsupported message type';
                 break;
