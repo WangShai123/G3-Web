@@ -262,9 +262,11 @@ class WechatOAService {
                 break;
             case 'image':
                 $data['content'] = $message['PicUrl'] ?? '';
+                error_log('image content: ' . print_r($data['content'], true));
                 break;
             case 'voice':
                 $data['content'] = $message['Recognition'] ?? $message['MediaId'] ?? '';
+                error_log('voice content: ' . print_r($data['content'], true));
                 break;
             case 'video':
             case 'shortvideo':
@@ -275,6 +277,7 @@ class WechatOAService {
                 $y = $message['Location_Y'] ?? '';
                 $label = $message['Label'] ?? '';
                 $data['content'] = $x . ', ' . $y . ', ' . $label;
+                error_log('location content: ' . print_r($data['content'], true));
                 break;
             case 'link':
                 $url = $message['Url'] ?? '';
@@ -284,7 +287,7 @@ class WechatOAService {
                 $event = (string) $message['Event'] ?? '';
                 $key = (string) $message['EventKey'] ?? '';
                 $data['content'] = $event . ' - ' . $key;
-                error_log('content: ' . print_r($data['content'], true));
+                error_log('event content: ' . print_r($data['content'], true));
                 break;
             default:
                 $data['content'] = 'Unsupported message type';
@@ -551,7 +554,8 @@ class WechatOAService {
             // Save message to database, ignore event message: subscribe, unsubscribe, click
             $result = false;
             if ($messageArray['MsgType'] == 'event') {
-                $event = strtoupper($message->Event ?? '');
+                $event = strtoupper($messageArray['Event']);
+                error_log('message event: ' . print_r($event, true));
                 if (!in_array($event, ['SUBSCRIBE', 'UNSUBSCRIBE', 'SCAN'])) {
                     $result = $this->saveMessage($messageArray);
                 }
