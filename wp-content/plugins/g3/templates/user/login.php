@@ -115,11 +115,11 @@ login
                     } else {
                         console.log(res);
                         console.log(res.message);
-                        // if (res.message && res.message.includes('expired')) {
-                        //     statusEl.textContent = '⚠️ 二维码已过期';
-                        //     statusEl.style.color = '#d97706';
-                        //     return; // 停止轮询
-                        // }
+                        if (res.message && res.message.includes('expired')) {
+                            statusEl.textContent = '⚠️ 二维码已过期';
+                            statusEl.style.color = '#d97706';
+                            return; // 停止轮询
+                        }
                         // 继续等待（Quest pending）
                         setTimeout(poll, pollInterval);
                     }

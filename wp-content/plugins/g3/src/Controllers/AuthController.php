@@ -158,7 +158,7 @@ class AuthController {
             return new WP_Error(400, 'Invalid hash');
         }
 
-        $userId = get_transient("g3_login_hash_{$hash}");
+        $userId = get_transient("g3_SubscribeLoginHash_{$hash}");
 
         // Hash expired
         if ($userId === false) {
