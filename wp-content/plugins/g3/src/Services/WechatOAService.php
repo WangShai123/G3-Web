@@ -1817,17 +1817,19 @@ class WechatOAService {
         }
 
         try {
-            // 创建新的 30 分钟临时码
-            $expireSeconds = 1800;
+            // 最大支持 2592000 秒（30 天）
+            $expireSeconds = 2592000;
             // 固定场景值
-            $sceneId = crc32('g3_login_subscribe') & 0x7FFFFFFF;
+            $scene_str = 'g3_login_subscribe';
 
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
                     'expire_seconds' => $expireSeconds,
-                    'action_name'    => 'QR_SCENE',
-                    'action_info'    => ['scene' => ['scene_id' => $sceneId]]
+                    'action_name'    => 'QR_LIMIT_STR_SCENE',
+                    'action_info'    => [
+                        'scene' => ['scene_str' => $scene_str]
+                    ]
                 ]
             );
 
@@ -1849,35 +1851,6 @@ class WechatOAService {
                 'ticket' => $result['ticket'],
                 'url'    => $result['url'],
             ];
-
-
-            // $url    = 'https://api.weixin.qq.com/cgi-bin/qrcode/create';
-            // $params = [
-            //     'action_name' => 'QR_LIMIT_STR_SCENE',
-            //     'action_info' => [
-            //         'scene' => ['scene_str' => $sceneStr]
-            //     ]
-            // ];
-
-            // $response = $this->app->getClient()->post($url, $params);
-            // $data     = $response->toArray();
-
-            // if (isset($data['errcode']) && $data['errcode'] !== 0) {
-            //     throw new \Exception($data['errmsg'] ?? 'Unknown error');
-            // }
-
-            // $qrcodeUrl = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']);
-
-            // $result = [
-            //     'ticket'    => $data['ticket'],
-            //     'url'       => $qrcodeUrl,
-            //     'scene_str' => $sceneStr,
-            // ];
-
-            // // 永久缓存到数据库（除非手动清除）
-            // update_option($cacheKey, $result, false); // false = 不自动加载
-
-            // return $result;
         }
         catch (\Exception $e) {
             error_log('Failed to create login QR code: ' . $e->getMessage());
