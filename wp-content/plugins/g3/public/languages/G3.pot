@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-26 20:30+0000\n"
+"POT-Creation-Date: 2025-12-26 21:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -312,7 +312,7 @@ msgstr ""
 msgid "All Products"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1317
+#: src/Services/WechatOAService.php:1320
 msgid "All provided IDs are invalid"
 msgstr ""
 
@@ -428,17 +428,17 @@ msgstr ""
 msgid "Array %s[%s] must be type %s."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1715
+#: src/Services/WechatOAService.php:1718
 #: src/Components/WechatOA/views/view-menu-edit.php:292
 msgid "Article ID"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1714
+#: src/Services/WechatOAService.php:1717
 #: src/Components/WechatOA/views/view-menu-edit.php:280
 msgid "Article URL"
 msgstr ""
 
-#: src/Services/WechatOAService.php:880
+#: src/Services/WechatOAService.php:883
 msgid "At least one keyword is required"
 msgstr ""
 
@@ -476,7 +476,7 @@ msgstr ""
 msgid "Balance Management"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1153
+#: src/Services/WechatOAService.php:1156
 msgid "Batch insert keywords failed"
 msgstr ""
 
@@ -597,12 +597,12 @@ msgstr ""
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1705
+#: src/Services/WechatOAService.php:1708
 #: src/Components/WechatOA/views/view-menu-edit.php:172
 msgid "Click Event"
 msgstr ""
 
-#: src/Services/WechatOAService.php:622
+#: src/Services/WechatOAService.php:625
 #, php-format
 msgid "Click here to view \"%s\" search results."
 msgstr ""
@@ -1043,11 +1043,11 @@ msgstr ""
 msgid "Failed to active G3-Web plugin!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1253
+#: src/Services/WechatOAService.php:1256
 msgid "Failed to delete replies from main table."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1263
+#: src/Services/WechatOAService.php:1266
 msgid "Failed to delete reply(s)."
 msgstr ""
 
@@ -1062,7 +1062,7 @@ msgstr ""
 msgid "Failed to generate WeChat auth URL."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1053
+#: src/Services/WechatOAService.php:1056
 msgid "Failed to insert reply into main table"
 msgstr ""
 
@@ -1074,11 +1074,11 @@ msgstr ""
 msgid "Failed to send test email!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1089
+#: src/Services/WechatOAService.php:1092
 msgid "Failed to update reply in main table"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1341
+#: src/Services/WechatOAService.php:1344
 msgid "Failed to update reply status"
 msgstr ""
 
@@ -1451,12 +1451,12 @@ msgstr ""
 msgid "JEALER"
 msgstr ""
 
-#: src/Services/WechatOAService.php:905 src/Services/WechatOAService.php:918
+#: src/Services/WechatOAService.php:908 src/Services/WechatOAService.php:921
 #, php-format
 msgid "Keyword %s already exists"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1756
+#: src/Services/WechatOAService.php:1759
 #, php-format
 msgid "Keyword too long, max %s characters."
 msgstr ""
@@ -1501,7 +1501,7 @@ msgstr ""
 msgid "Like"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1716
+#: src/Services/WechatOAService.php:1719
 #: src/Components/WechatOA/views/view-menu-edit.php:304
 msgid "Limited Article URL"
 msgstr ""
@@ -1526,7 +1526,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1711
+#: src/Services/WechatOAService.php:1714
 #: src/Components/WechatOA/views/view-menu-edit.php:244
 msgid "Location Selector"
 msgstr ""
@@ -1537,7 +1537,8 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: src/Controllers/AuthController.php:194 src/Services/WechatOAService.php:734
+#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:194
+#: src/Services/WechatOAService.php:726 src/Services/WechatOAService.php:737
 msgid "Login Success"
 msgstr ""
 
@@ -1579,7 +1580,7 @@ msgstr ""
 msgid "Media"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1713
+#: src/Services/WechatOAService.php:1716
 #: src/Components/WechatOA/views/view-menu-edit.php:268
 msgid "Media Library"
 msgstr ""
@@ -1598,7 +1599,7 @@ msgid ""
 "been disabled."
 msgstr ""
 
-#: src/Services/WechatOAService.php:654 src/Components/WechatOA/WechatOA.php:25
+#: src/Services/WechatOAService.php:657 src/Components/WechatOA/WechatOA.php:25
 msgid "Message received, thanks for your advice!"
 msgstr ""
 
@@ -1619,7 +1620,7 @@ msgstr ""
 msgid "Method"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1712
+#: src/Services/WechatOAService.php:1715
 #: src/Components/WechatOA/views/view-menu-edit.php:256
 msgid "Mini Program"
 msgstr ""
@@ -1769,11 +1770,11 @@ msgstr ""
 msgid "No products found."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1309
+#: src/Services/WechatOAService.php:1312
 msgid "No reply IDs provided"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1217
+#: src/Services/WechatOAService.php:1220
 msgid "No valid reply ID(s) provided."
 msgstr ""
 
@@ -1920,7 +1921,7 @@ msgstr ""
 msgid "Permalinks"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1709
+#: src/Services/WechatOAService.php:1712
 #: src/Components/WechatOA/views/view-menu-edit.php:220
 msgid "Photo or Album"
 msgstr ""
@@ -2250,11 +2251,11 @@ msgstr ""
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr ""
 
-#: src/Services/WechatOAService.php:889
+#: src/Services/WechatOAService.php:892
 msgid "Reply content cannot be empty"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1093
+#: src/Services/WechatOAService.php:1096
 msgid "Reply not found"
 msgstr ""
 
@@ -2327,16 +2328,16 @@ msgstr ""
 msgid "Safe Session"
 msgstr ""
 
-#: src/Services/WechatOAService.php:956
+#: src/Services/WechatOAService.php:959
 msgid "Save failed, please try again later"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1707
+#: src/Services/WechatOAService.php:1710
 #: src/Components/WechatOA/views/view-menu-edit.php:196
 msgid "Scan & Alert"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1706
+#: src/Services/WechatOAService.php:1709
 #: src/Components/WechatOA/views/view-menu-edit.php:184
 msgid "Scan Code"
 msgstr ""
@@ -2362,7 +2363,7 @@ msgstr ""
 msgid "Search Categories"
 msgstr ""
 
-#: src/Services/WechatOAService.php:621
+#: src/Services/WechatOAService.php:624
 msgid "Search for: "
 msgstr ""
 
@@ -2595,7 +2596,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1708
+#: src/Services/WechatOAService.php:1711
 #: src/Components/WechatOA/views/view-menu-edit.php:208
 msgid "System Camera"
 msgstr ""
@@ -2789,6 +2790,10 @@ msgstr ""
 #: src/Middleware/RestAuthMiddleware.php:41
 #: src/Components/Share/views/metabox-share.php:12
 msgid "Unauthorized"
+msgstr ""
+
+#: src/Services/WechatOAService.php:288
+msgid "Unsupported message type"
 msgstr ""
 
 #: src/Components/Product/Product.php:162
@@ -2999,7 +3004,7 @@ msgstr ""
 msgid "View Statistics"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1704
+#: src/Services/WechatOAService.php:1707
 #: src/Components/WechatOA/views/view-menu-edit.php:160
 msgid "View URL"
 msgstr ""
@@ -3022,7 +3027,7 @@ msgstr ""
 msgid "Wallet"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1710
+#: src/Services/WechatOAService.php:1713
 #: src/Components/WechatOA/views/view-menu-edit.php:232
 msgid "WeChat Album"
 msgstr ""
@@ -3068,7 +3073,7 @@ msgstr ""
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1831 src/Services/AuthService.php:183
+#: src/Services/WechatOAService.php:1834 src/Services/AuthService.php:183
 msgid "WeChat service is not available."
 msgstr ""
 
@@ -3098,7 +3103,7 @@ msgstr ""
 msgid "Welcome!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:712 src/Components/WechatOA/WechatOA.php:23
+#: src/Services/WechatOAService.php:715 src/Components/WechatOA/WechatOA.php:23
 msgid "Welcome! Thanks for your attention."
 msgstr ""
 
