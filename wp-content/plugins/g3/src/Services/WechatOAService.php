@@ -1835,9 +1835,9 @@ class WechatOAService {
                 ]
             );
 
-            error_log('[WechatOAService] createQrCode: ' . print_r($response, true));
-
             $data = $response->toArray();
+
+            error_log('[WechatOAService] createQrCode error: ' . $data);
 
             if (!empty($data['errcode'])) {
                 throw new Exception($data['errmsg'] ?? 'Unknown error');
