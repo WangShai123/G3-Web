@@ -281,9 +281,10 @@ class WechatOAService {
                 $data['content'] = $url;
                 break;
             case 'event':
-                $event = $message['Event'] ?? '';
-                $key = $message['EventKey'] ?? '';
+                $event = (string) $message['Event'] ?? '';
+                $key = (string) $message['EventKey'] ?? '';
                 $data['content'] = $event . ' - ' . $key;
+                error_log('content: ' . print_r($data['content'], true));
                 break;
             default:
                 $data['content'] = 'Unsupported message type';
