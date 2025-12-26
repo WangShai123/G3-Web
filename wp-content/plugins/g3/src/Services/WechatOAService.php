@@ -1820,16 +1820,19 @@ class WechatOAService {
             // 最大支持 2592000 秒（30 天）
             $expireSeconds = 2592000;
             // 固定场景值
-            $scene_str = 'g3_login_subscribe';
+            $sceneStr = 'g3_login_subscribe';
+            // $sceneId  = crc32('g3_login_subscribe') & 0x7FFFFFFF;
+            $sceneId = 315696136;
 
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
-                    // 'expire_seconds' => $expireSeconds,
-                    'action_name' => 'QR_LIMIT_STR_SCENE', // QR_STR_SCENE 临时字符串类型
-                    'action_info' => [
+                    'expire_seconds' => $expireSeconds,
+                    'action_name'    => 'QR_SCENE', // QR_STR_SCENE 临时字符串类型
+                    'action_info'    => [
                         'scene' => [
-                            'scene_str' => $scene_str
+                            // 'scene_str' => $sceneStr
+                            'scene_id' => $sceneId
                         ]
                     ]
                 ]
@@ -1856,7 +1859,7 @@ class WechatOAService {
                 'url'    => $result['url'],
             ];
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             error_log('Failed to create login QR code: ' . $e->getMessage());
             return new WP_Error('qrcode_permanent_error', $e->getMessage());
         }
