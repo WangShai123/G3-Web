@@ -1871,7 +1871,7 @@ class WechatOAService {
                 'url'    => 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']),
             ];
 
-            set_transient($cacheKey, $result);
+            set_transient($cacheKey, $result, $seconds);
 
             return [
                 'ticket' => $result['ticket'],

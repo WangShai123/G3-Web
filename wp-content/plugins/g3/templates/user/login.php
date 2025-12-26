@@ -48,7 +48,8 @@ login
             if (!hash) {
                 try {
                     hash = UUID();
-                    setCookie(subscribeCookie, hash, 30);
+                    // sync to cache expiration
+                    setCookie(subscribeCookie, hash, 1800);
                 } catch (err) {
                     app.innerHTML = `<p style="color:red;text-align:center;">${err.message}</p>`;
                     return;
@@ -141,9 +142,9 @@ login
             }
             return null;
         }
-        function setCookie(name, value, minutes) {
+        function setCookie(name, value, seconds) {
             const expires = new Date();
-            expires.setTime(expires.getTime() + (minutes * 60 * 1000));
+            expires.setTime(expires.getTime() + (seconds * 1000));
             document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
         }
         function deleteCookie(name) {
