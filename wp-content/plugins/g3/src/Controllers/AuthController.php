@@ -104,6 +104,7 @@ class AuthController {
         if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
             return new WP_Error(400, 'Invalid hash format');
         }
+        error_log("hash in [getSubscribeQrCode]: {$hash}");
         // 30分钟过期 空 transient
         set_transient("g3_SubscribeLoginHash_{$hash}", '', 1800);
 
@@ -147,7 +148,7 @@ class AuthController {
             ],
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [30, 60])]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function validateSubscribeLogin(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params();
@@ -158,7 +159,11 @@ class AuthController {
             return new WP_Error(400, 'Invalid hash');
         }
 
+        error_log('[G3] [Login] [Subscribe] [Validate] [Hash]: ' . $hash);
+
         $userId = get_transient("g3_SubscribeLoginHash_{$hash}");
+
+        error_log('[G3] [Login] [Subscribe] [Validate] [User ID]: ' . $userId);
 
         // Hash expired
         if ($userId === false) {
