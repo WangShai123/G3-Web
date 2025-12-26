@@ -122,6 +122,8 @@ class WechatOAService {
      */
     public const CALLBACK = '/dev/wechat_oa/callback';
 
+    public const FOLLOW_LOGIN_SCENE = 'g3_login_subscribe';
+
     /**
      * Instance of WechatOAService
      * 
@@ -706,18 +708,20 @@ class WechatOAService {
     }
     private function handleSubscribeEvent($message)
     {
-        $message  = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
-        $sceneStr = $message->EventKey ?? '';
+        $defaultMessage = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
+        $sceneStr       = $message->EventKey ?? '';
 
         if (strpos($sceneStr, 'qrscene_') === 0) {
+            error_log('[G3]error: FULL Scene: ' . print_r($sceneStr, true));
             $realScene = substr($sceneStr, 8);
-            if ($realScene === 'g3_login_subscribe') {
+            if ($realScene === self::FOLLOW_LOGIN_SCENE) {
                 $openid = $message->FromUserName;
+                error_log('[G3]error: FULL Openid: ' . print_r($openid, true));
                 $this->triggerLoginAfterSubscribe($openid);
             }
             return;
         } else {
-            return $message;
+            return $defaultMessage;
         }
     }
     private function triggerLoginAfterSubscribe(string $openid)
@@ -1792,11 +1796,20 @@ class WechatOAService {
         ];
     }
 
-
+    /************************************************************
+     * 
+     * Wechat OA QRCode Handle
+     * 
+     ************************************************************/
     /**
-     * 获取用于“关注登录”的临时二维码
+     * Get QR Code for Follow Login
+     * 
+     * 获取用于 关注登录 的永久二维码
      *
-     * @return 
+     * @return array|WP_Error
+     * @throws Exception
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public function getFollowLoginQrCode()
     {
@@ -1807,12 +1820,11 @@ class WechatOAService {
             );
         }
 
-        // 先尝试从缓存读取（避免重复创建）
         $cacheKey = 'g3_wechat_follow_login_qrcode';
         $cached   = get_transient($cacheKey);
 
+        // Validate cache
         if ($cached && isset($cached['ticket'], $cached['url'])) {
-            // 可选：验证 ticket 是否仍有效（通常永久有效）
             return $cached;
         }
 
@@ -1822,26 +1834,14 @@ class WechatOAService {
              * @link https://developers.weixin.qq.com/doc/service/api/qrcode/qrcodes/api_createqrcode.html
              * 最大支持 2592000 秒（30 天）
              */
-            $expireSeconds = 2592000;
-            // 固定场景值
-            $sceneStr = 'g3_login_subscribe';
-
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
-                    // // 'expire_seconds' => $expireSeconds,
-                    // 'action_name' => 'QR_LIMIT_STR_SCENE',
-                    // 'action_info' => [
-                    //     'scene' => [
-                    //         'scene_str' => $sceneStr
-                    //     ]
-                    // ]
                     'json' => [
-                        'expire_seconds' => $expireSeconds,
-                        'action_name'    => 'QR_STR_SCENE',
-                        'action_info'    => [
+                        'action_name' => 'QR_STR_SCENE',
+                        'action_info' => [
                             'scene' => [
-                                'scene_str' => $sceneStr
+                                'scene_str' => self::FOLLOW_LOGIN_SCENE
                             ]
                         ]
                     ]
@@ -1849,20 +1849,17 @@ class WechatOAService {
             );
 
             $data = $response->toArray();
-            // 在 error_log 打印数组 $data
-            error_log(var_export($data, true));
 
             if (!empty($data['errcode'])) {
                 throw new Exception($data['errmsg'] ?? 'Unknown error');
             }
 
             $result = [
-                'ticket'     => $data['ticket'],
-                'url'        => 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']),
-                'expires_at' => time() + $expireSeconds,
+                'ticket' => $data['ticket'],
+                'url'    => 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($data['ticket']),
             ];
 
-            set_transient($cacheKey, $result, $expireSeconds);
+            set_transient($cacheKey, $result);
 
             return [
                 'ticket' => $result['ticket'],

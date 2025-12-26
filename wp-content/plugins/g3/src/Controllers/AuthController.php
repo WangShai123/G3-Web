@@ -72,18 +72,18 @@ class AuthController {
     }
 
     /**
-     * Get Wechat OA Follow Login QRCode URL
+     * Get Wechat OA Subscribe Login QRCode URL
      * 
-     * 获取微信关注登录的二维码url
+     * 获取微信公众号关注登录的永久二维码URL
      *
-     * @param array $request
-     * @return array|WP_Error
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'auth/wechat/login/qrcode',
+        route: 'auth/wechat/login/subscribe/qrcode',
         methods: 'GET'
     )]
     public function getFollowLoginQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error

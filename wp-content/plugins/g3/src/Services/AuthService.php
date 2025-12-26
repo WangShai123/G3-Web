@@ -106,7 +106,7 @@ class AuthService {
     /**
      * Get WeChat OA Follow Login QRCode
      * 
-     * 获取关注登录用的临时二维码
+     * 获取微信公众号关注登录用的永久二维码
      * 
      * @return array|WP_Error
      * @since 1.0.0
@@ -243,6 +243,7 @@ class AuthService {
         ];
 
         $result = wp_insert_user($userData);
+        error_log('[G3]auth: insert user result: ' . print_r($result, true));
         return $result;
     }
 
