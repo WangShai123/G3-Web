@@ -1828,9 +1828,9 @@ class WechatOAService {
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
-                    'expire_seconds' => $expireSeconds,
-                    'action_name'    => 'QR_STR_SCENE', // 临时字符串类型
-                    'action_info'    => [
+                    // 'expire_seconds' => $expireSeconds,
+                    'action_name' => 'QR_LIMIT_STR_SCENE', // 临时字符串类型 QR_STR_SCENE
+                    'action_info' => [
                         'scene' => [
                             'scene_str' => $sceneStr
                         ]
