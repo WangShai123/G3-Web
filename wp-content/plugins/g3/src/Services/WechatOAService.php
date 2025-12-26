@@ -1817,22 +1817,22 @@ class WechatOAService {
         }
 
         try {
-            // 最大支持 2592000 秒（30 天）
+            /**
+             * @link https://developers.weixin.qq.com/doc/service/api/qrcode/qrcodes/api_createqrcode.html
+             * 最大支持 2592000 秒（30 天）
+             */
             $expireSeconds = 2592000;
             // 固定场景值
             $sceneStr = 'g3_login_subscribe';
-            // $sceneId  = crc32('g3_login_subscribe') & 0x7FFFFFFF;
-            $sceneId = 315696136;
 
             $response = $this->app->getClient()->post(
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
                     'expire_seconds' => $expireSeconds,
-                    'action_name'    => 'QR_SCENE', // QR_STR_SCENE 临时字符串类型
+                    'action_name'    => 'QR_STR_SCENE', // 临时字符串类型
                     'action_info'    => [
                         'scene' => [
-                            // 'scene_str' => $sceneStr
-                            'scene_id' => $sceneId
+                            'scene_str' => $sceneStr
                         ]
                     ]
                 ]
