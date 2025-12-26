@@ -1826,17 +1826,21 @@ class WechatOAService {
                 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
                 [
                     'expire_seconds' => $expireSeconds,
-                    'action_name'    => 'QR_STR_SCENE',
+                    'action_name'    => 'QR_STR_SCENE', // QR_STR_SCENE 临时字符串类型
                     'action_info'    => [
-                        'scene' => ['scene_str' => $scene_str]
+                        'scene' => [
+                            'scene_str' => $scene_str
+                        ]
                     ]
                 ]
             );
 
+            error_log('[WechatOAService] createQrCode: ' . print_r($response, true));
+
             $data = $response->toArray();
 
             if (!empty($data['errcode'])) {
-                throw new \Exception($data['errmsg'] ?? 'Unknown error');
+                throw new Exception($data['errmsg'] ?? 'Unknown error');
             }
 
             $result = [
