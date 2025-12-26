@@ -294,7 +294,6 @@ class WechatOAService {
 
         // Clear message cache
         wp_cache_delete('messages:count', self::CACHE_GROUP);
-        wp_cache_delete('messages:latest', self::CACHE_GROUP);
 
         return $result;
     }
@@ -502,7 +501,6 @@ class WechatOAService {
             // 清除相关缓存
             wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
             wp_cache_delete('messages:count', self::CACHE_GROUP);
-            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
 
             return $wpdb->delete($table, ['id' => $id]);
         } else {
@@ -515,7 +513,6 @@ class WechatOAService {
                 wp_cache_delete('wechat_message_' . $id, self::CACHE_GROUP);
             }
             wp_cache_delete('messages:count', self::CACHE_GROUP);
-            wp_cache_delete('wechat_messages_latest', self::CACHE_GROUP);
 
             // 确保有参数传递给 prepare 方法
             if (!empty($ids)) {
@@ -590,6 +587,12 @@ class WechatOAService {
         $reply = match ($message->MsgType) {
             'text' => $this->handleTextMessage($message),
             'event' => $this->handleEventMessage($message),
+            'image' => null,
+            'voice' => null,
+            'video' => null,
+            'shortvideo' => null,
+            'location' => null,
+            'link' => null,
             default => 'Hello, thanks for your message!',
         };
         return $reply;
