@@ -254,6 +254,7 @@ class WechatOAService {
             $data['created'] = date('Y-m-d H:i:s', $message['CreateTime']);
         }
 
+        error_log(print_r($message, true));
         // Handle different message types
         switch ($message['MsgType']) {
             case 'text':
