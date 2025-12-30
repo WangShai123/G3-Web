@@ -5,7 +5,7 @@ use JEALER\G3\Utilities\Image;
 
 $id          = $_GET['id'] ?? 0;
 $menus       = WechatOAService::getMenus();
-$formatMenus = WechatOAService::formatMenus($menus);
+$formatMenus = WechatOAService::formatMenus($menus, '└─');
 $data        = [];
 if ($id) {
     foreach ($menus as $menu) {

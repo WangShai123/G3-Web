@@ -11,7 +11,7 @@ class Mail extends Components {
     public string $setGroup = 'set';
     protected function options(): void
     {
-        $this->option   = Option::init(MailerService::OPTION_KEY, [
+        $this->option   = Option::get(MailerService::OPTION_KEY, [
             'enable'     => '0',
             'nickname'   => '',
             'server'     => '',
@@ -20,14 +20,19 @@ class Mail extends Components {
             'address'    => '',
             'secret'     => '',
         ]);
-        $this->template = Option::init(MailerService::TEMPLATE_OPTION_KEY, [
+        $this->template = Option::get(MailerService::TEMPLATE_OPTION_KEY, [
             'enable'         => '0',
             'register'       => '',
             'resetPassword'  => '',
             'paymentSuccess' => '',
         ]);
     }
-
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option   = Option::cache(MailerService::OPTION_KEY, $this->option);
+        $this->template = Option::cache(MailerService::TEMPLATE_OPTION_KEY, $this->template);
+    }
     #[\Override]
     protected function init(): void
     {

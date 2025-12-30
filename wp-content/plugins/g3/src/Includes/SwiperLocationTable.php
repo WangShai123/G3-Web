@@ -58,9 +58,8 @@ class SwiperLocationTable extends WP_List_Table {
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
-            echo '<div class="alignleft actions">
+            echo '<div class="alignleft actions mb-2">
             <button class="button button-primary" id="addNew" type="button">' . __('Add New', 'G3') . '</button></div>';
-            // submit_button(__('Add New', 'G3'), 'primary', 'addNew', false);
         }
     }
 

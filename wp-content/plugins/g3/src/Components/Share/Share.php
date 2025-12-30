@@ -10,7 +10,7 @@ class Share extends Components {
     #[\Override]
     protected function options(): void
     {
-        $this->option        = Option::init(ShareService::OPTION_KEY, [
+        $this->option        = Option::get(ShareService::OPTION_KEY, [
             'enable'             => '1',
             'poster'             => '0',
             'wechatTitle'        => '0',
@@ -19,14 +19,19 @@ class Share extends Components {
             'qqZone'             => '0',
             'douYin'             => '0'
         ]);
-        $this->accountOption = Option::init(ShareService::ACCOUNT_OPTION_KEY, [
+        $this->accountOption = Option::get(ShareService::ACCOUNT_OPTION_KEY, [
             'wechat'         => '',
             'wechatQRCode'   => '',
             'wechatOA'       => '',
             'wechatOAQRCode' => '',
         ]);
     }
-
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option        = Option::cache(ShareService::OPTION_KEY, $this->option);
+        $this->accountOption = Option::cache(ShareService::ACCOUNT_OPTION_KEY, $this->accountOption);
+    }
     #[\Override]
     protected function admin(): void
     {

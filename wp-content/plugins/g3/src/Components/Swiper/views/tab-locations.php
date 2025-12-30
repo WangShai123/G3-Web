@@ -1,12 +1,13 @@
 <?php
 use JEALER\G3\Includes\SwiperLocationTable;
 use JEALER\G3\Utilities\Frontend;
+
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
+
 $location = new SwiperLocationTable();
 $location->prepare_items();
 $location->views();
-
 echo '<form id="list-form" method="post">';
 $location->display();
 $location->process_bulk_actions();

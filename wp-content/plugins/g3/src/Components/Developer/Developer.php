@@ -21,7 +21,7 @@ class Developer extends Components {
     #[\Override]
     protected function options(): void
     {
-        $this->formOption    = Option::init(SystemService::FORM_OPTION_KEY, [
+        $this->formOption    = Option::get(SystemService::FORM_OPTION_KEY, [
             'key1'  => 'Container::input',
             'key2'  => 'regular-text',
             'key3'  => 'Container::uploadInput',
@@ -35,7 +35,7 @@ class Developer extends Components {
             'key11' => ['1', '2'],
             'key12' => ['0'],
         ]);
-        $this->settingOption = Option::init(SystemService::SETTING_OPTION_KEY, [
+        $this->settingOption = Option::get(SystemService::SETTING_OPTION_KEY, [
             'environment'     => 'production',
             'wpAutoUpdate'    => '0',
             'translationsApi' => '0',
@@ -59,7 +59,7 @@ class Developer extends Components {
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
         ]);
-        $this->opMPOption    = Option::init(SystemService::OPEN_WECHAT_OA_KEY, [
+        $this->opMPOption    = Option::get(SystemService::OPEN_WECHAT_OA_KEY, [
             'type'           => '0',
             'slug'           => '',
             'id'             => '',
@@ -69,7 +69,13 @@ class Developer extends Components {
             'encodingAESKey' => '',
         ]);
     }
-
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->formOption    = Option::cache(SystemService::FORM_OPTION_KEY, $this->formOption);
+        $this->settingOption = Option::cache(SystemService::SETTING_OPTION_KEY, $this->settingOption);
+        $this->opMPOption    = Option::cache(SystemService::OPEN_WECHAT_OA_KEY, $this->opMPOption);
+    }
     #[\Override]
     protected function start(): void
     {

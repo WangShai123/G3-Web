@@ -60,7 +60,7 @@ final class Option {
     /**
      * Update the option cache after submitting the form.
      * 
-     * 更新后台表单选项缓存
+     * 更新后台表单选项提交后的缓存
      * 
      * @param string $optionName Option name
      * @param mixed $optionValue Option value
@@ -71,7 +71,10 @@ final class Option {
     public static function cache(string $optionName, mixed $optionValue)
     {
         if (array_key_exists($optionName, $_POST) && $_POST[$optionName]) {
+            update_option($optionName, $_POST[$optionName]);
             $optionValue = $_POST[$optionName];
+            add_settings_error('notice', 'updated', __('Updated', 'G3'), 'updated');
+            settings_errors('notice');
         }
         return $optionValue;
     }

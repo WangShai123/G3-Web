@@ -14,13 +14,18 @@ class Post extends Components {
     #[\Override]
     protected function options(): void
     {
-        $this->option   = Option::init(PostService::OPTION_KEY, [
+        $this->option   = Option::get(PostService::OPTION_KEY, [
             'enable'       => '1',
             'viewInterval' => '60',
             'copyright'    => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
             'autoNotice'   => '0',
         ]);
         $this->viewsKey = PostService::getViewsKey();
+    }
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
     #[\Override]
     protected function system(): void
@@ -58,7 +63,7 @@ class Post extends Components {
             'manage_options',
             'post-reading',
             [$this, 'render'],
-            2
+            3
         );
     }
     public function render(): void

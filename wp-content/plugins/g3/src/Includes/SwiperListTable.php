@@ -145,7 +145,7 @@ class SwiperListTable extends WP_List_Table {
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
-            echo '<div class="alignleft actions"><a href="themes.php?page=swiper&t=new" class="button button-primary swiper-add">' . __('Add New', 'G3') . '</a></div>';
+            echo '<div class="alignleft actions mb-2"><a href="themes.php?page=swiper&t=new" class="button button-primary swiper-add">' . __('Add New', 'G3') . '</a></div>';
         }
     }
 

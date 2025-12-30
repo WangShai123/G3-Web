@@ -374,6 +374,7 @@ class Components {
     }
     public function adminInitActions(): void
     {
+        $this->adminOptions();
         $this->ajax();
         $this->settings();
         $this->admin();
@@ -421,6 +422,9 @@ class Components {
     {
     }
     protected function options(): void
+    {
+    }
+    protected function adminOptions(): void
     {
     }
     protected function init(): void

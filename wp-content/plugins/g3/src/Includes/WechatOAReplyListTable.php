@@ -76,7 +76,7 @@ class WechatOAReplyListTable extends WP_List_Table {
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
-            echo '<div class="alignleft actions"><button type="button" id="add-reply" class="button button-primary">' . __('Add New', 'G3') . '</button></div>';
+            echo '<div class="alignleft actions mb-2"><button type="button" id="add-reply" class="button button-primary">' . __('Add New', 'G3') . '</button></div>';
         }
     }
 

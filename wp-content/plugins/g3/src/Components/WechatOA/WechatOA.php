@@ -14,7 +14,7 @@ class WechatOA extends Components {
     #[\override]
     protected function options(): void
     {
-        $this->option      = Option::init(WechatOAService::OPTION_KEY, [
+        $this->option      = Option::get(WechatOAService::OPTION_KEY, [
             'service'        => '0',
             'search'         => '0',
             'storeMessages'  => '0',
@@ -24,11 +24,16 @@ class WechatOA extends Components {
             'visitMessage'   => __('Welcome back, my friend.', 'G3'),
             'defaultMessage' => __('Message received, thanks for your advice!', 'G3'),
         ]);
-        $this->eventOption = Option::init(WechatOAService::EVENT_OPTION_KEY, [
+        $this->eventOption = Option::get(WechatOAService::EVENT_OPTION_KEY, [
             'lastestPosts' => 'n'
         ]);
     }
-
+    #[\override]
+    protected function adminOptions(): void
+    {
+        $this->option      = Option::cache(WechatOAService::OPTION_KEY, $this->option);
+        $this->eventOption = Option::cache(WechatOAService::EVENT_OPTION_KEY, $this->eventOption);
+    }
     #[\Override]
     protected function admin(): void
     {
@@ -378,6 +383,27 @@ class WechatOA extends Components {
                 Response::ajaxDeleted();
             } else {
                 Response::ajaxFailed();
+            }
+        });
+        // flush old messages
+        add_action('wp_ajax_g3_flush_old_wechatOA_messages', function () {
+            $this->checkServiceInAjax();
+            if (!is_admin() || !current_user_can('manage_options')) {
+                Response::ajaxForbidden();
+            }
+            if (!wp_verify_nonce($_POST['nonce'], 'g3_flush_old_wechatOA_messages')) {
+                Response::ajaxForbidden();
+            }
+            // delete old messages older than n days, default: 7
+            $days   = (int) $_POST['days'];
+            $days   = $days < 1 ? 7 : $days;
+            $result = WechatOAService::flushOldMessages($days);
+            if ($result === 0) {
+                Response::ajaxError(__('No data found.', 'G3'));
+            } elseif ($result === false) {
+                Response::ajaxFailed();
+            } else {
+                Response::ajaxDeleted();
             }
         });
     }

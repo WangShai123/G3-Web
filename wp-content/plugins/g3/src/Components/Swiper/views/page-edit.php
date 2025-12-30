@@ -1,6 +1,7 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SwiperService;
+
 wp_enqueue_media();
 wp_enqueue_script('media-grid');
 wp_enqueue_script('media');

@@ -27,14 +27,8 @@ class WechatOAMenuListTable extends WP_List_Table {
     public function prepare_items(): void
     {
         $menus                 = WechatOAService::getMenus();
-        $this->items           = WechatOAService::formatMenus($menus);
+        $this->items           = WechatOAService::formatMenus($menus, '└─');
         $this->_column_headers = [$this->get_columns(), [], $this->get_sortable_columns()];
-    }
-
-    public function get_bulk_actions()
-    {
-        return [
-        ];
     }
 
     public function display(): void
@@ -85,17 +79,5 @@ class WechatOAMenuListTable extends WP_List_Table {
     public function no_items(): void
     {
         _e('No data found.', 'G3');
-    }
-
-    public function extra_tablenav($which): void
-    {
-        if ($which == "top") {
-            echo '<div class="alignleft actions"><a href="themes.php?page=swiper&t=new" class="button button-primary swiper-add">' . __('Add New', 'G3') . '</a></div>';
-        }
-    }
-
-    public function get_sortable_columns(): array
-    {
-        return [];
     }
 }

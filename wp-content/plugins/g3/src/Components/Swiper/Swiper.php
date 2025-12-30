@@ -10,15 +10,23 @@ use JEALER\G3\Utilities\Response;
 
 class Swiper extends Components {
     public array $option;
+    #[\Override]
     protected function options(): void
     {
-        $this->option = Option::init(SwiperService::LOCATION_OPTION_KEY, [
+        $this->option = Option::get(SwiperService::LOCATION_OPTION_KEY, [
             'home' => __('Home')
         ]);
     }
+    // #[\Override]
+    // protected function adminOptions(): void
+    // {
+    //     $this->option = Option::cache(SwiperService::LOCATION_OPTION_KEY, $this->option);
+    // }
+    #[\Override]
     protected function admin(): void
     {
     }
+    #[\Override]
     protected function adminMenu(): void
     {
         add_submenu_page(

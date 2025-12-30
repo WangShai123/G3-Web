@@ -11,28 +11,28 @@ use Exception;
 class AuthService {
 
     /**
-     * Option Key
+     * General Auth Option Key
      * 
-     * 配置项键名
+     * 常规授权配置项键名
      * 
      * @var string
      * @access public
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_general_login';
+    public const OPTION_KEY = 'g3_option_auth';
 
     /**
-     * Follow Option Key
+     * Subscribe Auth Option Key
      * 
-     * 关注配置项键名
+     * 关注公众号登录的配置项键名
      * 
      * @var string
      * @access public
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const FOLLOW_OPTION_KEY = 'g3_option_follow_login';
+    public const SUBSCRIBE_OPTION_KEY = 'g3_option_auth_subscribe';
 
     /**
      * Wechat OpenId User Meta Key
@@ -105,6 +105,22 @@ class AuthService {
      * Wechat OA Auth Handle
      * 
      ************************************************************/
+
+    /**
+     * Whether Wechat OA Subscribe Login is available
+     * 
+     * 微信公众号订阅登录功能是否可用
+     * 
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function subscribeLogin(): bool
+    {
+        $data = get_option(AuthService::SUBSCRIBE_OPTION_KEY)['wechatOA'] ?? false;
+        return $data === '1' ? true : false;
+    }
+
     /**
      * Get temporary WeChat OA Follow Login QRCode
      * 

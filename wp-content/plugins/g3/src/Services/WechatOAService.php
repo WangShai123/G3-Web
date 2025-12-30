@@ -524,6 +524,21 @@ class WechatOAService {
     }
 
     /**
+     * Delete old messages that are older than n days
+     * 
+     * 删除超过 n 天的微信公众号消息旧数据，默认 7.
+     *
+     * @return bool|int
+     */
+    public static function flushOldMessages(int $days = 7): bool|int
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::MESSAGES_TABLE;
+        $query = "DELETE FROM $table WHERE created < DATE_SUB(NOW(), INTERVAL $days DAY)";
+        return $wpdb->query($query);
+    }
+
+    /**
      * Process incoming message from WeChat server
      * 
      * 处理来自微信服务器的入站消息
@@ -761,28 +776,19 @@ class WechatOAService {
     {
         $eventKey = $message->EventKey ?? '';
 
+        $event          = get_option(self::EVENT_OPTION_KEY);
+        $lastestPosts   = $event['lastestPosts'] ?? 'n';
+        $defaultMessage = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
+
         return match ($eventKey) {
-            'n' => $this->getLatestPosts(),
-            default => 'Event received, thank you!',
+            $lastestPosts => $this->getLatestPosts(),
+            default => $defaultMessage
         };
 
-        // switch ($eventKey) {
-        //     case 'n': // 获取最新文章列表
-        //         return $this->getLatestPosts();
         //     // case 'h': // 获取热门文章
         //     //     return $this->getHotPosts();
         //     // case 'c': // 获取分类文章
         //     //     return $this->getCategoryPosts();
-        //     // case 's': // 搜索功能
-        //     //     return $this->showSearchTips();
-        //     default:
-        //         // 尝试匹配自定义回复
-        //         $reply = self::getReply($eventKey);
-        //         if ($reply !== false && $reply['status'] == '1') {
-        //             return $reply['content'] ?? 'Event received, thank you!';
-        //         }
-        //         return 'Event received, thank you!';
-        // }
     }
 
     /**
@@ -1647,11 +1653,12 @@ class WechatOAService {
      * 格式化菜单数据并构建层级结构
      * 
      * @param array $menus Raw menu data
+     * @param string $sign Indentation sign
      * @return array Formatted menu data with hierarchy indentation
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function formatMenus(array $menus): array
+    public static function formatMenus(array $menus, string $sign): array
     {
         // Sort menus by parent and sort
         usort($menus, function ($a, $b) {
@@ -1682,8 +1689,8 @@ class WechatOAService {
                 foreach ($menus as $child) {
                     if ($child['parent'] == $menu['id']) {
                         // reRender child menu
-                        $child['name'] = '└─ ' . $child['name'];
-                        $child['sort'] = '└─ ' . $child['sort'];
+                        $child['name'] = $sign . ' ' . $child['name'];
+                        $child['sort'] = $sign . ' ' . $child['sort'];
                         $child['type'] = self::renderMenuType($child['type']);
                         $result[]      = $child;
                     }

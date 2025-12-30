@@ -4,17 +4,26 @@ use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\AuthService;
-class Login extends Components {
+class Auth extends Components {
     public array $option;
-
+    public array $subscribe;
     #[\Override]
     protected function options(): void
     {
-        $this->option = Option::init(AuthService::OPTION_KEY, [
+        $this->option    = Option::get(AuthService::OPTION_KEY, [
             'wechatQRCode' => '0',
             'wechatClient' => '0',
             'wechatOA'     => '0',
         ]);
+        $this->subscribe = Option::get(AuthService::SUBSCRIBE_OPTION_KEY, [
+            'wechatOA' => '0',
+        ]);
+    }
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option    = Option::cache(AuthService::OPTION_KEY, $this->option);
+        $this->subscribe = Option::cache(AuthService::SUBSCRIBE_OPTION_KEY, $this->subscribe);
     }
     #[\Override]
     protected function admin(): void
@@ -28,9 +37,9 @@ class Login extends Components {
             __('Login', 'G3'),
             __('Login', 'G3'),
             'manage_options',
-            'login-setting',
+            'auth-settings',
             [$this, 'render'],
-            3
+            2
         );
     }
     public function render(): void
@@ -40,7 +49,7 @@ class Login extends Components {
             'general' => __('General', 'G3'),
             'follow'  => __('Wechat Follow Login', 'G3'),
         ];
-        Container::tab('Login', 'general', $args);
+        Container::tab('Auth', 'general', $args);
         echo '</div>';
     }
     #[\Override]
@@ -50,13 +59,13 @@ class Login extends Components {
             'general',
             null,
             '__return_false',
-            'login-setting'
+            'auth-settings'
         );
         register_setting(
             'general',
             AuthService::OPTION_KEY,
         );
-        Container::settingFields('login-setting', 'general', [
+        Container::settingFields('auth-settings', 'general', [
             [
                 'id'       => 'wechatQRCode',
                 'title'    => __('Login via Wechat QRCode', 'G3'),
@@ -90,39 +99,29 @@ class Login extends Components {
         ]);
 
         add_settings_section(
-            'follow',
+            'subscribe',
             null,
             '__return_false',
-            'login-setting&tab=follow'
+            'auth-settings&tab=subscribe'
         );
         register_setting(
-            'follow',
-            AuthService::OPTION_KEY,
+            'subscribe',
+            AuthService::SUBSCRIBE_OPTION_KEY,
         );
-        Container::settingFields('login-setting&tab=follow', 'follow', [
+        Container::settingFields('auth-settings&tab=subscribe', 'subscribe', [
             [
                 'id'       => 'wechatOA',
                 'title'    => __('Follow Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        AuthService::OPTION_KEY,
-                        $this->option,
+                        AuthService::SUBSCRIBE_OPTION_KEY,
+                        $this->subscribe,
                         'wechatOA',
                         __('Follow Login', 'G3')
                     );
                 },
                 'args'     => [
                     'label_for' => 'wechatOA'
-                ]
-            ],
-            [
-                'id'       => 'QRCode',
-                'title'    => __('QRCode'),
-                'callback' => function () {
-                    echo '@todo';
-                },
-                'args'     => [
-                    'label_for' => 'QRCode'
                 ]
             ]
         ]);

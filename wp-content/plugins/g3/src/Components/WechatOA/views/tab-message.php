@@ -3,7 +3,6 @@ use JEALER\G3\Components;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Includes\WechatOAMessageListTable;
-use JEALER\G3\Services\WechatOAService;
 
 Frontend::loadStyle('jui');
 Frontend::loadScript('jui');
@@ -30,38 +29,84 @@ endif;
     const $ = jQuery;
     $(document).ready(function () {
         $('html').addClass('j-theme-indigo j-font-sm j-radius-sm j-shadow-none')
-        const viewMessage = $('.view-message')
-        const deleteMessage = $('.delete-message')
-        viewMessage.on('click', function () {
+        const viewMsg = $('.view-message')
+        const deleteMsg = $('.delete-message')
+        const flushMsg = $('#flush-messages')
+        viewMsg.on('click', function () {
             const id = $(this).data('id')
             $.post(ajaxurl, {
                 action: 'g3_get_wechatOA_message_content',
                 id: id,
                 nonce: '<?php echo wp_create_nonce('g3_get_wechatOA_message_content'); ?>'
-            }, function (response) {
+            }, function (res) {
                 const viewModal = new JUI.Modal({
                     title: '<?php _e("View"); ?>',
-                    content: response.data.message,
+                    content: res.data.message,
                     confirmText: '<?php _e("Confirm", 'G3'); ?>',
                     showCancel: false
                 })
                 viewModal.show()
             })
         })
-        deleteMessage.on('click', function () {
+        deleteMsg.on('click', function () {
             const id = $(this).data('id')
             if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
                 $.post(ajaxurl, {
                     action: 'g3_delete_wechatOA_message',
                     id: id,
                     nonce: '<?php echo wp_create_nonce('g3_delete_wechatOA_message'); ?>'
-                }, function (response) {
-                    response.success ? JUI.Toast.success(response.data.message) : JUI.Toast.error(response.data.message)
+                }, function (res) {
+                    res.success ? JUI.Toast.success(res.data.message) : JUI.Toast.error(res.data.message)
                     setTimeout(function () {
                         location.reload()
                     }, 1000)
                 })
             }
+        })
+        flushMsg.on('click', function () {
+            const modal = new JUI.Modal({
+                title: '<?php _e("Delete History Data", "G3"); ?>',
+                confirmText: '<?php _e("Delete"); ?>',
+                cancelText: '<?php _e("Cancel"); ?>',
+                formData: [
+                    {
+                        label: '<?php _e("How many days ago you want to delete?", "G3"); ?>',
+                        type: 'number',
+                        name: 'days',
+                        id: 'days',
+                        placeholder: '<?php _e("Default"); ?> 7',
+                        value: 7,
+                        required: true
+                    }
+                ],
+                onSubmit: function (data) {
+                    modal.showLoading();
+                    if (data.days < 1) {
+                        JUI.Toast.error('<?php _e("Days must be greater than 0", "G3"); ?>');
+                        modal.hideLoading();
+                        return;
+                    }
+                    $.post(ajaxurl, {
+                        action: 'g3_flush_old_wechatOA_messages',
+                        nonce: '<?php echo wp_create_nonce('g3_flush_old_wechatOA_messages'); ?>',
+                        days: data.days
+                    }, function (res) {
+                        if (res.success) {
+                            JUI.Toast.success(res.data.message)
+                            setTimeout(function () {
+                                location.reload()
+                            }, 800)
+                        } else {
+                            JUI.Toast.error(res.data.message)
+                            modal.hideLoading();
+                        }
+                    }).done(function (res) {
+                        modal.hideLoading();
+                        modal.hide();
+                    })
+                }
+            })
+            modal.show();
         })
     });
 </script>

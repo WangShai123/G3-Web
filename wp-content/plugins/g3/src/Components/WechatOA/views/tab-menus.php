@@ -3,7 +3,6 @@ use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Includes\WechatOAMenuListTable;
-use JEALER\G3\Services\WechatOAService;
 
 Frontend::loadScript('jui');
 

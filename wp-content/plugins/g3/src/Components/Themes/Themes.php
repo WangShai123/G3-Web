@@ -14,12 +14,17 @@ class Themes extends Components {
     #[\Override]
     protected function options(): void
     {
-        $this->option = Option::init(SystemService::THEME_OPTION_KEY, [
+        $this->option = Option::get(SystemService::THEME_OPTION_KEY, [
             'default' => 'WebTheme',
             'low'     => '',
             'mobile'  => 'MobileTheme',
             'tablet'  => '',
         ]);
+    }
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option = Option::cache(SystemService::THEME_OPTION_KEY, $this->option);
     }
     #[\Override]
     protected function init(): void

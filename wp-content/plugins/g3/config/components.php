@@ -9,8 +9,8 @@
  */
 return [
     'Setting'      => true, // 1
-    'Post'         => true, // 2
-    'Login'        => true, // 3
+    'Auth'         => true, // 2
+    'Post'         => true, // 3
     'Share'        => true, // 4
     'Product'      => true, // 5
     'Stock'        => true,

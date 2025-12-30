@@ -14,7 +14,7 @@ class Security extends Components {
     #[\Override]
     protected function options(): void
     {
-        $this->option = Option::init(SystemService::SECURITY_OPTION_KEY, [
+        $this->option = Option::get(SystemService::SECURITY_OPTION_KEY, [
             'login'       => '0',
             'url'         => Common::hash(8),
             'upload'      => '1',
@@ -25,6 +25,11 @@ class Security extends Components {
             'csp'         => '0',
             'xPoweredBy'  => '1'
         ]);
+    }
+    #[\Override]
+    protected function adminOptions(): void
+    {
+        $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $this->option);
     }
     #[\Override]
     protected function front(): void
@@ -303,8 +308,8 @@ class Security extends Components {
     public function userSiteMapHandle(): void
     {
         add_filter('wp_sitemaps_add_provider', function ($provider, $name) {
-            $d = get_option(SystemService::SECURITY_OPTION_KEY);
-            if (!isset($d['userSiteMap']) || $d['userSiteMap'] !== '1') {
+            $v = get_option(SystemService::SECURITY_OPTION_KEY);
+            if (!isset($v['userSiteMap']) || $v['userSiteMap'] !== '1') {
                 return $provider;
             }
             if ('users' === $name) {

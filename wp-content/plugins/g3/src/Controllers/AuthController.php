@@ -82,7 +82,7 @@ class AuthController {
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'auth/wechat/login/subscribe/qrcode',
+        route: 'auth/wechat/subscribe/qrcode',
         methods: 'POST'
     )]
     #[Schema([
@@ -98,6 +98,13 @@ class AuthController {
     #[Middleware(RateLimitMiddleware::class, [6, 60])]
     public function getSubscribeQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
+        $valid = AuthService::subscribeLogin();
+        if (!$valid) return new WP_Error(
+                'error',
+                __('WeChat OA Subscription login is not available', 'G3'),
+                ['status' => 404]
+            );
+
         $params = $request->get_json_params();
         $hash   = sanitize_text_field($params['hash'] ?? '');
 
@@ -138,7 +145,7 @@ class AuthController {
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'auth/wechat/login/subscribe/validate',
+        route: 'auth/wechat/subscribe/validate',
         methods: 'POST'
     )]
     #[Schema([
@@ -154,6 +161,13 @@ class AuthController {
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function validateSubscribeLogin(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
+        $valid = AuthService::subscribeLogin();
+        if (!$valid) return new WP_Error(
+                'error',
+                __('WeChat OA Subscription login is not available', 'G3'),
+                ['status' => 404]
+            );
+
         $params = $request->get_json_params();
         $hash   = sanitize_text_field($params['hash'] ?? '');
 
