@@ -47,7 +47,7 @@ class Auth extends Components {
         echo '<div class="wrap"><h1>' . __('Login', 'G3') . '</h1>';
         $args = [
             'general' => __('General', 'G3'),
-            'follow'  => __('Wechat Follow Login', 'G3'),
+            'follow'  => __('WeChat Subscription Login', 'G3'),
         ];
         Container::tab('Auth', 'general', $args);
         echo '</div>';
@@ -111,13 +111,13 @@ class Auth extends Components {
         Container::settingFields('auth-settings&tab=subscribe', 'subscribe', [
             [
                 'id'       => 'wechatOA',
-                'title'    => __('Follow Login', 'G3'),
+                'title'    => __('Subscribe Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
                         AuthService::SUBSCRIBE_OPTION_KEY,
                         $this->subscribe,
                         'wechatOA',
-                        __('Follow Login', 'G3')
+                        __('Subscribe Login', 'G3')
                     );
                 },
                 'args'     => [

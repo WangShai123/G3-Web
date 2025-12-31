@@ -122,7 +122,7 @@ class AuthService {
     }
 
     /**
-     * Get temporary WeChat OA Follow Login QRCode
+     * Get temporary WeChat OA Subscribe Login QRCode
      * 
      * 获取微信公众号关注登录用的临时二维码
      * 

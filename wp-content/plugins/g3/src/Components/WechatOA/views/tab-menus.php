@@ -8,7 +8,7 @@ Frontend::loadScript('jui');
 
 $table = new WechatOAMenuListTable();
 echo Container::tip(
-    __('In the WeChat client, the menu of the official account is refreshed every 5 minutes. If you want to instantly manually refresh the menu, please re-follow the official account and visit.', 'G3'),
+    __('In the WeChat client, the menu of the official account is refreshed every 5 minutes. If you want to instantly manually refresh the menu, please re-subscribe the official account and visit.', 'G3'),
     'default',
     'mt-4'
 );

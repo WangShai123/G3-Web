@@ -39,7 +39,7 @@ $time = Developer::time();
                     <li>
                         <?php
                         echo sprintf(
-                            __('Install and activate the <a href="%s">G3-Web theme</a> to preview the template and its features.', 'G3'),
+                            __('Install and activate the <a href="%s">G3-Desktop theme</a> to preview the template and its features.', 'G3'),
                             admin_url('theme-install.php?search=g3-web')
                         );
                         ?>

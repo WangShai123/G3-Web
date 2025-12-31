@@ -51,7 +51,6 @@ class Setting extends Components {
     #[\Override]
     protected function init(): void
     {
-        $this->registerRedirectLink();
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
@@ -101,7 +100,7 @@ class Setting extends Components {
     #[\Override]
     protected function system(): void
     {
-        add_action('wp_head', [$this, 'redirectLinkHandle']);
+        add_action('wp_footer', [$this, 'redirectLinkHandle']);
         $this->rssHandle();
     }
     public function render(): void
@@ -136,7 +135,7 @@ class Setting extends Components {
                         $this->option,
                         'sad',
                         __('Sad Mod', 'G3'),
-                        __('After enabling it, the entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3')
+                        __('The entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3')
                     );
                 },
                 'args'     => [
@@ -248,7 +247,7 @@ class Setting extends Components {
                         $this->option,
                         'redirectLink',
                         __('Redirect Link', 'G3'),
-                        __('After enabling it, all outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3')
+                        __('All outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3')
                     );
                 },
                 'args'     => [
@@ -275,7 +274,7 @@ class Setting extends Components {
                         $this->seo,
                         'seo',
                         'SEO',
-                        __('After enabling it, you can add custom SEO data for each page.', 'G3')
+                        __('You can add custom SEO data for each page.', 'G3')
                     );
                 },
                 'args'     => [
@@ -291,7 +290,7 @@ class Setting extends Components {
                         $this->seo,
                         'keywords',
                         __('HomePage Keywords', 'G3'),
-                        '',
+                        __('Separate tags with commas'),
                         'text',
                         'regular-text'
                     );
@@ -420,31 +419,10 @@ class Setting extends Components {
         }
         Frontend::loadScript('redirect.link');
     }
-    public function registerRedirectLink()
+    public static function redirectavailable(): bool
     {
-        // register rewrite rule
-        add_rewrite_rule(
-            '^redirect/go/([^/]+)/?$',
-            'index.php?redirect_link=$matches[1]',
-            'top'
-        );
-
-        // add query var
-        add_filter('query_vars', function ($vars) {
-            $vars[] = 'redirect_link';
-            return $vars;
-        });
-
-        // handle template include
-        add_filter('template_include', function ($template) {
-            global $wp_query;
-            if (isset($wp_query->query_vars['template_include']) && $wp_query->query_vars['template_include'] === 'redirect-link') {
-                $defaultTemplate = WP_PLUGIN_DIR . '/g3/templates/redirect-link.php';
-                $userTemplate    = get_stylesheet_directory() . '/templates/redirect-link.php';
-                $template        = file_exists($userTemplate) ? $userTemplate : $defaultTemplate;
-            }
-            return $template;
-        });
+        $v = get_option(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
+        return $v === '1';
     }
 
     /**

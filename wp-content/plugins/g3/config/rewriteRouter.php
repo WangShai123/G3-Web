@@ -79,6 +79,13 @@ return [
         ]
     ],
 
+    // Redirect Link
+    'redirect/go/([^/]+)/?$'      => [
+        'var'        => 'redirect_url',
+        'path'       => 'developer/redirect.php',
+        'dependency' => [\JEALER\G3\Components\Setting::class, 'redirectavailable']
+    ],
+
 
     // 单个 query var 示例
     'test/one/([^/]+)/?$'         => [

@@ -143,4 +143,67 @@ final class Validator {
     {
         return preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $uuid);
     }
+
+    /**
+     * Check if the string is a valid redirect URL.
+     * 
+     * 检查字符串是否为有效的跳转 URL。
+     *
+     * @param string $url The URL to check.
+     * @return bool True if the string is a valid redirect URL, false otherwise.
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function safeRedirectUrl(string $url): bool
+    {
+        // must be a valid URL
+        // if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        //     return false;
+        // }
+
+        // // parse url
+        // $parsed = parse_url($url);
+        // if (!$parsed || !isset($parsed['scheme'])) {
+        //     return false;
+        // }
+
+        $parsed = wp_parse_url($url);
+        if (!$parsed || !isset($parsed['host'], $parsed['scheme'])) {
+            return false;
+        }
+
+        // only allow http or https
+        $allowedSchemes = [
+            'http',
+            'https'
+        ];
+        if (!in_array(strtolower($parsed['scheme']), $allowedSchemes, true)) {
+            return false;
+        }
+
+        // DO NOT ALLOW INTERNAL REDIRECTS
+        $siteHost = parse_url(home_url(), PHP_URL_HOST);
+        if (isset($parsed['host']) && strtolower($parsed['host']) === strtolower($siteHost)) {
+            return false;
+        }
+
+        // Manual SSRF defense, more flexible than wp_http_validate_url
+        $host = $parsed['host'];
+        // if IP, deny
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return false;
+        }
+
+        // Blacklist
+        $blackList = [
+            'localhost',
+            'localhost.localdomain',
+            'ip6-localhost'
+        ];
+        if (in_array(strtolower($host), $blackList, true)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -101,7 +101,7 @@ class AuthController {
         $valid = AuthService::subscribeLogin();
         if (!$valid) return new WP_Error(
                 'error',
-                __('WeChat OA Subscription login is not available', 'G3'),
+                __('WeChat OA Subscription Login is not available', 'G3'),
                 ['status' => 404]
             );
 
@@ -164,7 +164,7 @@ class AuthController {
         $valid = AuthService::subscribeLogin();
         if (!$valid) return new WP_Error(
                 'error',
-                __('WeChat OA Subscription login is not available', 'G3'),
+                __('WeChat OA Subscription Login is not available', 'G3'),
                 ['status' => 404]
             );
 

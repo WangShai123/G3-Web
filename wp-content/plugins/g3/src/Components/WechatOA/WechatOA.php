@@ -113,7 +113,7 @@ class WechatOA extends Components {
                         $this->option,
                         'search',
                         __('Search', 'G3'),
-                        __('After activating it, users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
+                        __('Users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
                     );
                 },
                 'args'     => [
@@ -129,7 +129,7 @@ class WechatOA extends Components {
                         $this->option,
                         'storeMessages',
                         __('Store Messages', 'G3'),
-                        __('After activating it, the messages sent to the WeChat Official Account will be stored in the database.', 'G3')
+                        __('The messages sent to the WeChat Official Account will be stored in the database.', 'G3')
                     );
                 },
                 'args'     => [
@@ -182,14 +182,14 @@ class WechatOA extends Components {
             ],
             [
                 'id'       => 'followMessage',
-                'title'    => __('Follow Message', 'G3'),
+                'title'    => __('Subscribe Message', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'followMessage',
-                        __('Follow Message', 'G3'),
-                        __('The message sent to users when they follow the WeChat Official Account.', 'G3')
+                        __('Subscribe Message', 'G3'),
+                        __('The message sent to users when they Subscribe the WeChat Official Account.', 'G3')
                     );
                 },
                 'args'     => [
