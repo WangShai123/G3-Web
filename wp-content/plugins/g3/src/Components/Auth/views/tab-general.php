@@ -3,7 +3,7 @@ use JEALER\G3\Utilities\Container;
 
 $message = sprintf(
     __('Before enabling related login functions, please ensure to complete the relevant <a href="%s">Open Platform</a> settings.', 'G3'),
-    admin_url('options-general.php?page=open-platform')
+    admin_url('admin.php?page=open-platform')
 );
 $message = '<div>' . $message . '</div>';
 echo Container::tip(

@@ -46,24 +46,24 @@ get_header();
     </div>
 </div>
 
+<div class="ad">
+    ad container here.
+</div>
+
 <style>
     body {
         background-color: #eff2f5;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: start;
         align-items: center;
+        gap: 16px;
         padding: 10px;
         margin: 0;
         height: calc(100vh - 20px);
     }
 
-    .container {
-        display: block;
-        margin-top: -64px;
-    }
-
     .container h1 {
-        margin-top: 0;
         text-align: center;
         margin-bottom: 16px;
         font-size: 1.8rem;

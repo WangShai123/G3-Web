@@ -59,18 +59,32 @@ class SwiperLocationTable extends WP_List_Table {
     {
         if ($which == "top") {
             echo '<div class="alignleft actions mb-2">
-            <button class="button button-primary" id="addNew" type="button">' . __('Add New', 'G3') . '</button></div>';
+            <button class="button button-primary addLocation" type="button">' . __('Add New', 'G3') . '</button></div>';
         }
     }
 
     public function column_action($item)
     {
-        return sprintf(
-            '<a href="javascript:void(0);" class="editLocation" data-key="%s" data-name="%s">%s</a>',
-            $item['key'],
-            $item['name'],
-            __('Edit')
-        );
+        if ($item['key'] === 'home') {
+            return '';
+        }
+
+        $actions = [
+            'view'   => sprintf(
+                '<span class="editLocation color-link cursor-pointer" data-key="%s" data-name="%s">%s</span>',
+                $item['key'],
+                $item['name'],
+                __('Edit')
+            ),
+            'delete' => sprintf(
+                '<span class="deleteLocation color-error cursor-pointer" data-key="%s" data-name="%s">%s</span>',
+                $item['key'],
+                $item['name'],
+                __('Delete')
+            )
+        ];
+
+        return join(' | ', $actions);
     }
     public function get_bulk_actions(): array
     {
@@ -78,6 +92,10 @@ class SwiperLocationTable extends WP_List_Table {
     }
     public function column_cb($item)
     {
+        if ($item['key'] === 'home') {
+            return '';
+        }
+
         return sprintf(
             '<input type="checkbox" name="swiperLocation[]" value="%s" />',
             $item['key']
@@ -93,14 +111,15 @@ class SwiperLocationTable extends WP_List_Table {
                     $items = [$items];
                 }
 
-                foreach ($items as $key) {
-                    unset($this->locations[$key]);
+                $result = SwiperService::deleteLocations($items);
+
+                if ($result) {
+                    $msg = __('Deleted', 'G3');
+                    wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+                } else {
+                    $msg = __('Delete Failed', 'G3');
+                    wp_add_inline_script('jui', 'JUI.Toast.error("' . $msg . '",2000);');
                 }
-
-                update_option($this->key, $this->locations);
-
-                $msg = __('Deleted', 'G3');
-                wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
             }
         }
     }

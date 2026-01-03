@@ -2,17 +2,104 @@
 namespace JEALER\G3\Services;
 
 class SwiperService {
+
+    /**
+     * Singleton instance
+     * 
+     * 单例实例
+     * 
+     * @var self
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static $instance = null;
-    public const TABLE               = 'g3_swipers';
-    public const CACHE_KEY           = 'swipers';
-    public const CACHE_GROUP         = 'swipers';
-    public const QUERY_CACHE_GROUP   = 'swipers_query';
+
+    /**
+     * Swiper table name
+     * 
+     * 轮播图表名
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const TABLE = 'g3_swipers';
+
+    /**
+     * Swiper Cache key
+     * 
+     * 轮播图缓存键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const CACHE_KEY = 'swipers';
+
+    /**
+     * Swiper Cache group
+     * 
+     * 轮播图缓存组
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const CACHE_GROUP = 'swipers';
+
+    /**
+     * Swiper Query Cache group
+     * 
+     * 轮播图查询缓存组
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const QUERY_CACHE_GROUP = 'swipers_query';
+
+    /**
+     * Swiper Location Option key
+     * 
+     * 轮播图位置选项键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public const LOCATION_OPTION_KEY = 'g3_option_swiper_locations';
-    public const QUERY_OPTION_KEY    = 'g3_option_swipers_query';
+
+    /**
+     * Swiper Query Option key
+     * 
+     * 轮播图查询选项键
+     * 
+     * @var string
+     * @access public
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public const QUERY_OPTION_KEY = 'g3_option_swipers_query';
+
     public function __construct()
     {
     }
 
+    /**
+     * Run
+     * 
+     * 运行
+     * 
+     * @return self
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function run(): self
     {
         if (!self::$instance) {
@@ -27,6 +114,8 @@ class SwiperService {
      * 获取所有轮播图
      * 
      * @return array
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function getSwipers(): array
     {
@@ -43,6 +132,15 @@ class SwiperService {
         return $swipers;
     }
 
+    /**
+     * Count swipers
+     * 
+     * 统计轮播图数量
+     * 
+     * @return int
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function count(): int
     {
         return count(self::getSwipers());
@@ -55,6 +153,8 @@ class SwiperService {
      * 
      * @param int $id Swiper ID
      * @return array
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function queryById(int $id)
     {
@@ -77,6 +177,8 @@ class SwiperService {
      * 
      * @param string $location Swiper location
      * @return array
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function queryByLocation(string $location)
     {
@@ -107,6 +209,8 @@ class SwiperService {
      * 清空轮播图查询缓存
      * 
      * @return void
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function clearQueryCache(): void
     {
@@ -126,6 +230,8 @@ class SwiperService {
      * 
      * @param array $args
      * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
      */
     public static function query(array $args): bool
     {
@@ -161,6 +267,17 @@ class SwiperService {
         }
     }
 
+    /**
+     * Update swiper status
+     * 
+     * 更新轮播图状态
+     * 
+     * @param array $ids Swiper IDs
+     * @param int $status Swiper status
+     * @return bool|int
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function updateStatus(array $ids, int $status): bool|int
     {
         if (!is_array($ids) || !count($ids)) return false;
@@ -179,6 +296,16 @@ class SwiperService {
         return $result;
     }
 
+    /**
+     * Delete swipers
+     * 
+     * 删除轮播图
+     * 
+     * @param int|array $ids Swiper IDs
+     * @return bool|int
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function deleteSwipers(int|array $ids): bool|int
     {
         if (!$ids) return false;
@@ -208,5 +335,58 @@ class SwiperService {
         }
 
         return $result;
+    }
+
+    /**
+     * Delete swiper locations
+     * 
+     * 删除轮播图位置
+     * 
+     * @param string|array $locations
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function deleteLocations(string|array $locations): bool
+    {
+        if (!$locations) return false;
+
+        $data = get_option(self::LOCATION_OPTION_KEY, []);
+
+        if (is_array($locations)) {
+            foreach ($locations as $location) {
+                if (isset($data[$location])) {
+                    unset($data[$location]);
+                }
+            }
+        } else {
+            if (isset($data[$locations])) {
+                unset($data[$locations]);
+            }
+        }
+
+        return update_option(self::LOCATION_OPTION_KEY, $data);
+    }
+
+    /**
+     * render swiper status
+     * 
+     * @param int $status
+     * @return string
+     */
+    public static function renderStatus(int $status): string
+    {
+        return $status == 1 ? __('Enable') : __('Disable');
+    }
+
+    /**
+     * render swiper target
+     * 
+     * @param int $target
+     * @return string
+     */
+    public static function renderTarget(int $target): string
+    {
+        return $target == 0 ? __('Current Tab', 'G3') : __('New Tab', 'G3');
     }
 }

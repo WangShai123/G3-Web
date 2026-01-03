@@ -3,8 +3,6 @@ namespace JEALER\G3\Utilities;
 
 use InvalidArgumentException;
 use ReflectionClass;
-use WP_User;
-use WP_Post;
 
 final class Common {
 

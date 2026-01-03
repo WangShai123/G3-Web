@@ -17,15 +17,6 @@ class Swiper extends Components {
             'home' => __('Home')
         ]);
     }
-    // #[\Override]
-    // protected function adminOptions(): void
-    // {
-    //     $this->option = Option::cache(SwiperService::LOCATION_OPTION_KEY, $this->option);
-    // }
-    #[\Override]
-    protected function admin(): void
-    {
-    }
     #[\Override]
     protected function adminMenu(): void
     {
@@ -69,27 +60,6 @@ class Swiper extends Components {
     #[\Override]
     protected function ajax(): void
     {
-        add_action('wp_ajax_edit_location', function () {
-            if (!current_user_can('manage_options')) {
-                Response::ajaxForbidden();
-            }
-
-            $key  = $_POST['key'] ?? null;
-            $name = $_POST['name'] ?? null;
-
-            if (!$key || !$name) {
-                Response::ajaxError(__('Invalid data', 'G3'));
-            }
-
-            if (!preg_match('/^[a-zA-Z]+$/', $key)) {
-                Response::ajaxError(__('Slug: Only supports English Letter', 'G3'));
-            }
-
-            $this->option[$key] = $name;
-            update_option(SwiperService::LOCATION_OPTION_KEY, $this->option);
-            Response::ajaxUpdated();
-        });
-
         add_action('wp_ajax_edit_swiper', function () {
             if (!current_user_can('manage_options')) {
                 Response::ajaxForbidden();
@@ -103,8 +73,11 @@ class Swiper extends Components {
             $sort     = $_POST['sort'] ?? null;
             $status   = $_POST['status'] ?? null;
 
-            if (!$title || !$location || !$sort || !$status) {
-                Response::ajaxError(__('Invalid Data', 'G3'));
+            if ($status == null) {
+                Response::ajaxError(__('Data Missing', 'G3') . '. ' . __('Please set status data again', 'G3'));
+            }
+            if (!$title || !$location || !$sort) {
+                Response::ajaxError(__('Please fill in the complete data', 'G3'));
             }
             if (!Validator::isImage($media)) {
                 Response::ajaxError(__('Invalid Image', 'G3'));
@@ -136,10 +109,57 @@ class Swiper extends Components {
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
                 Response::ajaxUpdated();
+            } else {
+                $result = $wpdb->update($table, $data, ['id' => $id]);
+                if ($result) {
+                    wp_cache_delete($id, SwiperService::CACHE_GROUP);
+                    Response::ajaxUpdated();
+                } else {
+                    Response::ajaxFailed();
+                }
             }
-            $wpdb->update($table, $data, ['id' => $id]);
-            wp_cache_set($id, $data, SwiperService::CACHE_GROUP);
-            Response::ajaxUpdated();
+        });
+
+        add_action('wp_ajax_edit_swiper_location', function () {
+            if (!current_user_can('manage_options')) {
+                Response::ajaxForbidden();
+            }
+
+            $key  = $_POST['key'] ?? null;
+            $name = $_POST['name'] ?? null;
+
+            if (!$key || !$name) {
+                Response::ajaxError(__('Please fill in the complete data', 'G3'));
+            }
+
+            if (!preg_match('/^[a-zA-Z]+$/', $key)) {
+                Response::ajaxError(__('Slug: Only supports English Letter', 'G3'));
+            }
+
+            $this->option[$key] = $name;
+
+            $result = update_option(SwiperService::LOCATION_OPTION_KEY, $this->option);
+            if ($result) {
+                Response::ajaxUpdated();
+            } else {
+                Response::ajaxFailed();
+            }
+        });
+
+        add_action('wp_ajax_delete_swiper_location', function () {
+            if (!current_user_can('manage_options')) {
+                Response::ajaxForbidden();
+            }
+            $key = $_POST['key'] ?? null;
+            if (!$key) {
+                Response::ajaxError(__('Please fill in the complete data', 'G3'));
+            }
+            $result = SwiperService::deleteLocations($key);
+            if ($result) {
+                Response::ajaxDeleted();
+            } else {
+                Response::ajaxError(__('Delete Failed', 'G3'));
+            }
         });
     }
 

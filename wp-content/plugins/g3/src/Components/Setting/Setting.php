@@ -27,7 +27,8 @@ class Setting extends Components {
             'icp'          => '',
             'headerCode'   => '',
             'footerCode'   => '',
-            'links'        => '',
+            'customCode'   => '',
+            'links'        => '1',
             'redirectLink' => '0',
         ]);
         $this->seo    = Option::get(SystemService::SEO_OPTION_KEY, [
@@ -54,7 +55,6 @@ class Setting extends Components {
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
-
     }
     #[\Override]
     protected function admin(): void
@@ -102,6 +102,10 @@ class Setting extends Components {
     {
         add_action('wp_footer', [$this, 'redirectLinkHandle']);
         $this->rssHandle();
+    }
+    protected function end(): void
+    {
+        $this->linksHandle();
     }
     public function render(): void
     {
@@ -223,15 +227,31 @@ class Setting extends Components {
                 ]
             ],
             [
-                'id'       => 'links',
-                'title'    => __('Links', 'G3'),
+                'id'       => 'customCode',
+                'title'    => __('Custom Code', 'G3'),
                 'callback' => function () {
                     echo Container::textarea(
                         SystemService::OPTION_KEY,
                         $this->option,
+                        'customCode',
+                        __('Custom Code', 'G3'),
+                        __('Enter any HTML, CSS, JS code here that you want to customize output.', 'G3')
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'customCode',
+                ]
+            ],
+            [
+                'id'       => 'links',
+                'title'    => __('Links'),
+                'callback' => function () {
+                    echo Container::enable(
+                        SystemService::OPTION_KEY,
+                        $this->option,
                         'links',
-                        __('Links', 'G3'),
-                        __('Enter the code for the friend links you want to add here, or any HTML, CSS, JS code that you want to customize output.', 'G3')
+                        __('Links'),
+                        __('The links feature helps you manage your friendship links.', 'G3')
                     );
                 },
                 'args'     => [
@@ -556,7 +576,7 @@ class Setting extends Components {
         add_filter('feed_links_show_posts_feed', '__return_false', 999);
         add_filter('feed_links_show_comments_feed', '__return_false', 999);
     }
-    public function disableRss()
+    public function disableRss(): void
     {
         wp_die(
             __('Feed Disabled', 'G3'),
@@ -575,7 +595,7 @@ class Setting extends Components {
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();
     }
-    private function pluginAction()
+    private function pluginAction(): void
     {
         add_filter('plugin_row_meta', function ($links, $file) {
             if ($file !== 'g3/loader.php') return $links;
@@ -588,6 +608,13 @@ class Setting extends Components {
             $links[] = '<a href="index.php?page=g3-welcome">' . __('Tip', 'G3') . '</a>';
             return $links;
         });
+    }
+    private function linksHandle(): void
+    {
+        if (!SystemService::isLinksAvailable()) {
+            return;
+        }
+        add_filter('pre_option_link_manager_enabled', '__return_true');
     }
 
 }

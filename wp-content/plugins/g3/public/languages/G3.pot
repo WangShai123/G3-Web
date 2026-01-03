@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-31 16:50+0000\n"
+"POT-Creation-Date: 2026-01-03 07:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,28 +16,28 @@ msgstr ""
 "X-Loco-Version: 2.8.0; wp-6.9; php-8.3.27\n"
 "X-Domain: G3"
 
-#: src/Utilities/Common.php:132
+#: src/Utilities/Common.php:130
 #, php-format
 msgid "%s day ago"
 msgid_plural "%s days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utilities/Common.php:128
+#: src/Utilities/Common.php:126
 #, php-format
 msgid "%s hour ago"
 msgid_plural "%s hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utilities/Common.php:124
+#: src/Utilities/Common.php:122
 #, php-format
 msgid "%s minute ago"
 msgid_plural "%s minutes ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utilities/Common.php:120
+#: src/Utilities/Common.php:118
 #, php-format
 msgid "%s second ago"
 msgid_plural "%s seconds ago"
@@ -158,7 +158,7 @@ msgstr ""
 #: src/Components/Activity/Activity.php:17
 #: src/Components/Product/Product.php:79
 #: src/Components/Announcement/Announcement.php:21
-#: src/Components/Swiper/views/tab-locations.php:23
+#: src/Components/Swiper/views/tab-locations.php:22
 #: src/Components/WechatOA/views/tab-reply.php:23
 #: src/Components/WechatOA/views/tab-reply.php:24
 msgid "Add New"
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Add Sku"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:43 src/Components/Swiper/Swiper.php:44
+#: src/Components/Swiper/Swiper.php:34 src/Components/Swiper/Swiper.php:35
 #: src/Components/Swiper/views/page-edit.php:13
 msgid "Add Swiper"
 msgstr ""
@@ -228,19 +228,6 @@ msgstr ""
 
 #: templates/developer/w.php:117
 msgid "Ads Management"
-msgstr ""
-
-#: src/Components/Auth/views/tab-follow.php:6
-msgid ""
-"After enabling the Subscribe Login function, in the Desktop mode, the system "
-"will automatically disable other login methods."
-msgstr ""
-
-#: src/Components/Auth/views/tab-follow.php:5
-msgid ""
-"After enabling the Subscribe Login function, the system will automatically "
-"generate a WeChat official account QR code. Users can subscribe the WeChat "
-"official account to complete the login."
 msgstr ""
 
 #: src/Components/Mail/Mail.php:255
@@ -274,8 +261,7 @@ msgstr ""
 msgid "All Comments"
 msgstr ""
 
-#. 所有的出站链接将会被系统拦截，并重定向到链接中间页。
-#: src/Components/Setting/Setting.php:253
+#: src/Components/Setting/Setting.php:270
 msgid ""
 "All outbound links will be intercepted by the system and redirected to the "
 "link middle page instead of the original target url."
@@ -390,6 +376,7 @@ msgstr ""
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr ""
 
+#: src/Components/Swiper/views/tab-locations.php:118
 #: src/Components/WechatOA/views/tab-menus.php:39
 #: src/Components/WechatOA/views/tab-message.php:53
 #: src/Components/WechatOA/views/tab-reply.php:178
@@ -419,7 +406,7 @@ msgstr ""
 msgid "At least one keyword is required"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:356
+#: src/Components/Setting/Setting.php:372
 msgid "Atom URL"
 msgstr ""
 
@@ -513,7 +500,7 @@ msgstr ""
 msgid "Button"
 msgstr ""
 
-#: src/Components/Auth/views/tab-follow.php:4
+#: src/Components/Auth/views/tab-social.php:4
 msgid ""
 "By letting users subscribe the WeChat official account to automatically log "
 "in, it is an extremely effective operation tool for driving WeChat users and "
@@ -624,7 +611,7 @@ msgstr ""
 msgid "Content Security Policy"
 msgstr ""
 
-#: templates/developer/redirect.php:46
+#: templates/developer/redirect.php:43
 msgid "Continue to Visit"
 msgstr ""
 
@@ -659,8 +646,7 @@ msgstr ""
 msgid "Cryptocurrency"
 msgstr ""
 
-#: src/Includes/SwiperListTable.php:197
-#: src/Components/Swiper/views/page-edit.php:83
+#: src/Services/SwiperService.php:390
 msgid "Current Tab"
 msgstr ""
 
@@ -671,6 +657,11 @@ msgstr ""
 #: src/Components/Security/Security.php:103
 #: src/Components/Security/Security.php:109
 msgid "Custom Admin Login"
+msgstr ""
+
+#: src/Components/Setting/Setting.php:231
+#: src/Components/Setting/Setting.php:237
+msgid "Custom Code"
 msgstr ""
 
 #: src/Components/Mail/Mail.php:231 src/Components/Mail/Mail.php:237
@@ -711,6 +702,10 @@ msgstr ""
 msgid "Data Flush Complete"
 msgstr ""
 
+#: src/Components/Swiper/Swiper.php:77
+msgid "Data Missing"
+msgstr ""
+
 #: src/Components/Post/widgets/PostWidget.php:73
 msgid "Data Type"
 msgstr ""
@@ -719,13 +714,13 @@ msgstr ""
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:149
-#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:151
+#: src/Components/Setting/Setting.php:157
 msgid "Default Avatar"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:165
-#: src/Components/Setting/Setting.php:171
+#: src/Components/Setting/Setting.php:167
+#: src/Components/Setting/Setting.php:173
 msgid "Default Cover"
 msgstr ""
 
@@ -740,6 +735,11 @@ msgid ""
 "new view."
 msgstr ""
 
+#: src/Includes/SwiperLocationTable.php:120
+#: src/Components/Swiper/Swiper.php:161
+msgid "Delete Failed"
+msgstr ""
+
 #: src/Includes/WechatOAMessageListTable.php:90
 #: src/Components/WechatOA/views/tab-message.php:68
 msgid "Delete History Data"
@@ -748,7 +748,7 @@ msgstr ""
 #: src/Includes/WechatOAReplyListTable.php:143
 #: src/Includes/SwiperListTable.php:164
 #: src/Includes/WechatOAMessageListTable.php:124
-#: src/Includes/SwiperLocationTable.php:102 src/Utilities/Response.php:69
+#: src/Includes/SwiperLocationTable.php:117 src/Utilities/Response.php:69
 #: src/Controllers/AdminController.php:88
 msgid "Deleted"
 msgstr ""
@@ -758,7 +758,7 @@ msgstr ""
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:515
+#: src/Components/Setting/Setting.php:505
 msgid "Description"
 msgstr ""
 
@@ -864,12 +864,18 @@ msgstr ""
 msgid "Display Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:613
+#: src/Components/Setting/Setting.php:603
 msgid "Documents"
 msgstr ""
 
 #: src/Components/Share/views/metabox-share.php:37
 msgid "DouYin"
+msgstr ""
+
+#: templates/admin/oa.php:125
+msgid ""
+"Due to frequent illegal requests, the login function has been locked for 5 "
+"Minutes."
 msgstr ""
 
 #: templates/developer/w.php:86
@@ -928,7 +934,7 @@ msgstr ""
 msgid "Edit Swiper"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:58
+#: src/Components/Swiper/Swiper.php:49
 msgid "Edit Swipers"
 msgstr ""
 
@@ -963,6 +969,10 @@ msgstr ""
 msgid "Enable Wallet, if you want balance feature."
 msgstr ""
 
+#: src/Components/Setting/Setting.php:238
+msgid "Enter any HTML, CSS, JS code here that you want to customize output."
+msgstr ""
+
 #: src/Components/WechatOA/views/tab-reply.php:32
 #: src/Components/WechatOA/views/tab-reply.php:111
 msgid "Enter keywords please"
@@ -985,19 +995,13 @@ msgstr ""
 msgid "Enter reply please"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:236
-msgid ""
-"Enter the code for the friend links you want to add here, or any HTML, CSS, "
-"JS code that you want to customize output."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:220
+#: src/Components/Setting/Setting.php:222
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "footer here."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:204
+#: src/Components/Setting/Setting.php:206
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "header here."
@@ -1076,8 +1080,8 @@ msgstr ""
 msgid "Favorite"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:592
-#: src/Components/Setting/Setting.php:593
+#: src/Components/Setting/Setting.php:582
+#: src/Components/Setting/Setting.php:583
 msgid "Feed Disabled"
 msgstr ""
 
@@ -1175,8 +1179,8 @@ msgstr ""
 msgid "Folder Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:213
-#: src/Components/Setting/Setting.php:219
+#: src/Components/Setting/Setting.php:215
+#: src/Components/Setting/Setting.php:221
 msgid "Footer Code"
 msgstr ""
 
@@ -1271,12 +1275,12 @@ msgstr ""
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr ""
 
-#: src/Components/Security/Security.php:77 src/Components/Auth/Auth.php:49
+#: src/Components/Security/Security.php:77 src/Components/Auth/Auth.php:48
 #: src/Components/Product/Product.php:49
 #: src/Components/WechatOA/WechatOA.php:72 src/Components/Menu/Menu.php:89
-#: src/Components/Wallet/Wallet.php:45 src/Components/Setting/Setting.php:93
-#: src/Components/Setting/Setting.php:94 src/Components/Setting/Setting.php:110
-#: src/Components/Setting/Setting.php:115 src/Components/Share/Share.php:57
+#: src/Components/Wallet/Wallet.php:45 src/Components/Setting/Setting.php:92
+#: src/Components/Setting/Setting.php:93 src/Components/Setting/Setting.php:113
+#: src/Components/Setting/Setting.php:118 src/Components/Share/Share.php:57
 msgid "General"
 msgstr ""
 
@@ -1298,8 +1302,8 @@ msgid ""
 "wp-content</i></code> directory if it does not exist."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:197
-#: src/Components/Setting/Setting.php:203
+#: src/Components/Setting/Setting.php:199
+#: src/Components/Setting/Setting.php:205
 msgid "Header Code"
 msgstr ""
 
@@ -1308,8 +1312,8 @@ msgstr ""
 msgid "Help Link"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:290
-#: src/Components/Setting/Setting.php:296
+#: src/Components/Setting/Setting.php:306
+#: src/Components/Setting/Setting.php:312
 msgid "HomePage Keywords"
 msgstr ""
 
@@ -1337,8 +1341,8 @@ msgstr ""
 msgid "https://www.jealer.com/g3-system/"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:181
-#: src/Components/Setting/Setting.php:187
+#: src/Components/Setting/Setting.php:183
+#: src/Components/Setting/Setting.php:189
 msgid "ICP Code"
 msgstr ""
 
@@ -1346,7 +1350,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:188
+#: src/Components/Setting/Setting.php:190
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1402,14 +1406,6 @@ msgid ""
 "mobile template and its features if you need."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:107
-msgid "Invalid Data"
-msgstr ""
-
-#: src/Components/Swiper/Swiper.php:81
-msgid "Invalid data"
-msgstr ""
-
 #: src/Controllers/AuthController.php:113
 #: src/Controllers/AuthController.php:176
 msgid "Invalid Hash"
@@ -1419,11 +1415,11 @@ msgstr ""
 msgid "Invalid IDs selected."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:110
+#: src/Components/Swiper/Swiper.php:83
 msgid "Invalid Image"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:113
+#: src/Components/Swiper/Swiper.php:86
 msgid "Invalid Link"
 msgstr ""
 
@@ -1445,9 +1441,9 @@ msgstr ""
 msgid "Keyword too long, max %s characters."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:514
-#: src/Components/Setting/Setting.php:535
-#: src/Components/Setting/Setting.php:541
+#: src/Components/Setting/Setting.php:504
+#: src/Components/Setting/Setting.php:525
+#: src/Components/Setting/Setting.php:531
 msgid "Keywords"
 msgstr ""
 
@@ -1494,19 +1490,14 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:229
-#: src/Components/Setting/Setting.php:235
-msgid "Links"
-msgstr ""
-
 #: src/Components/Developer/Developer.php:272
 msgid "Local Env"
 msgstr ""
 
 #: src/Includes/SwiperListTable.php:31
-#: src/Components/Swiper/views/page-edit.php:91
-#: src/Components/Swiper/views/page-edit.php:94
-#: src/Components/Swiper/views/page-edit.php:97
+#: src/Components/Swiper/views/page-edit.php:96
+#: src/Components/Swiper/views/page-edit.php:99
+#: src/Components/Swiper/views/page-edit.php:102
 msgid "Location"
 msgstr ""
 
@@ -1516,8 +1507,8 @@ msgid "Location Selector"
 msgstr ""
 
 #: src/Services/PostService.php:302 src/Components/Security/Security.php:127
-#: src/Components/Auth/Auth.php:37 src/Components/Auth/Auth.php:38
-#: src/Components/Auth/Auth.php:47
+#: src/Components/Auth/Auth.php:36 src/Components/Auth/Auth.php:37
+#: src/Components/Auth/Auth.php:46
 msgid "Login"
 msgstr ""
 
@@ -1526,12 +1517,8 @@ msgstr ""
 msgid "Login Success"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:86 src/Components/Auth/Auth.php:92
+#: src/Components/Auth/Auth.php:99 src/Components/Auth/Auth.php:105
 msgid "Login via Wechat Client"
-msgstr ""
-
-#: src/Components/Auth/Auth.php:71 src/Components/Auth/Auth.php:77
-msgid "Login via Wechat QRCode"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:459
@@ -1547,7 +1534,7 @@ msgstr ""
 msgid "Mailer service is not configured."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:59
+#: src/Components/Swiper/Swiper.php:50
 msgid "Manage Locations"
 msgstr ""
 
@@ -1614,11 +1601,11 @@ msgstr ""
 msgid "Mobile Menu"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:156
+#: src/Components/Setting/Setting.php:158
 msgid "Modify the default system avatar."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:172
+#: src/Components/Setting/Setting.php:174
 msgid "Modify the default system cover."
 msgstr ""
 
@@ -1667,8 +1654,7 @@ msgstr ""
 msgid "New Product Category Name"
 msgstr ""
 
-#: src/Includes/SwiperListTable.php:197
-#: src/Components/Swiper/views/page-edit.php:84
+#: src/Services/SwiperService.php:390
 msgid "New Tab"
 msgstr ""
 
@@ -1713,13 +1699,13 @@ msgstr ""
 msgid "No categories found."
 msgstr ""
 
-#: src/Components/Swiper/views/tab-locations.php:92
+#: src/Components/Swiper/views/tab-locations.php:90
 msgid "No data changed"
 msgstr ""
 
 #: src/Includes/SwiperListTable.php:181 src/Includes/RewriteRulesTable.php:164
 #: src/Includes/WechatOAMessageListTable.php:178
-#: src/Includes/SwiperLocationTable.php:109
+#: src/Includes/SwiperLocationTable.php:128
 #: src/Includes/WechatOAMenuListTable.php:81
 #: src/Components/WechatOA/WechatOA.php:402
 msgid "No data found."
@@ -1737,7 +1723,7 @@ msgstr ""
 msgid "No matter who you are, G3-Web has got you covered."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:125
+#: src/Components/Swiper/views/page-edit.php:130
 #, php-format
 msgid ""
 "No Position Data Found. Please configure <a href=\"%s\">the Swiper "
@@ -1785,17 +1771,7 @@ msgstr ""
 msgid "Official Account Type"
 msgstr ""
 
-#: src/Includes/SwiperListTable.php:133 src/Includes/SwiperListTable.php:186
-#: src/Components/Swiper/views/page-edit.php:155
-msgid "Offline"
-msgstr ""
-
-#: src/Includes/SwiperListTable.php:132 src/Includes/SwiperListTable.php:186
-#: src/Components/Swiper/views/page-edit.php:154
-msgid "Online"
-msgstr ""
-
-#: src/Components/Setting/Setting.php:614
+#: src/Components/Setting/Setting.php:604
 msgid "Online Courses"
 msgstr ""
 
@@ -1805,9 +1781,9 @@ msgid "Only one option"
 msgstr ""
 
 #: src/Includes/SwiperListTable.php:30
-#: src/Components/Swiper/views/page-edit.php:77
-#: src/Components/Swiper/views/page-edit.php:80
-#: src/Components/Swiper/views/page-edit.php:82
+#: src/Components/Swiper/views/page-edit.php:78
+#: src/Components/Swiper/views/page-edit.php:81
+#: src/Components/Swiper/views/page-edit.php:83
 msgid "Open Method"
 msgstr ""
 
@@ -1817,7 +1793,7 @@ msgstr ""
 msgid "Open Platform"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:83 src/Components/Setting/Setting.php:84
+#: src/Components/Setting/Setting.php:82 src/Components/Setting/Setting.php:83
 msgid "Operation Settings"
 msgstr ""
 
@@ -1943,6 +1919,11 @@ msgid ""
 "<a href=\"%s\" target=\"_blank\">HERE</a> to get one!"
 msgstr ""
 
+#: src/Components/Swiper/Swiper.php:80 src/Components/Swiper/Swiper.php:132
+#: src/Components/Swiper/Swiper.php:155
+msgid "Please fill in the complete data"
+msgstr ""
+
 #: src/Components/Mail/Mail.php:203
 msgid ""
 "Please fill in the email password or authorization code according to the "
@@ -1975,6 +1956,10 @@ msgstr ""
 msgid ""
 "Please select the appropriate encryption method based on the configuration "
 "of the mail server."
+msgstr ""
+
+#: src/Components/Swiper/Swiper.php:77
+msgid "Please set status data again"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:302
@@ -2172,8 +2157,8 @@ msgstr ""
 msgid "Recharge"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:245
-#: src/Components/Setting/Setting.php:251
+#: src/Components/Setting/Setting.php:263
+#: src/Components/Setting/Setting.php:269
 msgid "Redirect Link"
 msgstr ""
 
@@ -2292,11 +2277,11 @@ msgstr ""
 msgid "Rewrite rules flushed successfully!"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:334
+#: src/Components/Setting/Setting.php:350
 msgid "RSS URL"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:345
+#: src/Components/Setting/Setting.php:361
 msgid "RSS2 URL"
 msgstr ""
 
@@ -2304,12 +2289,12 @@ msgstr ""
 msgid "Rule"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:132
-#: src/Components/Setting/Setting.php:138
+#: src/Components/Setting/Setting.php:135
+#: src/Components/Setting/Setting.php:141
 msgid "Sad Mod"
 msgstr ""
 
-#: templates/developer/redirect.php:33
+#: templates/developer/redirect.php:31
 msgid "Safe Reminder"
 msgstr ""
 
@@ -2414,13 +2399,13 @@ msgstr ""
 msgid "Sender's Email Secret"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:471
+#: src/Components/Setting/Setting.php:461
 msgid "SEO & Social Media"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:514
-#: src/Components/Setting/Setting.php:536
-#: src/Components/Setting/Setting.php:544
+#: src/Components/Setting/Setting.php:504
+#: src/Components/Setting/Setting.php:526
+#: src/Components/Setting/Setting.php:534
 msgid "Separate tags with commas."
 msgstr ""
 
@@ -2504,7 +2489,7 @@ msgstr ""
 msgid "Site Health"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:113
+#: src/Components/Setting/Setting.php:116
 msgid "SiteMap"
 msgstr ""
 
@@ -2512,7 +2497,7 @@ msgstr ""
 msgid "SKU System"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:85
+#: src/Components/Swiper/Swiper.php:136
 msgid "Slug: Only supports English Letter"
 msgstr ""
 
@@ -2528,20 +2513,20 @@ msgstr ""
 msgid "Social Accounts"
 msgstr ""
 
-#: templates/developer/w.php:105
+#: templates/developer/w.php:105 src/Components/Auth/Auth.php:49
 msgid "Social Login"
 msgstr ""
 
 #: src/Includes/SwiperListTable.php:32
 #: src/Includes/WechatOAMenuListTable.php:20
-#: src/Components/Swiper/views/page-edit.php:136
-#: src/Components/Swiper/views/page-edit.php:139
+#: src/Components/Swiper/views/page-edit.php:141
+#: src/Components/Swiper/views/page-edit.php:144
 #: src/Components/WechatOA/views/view-menu-edit.php:88
 #: src/Components/WechatOA/views/view-menu-edit.php:91
 msgid "Sort"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:612
+#: src/Components/Setting/Setting.php:602
 msgid "Sponsor"
 msgstr ""
 
@@ -2549,16 +2534,16 @@ msgstr ""
 msgid "Staging Env"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:388
+#: src/Components/Setting/Setting.php:404
 msgid ""
 "Starting from version 5.5 of WordPress, the functionality of multi-level and "
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr ""
 
 #: src/Includes/SwiperListTable.php:33
-#: src/Components/Swiper/views/page-edit.php:148
-#: src/Components/Swiper/views/page-edit.php:151
 #: src/Components/Swiper/views/page-edit.php:153
+#: src/Components/Swiper/views/page-edit.php:156
+#: src/Components/Swiper/views/page-edit.php:158
 msgid "Status"
 msgstr ""
 
@@ -2571,10 +2556,6 @@ msgstr ""
 msgid "Store Messages"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:114 src/Components/Auth/Auth.php:120
-msgid "Subscribe Login"
-msgstr ""
-
 #: src/Components/WechatOA/WechatOA.php:185
 #: src/Components/WechatOA/WechatOA.php:191
 msgid "Subscribe Message"
@@ -2584,8 +2565,8 @@ msgstr ""
 msgid "Subscription Account"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:34 src/Components/Swiper/Swiper.php:35
-#: src/Components/Swiper/Swiper.php:56
+#: src/Components/Swiper/Swiper.php:25 src/Components/Swiper/Swiper.php:26
+#: src/Components/Swiper/Swiper.php:47
 msgid "Swiper"
 msgstr ""
 
@@ -2609,7 +2590,7 @@ msgstr ""
 msgid "Template file does not exist: %s"
 msgstr ""
 
-#: src/Services/SwiperService.php:159
+#: src/Services/SwiperService.php:265
 msgid "Template not found"
 msgstr ""
 
@@ -2642,22 +2623,25 @@ msgid ""
 "message is found."
 msgstr ""
 
-#. 全站将沉浸在只有黑白灰颜色的默哀模式中。
-#: src/Components/Setting/Setting.php:140
+#: src/Components/Setting/Setting.php:142
 msgid ""
 "The entire website will be immersed in a mournful mode with only black, "
 "white, and gray colors."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:177
-#: src/Components/Swiper/views/page-edit.php:183
-#: src/Components/Swiper/views/page-edit.php:189
-#: src/Components/Swiper/views/page-edit.php:197
+#: src/Components/Swiper/views/page-edit.php:186
+#: src/Components/Swiper/views/page-edit.php:192
+#: src/Components/Swiper/views/page-edit.php:198
+#: src/Components/Swiper/views/page-edit.php:206
 msgid "The field cannot be empty"
 msgstr ""
 
 #: src/Components/WechatOA/WechatOA.php:250
 msgid "The Key that will call the latest posts. Default: n"
+msgstr ""
+
+#: src/Components/Setting/Setting.php:254
+msgid "The links feature helps you manage your friendship links."
 msgstr ""
 
 #: src/Components/WechatOA/WechatOA.php:175
@@ -2754,14 +2738,14 @@ msgstr ""
 msgid "This tab is for Nginx security configuration advice."
 msgstr ""
 
-#: src/Services/AuthService.php:284
+#: src/Services/AuthService.php:286
 msgid "This WeChat account is already bound to another user."
 msgstr ""
 
 #: templates/developer/w.php:17 src/Utilities/Container.php:625
 #: src/Components/Developer/Developer.php:583
 #: src/Components/Developer/Developer.php:597
-#: src/Components/Setting/Setting.php:618
+#: src/Components/Setting/Setting.php:608
 #: src/Components/WechatOA/views/view-menu-edit.php:154
 msgid "Tip"
 msgstr ""
@@ -2776,7 +2760,7 @@ msgstr ""
 msgid "Tips for First Time Users"
 msgstr ""
 
-#: src/Includes/SwiperListTable.php:27 src/Components/Setting/Setting.php:513
+#: src/Includes/SwiperListTable.php:27 src/Components/Setting/Setting.php:503
 msgid "Title"
 msgstr ""
 
@@ -2882,6 +2866,16 @@ msgstr ""
 
 #: src/Components/Mail/Mail.php:248 src/Components/Mail/Mail.php:254
 msgid "User Registration Notification Template"
+msgstr ""
+
+#: src/Components/Auth/Auth.php:106
+msgid ""
+"Users can complete the login automatically while browsing your website with "
+"Wechat client."
+msgstr ""
+
+#: src/Components/Auth/Auth.php:90
+msgid "Users can subscribe your WeChat official account to complete the login."
 msgstr ""
 
 #: src/Components/WechatOA/views/view-menu-edit.php:178
@@ -3080,16 +3074,13 @@ msgstr ""
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1844 src/Services/AuthService.php:199
+#: src/Controllers/AuthController.php:234 src/Services/WechatOAService.php:1844
+#: src/Services/AuthService.php:199
 msgid "WeChat service is not available."
 msgstr ""
 
-#: src/Controllers/AuthController.php:234
-msgid "WeChat service is not configured."
-msgstr ""
-
-#: src/Components/Auth/Auth.php:50
-msgid "WeChat Subscription Login"
+#: src/Components/Auth/Auth.php:83 src/Components/Auth/Auth.php:89
+msgid "WeChat Subscribe Login"
 msgstr ""
 
 #: src/Components/Share/Share.php:110 src/Components/Share/Share.php:116
@@ -3167,13 +3158,12 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-#: templates/developer/redirect.php:39
+#: templates/developer/redirect.php:36
 msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr ""
 
-#. 您可以为每一个页面自定义SEO数据。
-#: src/Components/Setting/Setting.php:281
+#: src/Components/Setting/Setting.php:297
 msgid "You can add custom SEO data for each page."
 msgstr ""
 

@@ -21,6 +21,7 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
     $target   = $item['target'] ?? '0';
     $location = $item['location'] ?? '';
     $sort     = $item['sort'] ?? '';
+    $status   = $item['status'] ?? '1';
 }
 ?>
 <div class="wrap">
@@ -79,9 +80,13 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                     <fieldset>
                         <legend class="screen-reader-text"><span><?php _e('Open Method', 'G3'); ?></span></legend>
                         <label for="target">
-                            <select id="target" name="targete" class="" title="<?php _e('Open Method', 'G3'); ?>">
-                                <option value="0" selected="selected"><?php _e('Current Tab', 'G3'); ?></option>
-                                <option value="1"><?php _e('New Tab', 'G3'); ?></option>
+                            <select id="target" name="target" class="" title="<?php _e('Open Method', 'G3'); ?>">
+                                <option value="0" <?php selected($target, '0'); ?>>
+                                    <?php echo SwiperService::renderTarget(0); ?>
+                                </option>
+                                <option value="1" <?php selected($target, '1'); ?>>
+                                    <?php echo SwiperService::renderTarget(1); ?>
+                                </option>
                             </select>
                         </label>
                     </fieldset>
@@ -151,8 +156,12 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                         <legend class="screen-reader-text"><span><?php _e('Status', 'G3'); ?></span></legend>
                         <label for="status">
                             <select id="status" name="status" class="" title="<?php _e('Status', 'G3'); ?>">
-                                <option value="1" selected="selected"><?php _e('Online', 'G3'); ?></option>
-                                <option value="0"><?php _e('Offline', 'G3'); ?></option>
+                                <option value="1" <?php selected($status, '1'); ?>>
+                                    <?php echo SwiperService::renderStatus(1); ?>
+                                </option>
+                                <option value="0" <?php selected($status, '0'); ?>>
+                                    <?php echo SwiperService::renderStatus(0); ?>
+                                </option>
                             </select>
                         </label>
                     </fieldset>
@@ -215,7 +224,7 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                         window.location.href = '<?php echo admin_url('themes.php?page=swipers'); ?>';
                     }, 1000);
                 } else {
-                    JUI.Toast.error(res.data.message, 1500);
+                    JUI.Toast.error(res.data.message, 2000);
                 }
             })
         });

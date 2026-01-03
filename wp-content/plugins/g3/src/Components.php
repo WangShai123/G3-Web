@@ -1,6 +1,8 @@
 <?php
 namespace JEALER\G3;
-use JEALER\G3\Utilities\Common;
+
+use JEALER\G3\Helper;
+use JEALER\G3\Utilities\System;
 
 /**
  * Base Components Class - Provides foundational methods for all components
@@ -69,7 +71,7 @@ class Components {
         add_action('rest_api_init', [$this, 'registerRest']);
         add_action('add_meta_boxes', [$this, 'metaBoxActions']);
 
-        if (defined('WP_DEBUG') && WP_DEBUG) $this->debug();
+        if (System::isDebug()) $this->debug();
 
         $this->end();
 
@@ -107,12 +109,13 @@ class Components {
 
     /**
      * Register REST API routes
+     * 
      * @return void
      * @since 1.0.0
      */
     public function registerRest(): void
     {
-        $router = $this->router();
+        $router = Helper::router();
         $router->registerRestRoutes();
     }
 
@@ -123,16 +126,12 @@ class Components {
      */
     public function initRewrite(): void
     {
-        $rewrite = self::rewrite();
+        $rewrite = Helper::rewrite();
         add_filter('query_vars', [$rewrite, 'registerQueryVars'], 10);
         add_filter('template_include', [$rewrite, 'bindTemplateDispatch'], 99);
+
         // Auto check and fix rewrite rules in development environment
-        if (
-            (defined('WP_DEBUG') && WP_DEBUG)
-            ||
-            (defined('WP_ENVIRONMENT_TYPE')
-                && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development']))
-        ) {
+        if (SYSTEM::isDebug()) {
             add_action('parse_request', [$rewrite, 'checkAndFixRewriteRules'], 1);
         }
     }
@@ -160,7 +159,7 @@ class Components {
     private static function instance(string $className)
     {
         if (!class_exists($className)) {
-            if (WP_DEBUG) {
+            if (SYSTEM::isDebug()) {
                 wp_die('Sorry! ' . $className . ' Component CLASS does not exit.');
             }
             return;
@@ -212,141 +211,6 @@ class Components {
     public static function getProperty(string $componentName, string $propertyName)
     {
         return self::$components[$componentName]->$propertyName;
-    }
-
-    /**
-     * Register REST API Routes
-     * @return Router
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function router(): Router
-    {
-        static $router = null;
-        if (!$router) {
-            // Create Main Router (Plugin Controller)
-            $router = new Router(
-                baseDir: WP_PLUGIN_DIR . "/g3/src/Controllers",
-                baseNamespace: "JEALER\\G3\\Controllers"
-            );
-
-            // Reflectively scan plugin controllers
-            $router->discover();
-
-            // Check and scan theme controllers directory
-            $themeControllersDir =
-                get_stylesheet_directory() . "/src/Controllers";
-            if (file_exists($themeControllersDir)) {
-                // Create additional router for theme controllers
-                $themeRouter = new Router(
-                    baseDir: $themeControllersDir,
-                    baseNamespace: "JEALER\\G3\\Controllers"
-                );
-                // Reflectively scan theme controllers
-                $themeRouter->discover();
-
-                // Add theme router to main router
-                $router->addRouter($themeRouter);
-            }
-        }
-        return $router;
-    }
-
-    /**
-     * Register Rewrite Rules
-     * @return Rewrite
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function rewrite(): Rewrite
-    {
-        return Rewrite::getInstance();
-    }
-
-    /**
-     * Load Plugin Core Files
-     * @return
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function loader(): void
-    {
-        // initialize Components system
-        Common::singleton(__CLASS__);
-
-        // load all components
-        self::loadComponents();
-    }
-
-    /**
-     * Load All Components
-     * @return 
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private static function loadComponents(): void
-    {
-        /**
-         * @var array Default component mapping configuration
-         */
-        $defaultMap = require_once WP_PLUGIN_DIR . "/g3/config/components.php";
-
-        /**
-         * @var array User component mapping configuration
-         */
-        $userMap = file_exists(G3_THEME_CONFIG_DIR . "/components.php")
-            ? require_once G3_THEME_CONFIG_DIR . "/components.php"
-            : [];
-
-        $componentsMap = array_merge($defaultMap, $userMap);
-
-        self::components($componentsMap);
-    }
-
-    /**
-     * Load Component files and create instances
-     *
-     * @param array $componentsMap format as [
-     *     'component_name' => true,
-     * ]
-     *
-     * @return array Loaded component instances
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private static function components(array $componentsMap): array
-    {
-        $loadedComponents = [];
-
-        foreach ($componentsMap as $componentName => $shouldLoad) {
-            // only load component when value is true
-            if ($shouldLoad !== true) {
-                continue;
-            }
-            // check component className
-            $className     = ucfirst($componentName);
-            $componentFile = WP_PLUGIN_DIR . "/g3/src/Components/{$componentName}/{$className}.php";
-
-            if (file_exists($componentFile)) {
-                require_once $componentFile;
-
-                $fullClassName = "JEALER\G3\Components\\{$className}";
-
-                if (class_exists($fullClassName)) {
-                    /**
-                     * modify: Components::create only accept one parameter
-                     * Component configuration no longer pass parameters in configuration
-                     */
-                    $loadedComponents[$componentName] = self::create($className);
-                } else {
-                    wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
-                }
-            } else {
-                wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
-            }
-        }
-
-        return $loadedComponents;
     }
 
     /**

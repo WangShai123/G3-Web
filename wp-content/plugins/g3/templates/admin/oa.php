@@ -14,7 +14,7 @@ get_header();
 <div class="flex flex-col justify-center items-center h-screen w-full">
     <h1 class="text-center -translate-y-24px"><?php echo $name; ?></h1>
     <section class="flex justify-center -translate-y-24px">
-        <form class="j-form is-vertical is-item-vertical" id="adminLogin" style="width:480px;min-width:300px">
+        <form class="j-form is-vertical is-item-vertical" id="login" style="width:480px;min-width:300px">
             <div class="form-item">
                 <label for="username" class="item-label is-required"><?php _e('Username'); ?></label>
                 <div class="form-control">
@@ -31,8 +31,9 @@ get_header();
                         required />
                 </div>
             </div>
+            <div class="form-item" id="warning"></div>
             <div class="form-buttons justify-center mt-2">
-                <button type="submit" class="j-button is-primary w-full"><?php _e('Submit'); ?></button>
+                <button type="submit" class="j-button is-primary w-full" id="submit"><?php _e('Submit'); ?></button>
                 <button type="reset" class="j-button is-default w-full"><?php _e('Cancel'); ?></button>
             </div>
         </form>
@@ -51,19 +52,28 @@ get_header();
         document.documentElement.classList.add('j-theme-indigo', 'j-radius-sm', 'dark');
         bg();
 
-        const form = document.querySelector('#adminLogin');
+        const cookieName = 'oaLoginCookie';
+        const form = document.querySelector('#login');
+        const submitBtn = document.querySelector('#submit');
+
+        if (!submitBtn.dataset.originalText) {
+            submitBtn.dataset.originalText = submitBtn.textContent.trim();
+        }
+
+        let isSubmitting = false;
+        const timer = setInterval(updateSubmitButtonState, 200);
+        updateSubmitButtonState();
+
         form.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const text = submitBtn.textContent;
+            isSubmitting = true;
+
+            const text = submitBtn.dataset.originalText;
             const loader = '<?php echo Image::icon('loader', 'spin'); ?>';
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = loader;
-            setTimeout(function () {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = text;
-            }, 2000);
 
             const origin = window.location.origin;
             fetch(origin + '/wp-json/api/v1/oa/admin/auth', {
@@ -78,17 +88,49 @@ get_header();
             }).then(res => res.json())
                 .then(res => {
                     if (res.code === 200) {
-                        JUI.Toast.success(res.message, 2000)
+                        JUI.Toast.success(res.message, 1500)
                         setTimeout(function () {
-                            window.location.href = origin + '/wp-admin';
+                            window.location.href = origin + '/dashboard';
                         }, 1500);
+                        clearInterval(timer);
                     } else {
                         JUI.Toast.error(res.message, 2000)
+
+                        if (res.code === 429) {
+                            const expireTime = new Date(Date.now() + 60 * 5 * 1000);
+                            document.cookie = `${cookieName}=1; expires=${expireTime.toUTCString()}; path=/`;
+                        } else {
+                            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                        }
                     }
-                }).catch(function (error) {
-                    console.log('error');
+                    setTimeout(function () {
+                        submitBtn.innerHTML = text;
+                        submitBtn.disabled = false;
+                        isSubmitting = false;
+                    }, 2000);
+                })
+                .catch(function (error) {
+                    console.error('Login request failed:', error);
+                    JUI.Toast.error('Login Request Failed', 2000);
+                    document.cookie = "oa_login=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                    isSubmitting = false;
                 });
         })
+
+        function updateSubmitButtonState() {
+            if (isSubmitting) return;
+
+            const cookie = getCookie(cookieName);
+            const warning = document.querySelector('#warning');
+            const msg = '<div style="color:red">* <?php _e('Due to frequent illegal requests, the login function has been locked for 5 Minutes.', 'G3'); ?></div>';
+            if (cookie === '1') {
+                warning.innerHTML = msg;
+                submitBtn.disabled = true;
+            } else {
+                warning.innerHTML = '';
+                submitBtn.disabled = false;
+            }
+        }
     })
 
     const bg = function () {
@@ -123,6 +165,13 @@ get_header();
                 themeBox = null
             }
         }
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
     }
 </script>
 <?php

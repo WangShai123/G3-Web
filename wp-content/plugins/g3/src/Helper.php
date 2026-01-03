@@ -1,37 +1,26 @@
 <?php
 namespace JEALER\G3;
 
-use WP_Error;
 use JEALER\G3\Router;
 use JEALER\G3\Rewrite;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Components;
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Common;
 use DateTime;
 use Exception;
+use WP_Error;
 
-class JL {
+final class Helper {
     public static $i = null;
     public function __construct()
     {
     }
-    public static function run(): JL
+    public static function run(): Helper
     {
         if (!isset(self::$i)) {
-            self::$i = new self();
+            self::$i = Common::singleton(__CLASS__);
         }
         return self::$i;
-    }
-    public static function admin(): bool
-    {
-        return self::run()->i();
-    }
-    public static function x(): bool
-    {
-        return !self::run()->i();
-    }
-    public static function y(): bool
-    {
-        return self::run()->i();
     }
     public function gE(): bool|string
     {
@@ -70,7 +59,7 @@ class JL {
 
     private function t(): string
     {
-        return get_transient('wPxK91qZ') ?: '';
+        return get_transient(SystemService::K) ?: '';
     }
     private function gT(): array
     {
@@ -103,7 +92,7 @@ class JL {
                 "Content-Type" => "application/json; charset=utf-8"
             ],
             "body"        => wp_json_encode([
-                "target" => "g3Verify",
+                "target" => SystemService::TARGET,
                 "code"   => $code,
                 "domain" => get_site_url()
             ]),
@@ -139,7 +128,7 @@ class JL {
         $z  = $vD["z"] ?? false;
         if (!$e || !$t || !$z) return new WP_Error(400);
 
-        set_transient('wPxK91qZ', $z);
+        set_transient(SystemService::K, $z);
 
         $eT = $this->_d($e, $z);
         if (!$this->vt($eT) || $eT <= time()) {
@@ -179,74 +168,85 @@ class JL {
     {
         return Common::singleton(SystemService::class)->endPoint();
     }
+    public static function admin(): bool
+    {
+        return self::run()->i();
+    }
+    public static function x(): bool
+    {
+        return !self::run()->i();
+    }
+    public static function y(): bool
+    {
+        return self::run()->i();
+    }
 
     /**
      * Register REST API Routes
+     * 
      * @return Router
      * @since 1.0.0
      * @author Wang Shai
      */
-    // public static function router(): Router
-    // {
-    //     static $router = null;
-    //     if (!$router) {
-    //         // Create Main Router (Plugin Controller)
-    //         $router = new Router(
-    //             baseDir: WP_PLUGIN_DIR . "/g3/src/Controllers",
-    //             baseNamespace: "JEALER\\G3\\Controllers"
-    //         );
+    public static function router(): Router
+    {
+        static $router = null;
+        if (!$router) {
+            // Create Main Router (Plugin Controller)
+            $router = new Router(
+                baseDir: WP_PLUGIN_DIR . "/g3/src/Controllers",
+                baseNamespace: "JEALER\\G3\\Controllers"
+            );
 
-    //         // Reflectively scan plugin controllers
-    //         $router->discover();
+            // Reflectively scan plugin controllers
+            $router->discover();
 
-    //         // Check and scan theme controllers directory
-    //         $themeControllersDir =
-    //             get_stylesheet_directory() . "/src/Controllers";
-    //         if (file_exists($themeControllersDir)) {
-    //             // Create additional router for theme controllers
-    //             $themeRouter = new Router(
-    //                 baseDir: $themeControllersDir,
-    //                 baseNamespace: "G3\\Controllers"
-    //             );
-    //             // Reflectively scan theme controllers
-    //             $themeRouter->discover();
+            // Check and scan theme controllers directory
+            $themeControllersDir =
+                get_stylesheet_directory() . "/src/Controllers";
+            if (file_exists($themeControllersDir)) {
+                // Create additional router for theme controllers
+                $themeRouter = new Router(
+                    baseDir: $themeControllersDir,
+                    baseNamespace: "JEALER\\G3\\Controllers"
+                );
+                // Reflectively scan theme controllers
+                $themeRouter->discover();
 
-    //             // Add theme router to main router
-    //             $router->addRouter($themeRouter);
-    //         }
-    //     }
-    //     return $router;
-    // }
+                // Add theme router to main router
+                $router->addRouter($themeRouter);
+            }
+        }
+        return $router;
+    }
 
     /**
      * Register Rewrite Rules
+     * 
      * @return Rewrite
      * @since 1.0.0
      * @author Wang Shai
      */
-    // public static function rewrite(): Rewrite
-    // {
-    //     return Rewrite::getInstance();
-    // }
+    public static function rewrite(): Rewrite
+    {
+        return Rewrite::getInstance();
+    }
 
     /**
-     * Load Plugin Core Files
+     * init Components Loader
+     * 
      * @return void
      * @since 1.0.0
      * @author Wang Shai
      */
-    // public static function loader(): void
-    // {
-    //     // load base functions
-    //     require_once WP_PLUGIN_DIR . "/g3/src/Bases/loader.php";
+    public static function loader(): void
+    {
+        // initialize Components system
+        Common::singleton(Components::class);
 
-    //     // initialize Components system
-    //     Common::singleton("JEALER\G3\Components");
-
-    //     // load all components
-    //     self::loadComponents();
-    // }
-
+        // load all components
+        self::loadComponents();
+    }
 
     /**
      * Load All Components
@@ -254,24 +254,24 @@ class JL {
      * @since 1.0.0
      * @author Wang Shai
      */
-    // private static function loadComponents()
-    // {
-    //     /**
-    //      * @var array Default component mapping configuration
-    //      */
-    //     $defaultMap = require_once WP_PLUGIN_DIR . "/g3/config/components.php";
+    private static function loadComponents(): void
+    {
+        /**
+         * @var array Default component mapping configuration
+         */
+        $defaultMap = require_once WP_PLUGIN_DIR . "/g3/config/components.php";
 
-    //     /**
-    //      * @var array User component mapping configuration
-    //      */
-    //     $userMap = file_exists(G3_THEME_CONFIG_DIR . "/components.php")
-    //         ? require_once G3_THEME_CONFIG_DIR . "/components.php"
-    //         : [];
+        /**
+         * @var array User component mapping configuration
+         */
+        $userMap = file_exists(G3_THEME_CONFIG_DIR . "/components.php")
+            ? require_once G3_THEME_CONFIG_DIR . "/components.php"
+            : [];
 
-    //     $componentsMap = array_merge($defaultMap, $userMap);
+        $componentsMap = array_merge($defaultMap, $userMap);
 
-    //     self::components($componentsMap);
-    // }
+        self::components($componentsMap);
+    }
 
     /**
      * Load Component files and create instances
@@ -284,38 +284,38 @@ class JL {
      * @since 1.0.0
      * @author Wang Shai
      */
-    // public static function components(array $componentsMap): array
-    // {
-    //     $loadedComponents = [];
+    private static function components(array $componentsMap): array
+    {
+        $loadedComponents = [];
 
-    //     foreach ($componentsMap as $componentName => $shouldLoad) {
-    //         // only load component when value is true
-    //         if ($shouldLoad !== true) {
-    //             continue;
-    //         }
-    //         // check component className
-    //         $className     = ucfirst($componentName);
-    //         $componentFile = WP_PLUGIN_DIR . "/g3/src/Components/{$componentName}/{$className}.php";
+        foreach ($componentsMap as $componentName => $shouldLoad) {
+            // only load component when value is true
+            if ($shouldLoad !== true) {
+                continue;
+            }
+            // check component className
+            $className     = ucfirst($componentName);
+            $componentFile = WP_PLUGIN_DIR . "/g3/src/Components/{$componentName}/{$className}.php";
 
-    //         if (file_exists($componentFile)) {
-    //             require_once $componentFile;
+            if (file_exists($componentFile)) {
+                require_once $componentFile;
 
-    //             $fullClassName = "JEALER\G3\Components\\{$className}";
+                $fullClassName = "JEALER\G3\Components\\{$className}";
 
-    //             if (class_exists($fullClassName)) {
-    //                 /**
-    //                  * modify: Components::create only accept one parameter
-    //                  * Component configuration no longer pass parameters in configuration
-    //                  */
-    //                 $loadedComponents[$componentName] = Components::create($className);
-    //             } else {
-    //                 wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
-    //             }
-    //         } else {
-    //             wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
-    //         }
-    //     }
+                if (class_exists($fullClassName)) {
+                    /**
+                     * modify: Components::create only accept one parameter
+                     * Component configuration no longer pass parameters in configuration
+                     */
+                    $loadedComponents[$componentName] = Components::create($className);
+                } else {
+                    wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
+                }
+            } else {
+                wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
+            }
+        }
 
-    //     return $loadedComponents;
-    // }
+        return $loadedComponents;
+    }
 }

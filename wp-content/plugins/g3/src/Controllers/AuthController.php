@@ -46,7 +46,7 @@ class AuthController {
             ]
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [6, 60])]
+    #[Middleware(RateLimitMiddleware::class, [10, 300])]
     public function adminLogin(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data     = $request->get_json_params();
@@ -231,7 +231,7 @@ class AuthController {
         if (!$service->wechatOAService->isAvailable()) {
             return new WP_Error(
                 503,
-                __('WeChat service is not configured.', 'G3'),
+                __('WeChat service is not available.', 'G3'),
                 ['status' => 503]
             );
         }

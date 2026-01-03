@@ -46,7 +46,7 @@ final class Request {
      */
     public static function count(WP_REST_Request $request): int
     {
-        $ip       = System::clientIP();
+        $ip       = System::ip();
         $cacheKey = 'rate_limit_' . md5($ip . $request->get_route());
         $count    = get_transient($cacheKey);
         return $count === false ? 0 : $count;

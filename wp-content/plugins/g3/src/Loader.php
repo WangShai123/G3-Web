@@ -1,15 +1,15 @@
 <?php
 namespace JEALER\G3;
-use JEALER\G3\JL;
-use JEALER\G3\Components;
+
+use JEALER\G3\Helper;
 use JEALER\G3\Utilities\Common;
-class Loader
-{
+
+class Loader {
     public static $instance = null;
     public function __construct()
     {
         $this->init();
-        Components::loader();
+        Helper::loader();
     }
     public static function run(): Loader
     {
@@ -21,8 +21,8 @@ class Loader
     private function init()
     {
         global $loader;
-        if (!$loader instanceof JL) {
-            $loader = Common::singleton('JEALER\G3\JL');
+        if (!$loader instanceof Helper) {
+            $loader = Helper::run();
         }
         add_action('init', [$this, 'textDomain']);
     }

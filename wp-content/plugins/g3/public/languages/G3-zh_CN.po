@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2025-12-31 16:51+0000\n"
+"PO-Revision-Date: 2026-01-03 07:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -15,25 +15,25 @@ msgstr ""
 "X-Loco-Version: 2.8.0; wp-6.9; php-8.3.27\n"
 "X-Domain: G3"
 
-#: src/Utilities/Common.php:132
+#: src/Utilities/Common.php:130
 #, php-format
 msgid "%s day ago"
 msgid_plural "%s days ago"
 msgstr[0] "%s天前"
 
-#: src/Utilities/Common.php:128
+#: src/Utilities/Common.php:126
 #, php-format
 msgid "%s hour ago"
 msgid_plural "%s hours ago"
 msgstr[0] "%s 小时前"
 
-#: src/Utilities/Common.php:124
+#: src/Utilities/Common.php:122
 #, php-format
 msgid "%s minute ago"
 msgid_plural "%s minutes ago"
 msgstr[0] "%s 分钟前"
 
-#: src/Utilities/Common.php:120
+#: src/Utilities/Common.php:118
 #, php-format
 msgid "%s second ago"
 msgid_plural "%s seconds ago"
@@ -157,7 +157,7 @@ msgstr "活动侧边栏"
 #: src/Components/Activity/Activity.php:17
 #: src/Components/Product/Product.php:79
 #: src/Components/Announcement/Announcement.php:21
-#: src/Components/Swiper/views/tab-locations.php:23
+#: src/Components/Swiper/views/tab-locations.php:22
 #: src/Components/WechatOA/views/tab-reply.php:23
 #: src/Components/WechatOA/views/tab-reply.php:24
 msgid "Add New"
@@ -201,7 +201,7 @@ msgstr "添加属性"
 msgid "Add Sku"
 msgstr "添加 SKU"
 
-#: src/Components/Swiper/Swiper.php:43 src/Components/Swiper/Swiper.php:44
+#: src/Components/Swiper/Swiper.php:34 src/Components/Swiper/Swiper.php:35
 #: src/Components/Swiper/views/page-edit.php:13
 msgid "Add Swiper"
 msgstr "添加轮播图"
@@ -229,26 +229,6 @@ msgstr "后台页面标题"
 #: templates/developer/w.php:117
 msgid "Ads Management"
 msgstr "广告管理"
-
-#: src/Components/Auth/views/tab-follow.php:6
-#| msgid ""
-#| "After enabling the follow login function, in the Desktop mode, the system "
-#| "will automatically disable other login methods."
-msgid ""
-"After enabling the Subscribe Login function, in the Desktop mode, the system "
-"will automatically disable other login methods."
-msgstr "启用订阅登录功能后，在桌面模式下，系统将自动禁用其他登录方式。"
-
-#: src/Components/Auth/views/tab-follow.php:5
-#| msgid ""
-#| "After enabling the Subscribe Login function, the system will "
-#| "automatically generate a WeChat official account QR code. Users can "
-#| "follow the WeChat official account to complete the login."
-msgid ""
-"After enabling the Subscribe Login function, the system will automatically "
-"generate a WeChat official account QR code. Users can subscribe the WeChat "
-"official account to complete the login."
-msgstr "启用订阅登录功能后，系统将自动生成公众号二维码，用户关注公众号即可完成登录。"
 
 #: src/Components/Mail/Mail.php:255
 msgid ""
@@ -281,8 +261,7 @@ msgstr "所有分类"
 msgid "All Comments"
 msgstr "所有评论"
 
-#. 所有的出站链接将会被系统拦截，并重定向到链接中间页。
-#: src/Components/Setting/Setting.php:253
+#: src/Components/Setting/Setting.php:270
 #| msgid ""
 #| "After enabling it, all outbound links will be intercepted by the system "
 #| "and redirected to the link middle page instead of the original target url."
@@ -402,6 +381,7 @@ msgstr "归档页侧边栏"
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr "您确认要创建微信公众号菜单吗？"
 
+#: src/Components/Swiper/views/tab-locations.php:118
 #: src/Components/WechatOA/views/tab-menus.php:39
 #: src/Components/WechatOA/views/tab-message.php:53
 #: src/Components/WechatOA/views/tab-reply.php:178
@@ -432,7 +412,7 @@ msgstr "图文 URL"
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
-#: src/Components/Setting/Setting.php:356
+#: src/Components/Setting/Setting.php:372
 msgid "Atom URL"
 msgstr "Atom网址"
 
@@ -527,7 +507,7 @@ msgstr "创建主题"
 msgid "Button"
 msgstr "按钮"
 
-#: src/Components/Auth/views/tab-follow.php:4
+#: src/Components/Auth/views/tab-social.php:4
 #| msgid ""
 #| "By letting users follow the WeChat official account to automatically log "
 #| "in, it is an extremely effective operation tool for driving WeChat users "
@@ -644,7 +624,7 @@ msgstr "内容分发"
 msgid "Content Security Policy"
 msgstr "内容安全策略"
 
-#: templates/developer/redirect.php:46
+#: templates/developer/redirect.php:43
 msgid "Continue to Visit"
 msgstr "继续访问"
 
@@ -679,8 +659,7 @@ msgstr "积分系统"
 msgid "Cryptocurrency"
 msgstr "加密货币"
 
-#: src/Includes/SwiperListTable.php:197
-#: src/Components/Swiper/views/page-edit.php:83
+#: src/Services/SwiperService.php:390
 msgid "Current Tab"
 msgstr "当前标签页"
 
@@ -693,6 +672,11 @@ msgstr "自定义管理后台"
 #| msgid "Custom Admin Login URL"
 msgid "Custom Admin Login"
 msgstr "自定义管理登录地址"
+
+#: src/Components/Setting/Setting.php:231
+#: src/Components/Setting/Setting.php:237
+msgid "Custom Code"
+msgstr "自定义代码"
 
 #: src/Components/Mail/Mail.php:231 src/Components/Mail/Mail.php:237
 msgid "Custom Email Templates"
@@ -732,6 +716,10 @@ msgstr "自定义内容被分享到微信后显示的标题"
 msgid "Data Flush Complete"
 msgstr "数据刷新成功"
 
+#: src/Components/Swiper/Swiper.php:77
+msgid "Data Missing"
+msgstr "数据缺失"
+
 #: src/Components/Post/widgets/PostWidget.php:73
 msgid "Data Type"
 msgstr "数据类型"
@@ -740,13 +728,13 @@ msgstr "数据类型"
 msgid "Days must be greater than 0"
 msgstr "天数必需大于0"
 
-#: src/Components/Setting/Setting.php:149
-#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:151
+#: src/Components/Setting/Setting.php:157
 msgid "Default Avatar"
 msgstr "默认头像"
 
-#: src/Components/Setting/Setting.php:165
-#: src/Components/Setting/Setting.php:171
+#: src/Components/Setting/Setting.php:167
+#: src/Components/Setting/Setting.php:173
 msgid "Default Cover"
 msgstr "默认封面图"
 
@@ -761,6 +749,11 @@ msgid ""
 "new view."
 msgstr "设置同一访客在多少时间内重复访问不重新计数浏览次数。"
 
+#: src/Includes/SwiperLocationTable.php:120
+#: src/Components/Swiper/Swiper.php:161
+msgid "Delete Failed"
+msgstr "删除失败"
+
 #: src/Includes/WechatOAMessageListTable.php:90
 #: src/Components/WechatOA/views/tab-message.php:68
 msgid "Delete History Data"
@@ -769,7 +762,7 @@ msgstr "删除历史数据"
 #: src/Includes/WechatOAReplyListTable.php:143
 #: src/Includes/SwiperListTable.php:164
 #: src/Includes/WechatOAMessageListTable.php:124
-#: src/Includes/SwiperLocationTable.php:102 src/Utilities/Response.php:69
+#: src/Includes/SwiperLocationTable.php:117 src/Utilities/Response.php:69
 #: src/Controllers/AdminController.php:88
 msgid "Deleted"
 msgstr "已删除"
@@ -779,7 +772,7 @@ msgstr "已删除"
 msgid "Deny direct access to PHP unmapped files."
 msgstr "禁止直接访问未映射的 .php 文件。"
 
-#: src/Components/Setting/Setting.php:515
+#: src/Components/Setting/Setting.php:505
 msgid "Description"
 msgstr "描述"
 
@@ -894,7 +887,7 @@ msgstr "讨厌"
 msgid "Display Type"
 msgstr "显示类型"
 
-#: src/Components/Setting/Setting.php:613
+#: src/Components/Setting/Setting.php:603
 msgid "Documents"
 msgstr "文档"
 
@@ -902,6 +895,12 @@ msgstr "文档"
 #| msgid "Douyin"
 msgid "DouYin"
 msgstr "抖音"
+
+#: templates/admin/oa.php:125
+msgid ""
+"Due to frequent illegal requests, the login function has been locked for 5 "
+"Minutes."
+msgstr "由于频繁的非法请求，登录功能已被锁定 5 分钟。"
 
 #: templates/developer/w.php:86
 msgid ""
@@ -959,7 +958,7 @@ msgstr "编辑商品品类"
 msgid "Edit Swiper"
 msgstr "编辑轮播图"
 
-#: src/Components/Swiper/Swiper.php:58
+#: src/Components/Swiper/Swiper.php:49
 msgid "Edit Swipers"
 msgstr "编辑轮播图"
 
@@ -994,6 +993,12 @@ msgstr "开关选择器"
 msgid "Enable Wallet, if you want balance feature."
 msgstr "如果您想要余额管理功能，请启用它。"
 
+#: src/Components/Setting/Setting.php:238
+msgid "Enter any HTML, CSS, JS code here that you want to customize output."
+msgstr ""
+"在这里输入您想要自定义输出的任何 <code>HTML</code>、<code>CSS</code>、<code>JavaScript</code> "
+"代码。"
+
 #: src/Components/WechatOA/views/tab-reply.php:32
 #: src/Components/WechatOA/views/tab-reply.php:111
 msgid "Enter keywords please"
@@ -1016,21 +1021,13 @@ msgstr "请输入属性值"
 msgid "Enter reply please"
 msgstr "请输入回复内容"
 
-#: src/Components/Setting/Setting.php:236
-msgid ""
-"Enter the code for the friend links you want to add here, or any HTML, CSS, "
-"JS code that you want to customize output."
-msgstr ""
-"在这里输入您想要添加的友情链接代码，或者任何您想自定义输出的<code>HTML</code> <code>CSS</code> <code>"
-"JS</code>代码。"
-
-#: src/Components/Setting/Setting.php:220
+#: src/Components/Setting/Setting.php:222
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "footer here."
 msgstr "在这里输入您想要添加到网站页脚的<code>HTML</code>、<code>CSS</code>、<code>JS</code>代码。"
 
-#: src/Components/Setting/Setting.php:204
+#: src/Components/Setting/Setting.php:206
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "header here."
@@ -1109,8 +1106,8 @@ msgstr "回复状态更新失败"
 msgid "Favorite"
 msgstr "收藏"
 
-#: src/Components/Setting/Setting.php:592
-#: src/Components/Setting/Setting.php:593
+#: src/Components/Setting/Setting.php:582
+#: src/Components/Setting/Setting.php:583
 msgid "Feed Disabled"
 msgstr "Feed 已禁用"
 
@@ -1209,8 +1206,8 @@ msgstr "文件夹已存在：%s"
 msgid "Folder Name"
 msgstr "文件夹名称"
 
-#: src/Components/Setting/Setting.php:213
-#: src/Components/Setting/Setting.php:219
+#: src/Components/Setting/Setting.php:215
+#: src/Components/Setting/Setting.php:221
 msgid "Footer Code"
 msgstr "页脚区代码"
 
@@ -1310,12 +1307,12 @@ msgstr "G3-Web 需要 PHP 版本大于等于 8.3。请升级您的 PHP 版本。
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr "G3-Web 需要 WordPress 版本大于等于 6.5。请升级您的 WordPress 版本。"
 
-#: src/Components/Security/Security.php:77 src/Components/Auth/Auth.php:49
+#: src/Components/Security/Security.php:77 src/Components/Auth/Auth.php:48
 #: src/Components/Product/Product.php:49
 #: src/Components/WechatOA/WechatOA.php:72 src/Components/Menu/Menu.php:89
-#: src/Components/Wallet/Wallet.php:45 src/Components/Setting/Setting.php:93
-#: src/Components/Setting/Setting.php:94 src/Components/Setting/Setting.php:110
-#: src/Components/Setting/Setting.php:115 src/Components/Share/Share.php:57
+#: src/Components/Wallet/Wallet.php:45 src/Components/Setting/Setting.php:92
+#: src/Components/Setting/Setting.php:93 src/Components/Setting/Setting.php:113
+#: src/Components/Setting/Setting.php:118 src/Components/Share/Share.php:57
 msgid "General"
 msgstr "常规"
 
@@ -1339,8 +1336,8 @@ msgstr ""
 "当对象缓存的强化扩展文件不存在时，在 <code><i>wp-content</i></code> 目录生成新文件 <code><i>object-"
 "cache.php</i></code>。"
 
-#: src/Components/Setting/Setting.php:197
-#: src/Components/Setting/Setting.php:203
+#: src/Components/Setting/Setting.php:199
+#: src/Components/Setting/Setting.php:205
 msgid "Header Code"
 msgstr "页头区代码"
 
@@ -1349,8 +1346,8 @@ msgstr "页头区代码"
 msgid "Help Link"
 msgstr "顶部帮助链接"
 
-#: src/Components/Setting/Setting.php:290
-#: src/Components/Setting/Setting.php:296
+#: src/Components/Setting/Setting.php:306
+#: src/Components/Setting/Setting.php:312
 #| msgid "Homepage Keywords"
 msgid "HomePage Keywords"
 msgstr "首页关键词"
@@ -1379,8 +1376,8 @@ msgstr "https://www.jealer.com/"
 msgid "https://www.jealer.com/g3-system/"
 msgstr "https://www.jealer.com/g3-system/"
 
-#: src/Components/Setting/Setting.php:181
-#: src/Components/Setting/Setting.php:187
+#: src/Components/Setting/Setting.php:183
+#: src/Components/Setting/Setting.php:189
 msgid "ICP Code"
 msgstr "ICP备案号"
 
@@ -1388,7 +1385,7 @@ msgstr "ICP备案号"
 msgid "If the title is empty, the title of the post will be used."
 msgstr "如果标题为空，则直接使用当前内容的标题。"
 
-#: src/Components/Setting/Setting.php:188
+#: src/Components/Setting/Setting.php:190
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1453,14 +1450,6 @@ msgid ""
 "mobile template and its features if you need."
 msgstr "安装并激活 <a href=\"%s\">G3-Mobile 主题</a> 来预览手机端的各类功能和效果，如果您需要手机端支持。"
 
-#: src/Components/Swiper/Swiper.php:107
-msgid "Invalid Data"
-msgstr "数据错误"
-
-#: src/Components/Swiper/Swiper.php:81
-msgid "Invalid data"
-msgstr "非法数据"
-
 #: src/Controllers/AuthController.php:113
 #: src/Controllers/AuthController.php:176
 msgid "Invalid Hash"
@@ -1470,11 +1459,11 @@ msgstr "非法Hash"
 msgid "Invalid IDs selected."
 msgstr "非法的IDs"
 
-#: src/Components/Swiper/Swiper.php:110
+#: src/Components/Swiper/Swiper.php:83
 msgid "Invalid Image"
 msgstr "图片不正确"
 
-#: src/Components/Swiper/Swiper.php:113
+#: src/Components/Swiper/Swiper.php:86
 msgid "Invalid Link"
 msgstr "链接地址不正确"
 
@@ -1497,9 +1486,9 @@ msgstr "关键词 %s 已存在"
 msgid "Keyword too long, max %s characters."
 msgstr "关键词过长，支持最大长度 %s。"
 
-#: src/Components/Setting/Setting.php:514
-#: src/Components/Setting/Setting.php:535
-#: src/Components/Setting/Setting.php:541
+#: src/Components/Setting/Setting.php:504
+#: src/Components/Setting/Setting.php:525
+#: src/Components/Setting/Setting.php:531
 msgid "Keywords"
 msgstr "关键词"
 
@@ -1548,19 +1537,14 @@ msgstr "受限图文URL"
 msgid "Link"
 msgstr "链接"
 
-#: src/Components/Setting/Setting.php:229
-#: src/Components/Setting/Setting.php:235
-msgid "Links"
-msgstr "链接"
-
 #: src/Components/Developer/Developer.php:272
 msgid "Local Env"
 msgstr "本地环境"
 
 #: src/Includes/SwiperListTable.php:31
-#: src/Components/Swiper/views/page-edit.php:91
-#: src/Components/Swiper/views/page-edit.php:94
-#: src/Components/Swiper/views/page-edit.php:97
+#: src/Components/Swiper/views/page-edit.php:96
+#: src/Components/Swiper/views/page-edit.php:99
+#: src/Components/Swiper/views/page-edit.php:102
 msgid "Location"
 msgstr "位置"
 
@@ -1570,8 +1554,8 @@ msgid "Location Selector"
 msgstr "位置选择器"
 
 #: src/Services/PostService.php:302 src/Components/Security/Security.php:127
-#: src/Components/Auth/Auth.php:37 src/Components/Auth/Auth.php:38
-#: src/Components/Auth/Auth.php:47
+#: src/Components/Auth/Auth.php:36 src/Components/Auth/Auth.php:37
+#: src/Components/Auth/Auth.php:46
 msgid "Login"
 msgstr "登录"
 
@@ -1580,13 +1564,9 @@ msgstr "登录"
 msgid "Login Success"
 msgstr "登录成功"
 
-#: src/Components/Auth/Auth.php:86 src/Components/Auth/Auth.php:92
+#: src/Components/Auth/Auth.php:99 src/Components/Auth/Auth.php:105
 msgid "Login via Wechat Client"
 msgstr "微信客户端登录"
-
-#: src/Components/Auth/Auth.php:71 src/Components/Auth/Auth.php:77
-msgid "Login via Wechat QRCode"
-msgstr "微信扫码登录"
 
 #: src/Components/Developer/Developer.php:459
 #: src/Components/Developer/Developer.php:461
@@ -1602,7 +1582,7 @@ msgstr "忘记密码"
 msgid "Mailer service is not configured."
 msgstr "邮件服务未配置成功。"
 
-#: src/Components/Swiper/Swiper.php:59
+#: src/Components/Swiper/Swiper.php:50
 msgid "Manage Locations"
 msgstr "管理位置"
 
@@ -1669,11 +1649,11 @@ msgstr "小程序"
 msgid "Mobile Menu"
 msgstr "手机菜单"
 
-#: src/Components/Setting/Setting.php:156
+#: src/Components/Setting/Setting.php:158
 msgid "Modify the default system avatar."
 msgstr "修改系统默认头像"
 
-#: src/Components/Setting/Setting.php:172
+#: src/Components/Setting/Setting.php:174
 msgid "Modify the default system cover."
 msgstr "修改系统默认封面图"
 
@@ -1725,8 +1705,7 @@ msgstr "新建商品"
 msgid "New Product Category Name"
 msgstr "添加新商品品类名称"
 
-#: src/Includes/SwiperListTable.php:197
-#: src/Components/Swiper/views/page-edit.php:84
+#: src/Services/SwiperService.php:390
 msgid "New Tab"
 msgstr "新标签页"
 
@@ -1771,13 +1750,13 @@ msgstr "未发现任何品牌"
 msgid "No categories found."
 msgstr "未发现任何分类"
 
-#: src/Components/Swiper/views/tab-locations.php:92
+#: src/Components/Swiper/views/tab-locations.php:90
 msgid "No data changed"
 msgstr "无数据变更"
 
 #: src/Includes/SwiperListTable.php:181 src/Includes/RewriteRulesTable.php:164
 #: src/Includes/WechatOAMessageListTable.php:178
-#: src/Includes/SwiperLocationTable.php:109
+#: src/Includes/SwiperLocationTable.php:128
 #: src/Includes/WechatOAMenuListTable.php:81
 #: src/Components/WechatOA/WechatOA.php:402
 msgid "No data found."
@@ -1795,7 +1774,7 @@ msgstr "未选中任何数据"
 msgid "No matter who you are, G3-Web has got you covered."
 msgstr "不论您是谁，G3-Web 都能满足您的需求。"
 
-#: src/Components/Swiper/views/page-edit.php:125
+#: src/Components/Swiper/views/page-edit.php:130
 #, php-format
 msgid ""
 "No Position Data Found. Please configure <a href=\"%s\">the Swiper "
@@ -1843,17 +1822,7 @@ msgstr "对象缓存文件 object_cache.php 已存在。"
 msgid "Official Account Type"
 msgstr "公众号类型"
 
-#: src/Includes/SwiperListTable.php:133 src/Includes/SwiperListTable.php:186
-#: src/Components/Swiper/views/page-edit.php:155
-msgid "Offline"
-msgstr "下线"
-
-#: src/Includes/SwiperListTable.php:132 src/Includes/SwiperListTable.php:186
-#: src/Components/Swiper/views/page-edit.php:154
-msgid "Online"
-msgstr "上线"
-
-#: src/Components/Setting/Setting.php:614
+#: src/Components/Setting/Setting.php:604
 msgid "Online Courses"
 msgstr "在线课程"
 
@@ -1863,9 +1832,9 @@ msgid "Only one option"
 msgstr "仅一个选项"
 
 #: src/Includes/SwiperListTable.php:30
-#: src/Components/Swiper/views/page-edit.php:77
-#: src/Components/Swiper/views/page-edit.php:80
-#: src/Components/Swiper/views/page-edit.php:82
+#: src/Components/Swiper/views/page-edit.php:78
+#: src/Components/Swiper/views/page-edit.php:81
+#: src/Components/Swiper/views/page-edit.php:83
 msgid "Open Method"
 msgstr "打开方式"
 
@@ -1875,7 +1844,7 @@ msgstr "打开方式"
 msgid "Open Platform"
 msgstr "开放平台"
 
-#: src/Components/Setting/Setting.php:83 src/Components/Setting/Setting.php:84
+#: src/Components/Setting/Setting.php:82 src/Components/Setting/Setting.php:83
 msgid "Operation Settings"
 msgstr "运营设置"
 
@@ -2004,6 +1973,11 @@ msgstr ""
 "请输入您的 G3 授权码来激活 G3-Web。<br>没有授权码？<a href=\"%s\" target=\"_blank\">点击此处</a> "
 "来获取授权码！"
 
+#: src/Components/Swiper/Swiper.php:80 src/Components/Swiper/Swiper.php:132
+#: src/Components/Swiper/Swiper.php:155
+msgid "Please fill in the complete data"
+msgstr "请填写完整的数据"
+
 #: src/Components/Mail/Mail.php:203
 msgid ""
 "Please fill in the email password or authorization code according to the "
@@ -2041,6 +2015,10 @@ msgid ""
 "Please select the appropriate encryption method based on the configuration "
 "of the mail server."
 msgstr "请根据邮件服务器的配置，选择合适的加密方式。"
+
+#: src/Components/Swiper/Swiper.php:77
+msgid "Please set status data again"
+msgstr "请重新设置状态数据"
 
 #: src/Components/Developer/Developer.php:302
 #: src/Components/Developer/Developer.php:304
@@ -2244,8 +2222,8 @@ msgstr "单选框"
 msgid "Recharge"
 msgstr "充值"
 
-#: src/Components/Setting/Setting.php:245
-#: src/Components/Setting/Setting.php:251
+#: src/Components/Setting/Setting.php:263
+#: src/Components/Setting/Setting.php:269
 msgid "Redirect Link"
 msgstr "重定向链接"
 
@@ -2370,11 +2348,11 @@ msgstr "重写规则"
 msgid "Rewrite rules flushed successfully!"
 msgstr "重写规则刷新成功！"
 
-#: src/Components/Setting/Setting.php:334
+#: src/Components/Setting/Setting.php:350
 msgid "RSS URL"
 msgstr "RSS网址"
 
-#: src/Components/Setting/Setting.php:345
+#: src/Components/Setting/Setting.php:361
 msgid "RSS2 URL"
 msgstr "RSS2网址"
 
@@ -2382,13 +2360,13 @@ msgstr "RSS2网址"
 msgid "Rule"
 msgstr "规则"
 
-#: src/Components/Setting/Setting.php:132
-#: src/Components/Setting/Setting.php:138
+#: src/Components/Setting/Setting.php:135
+#: src/Components/Setting/Setting.php:141
 #| msgid "Sad Mode"
 msgid "Sad Mod"
 msgstr "默哀模式"
 
-#: templates/developer/redirect.php:33
+#: templates/developer/redirect.php:31
 msgid "Safe Reminder"
 msgstr "安全提醒"
 
@@ -2494,13 +2472,13 @@ msgstr "发件箱地址"
 msgid "Sender's Email Secret"
 msgstr "发件箱密钥"
 
-#: src/Components/Setting/Setting.php:471
+#: src/Components/Setting/Setting.php:461
 msgid "SEO & Social Media"
 msgstr "SEO和社交传播"
 
-#: src/Components/Setting/Setting.php:514
-#: src/Components/Setting/Setting.php:536
-#: src/Components/Setting/Setting.php:544
+#: src/Components/Setting/Setting.php:504
+#: src/Components/Setting/Setting.php:526
+#: src/Components/Setting/Setting.php:534
 #| msgid "Separate tags with commas"
 msgid "Separate tags with commas."
 msgstr "多个标签请用英文逗号( , )分隔"
@@ -2587,7 +2565,7 @@ msgstr "新浪微博"
 msgid "Site Health"
 msgstr "站点健康"
 
-#: src/Components/Setting/Setting.php:113
+#: src/Components/Setting/Setting.php:116
 msgid "SiteMap"
 msgstr "站点地图"
 
@@ -2596,7 +2574,7 @@ msgstr "站点地图"
 msgid "SKU System"
 msgstr "库存管理系统"
 
-#: src/Components/Swiper/Swiper.php:85
+#: src/Components/Swiper/Swiper.php:136
 msgid "Slug: Only supports English Letter"
 msgstr "别名：仅支持英文字母"
 
@@ -2612,20 +2590,20 @@ msgstr "SMTP 支持"
 msgid "Social Accounts"
 msgstr "社交账号"
 
-#: templates/developer/w.php:105
+#: templates/developer/w.php:105 src/Components/Auth/Auth.php:49
 msgid "Social Login"
 msgstr "社交登录"
 
 #: src/Includes/SwiperListTable.php:32
 #: src/Includes/WechatOAMenuListTable.php:20
-#: src/Components/Swiper/views/page-edit.php:136
-#: src/Components/Swiper/views/page-edit.php:139
+#: src/Components/Swiper/views/page-edit.php:141
+#: src/Components/Swiper/views/page-edit.php:144
 #: src/Components/WechatOA/views/view-menu-edit.php:88
 #: src/Components/WechatOA/views/view-menu-edit.php:91
 msgid "Sort"
 msgstr "排序"
 
-#: src/Components/Setting/Setting.php:612
+#: src/Components/Setting/Setting.php:602
 msgid "Sponsor"
 msgstr "赞助"
 
@@ -2633,16 +2611,16 @@ msgstr "赞助"
 msgid "Staging Env"
 msgstr "预发布环境"
 
-#: src/Components/Setting/Setting.php:388
+#: src/Components/Setting/Setting.php:404
 msgid ""
 "Starting from version 5.5 of WordPress, the functionality of multi-level and "
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr "从WP5.5版本开始，多层级多页面的XML站点地图功能已经作为核心功能默认载入。"
 
 #: src/Includes/SwiperListTable.php:33
-#: src/Components/Swiper/views/page-edit.php:148
-#: src/Components/Swiper/views/page-edit.php:151
 #: src/Components/Swiper/views/page-edit.php:153
+#: src/Components/Swiper/views/page-edit.php:156
+#: src/Components/Swiper/views/page-edit.php:158
 msgid "Status"
 msgstr "状态"
 
@@ -2655,10 +2633,6 @@ msgstr "门店管理系统"
 msgid "Store Messages"
 msgstr "消息存储"
 
-#: src/Components/Auth/Auth.php:114 src/Components/Auth/Auth.php:120
-msgid "Subscribe Login"
-msgstr "订阅登录"
-
 #: src/Components/WechatOA/WechatOA.php:185
 #: src/Components/WechatOA/WechatOA.php:191
 msgid "Subscribe Message"
@@ -2668,8 +2642,8 @@ msgstr "订阅消息"
 msgid "Subscription Account"
 msgstr "订阅号"
 
-#: src/Components/Swiper/Swiper.php:34 src/Components/Swiper/Swiper.php:35
-#: src/Components/Swiper/Swiper.php:56
+#: src/Components/Swiper/Swiper.php:25 src/Components/Swiper/Swiper.php:26
+#: src/Components/Swiper/Swiper.php:47
 msgid "Swiper"
 msgstr "轮播图"
 
@@ -2694,7 +2668,7 @@ msgstr "系统邮件"
 msgid "Template file does not exist: %s"
 msgstr "模板文件不存在：%s"
 
-#: src/Services/SwiperService.php:159
+#: src/Services/SwiperService.php:265
 msgid "Template not found"
 msgstr "模板不存在"
 
@@ -2727,8 +2701,7 @@ msgid ""
 "message is found."
 msgstr "当搜索功能被禁用且未匹配到任何回复时，将以此条默认消息回复用户。"
 
-#. 全站将沉浸在只有黑白灰颜色的默哀模式中。
-#: src/Components/Setting/Setting.php:140
+#: src/Components/Setting/Setting.php:142
 #| msgid ""
 #| "After enabling it, the entire website will be immersed in a mournful mode "
 #| "with only black, white, and gray colors."
@@ -2737,10 +2710,10 @@ msgid ""
 "white, and gray colors."
 msgstr "全站将沉浸在只有黑白灰颜色的默哀模式中。"
 
-#: src/Components/Swiper/views/page-edit.php:177
-#: src/Components/Swiper/views/page-edit.php:183
-#: src/Components/Swiper/views/page-edit.php:189
-#: src/Components/Swiper/views/page-edit.php:197
+#: src/Components/Swiper/views/page-edit.php:186
+#: src/Components/Swiper/views/page-edit.php:192
+#: src/Components/Swiper/views/page-edit.php:198
+#: src/Components/Swiper/views/page-edit.php:206
 #| msgid "The field cannot be empty."
 msgid "The field cannot be empty"
 msgstr "该选项不能为空"
@@ -2748,6 +2721,10 @@ msgstr "该选项不能为空"
 #: src/Components/WechatOA/WechatOA.php:250
 msgid "The Key that will call the latest posts. Default: n"
 msgstr "最新文章的事件Key。默认：n。"
+
+#: src/Components/Setting/Setting.php:254
+msgid "The links feature helps you manage your friendship links."
+msgstr "链接功能帮助您管理友情链接。"
 
 #: src/Components/WechatOA/WechatOA.php:175
 msgid "The maximum length of the search keyword. Default: 16."
@@ -2849,14 +2826,14 @@ msgstr "当前选项卡是关于Caddy服务器安全配置建议。"
 msgid "This tab is for Nginx security configuration advice."
 msgstr "当前选项卡是关于Nginx服务器安全配置建议。"
 
-#: src/Services/AuthService.php:284
+#: src/Services/AuthService.php:286
 msgid "This WeChat account is already bound to another user."
 msgstr "当前微信账号已经绑定给了其他用户。"
 
 #: templates/developer/w.php:17 src/Utilities/Container.php:625
 #: src/Components/Developer/Developer.php:583
 #: src/Components/Developer/Developer.php:597
-#: src/Components/Setting/Setting.php:618
+#: src/Components/Setting/Setting.php:608
 #: src/Components/WechatOA/views/view-menu-edit.php:154
 msgid "Tip"
 msgstr "提示"
@@ -2871,7 +2848,7 @@ msgstr "提示：您可以根据运营需求自定义交互数据。"
 msgid "Tips for First Time Users"
 msgstr "新用户提示"
 
-#: src/Includes/SwiperListTable.php:27 src/Components/Setting/Setting.php:513
+#: src/Includes/SwiperListTable.php:27 src/Components/Setting/Setting.php:503
 msgid "Title"
 msgstr "标题"
 
@@ -2981,6 +2958,16 @@ msgstr "用户中心页侧边栏"
 #: src/Components/Mail/Mail.php:248 src/Components/Mail/Mail.php:254
 msgid "User Registration Notification Template"
 msgstr "用户注册通知模板"
+
+#: src/Components/Auth/Auth.php:106
+msgid ""
+"Users can complete the login automatically while browsing your website with "
+"Wechat client."
+msgstr "当用户在通过微信客户端浏览您的网站时，可以自动完成登录。"
+
+#: src/Components/Auth/Auth.php:90
+msgid "Users can subscribe your WeChat official account to complete the login."
+msgstr "用户通过订阅您的微信公众号来完成登录。"
 
 #: src/Components/WechatOA/views/view-menu-edit.php:178
 msgid "Users click and an event will be pushed to the developer server."
@@ -3190,16 +3177,14 @@ msgstr "微信公众号服务未启用"
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr "微信公众号支持 13 种菜单类型："
 
-#: src/Services/WechatOAService.php:1844 src/Services/AuthService.php:199
+#: src/Controllers/AuthController.php:234 src/Services/WechatOAService.php:1844
+#: src/Services/AuthService.php:199
 msgid "WeChat service is not available."
 msgstr "微信服务未启用。"
 
-#: src/Controllers/AuthController.php:234
-msgid "WeChat service is not configured."
-msgstr "微信服务未配置。"
-
-#: src/Components/Auth/Auth.php:50
-msgid "WeChat Subscription Login"
+#: src/Components/Auth/Auth.php:83 src/Components/Auth/Auth.php:89
+#| msgid "WeChat Subscription Login"
+msgid "WeChat Subscribe Login"
 msgstr "微信订阅登录"
 
 #: src/Components/Share/Share.php:110 src/Components/Share/Share.php:116
@@ -3278,13 +3263,12 @@ msgstr "WordPress自动更新"
 msgid "Year"
 msgstr "年"
 
-#: templates/developer/redirect.php:39
+#: templates/developer/redirect.php:36
 msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr "您即将离开本站，请注意您的账号和财产安全。"
 
-#. 您可以为每一个页面自定义SEO数据。
-#: src/Components/Setting/Setting.php:281
+#: src/Components/Setting/Setting.php:297
 msgid "You can add custom SEO data for each page."
 msgstr "您可以为每一个页面自定义SEO数据。"
 

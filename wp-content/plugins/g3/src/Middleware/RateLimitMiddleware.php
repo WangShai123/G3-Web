@@ -27,7 +27,7 @@ class RateLimitMiddleware implements MiddlewareInterface {
     public function handle(WP_REST_Request $request)
     {
         // Get client IP address
-        $ip = System::clientIP();
+        $ip = System::ip();
 
         // Set cache key
         $cacheKey = $this->cacheGroup . md5($ip . $request->get_route());

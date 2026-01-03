@@ -56,11 +56,11 @@ class SwiperListTable extends WP_List_Table {
     {
         switch ($column_name) {
             case 'status':
-                return $this->renderStatus($item, $column_name);
+                return SwiperService::renderStatus($item->{$column_name});
             case 'media':
                 return $this->renderMedia($item, $column_name);
             case 'target':
-                return $this->renderTarget($item, $column_name);
+                return SwiperService::renderTarget($item->{$column_name});
             case 'link':
                 return $this->renderLink($item, $column_name);
             case 'location':
@@ -129,8 +129,8 @@ class SwiperListTable extends WP_List_Table {
     {
         return [
             'delete'  => __('Delete'),
-            'online'  => __('Online', 'G3'),
-            'offline' => __('Offline', 'G3'),
+            'enable'  => __('Enable'),
+            'disable' => __('Disable'),
         ];
     }
 
@@ -165,11 +165,11 @@ class SwiperListTable extends WP_List_Table {
                 SwiperService::deleteSwipers($ids);
                 break;
 
-            case 'offline':
+            case 'disable':
                 SwiperService::updateStatus($ids, 0);
                 break;
 
-            case 'online':
+            case 'enable':
                 SwiperService::updateStatus($ids, 1);
                 break;
         }
@@ -181,20 +181,12 @@ class SwiperListTable extends WP_List_Table {
         _e('No data found.', 'G3');
     }
 
-    private function renderStatus($item, $columnName): string
-    {
-        return $item->{$columnName} == 1 ? __('Online', 'G3') : __('Offline', 'G3');
-    }
     private function renderMedia($item, $columnName): string
     {
         if (Validator::isImage($item->{$columnName})) {
             return '<img class="object-cover cursor-pointer swiperPreview" style="width:100px;height:60px" src="' . $item->{$columnName} . '" draggable="false"></img>';
         }
         return '-';
-    }
-    private function renderTarget($item, $columnName): string
-    {
-        return $item->{$columnName} == 0 ? __('Current Tab', 'G3') : __('New Tab', 'G3');
     }
     private function renderLink($item, $columnName): string
     {

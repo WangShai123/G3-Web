@@ -6,24 +6,23 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\AuthService;
 class Auth extends Components {
     public array $option;
-    public array $subscribe;
+    public array $wechat;
     #[\Override]
     protected function options(): void
     {
-        $this->option    = Option::get(AuthService::OPTION_KEY, [
-            'wechatQRCode' => '0',
-            'wechatClient' => '0',
-            'wechatOA'     => '0',
+        $this->option = Option::get(AuthService::OPTION_KEY, [
+
         ]);
-        $this->subscribe = Option::get(AuthService::SUBSCRIBE_OPTION_KEY, [
-            'wechatOA' => '0',
+        $this->wechat = Option::get(AuthService::WECHAT_OPTION_KEY, [
+            'subscribe' => '0',
+            'client'    => '0',
         ]);
     }
     #[\Override]
     protected function adminOptions(): void
     {
-        $this->option    = Option::cache(AuthService::OPTION_KEY, $this->option);
-        $this->subscribe = Option::cache(AuthService::SUBSCRIBE_OPTION_KEY, $this->subscribe);
+        $this->option = Option::cache(AuthService::OPTION_KEY, $this->option);
+        $this->wechat = Option::cache(AuthService::WECHAT_OPTION_KEY, $this->wechat);
     }
     #[\Override]
     protected function admin(): void
@@ -47,7 +46,7 @@ class Auth extends Components {
         echo '<div class="wrap"><h1>' . __('Login', 'G3') . '</h1>';
         $args = [
             'general' => __('General', 'G3'),
-            'follow'  => __('WeChat Subscription Login', 'G3'),
+            'social'  => __('Social Login', 'G3'),
         ];
         Container::tab('Auth', 'general', $args);
         echo '</div>';
@@ -66,64 +65,66 @@ class Auth extends Components {
             AuthService::OPTION_KEY,
         );
         Container::settingFields('auth-settings', 'general', [
-            [
-                'id'       => 'wechatQRCode',
-                'title'    => __('Login via Wechat QRCode', 'G3'),
-                'callback' => function () {
-                    echo Container::enable(
-                        AuthService::OPTION_KEY,
-                        $this->option,
-                        'wechatQRCode',
-                        __('Login via Wechat QRCode', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'wechatQRCode'
-                ]
-            ],
-            [
-                'id'       => 'wechatClient',
-                'title'    => __('Login via Wechat Client', 'G3'),
-                'callback' => function () {
-                    echo Container::enable(
-                        AuthService::OPTION_KEY,
-                        $this->option,
-                        'wechatClient',
-                        __('Login via Wechat Client', 'G3')
-                    );
-                },
-                'args'     => [
-                    'label_for' => 'wechatClient'
-                ]
-            ]
         ]);
 
         add_settings_section(
-            'subscribe',
+            'social',
             null,
             '__return_false',
-            'auth-settings&tab=subscribe'
+            'auth-settings&tab=social'
         );
         register_setting(
-            'subscribe',
-            AuthService::SUBSCRIBE_OPTION_KEY,
+            'social',
+            AuthService::WECHAT_OPTION_KEY,
         );
-        Container::settingFields('auth-settings&tab=subscribe', 'subscribe', [
+        Container::settingFields('auth-settings&tab=social', 'social', [
             [
-                'id'       => 'wechatOA',
-                'title'    => __('Subscribe Login', 'G3'),
+                'id'       => 'subscribe',
+                'title'    => __('WeChat Subscribe Login', 'G3'),
                 'callback' => function () {
                     echo Container::enable(
-                        AuthService::SUBSCRIBE_OPTION_KEY,
-                        $this->subscribe,
-                        'wechatOA',
-                        __('Subscribe Login', 'G3')
+                        AuthService::WECHAT_OPTION_KEY,
+                        $this->wechat,
+                        'subscribe',
+                        __('WeChat Subscribe Login', 'G3'),
+                        __('Users can subscribe your WeChat official account to complete the login.', 'G3')
                     );
                 },
                 'args'     => [
-                    'label_for' => 'wechatOA'
+                    'label_for' => 'subscribe'
                 ]
-            ]
+            ],
+            [
+                'id'       => 'client',
+                'title'    => __('Login via Wechat Client', 'G3'),
+                'callback' => function () {
+                    echo Container::enable(
+                        AuthService::WECHAT_OPTION_KEY,
+                        $this->wechat,
+                        'client',
+                        __('Login via Wechat Client', 'G3'),
+                        __('Users can complete the login automatically while browsing your website with Wechat client.', 'G3')
+                    );
+                },
+                'args'     => [
+                    'label_for' => 'client'
+                ]
+            ],
+            // [
+            //     'id'       => 'wechatQRCode',
+            //     'title'    => __('Login via Wechat QRCode', 'G3'),
+            //     'callback' => function () {
+            //         echo Container::enable(
+            //             AuthService::OPTION_KEY,
+            //             $this->option,
+            //             'wechatQRCode',
+            //             __('Login via Wechat QRCode', 'G3')
+            //         );
+            //     },
+            //     'args'     => [
+            //         'label_for' => 'wechatQRCode'
+            //     ]
+            // ],
         ]);
     }
 }

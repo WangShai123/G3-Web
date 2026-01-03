@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Utilities;
+
 final class System {
 
     /**
@@ -13,7 +14,21 @@ final class System {
      */
     public static function isAdminContext(): bool
     {
-        return is_admin() || (defined('WP_CLI') && WP_CLI);
+        return is_admin() || (defined('WP_CLI') && constant('WP_CLI') === true);
+    }
+
+    /**
+     * Check if debug mode is enabled
+     * 
+     * 检查调试模式是否启用
+     * 
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function isDebug(): bool
+    {
+        return (defined('WP_DEBUG') && WP_DEBUG) || (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development']));
     }
 
     /**
@@ -43,7 +58,7 @@ final class System {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function clientIP(): string|bool
+    public static function ip(): string|bool
     {
         $ipv4 = self::ipv4();
         if ($ipv4 !== false) {
@@ -121,9 +136,9 @@ final class System {
         return false;
     }
 
-    public const A = 'aHR0cHM6Ly8=';
-    public const B = 'YXBpLmplYWxlcg==';
-    public const C = 'LmNvbQ==';
+    public const APPLE  = 'aHR0cHM6Ly8=';
+    public const BANANA = 'YXBpLmplYWxlcg==';
+    public const CAR    = 'LmNvbQ==';
 
     /**
      * Get the name of the operating system based on PHP_OS_FAMILY.

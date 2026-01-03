@@ -1,6 +1,9 @@
 <?php
 namespace JEALER\G3\Services;
+
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Components;
+
 class SystemService {
 
     /**
@@ -69,8 +72,9 @@ class SystemService {
      */
     public const SETTING_OPTION_KEY = 'g3_option_dev_setting';
 
-    public const KEY = '5ebec86f4404d2c1';
-    public const U   = 'https://api.jealer.com/api/v1/requestVerify';
+    public const K = 'wPxK91qZ';
+
+    public const TARGET = 'g3Verify';
 
     /**
      * Security Key
@@ -106,6 +110,18 @@ class SystemService {
     public const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
 
     /**
+     * 获取系统配置项
+     * 
+     * @return array
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function option(): array
+    {
+        return Components::getProperty('Setting', 'option');
+    }
+
+    /**
      * Get ICP Code
      * 
      * 获取 ICP 备案号
@@ -114,10 +130,9 @@ class SystemService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function getIcp(): string
+    public static function icp(): string
     {
-        $option = get_option(self::OPTION_KEY);
-        return $option['icp'] ?? '';
+        return self::option()['icp'] ?? '';
     }
 
     /**
@@ -131,12 +146,35 @@ class SystemService {
      */
     public static function icpHtml(): string
     {
-        return "<a href='" . self::ICP_LINK . "' target='_blank' style='color:inherit'>" . self::getIcp() . "</a>";
+        return "<a href='" . self::ICP_LINK . "' target='_blank' style='color:inherit'>" . self::icp() . "</a>";
     }
 
-    public static function endPoint(): string
+    public static function avatar(): string
     {
-        $a = base64_decode(SYSTEM::A);
+        return self::option()['avatar'] ?? '';
+    }
+
+    public static function cover(): string
+    {
+        return self::option()['cover'] ?? '';
+    }
+
+    public static function code(string $position = 'header')
+    {
+        $haystack = [
+            'header',
+            'footer',
+            'custom'
+        ];
+        if (!in_array($position, $haystack)) {
+            return '';
+        }
+        return self::option()["{$position}Code"] ?? '';
+    }
+
+    public function endPoint(): string
+    {
+        $a = base64_decode(SYSTEM::APPLE);
         $p = array_map('chr', [97, 112, 105, 46, 106, 101, 97, 108, 101, 114, 46, 99, 111, 109, 47, 97, 112, 105, 47, 118, 49, 47]);
         $p = $a . implode('', $p);
         $s = implode('', array_map('chr', [114, 101, 113, 117, 101, 115, 116, 86, 101, 114, 105, 102, 121]));
@@ -520,5 +558,20 @@ class SystemService {
                 throw $th;
             }
         }
+    }
+
+    /**
+     * Check if links feature available
+     * 
+     * 检查链接功能是否可用
+     * 
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function isLinksAvailable(): bool
+    {
+        $data = get_option(self::OPTION_KEY, []);
+        return isset($data['links']) && $data['links'] === '1';
     }
 }

@@ -23,16 +23,16 @@ class AuthService {
     public const OPTION_KEY = 'g3_option_auth';
 
     /**
-     * Subscribe Auth Option Key
+     * WeChat Auth Option Key
      * 
-     * 关注公众号登录的配置项键名
+     * 微信登录的配置项键名
      * 
      * @var string
      * @access public
      * @since 1.0.0
      * @author Wang Shai
      */
-    public const SUBSCRIBE_OPTION_KEY = 'g3_option_auth_subscribe';
+    public const WECHAT_OPTION_KEY = 'g3_option_auth_wechat';
 
     /**
      * Wechat OpenId User Meta Key
@@ -102,7 +102,7 @@ class AuthService {
 
     /************************************************************
      * 
-     * Wechat OA Auth Handle
+     * Wechat Auth Handle
      * 
      ************************************************************/
 
@@ -117,7 +117,7 @@ class AuthService {
      */
     public static function subscribeLogin(): bool
     {
-        $data = get_option(AuthService::SUBSCRIBE_OPTION_KEY)['wechatOA'] ?? false;
+        $data = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
         return $data === '1' ? true : false;
     }
 
@@ -281,7 +281,10 @@ class AuthService {
         // Check if this OpenID is already bound to another user
         $existingUser = self::findUserByOpenId($openid);
         if ($existingUser && (int) $existingUser->ID !== $userId) {
-            return new WP_Error('openid_already_bound', __('This WeChat account is already bound to another user.', 'G3'));
+            return new WP_Error(
+                'openid_already_bound',
+                __('This WeChat account is already bound to another user.', 'G3')
+            );
         }
 
         $result = update_user_meta($userId, self::OPENID_META_KEY, $openid);
