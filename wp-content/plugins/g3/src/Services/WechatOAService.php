@@ -768,8 +768,6 @@ class WechatOAService {
         // $hash  = $parts[1] ?? '';
         $hash = $sceneStr;
 
-        error_log("[G3] [wechat] [subscribe] [hash] {$hash} [type] {$type}");
-
         // invalid type or hash
         if (empty($type) || empty($hash)) {
             return $this->getSubscribeMessage();
@@ -779,10 +777,8 @@ class WechatOAService {
 
         switch ($type) {
             case 'bind':
-                error_log("[G3] [wechat] [subscribe] [bind] {$openid} {$hash}");
                 return $this->handleBindEvent($openid, $hash);
             case 'login':
-                error_log("[G3] [wechat] [subscribe] [login] {$openid} {$hash}");
                 return $this->handleLoginEvent($openid, $hash);
             default:
                 return $this->getSubscribeMessage();
@@ -807,14 +803,10 @@ class WechatOAService {
         // $hash  = $parts[1] ?? '';
         $hash = $sceneStr;
 
-        error_log("[G3] Scan event: {$hash}, Type: {$type}, Hash: {$hash}");
-
         switch ($type) {
             case 'bind':
-                error_log("[G3] scan Binding event...");
                 return $this->handleBindEvent($openid, $hash);
             case 'login':
-                error_log("[G3] scan Login event...");
                 return $this->handleLoginEvent($openid, $hash);
             default:
                 return null;
@@ -1964,8 +1956,6 @@ class WechatOAService {
     {
         $toValid = substr($hash, 5);
 
-        error_log('Received bind event for openid: ' . $openid . ', hash: ' . $hash);
-
         // 检查 hash 是否为 32 位的十六进制字符串
         if (!preg_match('/^[a-f0-9]{32}$/', $toValid)) {
             return false;
@@ -1983,17 +1973,14 @@ class WechatOAService {
         $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
 
         if (is_wp_error($result)) {
-            error_log('wp error: ' . $result->get_error_message());
             return $result->get_error_message();
         }
 
         if ($result) {
-            error_log('bind success');
             delete_transient($cacheKey);
             return Lang::successBind();
         }
 
-        error_log('bind failed');
         return null;
     }
 }

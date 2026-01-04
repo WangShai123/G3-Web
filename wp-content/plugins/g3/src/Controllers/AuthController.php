@@ -127,7 +127,6 @@ class AuthController {
         // 30 mins expires, empty transient
         $cacheKey   = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
         $expiration = 1800;
-        error_log('set cache key : ' . $cacheKey);
         set_transient($cacheKey, '', $expiration);
 
         $service = AuthService::run();
@@ -192,14 +191,10 @@ class AuthController {
         }
 
         $cacheKey = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
-        error_log('Cache Key: ' . $cacheKey);
-        $userId = get_transient($cacheKey);
-
-        error_log('[G3] user id from cache: ' . $userId);
+        $userId   = get_transient($cacheKey);
 
         // Hash expired
         if ($userId === false) {
-            error_log('[G3] Hash expired: ' . $hash);
             return rest_ensure_response([
                 'success' => false,
                 'status'  => 'expired',
@@ -209,7 +204,6 @@ class AuthController {
 
         // Hash waiting for validation
         if ($userId === '') {
-            error_log('[G3] Hash pending: ' . $hash);
             return rest_ensure_response([
                 'success' => false,
                 'status'  => 'pending',
@@ -219,7 +213,6 @@ class AuthController {
 
         $user = new WP_User((int) $userId);
         if (!$user->exists()) {
-            error_log('[G3] User not found: ' . $userId);
             return new WP_Error(400, 'Unauthorized');
         }
 

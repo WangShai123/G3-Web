@@ -150,7 +150,6 @@ class AuthService {
     {
         // Find or Create WordPress User
         $user = self::findUserByOpenId($openid);
-        error_log('[AuthService] handlePostSubscribeLogin: ' . $openid);
         if (!$user) {
             $userId = self::createWpUserByOpenId($openid);
             if (!is_wp_error($userId)) {
