@@ -115,18 +115,19 @@ class AuthController {
             );
         }
 
-        $params = $request->get_json_params();
-        $hash   = sanitize_text_field($params['hash'] ?? '');
-        $hash   = substr($hash, 6);
+        $params  = $request->get_json_params();
+        $hash    = sanitize_text_field($params['hash'] ?? '');
+        $toValid = substr($hash, 6);
 
         // Validate the hash (UUID v4)
-        if (!Validator::isUUIDv4($hash)) {
+        if (!Validator::isUUIDv4($toValid)) {
             return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
 
         // 30 mins expires, empty transient
         $cacheKey   = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
         $expiration = 1800;
+        error_log('set cache key : ' . $cacheKey);
         set_transient($cacheKey, '', $expiration);
 
         $service = AuthService::run();
@@ -181,17 +182,18 @@ class AuthController {
             );
         }
 
-        $params = $request->get_json_params();
-        $hash   = sanitize_text_field($params['hash'] ?? '');
-        $hash   = substr($hash, 6);
+        $params  = $request->get_json_params();
+        $hash    = sanitize_text_field($params['hash'] ?? '');
+        $toValid = substr($hash, 6);
 
         // Validate the hash (UUID v4)
-        if (!Validator::isUUIDv4($hash)) {
+        if (!Validator::isUUIDv4($toValid)) {
             return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
 
         $cacheKey = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
-        $userId   = get_transient($cacheKey);
+        error_log('Cache Key: ' . $cacheKey);
+        $userId = get_transient($cacheKey);
 
         error_log('[G3] user id from cache: ' . $userId);
 
