@@ -246,7 +246,7 @@ class AuthController {
         }
 
         // 32位随机字符串
-        $bindHash = bin2hex(random_bytes(16));
+        $bindHash = 'bind:' . bin2hex(random_bytes(16));
         $cacheKey = WechatOAService::SUBSCRIBE_BIND_PREFIX . $bindHash;
         // 30 mins cache
         set_transient($cacheKey, $user->ID, 30 * MINUTE_IN_SECONDS);
