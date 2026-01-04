@@ -13,7 +13,7 @@
             // generate UUID
             if (!hash) {
                 try {
-                    hash = 'login:' + UUID();
+                    hash = UUID();
                     // sync to cache expiration
                     setCookie(subscribeCookie, hash, 1800);
                 } catch (err) {
@@ -28,7 +28,7 @@
             try {
                 // generate qrcode
                 const qrRes = await postJson('/wp-json/api/v1/auth/wechat/subscribe/qrcode', {
-                    hash: hash
+                    hash: 'login:' + hash
                 });
 
                 if (qrRes.code !== 200 || !qrRes.data?.url) {
