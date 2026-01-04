@@ -3,6 +3,36 @@ namespace JEALER\G3\Utilities;
 final class Frontend {
 
     /**
+     * Generate HTML class attribute
+     * 
+     * 生成 HTML class 属性
+     * 
+     * Custom Filter: g3_filter_html_class
+     * 
+     * @param bool $echo whether to echo the class attribute
+     * @return mixed whether to return the class attribute or echo it
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function htmlClass($echo = true)
+    {
+        $classes = ['g3-web'];
+        /**
+         * @var array $classes
+         * Custom Filter: g3_filter_html_class
+         */
+        $classes = apply_filters('g3_filter_html_class', $classes);
+
+        $htmlClass = 'class="' . esc_attr(implode(' ', array_unique($classes))) . '"';
+
+        if ($echo) {
+            echo $htmlClass;
+        } else {
+            return $htmlClass;
+        }
+    }
+
+    /**
      * Implement on-demand loading styles, support users to extend and manage custom style resources
      * 
      * 按需加载样式，支持用户扩展和管理自定义样式资源

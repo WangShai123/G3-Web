@@ -53,7 +53,8 @@ class SchemaMiddleware implements MiddlewareInterface {
         if ($result !== true) {
             return new WP_Error(
                 '422',
-                __('Schema validation failed', 'G3'),
+                // __('Schema validation failed', 'G3'),
+                $result[0],
                 [
                     'status' => 422,
                     'errors' => $result

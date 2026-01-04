@@ -1,17 +1,19 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Session;
 use JEALER\G3\Services\SystemService;
+use Override;
 
 class Security extends Components {
     public array $option = [];
     private string $section = 'securitySection';
 
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(SystemService::SECURITY_OPTION_KEY, [
@@ -26,23 +28,23 @@ class Security extends Components {
             'xPoweredBy'  => '1'
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(SystemService::SECURITY_OPTION_KEY, $this->option);
     }
-    #[\Override]
+    #[Override]
     protected function front(): void
     {
         $this->userSiteMapHandle();
     }
-    #[\Override]
+    #[Override]
     protected function system(): void
     {
         add_filter('wp_handle_upload_prefilter', [$this, 'uploadFilenameHandle']);
         // $this->uaHandle();
     }
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         $this->securityLoginHandle();
@@ -51,12 +53,12 @@ class Security extends Components {
         // $this->xssHandle();
         $this->cspHandle();
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->settings();
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -81,7 +83,7 @@ class Security extends Components {
         Container::tab('Security', 'general', $args);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(

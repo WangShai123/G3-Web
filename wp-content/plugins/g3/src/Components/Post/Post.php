@@ -1,17 +1,19 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\PostService;
+use Override;
 
 class Post extends Components {
     public array $option = [];
     public string $viewsKey;
 
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option   = Option::get(PostService::OPTION_KEY, [
@@ -22,16 +24,16 @@ class Post extends Components {
         ]);
         $this->viewsKey = PostService::getViewsKey();
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
-    #[\Override]
+    #[Override]
     protected function system(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         $this->postViews();
@@ -39,7 +41,7 @@ class Post extends Components {
         add_filter('the_content', [$this, 'mountCopyright']);
         $this->registerCover();
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
@@ -53,7 +55,7 @@ class Post extends Components {
             add_action('edited_' . $taxonomy, [$this, 'updateCoverField']);
         }
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -75,7 +77,7 @@ class Post extends Components {
         Container::tab('Post', 'general', $args);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         register_setting(

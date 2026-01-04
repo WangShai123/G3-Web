@@ -2,12 +2,14 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Services\PageService;
+
 $name = get_bloginfo('name');
 if (is_user_logged_in() || !PageService::isAdminLogin()) {
     wp_safe_redirect(esc_url(home_url()), 302, $name);
     return;
 }
 Frontend::loadStyle('jui');
+Frontend::loadScript('jui');
 get_header();
 ?>
 <div class="j-background-grid"></div>
@@ -20,7 +22,7 @@ get_header();
                 <div class="form-control">
                     <input type="text" class="j-input" id="username"
                         placeholder="<?php _e('Enter Username Please', 'G3'); ?>" autocomplete="username" minlength="5"
-                        required />
+                        maxLength="64" required />
                 </div>
             </div>
             <div class="form-item">
@@ -28,11 +30,11 @@ get_header();
                 <div class="form-control">
                     <input type="password" class="j-input" id="password"
                         placeholder="<?php _e('Enter Password Please', 'G3'); ?>" autocomplete="password" minlength="5"
-                        required />
+                        maxLength="64" required />
                 </div>
             </div>
             <div class="form-item" id="warning"></div>
-            <div class="form-buttons justify-center mt-2">
+            <div class="form-buttons justify-center mt-2" id="action">
                 <button type="submit" class="j-button is-primary w-full" id="submit"><?php _e('Submit'); ?></button>
                 <button type="reset" class="j-button is-default w-full"><?php _e('Cancel'); ?></button>
             </div>
@@ -44,23 +46,31 @@ get_header();
     .-translate-y-24px {
         transform: translateY(-24px);
     }
+
+    .e {
+        border-color: var(--red-9) !important;
+    }
 </style>
 
-<script type="module">
-    import JUI from '<?php echo G3_JS_URL . '/es/jui.js'; ?>'
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         document.documentElement.classList.add('j-theme-indigo', 'j-radius-sm', 'dark');
         bg();
 
-        const cookieName = 'oaLoginCookie';
+        const name = 'oaLoginCookie';
         const form = document.querySelector('#login');
-        const submitBtn = document.querySelector('#submit');
+        const action = form.querySelector('#action');
+        const submitBtn = form.querySelector('#submit');
+        const username = form.querySelector('#username');
+        const password = form.querySelector('#password');
+        const warning = form.querySelector('#warning');
 
         if (!submitBtn.dataset.originalText) {
             submitBtn.dataset.originalText = submitBtn.textContent.trim();
         }
 
         let isSubmitting = false;
+        let lastCookie = null;
         const timer = setInterval(updateSubmitButtonState, 200);
         updateSubmitButtonState();
 
@@ -82,8 +92,8 @@ get_header();
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: form.querySelector('#username').value,
-                    password: form.querySelector('#password').value
+                    username: username.value,
+                    password: password.value
                 })
             }).then(res => res.json())
                 .then(res => {
@@ -98,9 +108,9 @@ get_header();
 
                         if (res.code === 429) {
                             const expireTime = new Date(Date.now() + 60 * 5 * 1000);
-                            document.cookie = `${cookieName}=1; expires=${expireTime.toUTCString()}; path=/`;
+                            document.cookie = `${name}=1; expires=${expireTime.toUTCString()}; path=/; SameSite=Strict`;
                         } else {
-                            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
                         }
                     }
                     setTimeout(function () {
@@ -120,15 +130,29 @@ get_header();
         function updateSubmitButtonState() {
             if (isSubmitting) return;
 
-            const cookie = getCookie(cookieName);
-            const warning = document.querySelector('#warning');
-            const msg = '<div style="color:red">* <?php _e('Due to frequent illegal requests, the login function has been locked for 5 Minutes.', 'G3'); ?></div>';
+            const cookie = getCookie(name);
+
+            if (cookie === lastCookie) {
+                return;
+            }
+            lastCookie = cookie;
+
+            const msg = '<div style="color:var(--red-9)">* <?php _e("Due to frequent illegal requests, the login function has been locked. Please try again 5 mins later.", "G3"); ?></div>';
+
             if (cookie === '1') {
                 warning.innerHTML = msg;
                 submitBtn.disabled = true;
+                username.classList.add('e');
+                password.classList.add('e');
+                username.disabled = true;
+                password.disabled = true;
             } else {
                 warning.innerHTML = '';
                 submitBtn.disabled = false;
+                username.classList.remove('e');
+                password.classList.remove('e');
+                username.disabled = false;
+                password.disabled = false;
             }
         }
     })

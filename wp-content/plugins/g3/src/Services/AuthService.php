@@ -48,7 +48,7 @@ class AuthService {
 
     public const SUBSCRIBE_HASH_PREFIX = 'g3_SubscribeLoginHash_';
 
-    public const WECHAT_CALLBACK = '/wp-json/api/v1/auth/wechat/callback';
+    public const WECHAT_CALLBACK = '/api/v1/auth/wechat/callback';
 
     /**
      * Wechat OA Application
@@ -115,7 +115,7 @@ class AuthService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function subscribeLogin(): bool
+    public static function subscribeLoginAvailable(): bool
     {
         $data = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
         return $data === '1' ? true : false;
@@ -170,7 +170,7 @@ class AuthService {
      */
     public function getOAuthUrl(string $redirectUri, string $state = ''): string
     {
-        if (!$this->wechatOAService->isAvailable()) {
+        if (!$this->wechatOAService->available()) {
             return '';
         }
 
@@ -193,7 +193,7 @@ class AuthService {
      */
     public function getOpenIdByCode(string $code)
     {
-        if (!$this->wechatOAService->isAvailable()) {
+        if (!$this->wechatOAService->available()) {
             return new WP_Error(
                 'wechat_unavailable',
                 __('WeChat service is not available.', 'G3')
@@ -301,7 +301,7 @@ class AuthService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function performWpLogin(WP_User $user): void
+    public static function doWPLogin(WP_User $user): void
     {
         wp_set_current_user($user->ID, $user->user_login);
         wp_set_auth_cookie($user->ID);

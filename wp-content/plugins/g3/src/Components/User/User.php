@@ -4,10 +4,11 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\SystemService;
+use Override;
 use WP_User;
 
 class User extends Components {
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         add_filter('get_avatar', [$this, 'resetAvatar'], 1, 6);

@@ -179,7 +179,7 @@ defined('G3_API_VERSION') or define('G3_API_VERSION', 'v1');
  * Define G3 Name
  * @since 1.0.0
  */
-defined('G3_NAME') or define('G3_NAME', 'G3 System');
+defined('G3_NAME') or define('G3_NAME', 'G3-Web');
 
 /**
  * 定义 G3 别名
@@ -188,19 +188,6 @@ defined('G3_NAME') or define('G3_NAME', 'G3 System');
  */
 defined('G3_ALIAS') or define('G3_ALIAS', 'Raven');
 
-/**
- * 定义 G3 演示站点URL
- * Define G3 Preview WebSite URL
- * @since 1.0.0
- */
-defined('G3_URL') or define('G3_URL', 'https://www.g3system.com');
-
-/**
- * 定义 JEALER 官网 URL
- * Define JEALER WebSite URL
- * @since 1.0.0
- */
-defined('JL_URL') or define('JL_URL', 'https://www.jealer.com');
 
 
 /**

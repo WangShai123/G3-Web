@@ -1,13 +1,16 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Services\SidebarService;
+use Override;
+
 class Comment extends Components {
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->autoclosePingback();

@@ -1,10 +1,13 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\MailerService;
+use Override;
 use PHPMailer\PHPMailer\PHPMailer;
+
 class Mail extends Components {
     public array $option = [];
     public array $template = [];
@@ -27,24 +30,24 @@ class Mail extends Components {
             'paymentSuccess' => '',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option   = Option::cache(MailerService::OPTION_KEY, $this->option);
         $this->template = Option::cache(MailerService::TEMPLATE_OPTION_KEY, $this->template);
     }
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         add_action('phpmailer_init', [$this, 'smtpInit']);
         add_filter('wp_mail_from', [$this, 'wpMailFrom']);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->systemEmailHandle();
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -69,7 +72,7 @@ class Mail extends Components {
         Container::tab('Mail', 'set', $tabs);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -386,7 +389,7 @@ class Mail extends Components {
         add_filter('send_site_admin_email_change_email', '__return_false');
     }
 
-    #[\Override]
+    #[Override]
     protected function debug(): void
     {
         add_action('wp_mail_failed', function ($wp_error) {

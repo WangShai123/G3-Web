@@ -1,13 +1,16 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\AuthService;
+use Override;
+
 class Auth extends Components {
     public array $option;
     public array $wechat;
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(AuthService::OPTION_KEY, [
@@ -18,17 +21,17 @@ class Auth extends Components {
             'client'    => '0',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(AuthService::OPTION_KEY, $this->option);
         $this->wechat = Option::cache(AuthService::WECHAT_OPTION_KEY, $this->wechat);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -51,7 +54,7 @@ class Auth extends Components {
         Container::tab('Auth', 'general', $args);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(

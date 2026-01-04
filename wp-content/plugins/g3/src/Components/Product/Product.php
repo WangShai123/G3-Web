@@ -1,35 +1,39 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\ProductService;
+use JEALER\G3\Services\SidebarService;
+use Override;
 use WP_Post;
+
 class Product extends Components {
     public array $option;
-    #[\Override]
+
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(ProductService::OPTION_KEY, [
 
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(ProductService::OPTION_KEY, $this->option);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
         $this->saveGallery();
         $this->saveProperties();
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -51,7 +55,7 @@ class Product extends Components {
         Container::tab('Product', 'general', $args);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -68,7 +72,7 @@ class Product extends Components {
 
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function postType(): void
     {
         $labels = [
@@ -116,7 +120,7 @@ class Product extends Components {
         ];
         register_post_type('product', $args);
     }
-    #[\Override]
+    #[Override]
     protected function taxonomy(): void
     {
         register_taxonomy(
@@ -172,7 +176,7 @@ class Product extends Components {
             ]
         );
     }
-    #[\Override]
+    #[Override]
     protected function sidebar(): void
     {
         register_sidebar(
@@ -198,7 +202,7 @@ class Product extends Components {
             ]
         );
     }
-    #[\Override]
+    #[Override]
     protected function widgets(): void
     {
         SidebarService::registerWidget('ProductWidget', __DIR__);
@@ -245,7 +249,7 @@ class Product extends Components {
         return $messages;
     }
 
-    #[\Override]
+    #[Override]
     protected function metaBox(): void
     {
         Frontend::loadStyle('swiper');
@@ -406,7 +410,9 @@ EOT;
             if (!isset($_POST[ProductService::PROPERTY_KEY . '_nonce']) || !wp_verify_nonce($_POST[ProductService::PROPERTY_KEY . '_nonce'], ProductService::PROPERTY_KEY . '_save')) {
                 return;
             }
+
             if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
             if (isset($_POST[ProductService::PROPERTY_KEY]) && is_array($_POST[ProductService::PROPERTY_KEY])) {
                 update_post_meta($postId, ProductService::PROPERTY_KEY, array_values($_POST[ProductService::PROPERTY_KEY]));
             } else {

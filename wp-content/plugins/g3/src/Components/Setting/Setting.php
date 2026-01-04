@@ -1,22 +1,24 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
+use Override;
 
 class Setting extends Components {
     public array $option = [];
     public array $seo = [];
     public array $rss = [];
 
-    #[\Override]
+    #[Override]
     protected function front(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $siteName     = get_bloginfo('name');
@@ -29,7 +31,7 @@ class Setting extends Components {
             'footerCode'   => '',
             'customCode'   => '',
             'links'        => '1',
-            'redirectLink' => '0',
+            'redirectLink' => '1',
         ]);
         $this->seo    = Option::get(SystemService::SEO_OPTION_KEY, [
             'seo'      => '1',
@@ -42,21 +44,21 @@ class Setting extends Components {
             'atom' => get_bloginfo('atom_url'),
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(SystemService::OPTION_KEY, $this->option);
         $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
         $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
     }
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->permalink();
@@ -75,7 +77,7 @@ class Setting extends Components {
         }
         $this->pluginAction();
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_menu_page(
@@ -97,10 +99,10 @@ class Setting extends Components {
             1
         );
     }
-    #[\Override]
+    #[Override]
     protected function system(): void
     {
-        add_action('wp_footer', [$this, 'redirectLinkHandle']);
+        $this->redirectLinkHandle();
         $this->rssHandle();
     }
     protected function end(): void
@@ -119,7 +121,7 @@ class Setting extends Components {
         Container::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -437,7 +439,52 @@ class Setting extends Components {
         if (!isset($this->option['redirectLink']) || $this->option['redirectLink'] !== '1') {
             return;
         }
-        Frontend::loadScript('redirect.link');
+        add_action('wp_footer', function () {
+            Frontend::loadScript('redirect.link');
+        });
+        // Modify content url while saving
+        add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);
+    }
+    public function modifyContentUrl($postId, $post, $update)
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        if ($post->post_status !== 'publish') {
+            return;
+        }
+        $content = $post->post_content;
+        $siteUrl = home_url();
+        $pattern = '/<a\s+(?:[^>]*?\s+)?href=(["\'])(.*?)\1/i';
+
+        $newContent = preg_replace_callback($pattern, function ($matches) use ($siteUrl) {
+            $fullMatch = $matches[0];
+            $quote     = $matches[1];
+            $url       = $matches[2];
+
+            // check if external
+            if (
+                !empty($url) &&
+                filter_var($url, FILTER_VALIDATE_URL) &&
+                !str_starts_with($url, $siteUrl) &&
+                !str_starts_with($url, 'http://' . parse_url($siteUrl, PHP_URL_HOST)) &&
+                !str_starts_with($url, 'https://' . parse_url($siteUrl, PHP_URL_HOST))
+            ) {
+                // Replace external links with internal redirect links
+                $redirectUrl = $siteUrl . '/redirect/go/' . urlencode($url);
+                return str_replace($url, $redirectUrl, $fullMatch);
+            }
+
+            return $fullMatch;
+        }, $content);
+
+        // update if needed
+        if ($newContent !== $content) {
+            wp_update_post([
+                'ID'           => $postId,
+                'post_content' => $newContent,
+            ], true);
+        }
     }
     public static function redirectavailable(): bool
     {
@@ -478,6 +525,11 @@ class Setting extends Components {
         if (!isset($_POST['seoKeywords']) || !isset($_POST['seoDescription']) || !isset($_POST['seoTitle'])) {
             return;
         }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
         $post_keyword   = $_POST['seoKeywords'];
         $post_des       = $_POST['seoDescription'];
         $post_seo_title = $_POST['seoTitle'];

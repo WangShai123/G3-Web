@@ -26,38 +26,43 @@
  */
 
 /**
- * security check
+ * @description Security Check
  */
 if (!defined('ABSPATH')) exit;
 
+/**
+ * @description Plugin File
+ */
 if (!defined('G3_PLUGIN_FILE')) {
     define('G3_PLUGIN_FILE', __FILE__);
 }
 
 /**
- * @description Load Composer autoloader
+ * @description Load Composer Autoloader
  */
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
 /**
- * @description Load constants configuration file
+ * @description Load Constants Configuration Files
  */
 require_once __DIR__ . '/config/define.php';
 if (file_exists(get_stylesheet_directory() . '/config/define.php')) {
     require_once get_stylesheet_directory() . '/config/define.php';
 }
-require_once __DIR__ . '/src/Bases/loader.php';
-
 
 /**
- * @description Register Plugin
+ * @description Activate Plugin
  */
 register_activation_hook(__FILE__, [JEALER\G3\Activator::class, 'activate']);
+
+/**
+ * @description Deactivate Plugin
+ */
 register_deactivation_hook(__FILE__, [JEALER\G3\Deactivator::class, 'deactivate']);
 
 /**
- * @description Run Plugin
+ * @description Load Plugin
  */
 JEALER\G3\Loader::run();

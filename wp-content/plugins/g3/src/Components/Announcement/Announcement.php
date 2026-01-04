@@ -1,16 +1,19 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Services\SidebarService;
+use Override;
+
 class Announcement extends Components {
     private string $postType = 'announcement';
 
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
     }
-    #[\Override]
+    #[Override]
     protected function postType(): void
     {
         $labels = [
@@ -55,7 +58,7 @@ class Announcement extends Components {
             ]
         );
     }
-    #[\Override]
+    #[Override]
     protected function taxonomy(): void
     {
         register_taxonomy(
@@ -116,7 +119,7 @@ class Announcement extends Components {
 
         return $messages;
     }
-    #[\Override]
+    #[Override]
     protected function widgets(): void
     {
         SidebarService::registerWidget('AnnouncementWidget', __DIR__);

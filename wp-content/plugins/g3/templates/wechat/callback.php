@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 try {
     $service = WechatOAService::run();
 
-    if (!$service->isAvailable()) {
+    if (!$service->available()) {
         http_response_code(503);
         exit('Service not available');
     }

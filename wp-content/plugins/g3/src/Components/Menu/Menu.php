@@ -1,20 +1,23 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
+use Override;
+
 class Menu extends Components {
 
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         $this->menus();
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
         add_action('wp_update_nav_menu_item', [$this, 'saveMenuItemFields'], 10, 3);
     }
-    #[\Override]
+    #[Override]
     protected function system(): void
     {
         add_filter('nav_menu_css_class', [$this, 'renderMenuItemClasses'], 10, 3);

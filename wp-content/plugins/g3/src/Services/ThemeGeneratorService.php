@@ -93,10 +93,11 @@ EOT;
         // write header.php file
         $headerPhp = <<<EOT
 <?php
+use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 ?>
 <!DOCTYPE html>
-<html lang="<?php bloginfo('language'); ?>" <?php html_class(); ?>>
+<html lang="<?php bloginfo('language'); ?>" <?php Frontend::htmlClass(); ?>>
 
 <head>
     <meta charset="UTF-8">

@@ -6,12 +6,13 @@ use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Response;
+use Override;
 
 class WechatOA extends Components {
     public array $option = [];
     public array $eventOption = [];
 
-    #[\override]
+    #[Override]
     protected function options(): void
     {
         $this->option      = Option::get(WechatOAService::OPTION_KEY, [
@@ -28,17 +29,17 @@ class WechatOA extends Components {
             'lastestPosts' => 'n'
         ]);
     }
-    #[\override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option      = Option::cache(WechatOAService::OPTION_KEY, $this->option);
         $this->eventOption = Option::cache(WechatOAService::EVENT_OPTION_KEY, $this->eventOption);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -78,7 +79,7 @@ class WechatOA extends Components {
         Container::tab('WechatOA', 'general', $tabs);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -266,7 +267,7 @@ class WechatOA extends Components {
             Response::ajaxError(__('Wechat Official Account service is not enabled', 'G3'));
         }
     }
-    #[\Override]
+    #[Override]
     protected function ajax(): void
     {
         // delete menu

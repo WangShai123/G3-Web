@@ -1,9 +1,11 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
+use Override;
 
 class Sidebar extends Components {
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
     }

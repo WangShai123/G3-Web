@@ -1,17 +1,20 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Themes as ThemesClass;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Services\SystemService;
+use Override;
 use WP_Error;
+
 class Themes extends Components {
     public array $option = [];
     private array $projects = [];
     protected string $version = '1.0.0';
 
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(SystemService::THEME_OPTION_KEY, [
@@ -21,12 +24,12 @@ class Themes extends Components {
             'tablet'  => '',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(SystemService::THEME_OPTION_KEY, $this->option);
     }
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         $this->projects = $this->getProjects();
@@ -40,12 +43,12 @@ class Themes extends Components {
         add_action('user_register', [$this, 'setDefaultAdminColorScheme']);
     }
 
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->themeHandle();
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -62,7 +65,7 @@ class Themes extends Components {
     {
         return require_once __DIR__ . "/views/page-multiple-themes.php";
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(

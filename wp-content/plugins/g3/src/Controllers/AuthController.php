@@ -9,6 +9,7 @@ use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\AuthService;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Request;
 use JEALER\G3\Utilities\Validator;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -36,7 +37,7 @@ class AuthController {
         'properties' => [
             'username' => [
                 'type'      => 'string',
-                'minLength' => 1,
+                'minLength' => 5,
                 'maxLength' => 64
             ],
             'password' => [
@@ -46,14 +47,20 @@ class AuthController {
             ]
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [10, 300])]
+    #[Middleware(RateLimitMiddleware::class, [5, 300])]
     public function adminLogin(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data     = $request->get_json_params();
         $username = sanitize_text_field($data['username']);
         $password = sanitize_text_field($data['password']);
 
-        $user = get_user_by('login', $username);
+        // Compatible with email login
+        if (is_email($username)) {
+            $user = get_user_by('email', $username);
+        } else {
+            $user = get_user_by('login', $username);
+        }
+
         if (!$user || !wp_check_password($password, $user->data->user_pass, $user->ID)) {
             return new WP_Error(
                 401,
@@ -64,7 +71,7 @@ class AuthController {
             );
         }
 
-        AuthService::performWpLogin($user);
+        AuthService::doWPLogin($user);
 
         return rest_ensure_response([
             'code'    => 200,
@@ -98,12 +105,14 @@ class AuthController {
     #[Middleware(RateLimitMiddleware::class, [6, 60])]
     public function getSubscribeQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $valid = AuthService::subscribeLogin();
-        if (!$valid) return new WP_Error(
+        $valid = AuthService::subscribeLoginAvailable();
+        if (!$valid) {
+            return new WP_Error(
                 'error',
                 __('WeChat OA Subscription Login is not available', 'G3'),
                 ['status' => 404]
             );
+        }
 
         $params = $request->get_json_params();
         $hash   = sanitize_text_field($params['hash'] ?? '');
@@ -161,12 +170,14 @@ class AuthController {
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function validateSubscribeLogin(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $valid = AuthService::subscribeLogin();
-        if (!$valid) return new WP_Error(
+        $valid = AuthService::subscribeLoginAvailable();
+        if (!$valid) {
+            return new WP_Error(
                 'error',
                 __('WeChat OA Subscription Login is not available', 'G3'),
                 ['status' => 404]
             );
+        }
 
         $params = $request->get_json_params();
         $hash   = sanitize_text_field($params['hash'] ?? '');
@@ -184,9 +195,10 @@ class AuthController {
             return rest_ensure_response([
                 'success' => false,
                 'status'  => 'expired',
-                'message' => __('Quest expired', 'G3')
+                'message' => __('QRCode expired, Please refresh the page and try again.', 'G3')
             ]);
         }
+
         // Hash waiting for validation
         if ($userId === '') {
             return rest_ensure_response([
@@ -201,8 +213,9 @@ class AuthController {
             return new WP_Error(400, 'User not found');
         }
 
-        AuthService::performWpLogin($user);
+        AuthService::doWPLogin($user);
         delete_transient($cacheKey);
+
         return rest_ensure_response([
             'success' => true,
             'message' => __('Login Success', 'G3')
@@ -228,7 +241,7 @@ class AuthController {
     public function getBindAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $service = AuthService::run();
-        if (!$service->wechatOAService->isAvailable()) {
+        if (!$service->wechatOAService->available()) {
             return new WP_Error(
                 503,
                 __('WeChat service is not available.', 'G3'),
@@ -236,7 +249,7 @@ class AuthController {
             );
         }
 
-        $redirectUri = home_url(AuthService::WECHAT_CALLBACK);
+        $redirectUri = Request::restApi(AuthService::WECHAT_CALLBACK);
         $authUrl     = $service->getOAuthUrl($redirectUri, 'bind');
 
         if (empty($authUrl)) {

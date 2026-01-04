@@ -1,10 +1,13 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
+use Override;
+
 class Activity extends Components {
     private string $postType = 'activity';
 
-    #[\Override]
+    #[Override]
     public function postType(): void
     {
         $labels = [
@@ -64,7 +67,7 @@ class Activity extends Components {
         register_post_type($this->postType, $args);
     }
 
-    #[\Override]
+    #[Override]
     public function taxonomy(): void
     {
         register_taxonomy(

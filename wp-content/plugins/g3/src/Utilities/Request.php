@@ -24,14 +24,14 @@ final class Request {
      * 
      * 获取标准的 WordPress AJAX API URL
      *
-     * @param string $endpoint
+     * @param string $action
      * @return string
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function ajaxApi(string $endpoint = ''): string
+    public static function ajaxApi(string $action = ''): string
     {
-        return admin_url('admin-ajax.php') . '?action=' . $endpoint;
+        return admin_url('admin-ajax.php') . '?action=' . $action;
     }
 
     /**

@@ -1,13 +1,16 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\PaymentService;
+use Override;
+
 class Wallet extends Components {
     public array $option = [];
 
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(PaymentService::WALLET_OPTION_KEY, [
@@ -15,16 +18,16 @@ class Wallet extends Components {
             'recharge' => '0',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option = Option::cache(PaymentService::WALLET_OPTION_KEY, $this->option);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -49,7 +52,7 @@ class Wallet extends Components {
         Container::tab('Wallet', 'general', $tabs);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     protected function settings(): void
     {
         add_settings_section(

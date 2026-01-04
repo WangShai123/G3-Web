@@ -1,13 +1,17 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\ShareService;
+use Override;
+
 class Share extends Components {
     public array $option;
     public array $accountOption;
-    #[\Override]
+
+    #[Override]
     protected function options(): void
     {
         $this->option        = Option::get(ShareService::OPTION_KEY, [
@@ -26,18 +30,18 @@ class Share extends Components {
             'wechatOAQRCode' => '',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->option        = Option::cache(ShareService::OPTION_KEY, $this->option);
         $this->accountOption = Option::cache(ShareService::ACCOUNT_OPTION_KEY, $this->accountOption);
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->saveWechatTitle();
     }
-    #[\Override()]
+    #[Override()]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -60,7 +64,7 @@ class Share extends Components {
         Container::tab('Share', 'general', $args);
         echo '</div>';
     }
-    #[\Override]
+    #[Override]
     public function settings(): void
     {
         add_settings_section(
@@ -190,7 +194,7 @@ class Share extends Components {
         @require_once __DIR__ . '/views/metabox-share.php';
     }
 
-    #[\Override]
+    #[Override]
     protected function metaBox(): void
     {
         if (!isset($this->option['wechatTitle']) || $this->option['wechatTitle'] !== '1') return;
@@ -225,6 +229,8 @@ HTML;
         if (!isset($_POST['wechatTitle']) || !isset($this->option['wechatTitle']) || $this->option['wechatTitle'] !== '1') return;
 
         add_action('save_post', function ($postId) {
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
             $value = empty($_POST['wechatTitle']) ? sanitize_text_field($_POST['post_title']) : sanitize_text_field($_POST['wechatTitle']);
             update_post_meta($postId, ShareService::WECHAT_TITLE_KEY, $value);
         });

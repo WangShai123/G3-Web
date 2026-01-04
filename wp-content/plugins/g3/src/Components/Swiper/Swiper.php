@@ -7,17 +7,18 @@ use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Response;
+use Override;
 
 class Swiper extends Components {
     public array $option;
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(SwiperService::LOCATION_OPTION_KEY, [
             'home' => __('Home')
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -57,7 +58,7 @@ class Swiper extends Components {
         @require_once __DIR__ . '/views/page-edit.php';
     }
 
-    #[\Override]
+    #[Override]
     protected function ajax(): void
     {
         add_action('wp_ajax_edit_swiper', function () {

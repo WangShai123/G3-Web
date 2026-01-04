@@ -1,16 +1,18 @@
 <?php
 namespace JEALER\G3\Components;
+
 use JEALER\G3\Components;
 use JEALER\G3\Utilities\Frontend;
+use Override;
+
 class Jui extends Components {
     private array $config = [];
 
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
     }
-
-    #[\Override]
+    #[Override]
     public function system(): void
     {
         add_filter('g3_filter_html_class', [$this, 'initHtmlClass']);

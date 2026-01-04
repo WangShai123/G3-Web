@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-login
+
 <div id="app"></div>
 
 <script>
@@ -70,7 +70,7 @@ login
                     });
 
                     if (res.success === true) {
-                        statusEl.textContent = __('Login Success', 'G3');
+                        statusEl.textContent = res.message;
                         statusEl.style.color = 'green';
                         deleteCookie(subscribeCookie);
                         setTimeout(() => {
@@ -78,7 +78,7 @@ login
                         }, 500);
                     } else {
                         if (res.status && res.status == 'expired') {
-                            statusEl.textContent = __('QRCode expired, Please refresh the page and try again.', 'G3');
+                            statusEl.textContent = res.message;
                             statusEl.style.color = '#d97706';
                             deleteCookie(subscribeCookie);
                             // stop polling
@@ -135,18 +135,13 @@ login
             ].join('-');
         }
         function getCookie(name) {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith(name + '=')) {
-                    return cookie.substring(name.length + 1);
-                }
-            }
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
             return null;
         }
         function setCookie(name, value, seconds) {
-            const expires = new Date();
-            expires.setTime(expires.getTime() + (seconds * 1000));
+            const expires = new Date(Date.now() + seconds * 1000);
             document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
         }
         function deleteCookie(name) {

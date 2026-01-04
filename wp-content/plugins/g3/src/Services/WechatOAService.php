@@ -176,11 +176,29 @@ class WechatOAService {
         }
     }
 
-    public function isAvailable(): bool
+    /**
+     * Whether the WeChat OA Service is available
+     * 
+     * 微信公众号服务是否可用
+     * 
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function available(): bool
     {
         return isset($this->app) && $this->app instanceof Application;
     }
 
+    /**
+     * Get the WeChat OA Service instance
+     * 
+     * 获取微信公众号服务的实例
+     * 
+     * @return void
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     public static function run()
     {
         if (!isset(self::$instance)) {
@@ -228,7 +246,7 @@ class WechatOAService {
         $openid   = $message['FromUserName'] ?? '';
         $nickname = '';
 
-        if (!empty($openid) && $this->isAvailable()) {
+        if (!empty($openid) && $this->available()) {
             try {
                 $userInfo = $this->getUserInfo($openid);
                 $nickname = $userInfo['nickname'] ?? '-';
@@ -298,6 +316,14 @@ class WechatOAService {
         return $result;
     }
 
+    /**
+     * Get single message content
+     * 
+     * 获取单条消息内容
+     *
+     * @param int $id
+     * @return string
+     */
     public static function getMessageContent(int $id): string
     {
         global $wpdb;
@@ -1838,7 +1864,7 @@ class WechatOAService {
      */
     public function getSubscribeLoginQrCode(string $hash, int $seconds)
     {
-        if (!$this->isAvailable()) {
+        if (!$this->available()) {
             return new WP_Error(
                 'wechat_unavailable',
                 __('WeChat service is not available.', 'G3')

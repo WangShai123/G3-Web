@@ -7,8 +7,8 @@ use JEALER\G3\Utilities\Container;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
+use Override;
 use WP_Error;
-use WP_Duotone;
 
 class Developer extends Components {
     public array $formOption;
@@ -18,7 +18,7 @@ class Developer extends Components {
     public $v;
     public static $z;
 
-    #[\Override]
+    #[Override]
     protected function options(): void
     {
         $this->formOption    = Option::get(SystemService::FORM_OPTION_KEY, [
@@ -69,21 +69,20 @@ class Developer extends Components {
             'encodingAESKey' => '',
         ]);
     }
-    #[\Override]
+    #[Override]
     protected function adminOptions(): void
     {
         $this->formOption    = Option::cache(SystemService::FORM_OPTION_KEY, $this->formOption);
         $this->settingOption = Option::cache(SystemService::SETTING_OPTION_KEY, $this->settingOption);
         $this->opMPOption    = Option::cache(SystemService::OPEN_WECHAT_OA_KEY, $this->opMPOption);
     }
-    #[\Override]
+    #[Override]
     protected function start(): void
     {
         global $loader;
         $this->v = $loader;
     }
-
-    #[\Override]
+    #[Override]
     protected function init(): void
     {
         add_filter('map_meta_cap', [$this, 'themeCustomizeHandle'], 20, 4);
@@ -93,7 +92,7 @@ class Developer extends Components {
         $this->wpHeadHandle();
         $this->gutenbergHandle();
     }
-    #[\Override]
+    #[Override]
     protected function admin(): void
     {
         $this->onActivate();
@@ -120,7 +119,7 @@ class Developer extends Components {
             $this->opMpSetting();
         }
     }
-    #[\Override]
+    #[Override]
     protected function adminMenu(): void
     {
         $this->adminMenuHandle();
@@ -142,7 +141,7 @@ class Developer extends Components {
             );
         }
     }
-    #[\Override]
+    #[Override]
     protected function system(): void
     {
         // Auto define environment
@@ -169,7 +168,7 @@ class Developer extends Components {
             }
         }
     }
-    #[\Override]
+    #[Override]
     protected function front(): void
     {
         add_filter('show_admin_bar', [$this, 'adminBarHandle']);
@@ -1130,14 +1129,14 @@ class Developer extends Components {
         );
     }
 
-    #[\Override]
+    #[Override]
     public function x(): void
     {
         add_action("admin_bar_menu", [$this, "noticeInAdminBar"], 999);
         add_action("admin_menu", [$this, "form"]);
     }
 
-    #[\Override]
+    #[Override]
     public function y(): void
     {
         self::$z = $this->v;
