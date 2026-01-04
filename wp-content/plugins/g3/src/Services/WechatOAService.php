@@ -767,6 +767,8 @@ class WechatOAService {
         $type  = $parts[0] ?? '';
         $hash  = $parts[1] ?? '';
 
+        error_log("[G3] [wechat] [subscribe] [hash] {$hash} [type] {$type}");
+
         // invalid type or hash
         if (empty($type) || empty($hash)) {
             return $this->getSubscribeMessage();
@@ -776,8 +778,10 @@ class WechatOAService {
 
         switch ($type) {
             case 'bind':
+                error_log("[G3] [wechat] [subscribe] [bind] {$openid} {$hash}");
                 return $this->handleBindEvent($openid, $hash);
             case 'login':
+                error_log("[G3] [wechat] [subscribe] [login] {$openid} {$hash}");
                 return $this->handleLoginEvent($openid, $hash);
             default:
                 return $this->getSubscribeMessage();
@@ -801,10 +805,14 @@ class WechatOAService {
         $type  = $parts[0] ?? '';
         $hash  = $parts[1] ?? '';
 
+        error_log("[G3] Scan event: {$sceneStr}, Type: {$type}, Hash: {$hash}");
+
         switch ($type) {
             case 'bind':
+                error_log("[G3] scan Binding event...");
                 return $this->handleBindEvent($openid, $hash);
             case 'login':
+                error_log("[G3] scan Login event...");
                 return $this->handleLoginEvent($openid, $hash);
             default:
                 return null;
