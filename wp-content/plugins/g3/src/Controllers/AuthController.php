@@ -115,12 +115,12 @@ class AuthController {
             );
         }
 
-        $params  = $request->get_json_params();
-        $hash    = sanitize_text_field($params['hash'] ?? '');
-        $toValid = substr($hash, 6);
+        $params = $request->get_json_params();
+        $hash   = sanitize_text_field($params['hash'] ?? '');
+        $hash   = substr($hash, 6);
 
         // Validate the hash (UUID v4)
-        if (!Validator::isUUIDv4($toValid)) {
+        if (!Validator::isUUIDv4($hash)) {
             return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
 
@@ -181,12 +181,12 @@ class AuthController {
             );
         }
 
-        $params  = $request->get_json_params();
-        $hash    = sanitize_text_field($params['hash'] ?? '');
-        $toValid = substr($hash, 6);
+        $params = $request->get_json_params();
+        $hash   = sanitize_text_field($params['hash'] ?? '');
+        $hash   = substr($hash, 6);
 
         // Validate the hash (UUID v4)
-        if (!Validator::isUUIDv4($toValid)) {
+        if (!Validator::isUUIDv4($hash)) {
             return new WP_Error(400, __('Invalid Hash', 'G3'));
         }
 
