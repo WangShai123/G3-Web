@@ -765,7 +765,8 @@ class WechatOAService {
         // $scene = substr($sceneStr, 8);
         $parts = explode(':', $sceneStr, 2);
         $type  = $parts[0] ?? '';
-        $hash  = $parts[1] ?? '';
+        // $hash  = $parts[1] ?? '';
+        $hash = $sceneStr;
 
         error_log("[G3] [wechat] [subscribe] [hash] {$hash} [type] {$type}");
 
@@ -803,9 +804,10 @@ class WechatOAService {
         // $scene = substr($sceneStr, 8);
         $parts = explode(':', $sceneStr, 2);
         $type  = $parts[0] ?? '';
-        $hash  = $parts[1] ?? '';
+        // $hash  = $parts[1] ?? '';
+        $hash = $sceneStr;
 
-        error_log("[G3] Scan event: {$sceneStr}, Type: {$type}, Hash: {$hash}");
+        error_log("[G3] Scan event: {$hash}, Type: {$type}, Hash: {$hash}");
 
         switch ($type) {
             case 'bind':
