@@ -116,6 +116,7 @@ class AuthController {
 
         $params = $request->get_json_params();
         $hash   = sanitize_text_field($params['hash'] ?? '');
+        $hash   = substr($hash, 6);
 
         // Validate the hash (UUID v4)
         if (!Validator::isUUIDv4($hash)) {
