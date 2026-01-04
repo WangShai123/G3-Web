@@ -1,5 +1,6 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
+use JEALER\G3\Services\AuthService;
 
 if (!is_user_logged_in()) {
     return;
@@ -9,6 +10,7 @@ Frontend::loadStyle('jui');
 
 $user = wp_get_current_user();
 get_header();
+$openId = AuthService::OPENID_META_KEY;
 ?>
 <div class="container">
     <div>username: <?php echo $user->display_name; ?></div>

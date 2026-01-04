@@ -8,4 +8,8 @@ final class Message {
     {
         return __('Login Successful', self::LANG);
     }
+    public static function successBind()
+    {
+        return __('Binding Successful', self::LANG);
+    }
 }

@@ -762,21 +762,30 @@ class WechatOAService {
         }
 
         // correct event, get hash and openid
+        $scene = substr($sceneStr, 8);
+        $parts = explode(':', $scene, 2);
+        $type  = $parts[0] ?? '';
+        $hash  = $parts[1] ?? '';
+
+        // invalid type or hash
+        if (empty($type) || empty($hash)) {
+            return $this->getSubscribeMessage();
+        }
+
         $openid = $message->FromUserName;
-        $hash   = substr($sceneStr, 8);
 
-        // case 3: Try to handle bind event
-        if ($this->tryHandleBindEvent($openid, $hash)) {
-            return __('Thank you for binding your account!', 'G3');
-        }
-
-        // case 4: Try to handle login event
-        // Validate Scene
-        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
-            return null;
-        }
-        $this->triggerLoginAfterSubscribe($openid, $hash);
-        return Lang::successLogin();
+        switch ($type) {
+            case 'bind':
+                return $this->handleBindEvent($openid, $hash);
+            case 'login':
+                return $this->handleLoginEvent($openid, $hash);
+            default:
+                return $this->getSubscribeMessage();
+        };
+        // // Validate Scene
+        // if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
+        //     return null;
+        // }
     }
     private function getSubscribeMessage()
     {
@@ -784,24 +793,29 @@ class WechatOAService {
     }
     private function handleScanEvent($message)
     {
-        $hash   = $message->EventKey ?? '';
-        $openid = $message->FromUserName ?? '';
-        if ($hash && $openid) {
-            // Try to handle bind event
-            if ($this->tryHandleBindEvent($openid, $hash)) {
-                return __('Binding successful!', 'G3');
-            }
-            // Fallback to login
-            $this->triggerLoginAfterSubscribe($openid, $hash);
-            return Lang::successLogin();
+        $sceneStr = $message->EventKey ?? '';
+        $openid   = $message->FromUserName ?? '';
+
+        $scene = substr($sceneStr, 8);
+        $parts = explode(':', $scene, 2);
+        $type  = $parts[0] ?? '';
+        $hash  = $parts[1] ?? '';
+
+        switch ($type) {
+            case 'bind':
+                return $this->handleBindEvent($openid, $hash);
+            case 'login':
+                return $this->handleLoginEvent($openid, $hash);
+            default:
+                return null;
         }
-        return null;
     }
-    private function triggerLoginAfterSubscribe(string $openid, string $hash)
+    private function handleLoginEvent(string $openid, string $hash)
     {
         // Notify AuthService: this openid user has subscribed, please login
         $authService = AuthService::run();
         $authService->handlePostSubscribeLogin($openid, $hash);
+        return Lang::successLogin();
     }
 
     /**
@@ -1936,7 +1950,7 @@ class WechatOAService {
         }
     }
 
-    private function tryHandleBindEvent(string $openid, string $hash): bool
+    private function handleBindEvent(string $openid, string $hash)
     {
         // 检查 hash 是否为 32 位的十六进制字符串
         if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
@@ -1954,11 +1968,15 @@ class WechatOAService {
         $authService = AuthService::run();
         $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
 
-        if ($result) {
-            delete_transient($cacheKey);
-            return true;
+        if (is_wp_error($result)) {
+            return $result->get_error_message();
         }
 
-        return false;
+        if ($result) {
+            delete_transient($cacheKey);
+            return Lang::successBind();
+        }
+
+        return null;
     }
 }
