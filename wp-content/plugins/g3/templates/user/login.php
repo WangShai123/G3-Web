@@ -1,5 +1,5 @@
 <?php
-if (!is_user_logged_in()) {
+if (is_user_logged_in()) {
     return;
 }
 get_header();
