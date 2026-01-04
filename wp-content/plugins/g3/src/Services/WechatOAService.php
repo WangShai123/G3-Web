@@ -1962,10 +1962,12 @@ class WechatOAService {
 
     private function handleBindEvent(string $openid, string $hash)
     {
-        $hash = substr($hash, 5);
+        $toValid = substr($hash, 5);
+
+        error_log('Received bind event for openid: ' . $openid . ', hash: ' . $hash);
 
         // 检查 hash 是否为 32 位的十六进制字符串
-        if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
+        if (!preg_match('/^[a-f0-9]{32}$/', $toValid)) {
             return false;
         }
 
@@ -1981,14 +1983,17 @@ class WechatOAService {
         $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
 
         if (is_wp_error($result)) {
+            error_log('wp error: ' . $result->get_error_message());
             return $result->get_error_message();
         }
 
         if ($result) {
+            error_log('bind success');
             delete_transient($cacheKey);
             return Lang::successBind();
         }
 
+        error_log('bind failed');
         return null;
     }
 }
