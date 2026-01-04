@@ -762,8 +762,8 @@ class WechatOAService {
         }
 
         // correct event, get hash and openid
-        $scene = substr($sceneStr, 8);
-        $parts = explode(':', $scene, 2);
+        // $scene = substr($sceneStr, 8);
+        $parts = explode(':', $sceneStr, 2);
         $type  = $parts[0] ?? '';
         $hash  = $parts[1] ?? '';
 
@@ -800,8 +800,8 @@ class WechatOAService {
         $sceneStr = $message->EventKey ?? '';
         $openid   = $message->FromUserName ?? '';
 
-        $scene = substr($sceneStr, 8);
-        $parts = explode(':', $scene, 2);
+        // $scene = substr($sceneStr, 8);
+        $parts = explode(':', $sceneStr, 2);
         $type  = $parts[0] ?? '';
         $hash  = $parts[1] ?? '';
 
