@@ -13,7 +13,7 @@
             // generate UUID
             if (!hash) {
                 try {
-                    hash = UUID();
+                    hash = 'login:' + UUID();
                     // sync to cache expiration
                     setCookie(subscribeCookie, hash, 1800);
                 } catch (err) {
