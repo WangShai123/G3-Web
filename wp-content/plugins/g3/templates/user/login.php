@@ -66,7 +66,7 @@
             const poll = async () => {
                 try {
                     const res = await postJson('/wp-json/api/v1/auth/wechat/subscribe/validate', {
-                        hash: hash
+                        hash: 'login:' + hash
                     });
 
                     if (res.success === true) {
