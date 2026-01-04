@@ -169,7 +169,7 @@ class AuthController {
             ],
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [60, 60])]
+    // #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function validateSubscribeLogin(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $valid = AuthService::subscribeLoginAvailable();
