@@ -210,7 +210,7 @@ class AuthController {
 
         $user = new WP_User((int) $userId);
         if (!$user->exists()) {
-            return new WP_Error(400, 'User not found');
+            return new WP_Error(400, 'Unauthorized');
         }
 
         AuthService::doWPLogin($user);
@@ -221,6 +221,57 @@ class AuthController {
             'message' => __('Login Success', 'G3')
         ]);
     }
+
+    #[RestRouter(
+        namespace: 'api/v1',
+        route: 'auth/wechat/bind/qrcode',
+        methods: 'POST'
+    )]
+    #[Middleware(RestAuthMiddleware::class)]
+    public function getBindQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $user = wp_get_current_user();
+        if (!$user->exists()) {
+            return new WP_Error(401, 'Unauthorized');
+        }
+
+        // 32位随机字符串
+        $bindHash = bin2hex(random_bytes(16));
+        $cacheKey = WechatOAService::SUBSCRIBE_BIND_PREFIX . $bindHash;
+        // 30 mins cache
+        set_transient($cacheKey, $user->ID, 30 * MINUTE_IN_SECONDS);
+
+        $service = AuthService::run();
+        $result  = $service->getSubscribeLoginQrCode($bindHash, 1800);
+
+        if (is_wp_error($result)) {
+            return new WP_Error(
+                500,
+                $result->get_error_message()
+            );
+        }
+
+        return rest_ensure_response([
+            'code' => 200,
+            'data' => [
+                'url' => $result['url']
+            ]
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -267,6 +318,23 @@ class AuthController {
                 'url' => $authUrl
             ]
         ]);
+    }
+
+    /**
+     * WeChat Auth Callback
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    #[RestRouter(
+        namespace: 'api/v1',
+        route: 'auth/wechat/callback',
+        methods: 'GET'
+    )]
+    public function wechatAuthCallback(WP_REST_Request $request)
+    {
     }
 
 

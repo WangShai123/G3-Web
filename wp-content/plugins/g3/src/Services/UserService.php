@@ -90,4 +90,13 @@ class UserService {
         return $userAvatar;
     }
 
+    public static function renderStatus(int $statusId)
+    {
+        match ($statusId) {
+            100 => __('Unknown', 'G3'),
+            101 => __('Pending'),
+            default => __('Actived')
+        };
+    }
+
 }

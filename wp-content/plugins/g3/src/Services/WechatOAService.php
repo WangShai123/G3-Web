@@ -7,6 +7,7 @@ use JEALER\G3\Includes\EasyWechatCache;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Message as Lang;
 use WP_Error;
 use Exception;
 use Closure;
@@ -110,19 +111,9 @@ class WechatOAService {
      */
     public const MENU_CACHE_KEY = 'menus';
 
-    /**
-     * Callback URL for Wechat Official Account
-     * 
-     * 微信公众号回调URL
-     * 
-     * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public const CALLBACK = '/dev/wechat_oa/callback';
+    public const SUBSCRIBE_QRCODE_PREFIX = 'g3_wechat_qrcode_';
 
-    public const FOLLOW_LOGIN_SCENE = 'g3_login_subscribe';
+    public const SUBSCRIBE_BIND_PREFIX = 'g3_wechat_bind_';
 
     /**
      * Instance of WechatOAService
@@ -698,9 +689,11 @@ class WechatOAService {
             return $this->checkKeywordLength($content);
         }
 
-        $defaultReply = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
-
-        return $this->handleTextReply($content, $defaultReply);
+        return $this->handleTextReply($content, $this->getDefaultMessage());
+    }
+    private function getDefaultMessage()
+    {
+        return $defaultReply = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
     }
 
     /**
@@ -756,30 +749,53 @@ class WechatOAService {
     }
     private function handleSubscribeEvent($message)
     {
-        $defaultMessage = $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
-        $sceneStr       = $message->EventKey ?? '';
-
-        if (strpos($sceneStr, 'qrscene_') === 0) {
-            $hash = substr($sceneStr, 8);
-            // Validate Scene
-            if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
-                return null;
-            }
-            $openid = $message->FromUserName;
-            $this->triggerLoginAfterSubscribe($openid, $hash);
-            return __('Login Success', 'G3');
-        } else {
-            return $defaultMessage;
+        // case 1: Regular subscribe, no EventKey
+        if (!isset($message->EventKey)) {
+            return $this->getSubscribeMessage();
         }
+
+        $sceneStr = $message->EventKey ?? '';
+
+        // case 2: Regular subscribe, not correct scene
+        if (strpos($sceneStr, 'qrscene_') !== 0) {
+            return $this->getSubscribeMessage();
+        }
+
+        // correct event, get hash and openid
+        $openid = $message->FromUserName;
+        $hash   = substr($sceneStr, 8);
+
+        // case 3: Try to handle bind event
+        if ($this->tryHandleBindEvent($openid, $hash)) {
+            return __('Thank you for binding your account!', 'G3');
+        }
+
+        // case 4: Try to handle login event
+        // Validate Scene
+        if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash)) {
+            return null;
+        }
+        $this->triggerLoginAfterSubscribe($openid, $hash);
+        return Lang::successLogin();
+    }
+    private function getSubscribeMessage()
+    {
+        return $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
     }
     private function handleScanEvent($message)
     {
         $hash   = $message->EventKey ?? '';
         $openid = $message->FromUserName ?? '';
-        if ($hash) {
+        if ($hash && $openid) {
+            // Try to handle bind event
+            if ($this->tryHandleBindEvent($openid, $hash)) {
+                return __('Binding successful!', 'G3');
+            }
+            // Fallback to login
             $this->triggerLoginAfterSubscribe($openid, $hash);
-            return __('Login Success', 'G3');
+            return Lang::successLogin();
         }
+        return null;
     }
     private function triggerLoginAfterSubscribe(string $openid, string $hash)
     {
@@ -802,13 +818,12 @@ class WechatOAService {
     {
         $eventKey = $message->EventKey ?? '';
 
-        $event          = get_option(self::EVENT_OPTION_KEY);
-        $lastestPosts   = $event['lastestPosts'] ?? 'n';
-        $defaultMessage = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
+        $event        = get_option(self::EVENT_OPTION_KEY);
+        $lastestPosts = $event['lastestPosts'] ?? 'n';
 
         return match ($eventKey) {
             $lastestPosts => $this->getLatestPosts(),
-            default => $defaultMessage
+            default => $this->getDefaultMessage()
         };
 
         //     // case 'h': // 获取热门文章
@@ -1395,7 +1410,6 @@ class WechatOAService {
      * Wechat OA User Handle
      * 
      ************************************************************/
-
     /**
      * Get user information by OpenID
      * 
@@ -1447,7 +1461,6 @@ class WechatOAService {
      * Wechat OA Menus Handle
      * 
      ************************************************************/
-
     /**
      * Create menus for Wechat OA
      * 
@@ -1871,7 +1884,7 @@ class WechatOAService {
             );
         }
 
-        $cacheKey = 'g3_wechat_qrcode_' . $hash;
+        $cacheKey = self::SUBSCRIBE_QRCODE_PREFIX . $hash;
         $cached   = get_transient($cacheKey);
 
         // Validate cache
@@ -1921,5 +1934,31 @@ class WechatOAService {
             error_log('Failed to create Subscribe Login QR code: ' . $e->getMessage());
             return new WP_Error('qrcode_error', $e->getMessage());
         }
+    }
+
+    private function tryHandleBindEvent(string $openid, string $hash): bool
+    {
+        // 检查 hash 是否为 32 位的十六进制字符串
+        if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
+            return false;
+        }
+
+        $cacheKey = self::SUBSCRIBE_BIND_PREFIX . $hash;
+        $userId   = get_transient($cacheKey);
+
+        if ($userId === false || !is_numeric($userId)) {
+            return false;
+        }
+
+        // Bind openId to user
+        $authService = AuthService::run();
+        $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
+
+        if ($result) {
+            delete_transient($cacheKey);
+            return true;
+        }
+
+        return false;
     }
 }

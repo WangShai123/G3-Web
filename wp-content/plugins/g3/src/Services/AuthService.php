@@ -137,7 +137,16 @@ class AuthService {
         return $this->wechatOAService->getSubscribeLoginQrCode($hash, $seconds);
     }
 
-    public function handlePostSubscribeLogin(string $openid, string $hash)
+    /**
+     * 
+     * 
+     * 标记用户已绑定，供前端轮训
+     * 
+     * @return void
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function handlePostSubscribeLogin(string $openid, string $hash): void
     {
         // Find or Create WordPress User
         $user = self::findUserByOpenId($openid);
@@ -151,9 +160,8 @@ class AuthService {
             return;
         }
 
-        set_transient("g3_SubscribeLoginHash_{$hash}", $user->ID, 1800);
-        // 方案：仅标记用户已绑定，前端轮询 /api/v1/auth/me
-        // （只要 openid 绑定成功，/me 就会返回用户信息）
+        $cacheKey = self::SUBSCRIBE_HASH_PREFIX . $hash;
+        set_transient($cacheKey, $user->ID, 1800);
     }
 
 
