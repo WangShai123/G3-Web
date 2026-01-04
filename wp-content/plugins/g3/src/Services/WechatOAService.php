@@ -1962,6 +1962,8 @@ class WechatOAService {
 
     private function handleBindEvent(string $openid, string $hash)
     {
+        $hash = substr($hash, 5);
+
         // 检查 hash 是否为 32 位的十六进制字符串
         if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
             return false;
