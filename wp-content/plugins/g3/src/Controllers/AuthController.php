@@ -9,6 +9,7 @@ use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\AuthService;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Utilities\Validator;
 use WP_REST_Request;
@@ -75,7 +76,7 @@ class AuthController {
 
         return rest_ensure_response([
             'code'    => 200,
-            'message' => __('Login Success', 'G3')
+            'message' => Message::successLogin()
         ]);
     }
 
@@ -192,8 +193,11 @@ class AuthController {
         $cacheKey = AuthService::SUBSCRIBE_HASH_PREFIX . $hash;
         $userId   = get_transient($cacheKey);
 
+        error_log('[G3] user id from cache: ' . $userId);
+
         // Hash expired
         if ($userId === false) {
+            error_log('[G3] Hash expired: ' . $hash);
             return rest_ensure_response([
                 'success' => false,
                 'status'  => 'expired',
@@ -203,6 +207,7 @@ class AuthController {
 
         // Hash waiting for validation
         if ($userId === '') {
+            error_log('[G3] Hash pending: ' . $hash);
             return rest_ensure_response([
                 'success' => false,
                 'status'  => 'pending',
@@ -212,6 +217,7 @@ class AuthController {
 
         $user = new WP_User((int) $userId);
         if (!$user->exists()) {
+            error_log('[G3] User not found: ' . $userId);
             return new WP_Error(400, 'Unauthorized');
         }
 
@@ -220,7 +226,7 @@ class AuthController {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Login Success', 'G3')
+            'message' => Message::successLogin()
         ]);
     }
 
