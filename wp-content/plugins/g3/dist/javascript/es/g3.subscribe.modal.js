@@ -1,5 +1,6 @@
 import jui from 'jui'
 
+document.documentElement.classList.add('j-theme-indigo')
 const langs = {
   zh: {
     'Login via WeChat QrCode': '微信扫码登录',
@@ -17,7 +18,7 @@ const modal = new jui.modal({
   title: t('Login via WeChat QrCode'),
   footer: false,
   escClose: true,
-  content: '<div id="login-qrcode" style="text-align:center;min-height:200px"></div>',
+  content: '<div id="login-qrcode" style="text-align:center;min-height:280px"></div>',
   onHidden: () => {
     modal.hideLoading()
   },
