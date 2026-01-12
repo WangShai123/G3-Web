@@ -21,10 +21,18 @@ const modal = new jui.modal({
   content: '<div id="login-qrcode" style="text-align:center;min-height:280px"></div>',
   onHidden: () => {
     modal.hideLoading()
+    stopPolling()
   },
 })
 
 const subscribeCookie = 'g3_wechat_login_hash'
+
+const stopPolling = () => {
+  if (currentPollingTimer) {
+    clearTimeout(currentPollingTimer)
+    currentPollingTimer = null
+  }
+}
 
 for (const element of document.querySelectorAll('[data-login-element]')) {
   element.addEventListener('click', (e) => {
@@ -72,6 +80,7 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
       }
     }
     const startPolling = (hash) => {
+      stopPolling()
       const pollInterval = 3000
       const poll = async () => {
         try {
@@ -92,14 +101,17 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
               return
             }
             // pending
-            setTimeout(poll, pollInterval)
+            // setTimeout(poll, pollInterval)
+            currentPollingTimer = setTimeout(poll, pollInterval)
           }
         } catch {
-          setTimeout(poll, pollInterval * 2)
+          // setTimeout(poll, pollInterval * 2)
+          currentPollingTimer = setTimeout(poll, pollInterval * 2)
         }
       }
       poll()
     }
+
     initLogin()
   })
 }
