@@ -17,8 +17,7 @@ const modal = new jui.modal({
   title: t('Login via WeChat QrCode'),
   footer: false,
   escClose: true,
-  content:
-    '<div id="login-qrcode" style="text-align:center;min-height:200px"></div><p id="login-msg" style="text-align:center"></p>',
+  content: '<div id="login-qrcode" style="text-align:center;min-height:200px"></div>',
   onHidden: () => {
     modal.hideLoading()
   },
@@ -33,7 +32,6 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
     modal.showLoading()
 
     const wrap = document.querySelector('#login-qrcode')
-    const msg = document.querySelector('#login-msg')
     const initLogin = async () => {
       let hash = jui.u.getCookie(subscribeCookie)
       if (!hash) {
@@ -41,7 +39,7 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
           hash = jui.u.uuid()
           jui.u.setCookie(subscribeCookie, hash, 1800)
         } catch (err) {
-          msg.innerHTML = `<span style="color:red">${err.message}</span>`
+          jui.toast.error(err.message)
           return
         }
       }
@@ -55,19 +53,21 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
         }
 
         // render qrcode
-        modal.hideLoading()
-        wrap.innerHTML = `<img 
+        setTimeout(() => {
+          modal.hideLoading()
+          wrap.innerHTML = `<img 
 							src="${qrRes.data.url}" 
 							alt="${t('Login via WeChat QrCode')}"
-							style="width:220px; height:auto; border:1px solid #eee; border-radius:8px;"
+							style="width:280px; height:auto; outline:1px solid var(--gray-3)"
 						/>`
+        }, 800)
 
         // delay polling validate
         setTimeout(() => {
           startPolling(hash)
         }, 2000)
       } catch (err) {
-        msg.innerHTML = `<span style="color:red">${err.message}</span>`
+        jui.toast.error(err.message)
       }
     }
     const startPolling = (hash) => {
@@ -78,16 +78,14 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
             hash: `login:${hash}`,
           })
           if (res.success === true) {
-            msg.textContent = res.message
-            msg.style.color = 'green'
+            jui.toast.success(res.message)
             jui.u.deleteCookie(subscribeCookie)
             setTimeout(() => {
               window.location.href = '/'
             }, 500)
           } else {
             if (res.status && res.status === 'expired') {
-              msg.textContent = res.message
-              msg.style.color = '#d97706'
+              jui.toast.warning(res.message)
               jui.u.deleteCookie(subscribeCookie)
               // stop polling
               return
