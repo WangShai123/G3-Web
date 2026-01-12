@@ -14,6 +14,8 @@ const post = (url, data) => {
   return jui.u.postJson(url, data)
 }
 
+let currentPollingTimer = null
+
 const modal = new jui.modal({
   title: t('Login via WeChat QrCode'),
   footer: false,
