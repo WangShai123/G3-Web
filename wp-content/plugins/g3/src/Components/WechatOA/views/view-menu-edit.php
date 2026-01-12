@@ -362,12 +362,12 @@ Frontend::loadScript('jui');
             }
             $.post(ajaxurl, data, function (res) {
                 if (res.success) {
-                    JUI.Toast.success(res.data.message, 1000)
+                    jui.toast.success(res.data.message, 1000)
                     setTimeout(() => {
                         window.location.href = '<?php echo admin_url("admin.php?page=wechat-oa&tab=menus"); ?>'
                     }, 1000)
                 } else {
-                    JUI.Toast.error(res.data.message, 2000)
+                    jui.toast.error(res.data.message, 2000)
                 }
                 setTimeout(() => {
                     submit.removeAttr('disabled')

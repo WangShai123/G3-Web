@@ -30,16 +30,16 @@ settings_errors('flush');
             },
             success: function (res) {
                 if (res.code === 200) {
-                    JUI.Toast.success(res.message, 2000);
+                    jui.toast.success(res.message, 2000);
                     setTimeout(function () {
                         window.location.reload();
                     }, 2000);
                 } else {
-                    JUI.Toast.error(res.message, 2000);
+                    jui.toast.error(res.message, 2000);
                 }
             },
             error: function (err) {
-                JUI.Toast.error(err.responseJSON.data.message, 2000);
+                jui.toast.error(err.responseJSON.data.message, 2000);
             },
             complete: function () {
                 setTimeout(function () {

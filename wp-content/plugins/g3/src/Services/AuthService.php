@@ -315,4 +315,21 @@ class AuthService {
         wp_set_auth_cookie($user->ID);
         do_action('wp_login', $user->user_login, $user);
     }
+
+
+    /************************************************************
+     * 
+     * Auth UI
+     * 
+     ************************************************************/
+    public static function loginElement(string $element, bool $modal = false): string
+    {
+        if (!$modal) {
+            $element = '<a href="' . get_site_url() . '/user/login" title="' . __('Login', 'G3') . '">' . $element . '</a>';
+        } else {
+            load_template(G3_TEMPLATE_DIR . '/user/login-modal.php', true);
+        }
+
+        return $element;
+    }
 }

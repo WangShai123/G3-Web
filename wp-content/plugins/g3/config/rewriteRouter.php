@@ -63,6 +63,10 @@ return [
             [
                 'value' => 'login',
                 'path'  => 'user/login.php'
+            ],
+            [
+                'value' => 'test',
+                'path'  => 'user/test.php'
             ]
         ]
     ],

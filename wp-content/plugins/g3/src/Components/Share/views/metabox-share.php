@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 const tooltipElements = document.querySelectorAll('[data-tooltip]');
     tooltipElements.forEach(element => {
-        let tooltip = new JUI.Tooltip(element, {
+        let tooltip = new jui.tooltip(element, {
             // name: element.dataset.name,
             message: element.dataset.tooltip,
         });

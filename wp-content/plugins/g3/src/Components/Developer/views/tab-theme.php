@@ -132,7 +132,7 @@ echo Container::tip(
                     console.log(data)
                     switch (data.code) {
                         case 200:
-                            JUI.Toast.success(data.message, 2000);
+                            jui.toast.success(data.message, 2000);
                             setTimeout(() => { this.disabled = false }, 2000)
                             const tip = `
                             <div class="j-tip is-success mb-2" id="createTip">
@@ -146,15 +146,15 @@ echo Container::tip(
                             document.querySelector('form.j-form').insertAdjacentHTML('beforebegin', tip);
                             break;
                         case 400:
-                            JUI.Toast.error(data.message, 2000)
+                            jui.toast.error(data.message, 2000)
                             setTimeout(() => { this.disabled = false }, 2000)
                             break;
                         case 422:
-                            JUI.Toast.error(data.data.errors[0], 2000)
+                            jui.toast.error(data.data.errors[0], 2000)
                             setTimeout(() => { this.disabled = false }, 2000)
                             break;
                         default:
-                            JUI.Toast.error(data.message, 2000)
+                            jui.toast.error(data.message, 2000)
                             setTimeout(() => { this.disabled = false }, 2000)
                             break;
                     }

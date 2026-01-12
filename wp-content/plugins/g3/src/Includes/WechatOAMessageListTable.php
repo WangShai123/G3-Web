@@ -121,7 +121,7 @@ class WechatOAMessageListTable extends WP_List_Table {
                 $deleted = WechatOAService::deleteMessages($messages);
                 if ($deleted !== false) {
                     echo '<script>jQuery(document).ready(function () {
-                        JUI.Toast.success("' . __('Deleted', 'G3') . '");
+                        jui.toast.success("' . __('Deleted', 'G3') . '");
                         setTimeout(function() {
                             window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";
                         }, 1000);

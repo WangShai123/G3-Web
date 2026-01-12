@@ -20,6 +20,7 @@
 # Configuration
 /wp-config.php
 /.user.ini
+/biome.json
 
 # Uploads
 /wp-content/uploads/

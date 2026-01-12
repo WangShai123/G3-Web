@@ -115,10 +115,10 @@ class SwiperLocationTable extends WP_List_Table {
 
                 if ($result) {
                     $msg = __('Deleted', 'G3');
-                    wp_add_inline_script('jui', 'JUI.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+                    wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
                 } else {
                     $msg = __('Delete Failed', 'G3');
-                    wp_add_inline_script('jui', 'JUI.Toast.error("' . $msg . '",2000);');
+                    wp_add_inline_script('jui', 'jui.toast.error("' . $msg . '",2000);');
                 }
             }
         }

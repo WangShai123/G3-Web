@@ -183,19 +183,19 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
             const title = $('#title').val();
             if (!title) {
                 $('#title').focus();
-                JUI.Toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
+                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
                 return false;
             }
             const media = $('#media').val();
             if (!media) {
                 $('#media').focus();
-                JUI.Toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
+                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
                 return false;
             }
             const link = $('#link').val();
             if (!link) {
                 $('#link').focus();
-                JUI.Toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
+                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
                 return false;
             }
             const target = $('#target').val();
@@ -203,7 +203,7 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
             const sort = $('#sort').val();
             if (!sort) {
                 $('#sort').focus();
-                JUI.Toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
+                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
                 return false;
             }
             const status = $('#status').val();
@@ -219,12 +219,12 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 status: status
             }, function (res) {
                 if (res.success) {
-                    JUI.Toast.success(res.data.message, 1000);
+                    jui.toast.success(res.data.message, 1000);
                     setTimeout(function () {
                         window.location.href = '<?php echo admin_url('themes.php?page=swipers'); ?>';
                     }, 1000);
                 } else {
-                    JUI.Toast.error(res.data.message, 2000);
+                    jui.toast.error(res.data.message, 2000);
                 }
             })
         });

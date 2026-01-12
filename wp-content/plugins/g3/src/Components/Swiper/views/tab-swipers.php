@@ -21,7 +21,7 @@ echo '</form>';
             $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
             e.preventDefault();
             const src = $(this).attr('src');
-            const preview = new JUI.Modal({
+            const preview = new jui.modal({
                 title: '<?php _e("Preview"); ?>',
                 content: '<div class="flex justify-center align-center w-full h-screen" style="margin: -1rem -0.75rem"><img src="' + src + '" style="height: 100%;"></div>',
                 confirmText: '<?php _e("Confirm", "G3"); ?>',

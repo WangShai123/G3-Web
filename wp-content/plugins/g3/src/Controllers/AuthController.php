@@ -72,11 +72,83 @@ class AuthController {
             );
         }
 
+        // Check if user is admin
+        if (!user_can($user, 'manage_options')) {
+            return new WP_Error(
+                401,
+                Message::forbidden(),
+                [
+                    'status' => 401
+                ]
+            );
+        }
+
         AuthService::doWPLogin($user);
 
         return rest_ensure_response([
             'code'    => 200,
-            'message' => Message::successLogin()
+            'message' => Message::loginSuccess()
+        ]);
+    }
+
+    /**
+     * Custom Admin Login API
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_Error|WP_REST_Response
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    #[RestRouter(
+        namespace: 'api/v1',
+        route: 'auth/login/',
+        methods: 'POST'
+    )]
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['username', 'password'],
+        'properties' => [
+            'username' => [
+                'type'      => 'string',
+                'minLength' => 5,
+                'maxLength' => 64
+            ],
+            'password' => [
+                'type'      => 'string',
+                'minLength' => 5,
+                'maxLength' => 64
+            ]
+        ]
+    ])]
+    #[Middleware(RateLimitMiddleware::class, [10, 300])]
+    public function userLogin(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        $data     = $request->get_json_params();
+        $username = sanitize_text_field($data['username']);
+        $password = sanitize_text_field($data['password']);
+
+        // Compatible with email login
+        if (is_email($username)) {
+            $user = get_user_by('email', $username);
+        } else {
+            $user = get_user_by('login', $username);
+        }
+
+        if (!$user || !wp_check_password($password, $user->data->user_pass, $user->ID)) {
+            return new WP_Error(
+                401,
+                __('Invalid username or password.', 'G3'),
+                [
+                    'status' => 401
+                ]
+            );
+        }
+
+        AuthService::doWPLogin($user);
+
+        return rest_ensure_response([
+            'code'    => 200,
+            'message' => Message::loginSuccess()
         ]);
     }
 
@@ -221,7 +293,7 @@ class AuthController {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => Message::successLogin()
+            'message' => Message::loginSuccess()
         ]);
     }
 

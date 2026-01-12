@@ -817,7 +817,7 @@ class WechatOAService {
         // Notify AuthService: this openid user has subscribed, please login
         $authService = AuthService::run();
         $authService->handlePostSubscribeLogin($openid, $hash);
-        return Lang::successLogin();
+        return Lang::loginSuccess();
     }
 
     /**
@@ -1978,7 +1978,7 @@ class WechatOAService {
 
         if ($result) {
             delete_transient($cacheKey);
-            return Lang::successBind();
+            return Lang::bindSuccess();
         }
 
         return null;

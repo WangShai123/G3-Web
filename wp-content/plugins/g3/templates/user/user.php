@@ -15,14 +15,12 @@ $openId = AuthService::OPENID_META_KEY;
 <div class="container">
     <div>username: <?php echo $user->display_name; ?></div>
     <div class="my-4">wechat open id:
-        <?php echo $user->g3_wechat_openId ? esc_html($user->g3_wechat_openId) : '<span style="color:#999;">(未绑定)</span>'; ?>
+        <?php echo $user->g3_wechat_openId ? esc_html($user->g3_wechat_openId) : '<span style="color:#999;" id="toBind">(未绑定)</span>'; ?>
     </div>
     <div class="my-4">
-        <?php if (empty($user->g3_wechat_openId)) : ?>
-            <button id="bind" type="button" class="j-button is-default">Bind</button>
-        <?php else : ?>
-            <button type="button" class="j-button is-disabled" disabled>已绑定</button>
-        <?php endif; ?>
+        <?php if (empty($user->g3_wechat_openId)) {
+            echo '<button id="bind" type="button" class="j-button is-default">Bind</button>';
+        } ?>
     </div>
 </div>
 <?php get_footer(); ?>
@@ -34,7 +32,7 @@ $openId = AuthService::OPENID_META_KEY;
 
         btn.addEventListener('click', async function () {
             let content = '';
-            const modal = new JUI.Modal({
+            const modal = new jui.modal({
                 header: false,
                 footer: false,
                 bgClose: true,

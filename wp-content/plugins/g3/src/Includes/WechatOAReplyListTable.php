@@ -310,7 +310,7 @@ class WechatOAReplyListTable extends WP_List_Table {
         echo <<<HTML
 <script>
 jQuery(document).ready(function () {
-    JUI.Toast.error('$message');
+    jui.toast.error('$message');
     setTimeout(function () {
         window.location.reload();
     }, 1000);
@@ -323,7 +323,7 @@ HTML;
         echo <<<HTML
 <script>
 jQuery(document).ready(function () {
-    JUI.Toast.success('$message');
+    jui.toast.success('$message');
     setTimeout(function () {
         window.location.reload();
     }, 1000);

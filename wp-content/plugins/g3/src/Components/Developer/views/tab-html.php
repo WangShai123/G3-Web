@@ -134,7 +134,7 @@ echo Container::tip(
             item.addEventListener('click', function () {
                 let iconText = item.querySelector('div').textContent;
                 copy(iconText);
-                JUI.Toast.success('<?php _e('Copied'); ?> ' + iconText, 2000);
+                jui.toast.success('<?php _e('Copied'); ?> ' + iconText, 2000);
             });
         });
     });

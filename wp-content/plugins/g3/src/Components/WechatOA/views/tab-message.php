@@ -39,7 +39,7 @@ endif;
                 id: id,
                 nonce: '<?php echo wp_create_nonce('g3_get_wechatOA_message_content'); ?>'
             }, function (res) {
-                const viewModal = new JUI.Modal({
+                const viewModal = new jui.modal({
                     title: '<?php _e("View"); ?>',
                     content: res.data.message,
                     confirmText: '<?php _e("Confirm", 'G3'); ?>',
@@ -56,7 +56,7 @@ endif;
                     id: id,
                     nonce: '<?php echo wp_create_nonce('g3_delete_wechatOA_message'); ?>'
                 }, function (res) {
-                    res.success ? JUI.Toast.success(res.data.message) : JUI.Toast.error(res.data.message)
+                    res.success ? jui.toast.success(res.data.message) : jui.toast.error(res.data.message)
                     setTimeout(function () {
                         location.reload()
                     }, 1000)
@@ -64,7 +64,7 @@ endif;
             }
         })
         flushMsg.on('click', function () {
-            const modal = new JUI.Modal({
+            const modal = new jui.modal({
                 title: '<?php _e("Delete History Data", "G3"); ?>',
                 confirmText: '<?php _e("Delete"); ?>',
                 cancelText: '<?php _e("Cancel"); ?>',
@@ -82,7 +82,7 @@ endif;
                 onSubmit: function (data) {
                     modal.showLoading();
                     if (data.days < 1) {
-                        JUI.Toast.error('<?php _e("Days must be greater than 0", "G3"); ?>');
+                        jui.toast.error('<?php _e("Days must be greater than 0", "G3"); ?>');
                         modal.hideLoading();
                         return;
                     }
@@ -92,12 +92,12 @@ endif;
                         days: data.days
                     }, function (res) {
                         if (res.success) {
-                            JUI.Toast.success(res.data.message)
+                            jui.toast.success(res.data.message)
                             setTimeout(function () {
                                 location.reload()
                             }, 800)
                         } else {
-                            JUI.Toast.error(res.data.message)
+                            jui.toast.error(res.data.message)
                             modal.hideLoading();
                         }
                     }).done(function (res) {

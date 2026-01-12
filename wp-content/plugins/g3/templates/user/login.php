@@ -82,7 +82,7 @@ get_header();
                             window.location.href = '/dashboard';
                         }, 500);
                     } else {
-                        if (res.status && res.status == 'expired') {
+                        if (res.status && res.status === 'expired') {
                             statusEl.textContent = res.message;
                             statusEl.style.color = '#d97706';
                             deleteCookie(subscribeCookie);

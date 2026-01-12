@@ -120,16 +120,7 @@ final class Frontend {
             // G3
             'redirect.link'      => [G3_JS_URL . '/g3.redirect.link.min.js', [], '1.0.0'],
             // JUI
-            'jui'                => [G3_JS_URL . '/umd/jui.js', [], '1.0.0'],
-            'jui.core'           => [G3_JS_URL . '/umd/jui.core.js', [], '1.0.0'],
-            'jui.accordion'      => [G3_JS_URL . '/umd/jui.accordion.js', [], '1.0.0'],
-            'jui.tabs'           => [G3_JS_URL . '/umd/jui.tabs.js', [], '1.0.0'],
-            'jui.theme'          => [G3_JS_URL . '/umd/jui.theme.js', [], '1.0.0'],
-            'jui.toast'          => [G3_JS_URL . '/umd/jui.toast.js', [], '1.0.0'],
-            'jui.modal'          => [G3_JS_URL . '/umd/jui.modal.js', [], '1.0.0'],
-            'jui.offcanvas'      => [G3_JS_URL . '/umd/jui.offcanvas.js', [], '1.0.0'],
-            'jui.drop'           => [G3_JS_URL . '/umd/jui.drop.js', [], '1.0.0'],
-            'jui.tooltip'        => [G3_JS_URL . '/umd/jui.tooltip.js', [], '1.0.0'],
+            'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0'],
             'jui.form.validator' => [G3_JS_URL . '/jui.form.validator.min.js', [], '1.0.0'],
             'jui.pca'            => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
             'jui.cascading'      => [G3_JS_URL . '/jui.cascading.min.js', [], '1.0.0'],
@@ -238,26 +229,20 @@ final class Frontend {
     public static function loadModule(string $handle, bool $cdn = false): bool
     {
         $modules = [
-            'jui'           => [G3_JS_URL . '/es/jui.js', [], '1.0.0'],
-            'jui.core'      => [G3_JS_URL . '/es/jui.core.js', [], '1.0.0'],
-            'jui.accordion' => [G3_JS_URL . '/es/jui.accordion.js', [], '1.0.0'],
-            'jui.tabs'      => [G3_JS_URL . '/es/jui.tabs.js', [], '1.0.0'],
-            'jui.theme'     => [G3_JS_URL . '/es/jui.theme.js', [], '1.0.0'],
-            'jui.toast'     => [G3_JS_URL . '/es/jui.toast.js', [], '1.0.0'],
-            'jui.modal'     => [G3_JS_URL . '/es/jui.modal.js', [], '1.0.0'],
-            'jui.offcanvas' => [G3_JS_URL . '/es/jui.offcanvas.js', [], '1.0.0'],
-            'jui.drop'      => [G3_JS_URL . '/es/jui.drop.js', [], '1.0.0'],
-            'jui.tooltip'   => [G3_JS_URL . '/es/jui.tooltip.js', [], '1.0.0'],
+            'jui'                => [G3_JS_URL . '/es/jui.js', [], '1.0.0'],
             /**
              * ky: Tiny & elegant JavaScript HTTP client based on the Fetch API
              * @link: https://github.com/sindresorhus/ky
              */
-            'ky'            => [G3_JS_URL . '/ky.esm.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/+esm'],
+            'ky'                 => [G3_JS_URL . '/es/ky.esm.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/+esm'],
             /**
              * qrcodeJS: Cross-browser QRCode generator for javascript
              * @link: https://github.com/davidshimjs/qrcodejs
              */
-            'qrcode'        => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm']
+            'qrcode'             => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm'],
+
+            'g3.login.modal'     => [G3_DIST_URL . '/javascript/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
+            'g3.subscribe.modal' => [G3_DIST_URL . '/javascript/es/g3.subscribe.modal.js', ['jui'], '1.0.0'],
         ];
 
         /**

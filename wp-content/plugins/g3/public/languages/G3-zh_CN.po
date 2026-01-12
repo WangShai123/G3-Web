@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2026-01-03 18:33+0000\n"
+"PO-Revision-Date: 2026-01-11 13:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -278,7 +278,7 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Services/WechatOAService.php:1329
+#: src/Services/WechatOAService.php:1386
 msgid "All provided IDs are invalid"
 msgstr "非法的IDs"
 
@@ -381,7 +381,7 @@ msgstr "归档页侧边栏"
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr "您确认要创建微信公众号菜单吗？"
 
-#: src/Components/Swiper/views/tab-locations.php:118
+#: src/Components/Swiper/views/tab-locations.php:120
 #: src/Components/WechatOA/views/tab-menus.php:39
 #: src/Components/WechatOA/views/tab-message.php:53
 #: src/Components/WechatOA/views/tab-reply.php:178
@@ -398,17 +398,17 @@ msgstr "您确认要清空所有线上的菜单数据吗？"
 msgid "Array %s[%s] must be type %s."
 msgstr "%s[%s] 必需是 %s 类型。"
 
-#: src/Services/WechatOAService.php:1728
+#: src/Services/WechatOAService.php:1783
 #: src/Components/WechatOA/views/view-menu-edit.php:292
 msgid "Article ID"
 msgstr "图文 ID"
 
-#: src/Services/WechatOAService.php:1727
+#: src/Services/WechatOAService.php:1782
 #: src/Components/WechatOA/views/view-menu-edit.php:280
 msgid "Article URL"
 msgstr "图文 URL"
 
-#: src/Services/WechatOAService.php:892
+#: src/Services/WechatOAService.php:949
 msgid "At least one keyword is required"
 msgstr "至少需要一个关键词"
 
@@ -447,7 +447,7 @@ msgstr "后台表单字段项演示"
 msgid "Balance Management"
 msgstr "余额管理"
 
-#: src/Services/WechatOAService.php:1165
+#: src/Services/WechatOAService.php:1222
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
@@ -573,12 +573,12 @@ msgstr "净化WordPress模板渲染后的头部数据。"
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr "点击 <a href=\"%s\"><b>此处</b></a> 来激活。"
 
-#: src/Services/WechatOAService.php:1718
+#: src/Services/WechatOAService.php:1773
 #: src/Components/WechatOA/views/view-menu-edit.php:172
 msgid "Click Event"
 msgstr "点击事件"
 
-#: src/Services/WechatOAService.php:643
+#: src/Services/WechatOAService.php:660
 #, php-format
 #| msgid "Click here to view search results."
 msgid "Click here to view \"%s\" search results."
@@ -1066,11 +1066,11 @@ msgstr "失败"
 msgid "Failed to active G3-Web plugin!"
 msgstr "G3-Web 插件启用失败！"
 
-#: src/Services/WechatOAService.php:1265
+#: src/Services/WechatOAService.php:1322
 msgid "Failed to delete replies from main table."
 msgstr "回复数据删除失败"
 
-#: src/Services/WechatOAService.php:1275
+#: src/Services/WechatOAService.php:1332
 msgid "Failed to delete reply(s)."
 msgstr "回复数据删除失败"
 
@@ -1081,11 +1081,11 @@ msgid ""
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Controllers/AuthController.php:255
+#: src/Controllers/AuthController.php:384
 msgid "Failed to generate WeChat auth URL."
 msgstr "微信授权URL创建失败。"
 
-#: src/Services/WechatOAService.php:1065
+#: src/Services/WechatOAService.php:1122
 msgid "Failed to insert reply into main table"
 msgstr "回复数据插入失败"
 
@@ -1097,11 +1097,11 @@ msgstr "PHPMailer库加载失败。"
 msgid "Failed to send test email!"
 msgstr "测试邮件发送失败！"
 
-#: src/Services/WechatOAService.php:1101
+#: src/Services/WechatOAService.php:1158
 msgid "Failed to update reply in main table"
 msgstr "回复数据更新失败"
 
-#: src/Services/WechatOAService.php:1353
+#: src/Services/WechatOAService.php:1410
 msgid "Failed to update reply status"
 msgstr "回复状态更新失败"
 
@@ -1245,6 +1245,7 @@ msgid ""
 msgstr "对于主题设计师：G3-Web 提供了一套全面的开发工具，帮助您快速创建专业级别的 WordPress 主题。"
 
 #: src/Middleware/RoleMiddleware.php:51 src/Utilities/Response.php:85
+#: src/Controllers/AuthController.php:79
 #: src/Components/Developer/Developer.php:896
 msgid "Forbidden"
 msgstr "禁止访问"
@@ -1252,7 +1253,7 @@ msgstr "禁止访问"
 #. '请求过于频繁，禁止访问',
 #: src/Middleware/RateLimitMiddleware.php:57
 msgid "Forbidden: Rate limit exceeded"
-msgstr "禁止访问：过多的请求"
+msgstr "禁止访问：请求过于频繁"
 
 #: src/Components/Developer/Developer.php:210
 msgid "Form Demo"
@@ -1453,8 +1454,8 @@ msgid ""
 "mobile template and its features if you need."
 msgstr "安装并激活 <a href=\"%s\">G3-Mobile 主题</a> 来预览手机端的各类功能和效果，如果您需要手机端支持。"
 
-#: src/Controllers/AuthController.php:119
-#: src/Controllers/AuthController.php:184
+#: src/Controllers/AuthController.php:196
+#: src/Controllers/AuthController.php:262
 msgid "Invalid Hash"
 msgstr "非法Hash"
 
@@ -1470,7 +1471,7 @@ msgstr "图片不正确"
 msgid "Invalid Link"
 msgstr "链接地址不正确"
 
-#: src/Controllers/AuthController.php:66
+#: src/Controllers/AuthController.php:68 src/Controllers/AuthController.php:140
 msgid "Invalid username or password."
 msgstr "用户名或密码不正确。"
 
@@ -1478,12 +1479,12 @@ msgstr "用户名或密码不正确。"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: src/Services/WechatOAService.php:917 src/Services/WechatOAService.php:930
+#: src/Services/WechatOAService.php:974 src/Services/WechatOAService.php:987
 #, php-format
 msgid "Keyword %s already exists"
 msgstr "关键词 %s 已存在"
 
-#: src/Services/WechatOAService.php:1769
+#: src/Services/WechatOAService.php:1824
 #, php-format
 #| msgid "Keyword too long, max %s characters"
 msgid "Keyword too long, max %s characters."
@@ -1531,7 +1532,7 @@ msgstr "授权已过期"
 msgid "Like"
 msgstr "喜欢"
 
-#: src/Services/WechatOAService.php:1729
+#: src/Services/WechatOAService.php:1784
 #: src/Components/WechatOA/views/view-menu-edit.php:304
 msgid "Limited Article URL"
 msgstr "受限图文URL"
@@ -1551,21 +1552,16 @@ msgstr "本地环境"
 msgid "Location"
 msgstr "位置"
 
-#: src/Services/WechatOAService.php:1724
+#: src/Services/WechatOAService.php:1779
 #: src/Components/WechatOA/views/view-menu-edit.php:244
 msgid "Location Selector"
 msgstr "位置选择器"
 
-#: src/Services/PostService.php:302 src/Components/Security/Security.php:129
-#: src/Components/Auth/Auth.php:39 src/Components/Auth/Auth.php:40
-#: src/Components/Auth/Auth.php:49
+#: src/Services/PostService.php:302 src/Services/AuthService.php:328
+#: src/Components/Security/Security.php:129 src/Components/Auth/Auth.php:39
+#: src/Components/Auth/Auth.php:40 src/Components/Auth/Auth.php:49
 msgid "Login"
 msgstr "登录"
-
-#: src/Controllers/AuthController.php:77 src/Controllers/AuthController.php:218
-#: src/Services/WechatOAService.php:744 src/Services/WechatOAService.php:755
-msgid "Login Success"
-msgstr "登录成功"
 
 #: src/Components/Auth/Auth.php:102 src/Components/Auth/Auth.php:108
 msgid "Login via Wechat Client"
@@ -1602,7 +1598,7 @@ msgstr "搜索关键词的最大长度"
 msgid "Media"
 msgstr "媒体"
 
-#: src/Services/WechatOAService.php:1726
+#: src/Services/WechatOAService.php:1781
 #: src/Components/WechatOA/views/view-menu-edit.php:268
 msgid "Media Library"
 msgstr "素材库"
@@ -1621,8 +1617,7 @@ msgid ""
 "been disabled."
 msgstr "消息不可用。因为微信公众号消息存储功能已被禁用。"
 
-#: src/Services/WechatOAService.php:675 src/Services/WechatOAService.php:781
-#: src/Components/WechatOA/WechatOA.php:26
+#: src/Services/WechatOAService.php:696 src/Components/WechatOA/WechatOA.php:26
 msgid "Message received, thanks for your advice!"
 msgstr "消息已收到，感谢您的反馈。"
 
@@ -1643,7 +1638,7 @@ msgstr "消息"
 msgid "Method"
 msgstr "方法"
 
-#: src/Services/WechatOAService.php:1725
+#: src/Services/WechatOAService.php:1780
 #: src/Components/WechatOA/views/view-menu-edit.php:256
 msgid "Mini Program"
 msgstr "小程序"
@@ -1753,7 +1748,7 @@ msgstr "未发现任何品牌"
 msgid "No categories found."
 msgstr "未发现任何分类"
 
-#: src/Components/Swiper/views/tab-locations.php:90
+#: src/Components/Swiper/views/tab-locations.php:92
 msgid "No data changed"
 msgstr "无数据变更"
 
@@ -1796,11 +1791,11 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Services/WechatOAService.php:1321
+#: src/Services/WechatOAService.php:1378
 msgid "No reply IDs provided"
 msgstr "未提供任何IDs"
 
-#: src/Services/WechatOAService.php:1229
+#: src/Services/WechatOAService.php:1286
 msgid "No valid reply ID(s) provided."
 msgstr "Invalid IDs selected."
 
@@ -1938,7 +1933,7 @@ msgstr "支付系统"
 msgid "Permalinks"
 msgstr "固定链接"
 
-#: src/Services/WechatOAService.php:1722
+#: src/Services/WechatOAService.php:1777
 #: src/Components/WechatOA/views/view-menu-edit.php:220
 msgid "Photo or Album"
 msgstr "拍照或相册"
@@ -2204,11 +2199,11 @@ msgstr "发布到微信公众号素材库"
 msgid "QQ Zone"
 msgstr "QQ空间"
 
-#: src/Controllers/AuthController.php:195
+#: src/Controllers/AuthController.php:273
 msgid "QRCode expired, Please refresh the page and try again."
 msgstr "二维码已过期，请刷新页面重试。"
 
-#: src/Controllers/AuthController.php:204
+#: src/Controllers/AuthController.php:282
 msgid "Quest pending"
 msgstr "请求等待中"
 
@@ -2295,11 +2290,11 @@ msgstr "移除管理后台中的工具菜单页面。"
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
 
-#: src/Services/WechatOAService.php:901
+#: src/Services/WechatOAService.php:958
 msgid "Reply content cannot be empty"
 msgstr "回复内容不能为空"
 
-#: src/Services/WechatOAService.php:1105
+#: src/Services/WechatOAService.php:1162
 msgid "Reply not found"
 msgstr "未发现回复数据"
 
@@ -2378,16 +2373,16 @@ msgstr "安全提醒"
 msgid "Safe Session"
 msgstr "安全会话"
 
-#: src/Services/WechatOAService.php:968
+#: src/Services/WechatOAService.php:1025
 msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
 
-#: src/Services/WechatOAService.php:1720
+#: src/Services/WechatOAService.php:1775
 #: src/Components/WechatOA/views/view-menu-edit.php:196
 msgid "Scan & Alert"
 msgstr "扫码&提醒"
 
-#: src/Services/WechatOAService.php:1719
+#: src/Services/WechatOAService.php:1774
 #: src/Components/WechatOA/views/view-menu-edit.php:184
 msgid "Scan Code"
 msgstr "扫码"
@@ -2409,7 +2404,7 @@ msgstr "搜索品牌"
 msgid "Search Categories"
 msgstr "搜索分类"
 
-#: src/Services/WechatOAService.php:642
+#: src/Services/WechatOAService.php:659
 msgid "Search for: "
 msgstr "搜索："
 
@@ -2652,7 +2647,7 @@ msgstr "轮播图"
 msgid "System"
 msgstr "系统"
 
-#: src/Services/WechatOAService.php:1721
+#: src/Services/WechatOAService.php:1776
 #: src/Components/WechatOA/views/view-menu-edit.php:208
 msgid "System Camera"
 msgstr "系统相机"
@@ -2825,7 +2820,7 @@ msgstr "当前选项卡是关于Caddy服务器安全配置建议。"
 msgid "This tab is for Nginx security configuration advice."
 msgstr "当前选项卡是关于Nginx服务器安全配置建议。"
 
-#: src/Services/AuthService.php:286
+#: src/Services/AuthService.php:294
 msgid "This WeChat account is already bound to another user."
 msgstr "当前微信账号已经绑定给了其他用户。"
 
@@ -2882,7 +2877,11 @@ msgstr "类型"
 msgid "Unauthorized"
 msgstr "未授权"
 
-#: src/Services/WechatOAService.php:288
+#: src/Services/UserService.php:96
+msgid "Unknown"
+msgstr "未知"
+
+#: src/Services/WechatOAService.php:297
 msgid "Unsupported message type"
 msgstr "不支持的消息类型"
 
@@ -3097,7 +3096,7 @@ msgstr "查看商品"
 msgid "View Statistics"
 msgstr "浏览量统计"
 
-#: src/Services/WechatOAService.php:1717
+#: src/Services/WechatOAService.php:1772
 #: src/Components/WechatOA/views/view-menu-edit.php:160
 msgid "View URL"
 msgstr "浏览 URL"
@@ -3124,7 +3123,7 @@ msgstr "钱包"
 msgid "Warning"
 msgstr "警告"
 
-#: src/Services/WechatOAService.php:1723
+#: src/Services/WechatOAService.php:1778
 #: src/Components/WechatOA/views/view-menu-edit.php:232
 msgid "WeChat Album"
 msgstr "微信相册"
@@ -3151,8 +3150,8 @@ msgstr "微信公众号素材库"
 msgid "Wechat OA Service"
 msgstr "微信公众号服务"
 
-#: src/Controllers/AuthController.php:110
-#: src/Controllers/AuthController.php:174
+#: src/Controllers/AuthController.php:185
+#: src/Controllers/AuthController.php:251
 #| msgid "WeChat OA Subscription login is not available"
 msgid "WeChat OA Subscription Login is not available"
 msgstr "微信公众号订阅登录未启用"
@@ -3176,8 +3175,8 @@ msgstr "微信公众号服务未启用"
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr "微信公众号支持 13 种菜单类型："
 
-#: src/Controllers/AuthController.php:244 src/Services/WechatOAService.php:1844
-#: src/Services/AuthService.php:199
+#: src/Controllers/AuthController.php:373 src/Services/WechatOAService.php:1899
+#: src/Services/AuthService.php:207
 msgid "WeChat service is not available."
 msgstr "微信服务未启用。"
 
@@ -3209,7 +3208,7 @@ msgstr "欢迎面板"
 msgid "Welcome!"
 msgstr "欢迎！"
 
-#: src/Services/WechatOAService.php:733 src/Components/WechatOA/WechatOA.php:24
+#: src/Services/WechatOAService.php:793 src/Components/WechatOA/WechatOA.php:24
 msgid "Welcome! Thanks for your attention."
 msgstr "欢迎！感谢您的关注。"
 

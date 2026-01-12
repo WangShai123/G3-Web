@@ -42,12 +42,12 @@ echo Container::tip(
                     id
                 }, function (res) {
                     if (res.success) {
-                        JUI.Toast.success(res.data.message, 1000)
+                        jui.toast.success(res.data.message, 1000)
                         setTimeout(() => {
                             window.location.reload()
                         }, 1000)
                     } else {
-                        JUI.Toast.error(res.data.message, 2000)
+                        jui.toast.error(res.data.message, 2000)
                     }
                 })
             }
@@ -63,9 +63,9 @@ echo Container::tip(
                     nonce: '<?php echo wp_create_nonce('g3_create_wechatOA_menus'); ?>'
                 }, function (res) {
                     if (res.success) {
-                        JUI.Toast.success(res.data.message, 2000)
+                        jui.toast.success(res.data.message, 2000)
                     } else {
-                        JUI.Toast.error(res.data.message, 2000)
+                        jui.toast.error(res.data.message, 2000)
                     }
                     setTimeout(function () {
                         $('#create-wechat-oa-menu').removeAttr('disabled')
@@ -85,9 +85,9 @@ echo Container::tip(
                     nonce: '<?php echo wp_create_nonce('g3_flush_wechatOA_menus'); ?>'
                 }, function (res) {
                     if (res.success) {
-                        JUI.Toast.success(res.data.message, 2000)
+                        jui.toast.success(res.data.message, 2000)
                     } else {
-                        JUI.Toast.error(res.data.message, 2000)
+                        jui.toast.error(res.data.message, 2000)
                     }
                     setTimeout(function () {
                         $('#flush-wechat-oa-menu').removeAttr('disabled')

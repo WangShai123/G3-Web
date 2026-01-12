@@ -18,7 +18,7 @@ echo '</form>';
     jQuery(document).ready(function ($) {
         $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
         $('.addLocation').on('click', function () {
-            const modal = new JUI.Modal({
+            const modal = new jui.modal({
                 title: '<?php _e('Add New', 'G3'); ?>',
                 formData: [
                     {
@@ -44,17 +44,19 @@ echo '</form>';
                         name: data.name
                     }, function (res) {
                         modal.showLoading();
-                        if (res.success) {
-                            modal.hideLoading();
-                            modal.hide();
-                            JUI.Toast.success(res.data.message, 800)
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 800)
-                        } else {
-                            modal.hideLoading();
-                            JUI.Toast.error(res.data.message, 2000)
-                        }
+                        setTimeout(function () {
+                            if (res.success) {
+                                modal.hideLoading();
+                                modal.hide();
+                                jui.toast.success(res.data.message, 800)
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 800)
+                            } else {
+                                modal.hideLoading();
+                                jui.toast.error(res.data.message, 2000)
+                            }
+                        }, 300);
                     })
                 }
             });
@@ -64,7 +66,7 @@ echo '</form>';
         $('.editLocation').on('click', function () {
             const key = $(this).data('key');
             const name = $(this).data('name');
-            const modal = new JUI.Modal({
+            const modal = new jui.modal({
                 title: '<?php _e('Edit'); ?>',
                 formData: [
                     {
@@ -87,7 +89,7 @@ echo '</form>';
                     const newKey = (data.key || '').trim();
                     const newName = (data.name || '').trim();
                     if (String(key) === newKey && String(name) === newName) {
-                        JUI.Toast.warning('<?php _e('No data changed', 'G3'); ?>', 1500);
+                        jui.toast.warning('<?php _e('No data changed', 'G3'); ?>', 1500);
                         return;
                     }
                     $.post(ajaxurl, {
@@ -99,13 +101,13 @@ echo '</form>';
                         if (res.success) {
                             modal.hideLoading();
                             modal.hide();
-                            JUI.Toast.success(res.data.message, 800)
+                            jui.toast.success(res.data.message, 800)
                             setTimeout(function () {
                                 window.location.reload();
                             }, 800)
                         } else {
                             modal.hideLoading();
-                            JUI.Toast.error(res.data.message, 2000)
+                            jui.toast.error(res.data.message, 2000)
                         }
                     })
                 }
@@ -121,12 +123,12 @@ echo '</form>';
                     key: key
                 }, function (res) {
                     if (res.success) {
-                        JUI.Toast.success(res.data.message, 800)
+                        jui.toast.success(res.data.message, 800)
                         setTimeout(function () {
                             window.location.reload();
                         }, 800)
                     } else {
-                        JUI.Toast.error(res.data.message, 2000)
+                        jui.toast.error(res.data.message, 2000)
                     }
                 })
             }

@@ -81,6 +81,17 @@ defined('G3_LIB_DIR') or define('G3_LIB_DIR', G3_PlUGIN_DIR . '/library');
 defined('G3_SRC_DIR') or define('G3_SRC_DIR', G3_PlUGIN_DIR . '/src');
 
 /**
+ * G3 模板目录
+ * Define G3 Template Directory & URL
+ * @since 1.0.0
+ */
+defined('G3_TEMPLATE_DIR') or define('G3_TEMPLATE_DIR', G3_PlUGIN_DIR . '/templates');
+
+
+defined('G3_DIST_DIR') or define('G3_DIST_DIR', G3_PlUGIN_DIR . '/dist');
+defined('G3_DIST_URL') or define('G3_DIST_URL', G3_PlUGIN_URL . '/dist');
+
+/**
  * G3公共资源目录和URL
  * Define G3 Public Directory & URL
  * @since 1.0.0

@@ -19,7 +19,7 @@ $table->display();
         const deleteReply = $('.delete-reply');
 
         addReply.on('click', function () {
-            const modal = new JUI.Modal({
+            const modal = new jui.modal({
                 title: "<?php _e('Add New', 'G3'); ?>",
                 confirmText: "<?php _e('Add New', 'G3'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
@@ -73,14 +73,14 @@ $table->display();
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            JUI.Toast.success(res.message);
+                            jui.toast.success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            JUI.Toast.error(msg.message);
+                            jui.toast.error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
@@ -98,7 +98,7 @@ $table->display();
             const id = parseInt($(this).data('id'));
             const keywords = JSON.parse($(this).data('keywords'));
             const reply = JSON.parse($(this).data('content'));
-            const editModal = new JUI.Modal({
+            const editModal = new jui.modal({
                 title: "<?php _e('Edit'); ?>",
                 confirmText: "<?php _e('Update'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
@@ -154,14 +154,14 @@ $table->display();
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            JUI.Toast.success(res.message);
+                            jui.toast.success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            JUI.Toast.error(msg.message);
+                            jui.toast.error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
@@ -182,14 +182,14 @@ $table->display();
                     contentType: 'application/json',
                     data: JSON.stringify({ id: $(this).data('id') }),
                     success: function (res) {
-                        JUI.Toast.success(res.message);
+                        jui.toast.success(res.message);
                         setTimeout(function () {
                             location.reload();
                         }, 500);
                     },
                     error: function (xhr, status, error) {
                         const msg = JSON.parse(xhr.responseText);
-                        JUI.Toast.error(msg.message);
+                        jui.toast.error(msg.message);
                     }
                 });
             }

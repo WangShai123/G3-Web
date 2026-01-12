@@ -342,7 +342,7 @@ class Product extends Components {
         echo '<div class="sku-container"></div><div class="flex gap-2 m-3"><button type="button" class="button" id="add-sku">+ ' . __('Add Sku', 'G3') . '</button></div>';
         $script = <<<EOT
 const removeSku = '<button type="button" class="button button-error" id="delete-sku">$remove</button>';
-const skuTabs = new JUI.Tabs(false, {
+const skuTabs = new jui.tabs(false, {
     id: 'sku-tabs',
     active: 0,
     tabs: [

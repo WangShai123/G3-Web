@@ -86,42 +86,35 @@ get_header();
             submitBtn.innerHTML = loader;
 
             const origin = window.location.origin;
-            fetch(origin + '/wp-json/api/v1/oa/admin/auth', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username.value,
-                    password: password.value
-                })
-            }).then(res => res.json())
-                .then(res => {
-                    if (res.code === 200) {
-                        JUI.Toast.success(res.message, 1500)
-                        setTimeout(function () {
-                            window.location.href = origin + '/dashboard';
-                        }, 1500);
-                        clearInterval(timer);
-                    } else {
-                        JUI.Toast.error(res.message, 2000)
-
-                        if (res.code === 429) {
-                            const expireTime = new Date(Date.now() + 60 * 5 * 1000);
-                            document.cookie = `${name}=1; expires=${expireTime.toUTCString()}; path=/; SameSite=Strict`;
-                        } else {
-                            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-                        }
-                    }
+            jui.u.postJson(origin + '/wp-json/api/v1/oa/admin/auth', {
+                username: username.value,
+                password: password.value
+            }).then(res => {
+                if (res.code === 200) {
+                    jui.toast.success(res.message, 1500)
                     setTimeout(function () {
-                        submitBtn.innerHTML = text;
-                        submitBtn.disabled = false;
-                        isSubmitting = false;
-                    }, 2000);
-                })
+                        window.location.href = origin + '/dashboard';
+                    }, 1500);
+                    clearInterval(timer);
+                } else {
+                    jui.toast.error(res.message, 2000)
+
+                    if (res.code === 429) {
+                        const expireTime = new Date(Date.now() + 60 * 5 * 1000);
+                        document.cookie = `${name}=1; expires=${expireTime.toUTCString()}; path=/; SameSite=Strict`;
+                    } else {
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+                    }
+                }
+                setTimeout(function () {
+                    submitBtn.innerHTML = text;
+                    submitBtn.disabled = false;
+                    isSubmitting = false;
+                }, 2000);
+            })
                 .catch(function (error) {
                     console.error('Login request failed:', error);
-                    JUI.Toast.error('Login Request Failed', 2000);
+                    jui.toast.error('Login Request Failed', 2000);
                     document.cookie = "oa_login=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
                     isSubmitting = false;
                 });
@@ -130,7 +123,8 @@ get_header();
         function updateSubmitButtonState() {
             if (isSubmitting) return;
 
-            const cookie = getCookie(name);
+            // const cookie = getCookie(name);
+            const cookie = jui.u.getCookie(name)
 
             if (cookie === lastCookie) {
                 return;
@@ -189,13 +183,6 @@ get_header();
                 themeBox = null
             }
         }
-    }
-
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
     }
 </script>
 <?php
