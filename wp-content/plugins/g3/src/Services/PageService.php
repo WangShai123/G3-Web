@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Components;
+use JEALER\G3\Utilities\Context;
 class PageService {
 
     /**
@@ -105,7 +106,7 @@ class PageService {
     public static function isAdminLogin(): bool
     {
         global $wp_query;
-        $v = Components::getProperty('Security', 'option')['url'] ?? '';
+        $v = Context::get(SystemService::SECURITY_OPTION_KEY)['url'] ?? '';
         return isset($wp_query->query_vars['custom_admin_login']) && $wp_query->query_vars['custom_admin_login'] === $v;
     }
 }
