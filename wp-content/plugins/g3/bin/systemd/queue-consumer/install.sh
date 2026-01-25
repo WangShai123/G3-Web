@@ -88,9 +88,9 @@ create_system_resources() {
     fi
     
     # 创建日志目录
-    mkdir -p /var/log/g3-queue
-    chown www-data:www-data /var/log/g3-queue
-    chmod 755 /var/log/g3-queue
+    mkdir -p /www/wwwlogs/g3/consumer
+    chown www-data:www-data /www/wwwlogs/g3/consumer
+    chmod 755 /www/wwwlogs/g3/consumer
     
     # 创建运行时目录
     mkdir -p /run/g3-queue
@@ -108,7 +108,7 @@ install_service_files() {
     
     # 复制模板服务文件
     cp "$SCRIPT_DIR/g3-queue-worker@.service" /etc/systemd/system/
-    
+
     # 设置权限
     chmod 644 /etc/systemd/system/g3-queue-worker@.service
     chown root:root /etc/systemd/system/g3-queue-worker@.service
@@ -342,7 +342,7 @@ create_logrotate_config() {
     log_info "Creating logrotate configuration..."
     
     cat > /etc/logrotate.d/g3-queue << 'EOF'
-/var/log/g3-queue/*.log {
+/www/wwwlogs/g3/consumer/*.log {
     daily
     missingok
     rotate 30

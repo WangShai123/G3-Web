@@ -7,12 +7,12 @@ Requires=mysql.service
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+User=www
+Group=www
 WorkingDirectory=/var/www/html
 
 # 动态命令配置 - 根据队列类型自动调整参数
-ExecStart=/usr/bin/php /var/www/html/wp-content/plugins/g3/bin/queue-worker.php --daemon --verbose --queue=%i --sleep=3 --tries=3 --timeout=60
+ExecStart=/usr/bin/php /www/wwwroot/g3/G3-Web/wp-content/plugins/g3/bin/queue-worker.php --daemon --verbose --queue=%i --sleep=3 --tries=3 --timeout=60
 
 # 健康检查
 ExecReload=/bin/kill -HUP $MAINPID
@@ -34,7 +34,7 @@ SendSIGKILL=yes
 NoNewPrivileges=yes
 ProtectSystem=strict
 ProtectHome=yes
-ReadWritePaths=/var/www/html/wp-content/uploads /tmp /var/log
+ReadWritePaths=/www/wwwlogs/g3/consumer
 ProtectKernelTunables=yes
 ProtectKernelModules=yes
 ProtectControlGroups=yes

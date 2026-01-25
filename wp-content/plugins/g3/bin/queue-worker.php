@@ -173,7 +173,8 @@ class G3QueueWorker {
 
     private function findWordPressRoot(): ?string
     {
-        $currentDir = dirname(__DIR__, 4); // 从 /wp-content/plugins/g3/bin 向上4级到WordPress根目录
+        // 根据需要修改 向上 查找到 WordPress根目录 的级别，默认为 5
+        $currentDir = dirname(__DIR__, 5);
 
         if (file_exists($currentDir . '/wp-config.php')) {
             return $currentDir;
