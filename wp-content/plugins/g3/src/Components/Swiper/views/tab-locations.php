@@ -1,9 +1,5 @@
 <?php
 use JEALER\G3\Includes\SwiperLocationTable;
-use JEALER\G3\Utilities\Frontend;
-
-Frontend::loadStyle('jui');
-Frontend::loadScript('jui');
 
 $location = new SwiperLocationTable();
 $location->prepare_items();
@@ -16,11 +12,10 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
-        $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
         $('.addLocation').on('click', function () {
             const modal = new jui.modal({
                 title: '<?php _e('Add New', 'G3'); ?>',
-                formData: [
+                fields: [
                     {
                         label: '<?php _e('Slug'); ?>',
                         name: 'key',
@@ -68,7 +63,7 @@ echo '</form>';
             const name = $(this).data('name');
             const modal = new jui.modal({
                 title: '<?php _e('Edit'); ?>',
-                formData: [
+                fields: [
                     {
                         label: '<?php _e('Slug'); ?>',
                         name: 'key',

@@ -1,29 +1,20 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Includes\WechatOAReplyListTable;
-
-Frontend::loadStyle('jui');
-Frontend::loadScript('jui');
 
 $table = new WechatOAReplyListTable();
 $table->display();
 ?>
 
 <script>
-    const $ = jQuery;
-    $(document).ready(function () {
-        $('html').addClass('j-theme-indigo j-radius-sm j-font-sm j-shadow-none');
-        const addReply = $('#add-reply');
-        const editReply = $('.edit-reply');
-        const deleteReply = $('.delete-reply');
+    jQuery(document).ready(function ($) {
 
-        addReply.on('click', function () {
+        $(document).on('click', '#add-reply', function () {
             const modal = new jui.modal({
                 title: "<?php _e('Add New', 'G3'); ?>",
                 confirmText: "<?php _e('Add New', 'G3'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
-                formData: [
+                fields: [
                     {
                         label: '<?php _e('Keywords'); ?>',
                         type: 'text',
@@ -92,9 +83,9 @@ $table->display();
                 }
             });
             modal.show();
-        });
+        })
 
-        editReply.on('click', function () {
+        $(document).on('click', '.edit-reply', function () {
             const id = parseInt($(this).data('id'));
             const keywords = JSON.parse($(this).data('keywords'));
             const reply = JSON.parse($(this).data('content'));
@@ -174,7 +165,7 @@ $table->display();
             editModal.show();
         });
 
-        deleteReply.on('click', function () {
+        $(document).on('click', '.delete-reply', function () {
             if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
                 $.ajax({
                     url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',

@@ -1,10 +1,11 @@
 <?php
 namespace JEALER\G3\Components;
 
+use JEALER\G3\Container;
 use JEALER\G3\Components;
 use JEALER\G3\Themes as ThemesClass;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Services\SystemService;
 use Override;
 use WP_Error;
@@ -25,8 +26,9 @@ class Themes extends Components {
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'multiple-themes') return;
         $this->option = Option::cache(SystemService::THEME_OPTION_KEY, $this->option);
     }
     #[Override]
@@ -35,7 +37,7 @@ class Themes extends Components {
         $this->projects = $this->getProjects();
 
         if (class_exists(ThemesClass::class)) {
-            ThemesClass::run();
+            Container::use(ThemesClass::class);
         } else {
             new WP_Error('G3_Themes_Error', 'JEALER\G3\Themes class not found');
         }
@@ -98,7 +100,7 @@ class Themes extends Components {
 
     public function renderLow(): void
     {
-        echo Container::select(
+        echo Element::select(
             SystemService::THEME_OPTION_KEY,
             $this->option,
             'low',
@@ -110,7 +112,7 @@ class Themes extends Components {
     }
     public function renderMobile(): void
     {
-        echo Container::select(
+        echo Element::select(
             SystemService::THEME_OPTION_KEY,
             $this->option,
             'mobile',
@@ -146,13 +148,10 @@ class Themes extends Components {
         /**
          * set G3 admin color scheme
          */
-        // $option = get_option(SystemService::SETTING_OPTION_KEY);
-        // $fileName = isset($option['environment']) && ($option['environment'] === 'local' || $option['environment'] === 'development') ? '/dist/css/admin.css' : '/public/css/admin.min.css';
         wp_admin_css_color(
             'G3',
             'G3',
-            // WP_PLUGIN_URL . '/g3/public/css/admin.min.css',
-            WP_PLUGIN_URL . '/g3/dist/css/admin.css',
+            WP_PLUGIN_URL . '/g3/dist/css/admin.min.css',
             ['#2d2f39', '#434656', '#0f49bd', '#135bec'],
             ['base' => '#e5f8ff', 'focus' => '#fff', 'current' => '#fff']
         );

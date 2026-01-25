@@ -1,7 +1,7 @@
 <?php
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 
-echo Container::tip(
+echo Element::tip(
     __('This tab is for Nginx security configuration advice.', 'G3'),
     'default',
     'mt-4'

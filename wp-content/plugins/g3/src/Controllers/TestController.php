@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Controllers;
+
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
 use JEALER\G3\Attributes\Schema;
@@ -7,11 +8,20 @@ use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Utilities\Request;
+use JEALER\G3\Utilities\System;
+use JEALER\G3\Container;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
+use JEALER\G3\Services\AuthService;
 
 class TestController {
+
+    public function __construct(
+        private AuthService $service
+    ) {
+        error_log('[TestController] AuthService injected: ' . get_class($this->service));
+    }
 
     /**
      * 测试GET API - 获取基础信息

@@ -3,7 +3,8 @@ namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
 use EasyWeChat\Kernel\Message;
-use JEALER\G3\Includes\EasyWechatCache;
+use JEALER\G3\Service;
+use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\Common;
@@ -190,7 +191,7 @@ class WechatOAService {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function run()
+    public static function run(): WechatOAService|null
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -205,7 +206,7 @@ class WechatOAService {
         $result = [
             'app_id' => $data['appId'] ?? '',
             'secret' => $data['appSecret'] ?? '',
-            'cache'  => new EasyWechatCache()
+            'cache'  => new EasyWechat()
         ];
 
         if (!empty($data['token'])) {
@@ -815,7 +816,7 @@ class WechatOAService {
     private function handleLoginEvent(string $openid, string $hash)
     {
         // Notify AuthService: this openid user has subscribed, please login
-        $authService = AuthService::run();
+        $authService = Container::run()->get(AuthService::class);
         $authService->handlePostSubscribeLogin($openid, $hash);
         return Lang::loginSuccess();
     }
@@ -834,11 +835,11 @@ class WechatOAService {
     {
         $eventKey = $message->EventKey ?? '';
 
-        $event        = get_option(self::EVENT_OPTION_KEY);
-        $lastestPosts = $event['lastestPosts'] ?? 'n';
+        $event       = get_option(self::EVENT_OPTION_KEY);
+        $latestPosts = $event['latestPosts'] ?? 'n';
 
         return match ($eventKey) {
-            $lastestPosts => $this->getLatestPosts(),
+            $latestPosts => $this->getLatestPosts(),
             default => $this->getDefaultMessage()
         };
 
@@ -1969,7 +1970,7 @@ class WechatOAService {
         }
 
         // Bind openId to user
-        $authService = AuthService::run();
+        $authService = Container::run()->get(AuthService::class);
         $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
 
         if (is_wp_error($result)) {

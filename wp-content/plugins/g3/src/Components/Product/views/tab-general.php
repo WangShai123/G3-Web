@@ -1,7 +1,4 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
-
-Frontend::loadStyle('jui');
 
 echo '<form action="" method="post">';
 settings_fields('general');

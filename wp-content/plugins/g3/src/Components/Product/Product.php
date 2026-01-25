@@ -2,12 +2,13 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Services\ProductService;
+use JEALER\G3\Services\SidebarService;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Utilities\Frontend;
-use JEALER\G3\Services\ProductService;
-use JEALER\G3\Services\SidebarService;
+use JEALER\G3\Utilities\Validator;
 use Override;
 use WP_Post;
 
@@ -22,8 +23,9 @@ class Product extends Components {
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'shop-settings') return;
         $this->option = Option::cache(ProductService::OPTION_KEY, $this->option);
     }
     #[Override]
@@ -52,7 +54,7 @@ class Product extends Components {
         $args = [
             'general' => __('General', 'G3')
         ];
-        Container::tab('Product', 'general', $args);
+        Element::tab('Product', 'general', $args);
         echo '</div>';
     }
     #[Override]
@@ -62,13 +64,13 @@ class Product extends Components {
             'general',
             null,
             '__return_false',
-            'shop-setting'
+            'shop-settings'
         );
         register_setting(
             'general',
             ProductService::OPTION_KEY,
         );
-        Container::settingFields('shop-setting', 'general', [
+        Element::settingFields('shop-settings', 'general', [
 
         ]);
     }
@@ -254,9 +256,6 @@ class Product extends Components {
     {
         Frontend::loadStyle('swiper');
         Frontend::loadScript('swiper');
-        Frontend::loadStyle('jui');
-        Frontend::loadScript('jui');
-        Frontend::loadScript('admin');
         add_meta_box(
             'g3-metabox-gallery',
             __('Product Gallery', 'G3'),
@@ -282,42 +281,63 @@ class Product extends Components {
             'default'
         );
     }
+
+    #[Override]
+    protected function adminScripts(): void
+    {
+        // only load in product editor page
+        if (!Validator::screen('product')) return;
+
+        wp_register_script(
+            'g3-admin-product',
+            G3_DIST_URL . '/javascript/g3.admin.product.min.js',
+            array('jquery'),
+            '1.0.0',
+            true // 在 footer 加载
+        );
+        wp_enqueue_script('g3-admin-product');
+
+        Frontend::loadStyle('ht.table');
+        Frontend::loadScript('ht.table');
+
+        $this->localizeData();
+    }
+
+    private function localizeData(): void
+    {
+        $postId = get_the_ID();
+        $spec   = get_post_meta($postId, ProductService::SPEC_KEY, true) ?: 'single';
+        $prop   = get_post_meta($postId, ProductService::PROP_KEY, true) ?: [];
+
+        $data = [
+            'nonce' => wp_create_nonce('product_nonce_action'),
+            'data'  => [
+                'spec'    => [
+                    'key'           => ProductService::SPEC_KEY,
+                    'type'          => $spec,
+                    'originalPrice' => '100.00',
+                    'salePrice'     => '80.00',
+                    'weight'        => '1.00',
+                    'stock'         => '1000',
+                    'sold'          => '20'
+                ],
+                'prop'    => [
+                    'key'   => ProductService::PROP_KEY,
+                    'items' => $prop
+                ],
+                'gallery' => [
+                    'key'   => ProductService::GALLERY_KEY,
+                    'items' => get_post_meta($postId, ProductService::GALLERY_KEY, true)
+                ]
+            ]
+        ];
+        wp_localize_script('g3-admin-product', 'productData', $data);
+    }
+
     public function renderGalleryMetabox(WP_POST $post): void
     {
         wp_nonce_field(ProductService::GALLERY_KEY . '_save', ProductService::GALLERY_KEY . '_nonce');
-
-        $items = get_post_meta($post->ID, ProductService::GALLERY_KEY, true);
-        if (!is_array($items)) $items = [];
-        ?>
-        <div style="overflow: hidden;position:relative" class="hide-if-no-js">
-            <div class="swiper-container" id="g3GallerySwiper">
-                <div class="swiper-wrapper">
-                    <?php foreach ($items as $item) : ?>
-                        <div class="swiper-slide">
-                            <div class="gallery-item" data-url="<?php echo esc_url($item); ?>">
-                                <?php if (preg_match('/\.(mp4|webm|ogg)$/i', $item)) : ?>
-                                    <video src="<?php echo esc_url($item); ?>" controls></video>
-                                <?php else : ?>
-                                    <img src="<?php echo esc_url($item); ?>" />
-                                <?php endif; ?>
-                                <button class="button is-icon icon-error action-removeGalleryItem" type="button">
-                                    <?php echo Image::icon('close'); ?>
-                                </button>
-                                <input type="hidden" name="<?php echo ProductService::GALLERY_KEY; ?>[]"
-                                    value="<?php echo esc_url($item); ?>">
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-        <p class="hide-if-no-js">
-            <a href="javascript:void(0)" id="action-addToGallery" style="font-weight: 600">+
-                <?php _e('Set Gallery', 'G3'); ?>
-            </a>
-        </p>
-        <?php
+        echo '<div id="gallery-app"></div>';
     }
     private function saveGallery(): void
     {
@@ -335,88 +355,36 @@ class Product extends Components {
             }
         });
     }
+
+    private function escapeJsString($str)
+    {
+        return str_replace(['\\', '"', "'", "\r", "\n"], ['\\\\', '\\"', "\\'", '\\r', '\\n'], $str);
+    }
+
     public function renderSkuMetabox(WP_POST $post): void
     {
-        $default = __('Default');
-        $remove  = __('Remove current sku tab', 'G3');
-        echo '<div class="sku-container"></div><div class="flex gap-2 m-3"><button type="button" class="button" id="add-sku">+ ' . __('Add Sku', 'G3') . '</button></div>';
-        $script = <<<EOT
-const removeSku = '<button type="button" class="button button-error" id="delete-sku">$remove</button>';
-const skuTabs = new jui.tabs(false, {
-    id: 'sku-tabs',
-    active: 0,
-    tabs: [
-        { title: '$default', content: '这里是选项一的内容', name: 'sku-1' }
-    ],
-    onChange: function (index) {
-        if (index !== 0 && $('#delete-sku').length === 0) {
-            $('#add-sku').after(removeSku);
-        }
-        if (index === 0 && $('#delete-sku').length > 0) {
-            $('#delete-sku').remove();
-        }
-    },
-    onDelete: async (index) =>{
-        if (skuTabs.tabs.length === 1 && $('#delete-sku').length > 0) {
-            $('#delete-sku').remove();
-        }
-    },
-});
-document.querySelector('.sku-container').appendChild(skuTabs.el);
-EOT;
-        wp_add_inline_script('jui', $script);
+        echo '<div id="specification-app"></div>';
+        echo '<div id="sku-app"></div>';
     }
     public function renderPropertiesMetabox(WP_POST $post): void
     {
-        wp_nonce_field(ProductService::PROPERTY_KEY . '_save', ProductService::PROPERTY_KEY . '_nonce');
-        $properties = get_post_meta($post->ID, ProductService::PROPERTY_KEY, true);
-        if (!is_array($properties)) $properties = [];
-        ?>
-        <div class="properties-container">
-            <?php
-            foreach ($properties as $key => $value) {
-                ?>
-                <div class="property-item">
-                    <div class="property-label">
-                        <?php echo __('Property', 'G3') . ' ' . ($key + 1); ?>
-                    </div>
-                    <div class="property-control">
-                        <input type="text" name="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][name]"
-                            id="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][name]"
-                            value="<?php echo esc_attr($value['name']); ?>" placeholder="<?php _e('Enter property name', 'G3'); ?>">
-                        <input type="text" name="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][value]"
-                            id="<?php echo ProductService::PROPERTY_KEY; ?>[<?php echo $key; ?>][value]"
-                            value="<?php echo esc_attr($value['value']); ?>"
-                            placeholder="<?php _e('Enter property value', 'G3'); ?>">
-                        <div class="property-actions">
-                            <button type="button" class="button button-error action-removeProperty">
-                                <?php _e('Remove'); ?>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-            ?>
-        </div>
-        <div style="margin-top:8px">
-            <button type="button" class="button" id="add-property">+ <?php _e('Add Property', 'G3'); ?></button>
-        </div>
-        <?php
+        wp_nonce_field(ProductService::PROP_KEY . '_save', ProductService::PROP_KEY . '_nonce');
+        echo '<div id="prop-app"></div>';
+        wp_enqueue_style('table', 'https://cdn.jsdelivr.net/npm/handsontable/styles/handsontable.min.css', [], '16.2.0');
     }
     private function saveProperties(): void
     {
         add_action('save_post', function ($postId) {
-            if (!isset($_POST[ProductService::PROPERTY_KEY . '_nonce']) || !wp_verify_nonce($_POST[ProductService::PROPERTY_KEY . '_nonce'], ProductService::PROPERTY_KEY . '_save')) {
+            if (!isset($_POST[ProductService::PROP_KEY . '_nonce']) || !wp_verify_nonce($_POST[ProductService::PROP_KEY . '_nonce'], ProductService::PROP_KEY . '_save')) {
                 return;
             }
 
             if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-            if (isset($_POST[ProductService::PROPERTY_KEY]) && is_array($_POST[ProductService::PROPERTY_KEY])) {
-                update_post_meta($postId, ProductService::PROPERTY_KEY, array_values($_POST[ProductService::PROPERTY_KEY]));
+            if (isset($_POST[ProductService::PROP_KEY]) && is_array($_POST[ProductService::PROP_KEY])) {
+                update_post_meta($postId, ProductService::PROP_KEY, array_values($_POST[ProductService::PROP_KEY]));
             } else {
-                delete_post_meta($postId, ProductService::PROPERTY_KEY);
+                delete_post_meta($postId, ProductService::PROP_KEY);
             }
         });
     }

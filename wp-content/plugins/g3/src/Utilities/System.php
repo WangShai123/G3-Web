@@ -1,7 +1,52 @@
 <?php
 namespace JEALER\G3\Utilities;
 
+use JEALER\G3\Services\SystemService;
+
 final class System {
+
+    /**
+     * Get environment variable
+     * 
+     * 获取环境变量
+     * 
+     * @param string $key Variable key
+     * @param mixed $default Default value
+     * @return mixed
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function env(string $key, mixed $default = null): mixed
+    {
+        $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+
+        if ($value === false) {
+            return $default;
+        }
+
+        // 尝试转换常见值类型
+        switch (strtolower($value)) {
+            case 'true':
+            case '(true)':
+                return true;
+            case 'false':
+            case '(false)':
+                return false;
+            case 'empty':
+            case '(empty)':
+                return '';
+            case 'null':
+            case '(null)':
+                return null;
+        }
+
+        if (is_numeric($value)) {
+            // 转换为数字
+            return $value + 0;
+        }
+
+        return $value;
+    }
 
     /**
      * Check if current context is admin area or running WP CLI
@@ -18,17 +63,34 @@ final class System {
     }
 
     /**
-     * Check if debug mode is enabled
+     * Check if debug mode is enabled.
      * 
-     * 检查调试模式是否启用
+     * 检查调试模式是否启用，依赖 WP_ENVIRONMENT_TYPE ['development' | 'local']
      * 
      * @return bool
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function isDebug(): bool
+    // public static function debug(): bool
+    // {
+    //     $v = get_option(SystemService::SETTING_OPTION_KEY)['environment'] ?? '';
+    //     if (in_array($v, ['development', 'local'])) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    /**
+     * Check if debug mode is enabled.
+     * 
+     * 检查调试模式是否启用，依赖 WP_DEBUG & WP_DEBUG_LOG
+     * @return bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function debug(): bool
     {
-        return (defined('WP_DEBUG') && WP_DEBUG) || (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development']));
+        return defined('WP_DEBUG') && WP_DEBUG && WP_DEBUG_LOG;
     }
 
     /**
@@ -129,6 +191,7 @@ final class System {
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             // 处理通过代理的情况，可能包含多个IP地址
             $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            // 返回第一个IP地址
             return trim($ips[0]);
         } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
             return $_SERVER['REMOTE_ADDR'];
@@ -159,6 +222,25 @@ final class System {
             'Solaris' => 'solaris',
             default => 'unknown',
         };
+    }
+
+    public static function config(string $key, $default = []): array
+    {
+        $mainConfig = G3_PlUGIN_DIR . '/config/' . $key . '.php';
+        if (file_exists($mainConfig)) {
+            $main = require $mainConfig;
+        } else {
+            $main = $default;
+        }
+
+        $userConfig = get_template_directory() . '/config/' . $key . '.php';
+        if (file_exists($userConfig)) {
+            $user = require $userConfig;
+        } else {
+            $user = $default;
+        }
+
+        return array_merge($main, $user);
     }
 
 }

@@ -3,7 +3,7 @@
         'name' => 'jealer/g3web',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'fc6d765122aad3ce16bb376cc92a373d11c5ccf1',
+        'reference' => '67929ac0d92b6dc94af1070f5e0e372d91c3b798',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'jealer/g3web' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'fc6d765122aad3ce16bb376cc92a373d11c5ccf1',
+            'reference' => '67929ac0d92b6dc94af1070f5e0e372d91c3b798',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

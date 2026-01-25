@@ -4,24 +4,145 @@ namespace JEALER\G3;
 use JEALER\G3\Router;
 use JEALER\G3\Rewrite;
 use JEALER\G3\Components;
+use JEALER\G3\ComponentLoader;
+use JEALER\G3\Container;
+use JEALER\G3\Container\ValueDefinition;
+use JEALER\G3\Container\FactoryDefinition;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\System;
+use WP_Error;
 use DateTime;
 use Exception;
-use WP_Error;
 
 final class Helper {
-    public static $i = null;
+    public ?Container $container = null;
+    private ?Rewrite $rewrite = null;
+
     public function __construct()
     {
-    }
-    public static function run(): Helper
-    {
-        if (!isset(self::$i)) {
-            self::$i = Common::singleton(__CLASS__);
+        if ($this->container === null) {
+            $this->container = Container::run();
         }
-        return self::$i;
+        $this->registerServices();
     }
+
+    private function registerServices()
+    {
+        if (!$this->container->has('loader')) {
+            $this->container->setRawDefinition('loader', self::class);
+        }
+        if (!$this->container->has('rewrite')) {
+            $factory = new FactoryDefinition(Rewrite::class);
+            $factory->singleton();
+            $this->container->setRawDefinition('rewrite', $factory);
+        }
+        if (!$this->container->has('router')) {
+            $factory = new FactoryDefinition(Router::class);
+            $factory->constructor(
+                WP_PLUGIN_DIR . '/g3/src/Controllers',
+                'JEALER\\G3\\Controllers'
+            )->singleton();
+            $this->container->setRawDefinition('router', $factory);
+        }
+        if (!$this->container->has('componentsLoader')) {
+            $factory = new FactoryDefinition(ComponentLoader::class);
+            $factory->singleton();
+            $this->container->setRawDefinition('componentsLoader', $factory);
+        }
+    }
+
+
+    /**
+     * init Components Loader
+     * 
+     * @return void
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function loader(): void
+    {
+        add_action('init', [$this, 'initRewriteRouter']);
+        add_action('rest_api_init', [$this, 'initRestRouter']);
+
+        Container::use(ComponentLoader::class)->load();
+    }
+
+    /**
+     * Register REST API routes
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function initRestRouter(): void
+    {
+
+        $router = $this->router();
+        $router->registerRestRoutes();
+    }
+
+    /**
+     * Initialize rewrite rules
+     * @return void
+     * @since 1.0.0
+     */
+    public function initRewriteRouter(): void
+    {
+        if (!Common::themeModeAvailable()) {
+            return;
+        }
+
+        if ($this->rewrite === null) {
+            $this->rewrite = $this->container->get('rewrite');
+        }
+
+        $this->rewrite->registerRewriteRules();
+
+        add_filter('query_vars', [$this->rewrite, 'registerQueryVars'], 10);
+        add_filter('template_include', [$this->rewrite, 'bindTemplateDispatch'], 99);
+
+        // Auto check and fix rewrite rules in development environment
+        if (System::debug()) {
+            add_action('parse_request', [$this->rewrite, 'checkAndFixRewriteRules'], 1);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[G3 Helper] Debug mode: Auto check and fix enabled');
+            }
+        }
+    }
+
+    /**
+     * Register REST API Routes
+     * 
+     * @return Router
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function router(): Router
+    {
+        static $router = null;
+        if (!$router) {
+
+            // 绑定容器自身为具体类（供 Inject 使用）
+            if (!$this->container->has(Container::class)) {
+                $this->container->setRawDefinition(
+                    Container::class,
+                    new ValueDefinition($this->container)
+                );
+            }
+
+            // 注册主 Router 到容器（显式传参）
+            $router = $this->getRouter('main');
+            $router->discover();
+
+            // 主题路由器
+            $router = $this->getRouter('user');
+            if ($router !== null) {
+                $router->discover();
+            }
+        }
+        return $router;
+    }
+
     public function gE(): bool|string
     {
         $d = $this->gT();
@@ -166,86 +287,37 @@ final class Helper {
     }
     private function u(): string
     {
-        return Common::singleton(SystemService::class)->endPoint();
+        return Container::use(SystemService::class)->endPoint();
     }
-    public static function admin(): bool
+    public function admin(): bool
     {
-        return self::run()->i();
+        return $this->i();
     }
-    public static function x(): bool
+    public function x(): bool
     {
-        return !self::run()->i();
+        return !$this->i();
     }
-    public static function y(): bool
+    public function y(): bool
     {
-        return self::run()->i();
+        return $this->i();
     }
 
     /**
-     * Register REST API Routes
-     * 
-     * @return Router
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function router(): Router
-    {
-        static $router = null;
-        if (!$router) {
-            // Create Main Router (Plugin Controller)
-            $router = new Router(
-                baseDir: WP_PLUGIN_DIR . "/g3/src/Controllers",
-                baseNamespace: "JEALER\\G3\\Controllers"
-            );
-
-            // Reflectively scan plugin controllers
-            $router->discover();
-
-            // Check and scan theme controllers directory
-            $themeControllersDir =
-                get_stylesheet_directory() . "/src/Controllers";
-            if (file_exists($themeControllersDir)) {
-                // Create additional router for theme controllers
-                $themeRouter = new Router(
-                    baseDir: $themeControllersDir,
-                    baseNamespace: "JEALER\\G3\\Controllers"
-                );
-                // Reflectively scan theme controllers
-                $themeRouter->discover();
-
-                // Add theme router to main router
-                $router->addRouter($themeRouter);
-            }
-        }
-        return $router;
-    }
-
-    /**
-     * Register Rewrite Rules
-     * 
-     * @return Rewrite
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function rewrite(): Rewrite
-    {
-        return Rewrite::getInstance();
-    }
-
-    /**
-     * init Components Loader
+     * 加载原有组件系统
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static function loader(): void
+    private static function loadLegacyComponentSystem(): void
     {
-        // initialize Components system
-        Common::singleton(Components::class);
+        // initialize Components system (原有逻辑)
+        // Container::use(Components::class);
 
-        // load all components
+        // load all components (原有逻辑)
         self::loadComponents();
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[G3 Helper] Legacy component system loaded');
+        }
     }
 
     /**
@@ -259,16 +331,26 @@ final class Helper {
         /**
          * @var array Default component mapping configuration
          */
-        $defaultMap = require_once WP_PLUGIN_DIR . "/g3/config/components.php";
+        $mainConfig = G3_PlUGIN_DIR . "/config/components.php";
+        $mainMap    = require_once $mainConfig;
+        if (!is_array($mainMap)) {
+            new WP_Error(
+                "Invalid G3",
+                "Invalid component mapping configuration."
+            );
+        }
 
         /**
          * @var array User component mapping configuration
          */
-        $userMap = file_exists(G3_THEME_CONFIG_DIR . "/components.php")
-            ? require_once G3_THEME_CONFIG_DIR . "/components.php"
-            : [];
+        $userMap    = [];
+        $userConfig = get_stylesheet_directory() . "/config/components.php";
+        if (file_exists($userConfig)) {
+            $tempMap = require_once $userConfig;
+            $userMap = is_array($tempMap) ? $tempMap : [];
+        }
 
-        $componentsMap = array_merge($defaultMap, $userMap);
+        $componentsMap = array_merge($mainMap, $userMap);
 
         self::components($componentsMap);
     }
@@ -276,7 +358,7 @@ final class Helper {
     /**
      * Load Component files and create instances
      *
-     * @param array $componentsMap format as [
+     * @param array $map format as [
      *     'component_name' => true,
      * ]
      *
@@ -284,38 +366,84 @@ final class Helper {
      * @since 1.0.0
      * @author Wang Shai
      */
-    private static function components(array $componentsMap): array
+    private static function components(array $map): array
     {
-        $loadedComponents = [];
+        $loaded = [];
 
-        foreach ($componentsMap as $componentName => $shouldLoad) {
+        foreach ($map as $name => $shouldLoad) {
             // only load component when value is true
             if ($shouldLoad !== true) {
                 continue;
             }
             // check component className
-            $className     = ucfirst($componentName);
-            $componentFile = WP_PLUGIN_DIR . "/g3/src/Components/{$componentName}/{$className}.php";
+            $className           = ucfirst($name);
+            $pluginComponentFile = G3_PlUGIN_DIR . "/src/Components/{$className}/{$className}.php";
+            $userComponentFile   = get_stylesheet_directory() . "/src/components/{$className}/{$className}.php";
+            $fullClassName       = "JEALER\G3\Components\\{$className}";
 
-            if (file_exists($componentFile)) {
-                require_once $componentFile;
+            $componentFile = file_exists($userComponentFile) ? $userComponentFile : $pluginComponentFile;
+            require_once $componentFile;
 
-                $fullClassName = "JEALER\G3\Components\\{$className}";
-
-                if (class_exists($fullClassName)) {
-                    /**
-                     * modify: Components::create only accept one parameter
-                     * Component configuration no longer pass parameters in configuration
-                     */
-                    $loadedComponents[$componentName] = Components::create($className);
-                } else {
-                    wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
-                }
-            } else {
-                wp_die("G3 Error: Something Wrong with Components Configuration: {$componentName}");
+            if (!class_exists($fullClassName)) {
+                wp_die(
+                    "[G3 Error] Class of '{$fullClassName}' does not exist.",
+                    "G3 Error",
+                    [
+                        'back_link' => true,
+                    ]
+                );
             }
+
+            $loaded[$name] = Components::make($className);
         }
 
-        return $loadedComponents;
+        return $loaded;
+    }
+
+    public function getRewrite(): ?Rewrite
+    {
+        if ($this->rewrite === null && Common::themeModeAvailable()) {
+            if (!$this->container->has('rewrite')) {
+                $this->container->setRawDefinition('rewrite', Rewrite::class);
+            }
+            $this->rewrite = $this->container->get('rewrite');
+        }
+        return $this->rewrite;
+    }
+
+    public function getRouter(string $type = 'main'): ?Router
+    {
+        $userPath = get_stylesheet_directory() . '/src/Controllers';
+        if (!file_exists($userPath) && $type === 'user') {
+            return null;
+        }
+
+        $routerId = match ($type) {
+            'main' => 'router.main',
+            'user' => 'router.user',
+        };
+
+        $path = match ($type) {
+            'main' => WP_PLUGIN_DIR . '/g3/src/Controllers',
+            'user' => $userPath
+        };
+
+        if (!$this->container->has($routerId)) {
+            $factory = new FactoryDefinition(Router::class);
+            $factory->constructor(
+                $path,
+                'JEALER\\G3\\Controllers'
+            )->singleton();
+            $this->container->setRawDefinition($routerId, $factory);
+        }
+        return $this->container->get($routerId);
+    }
+
+    public function getComponentsLoader(): ?ComponentLoader
+    {
+        if (!$this->container->has('componentsLoader')) {
+            $this->container->setRawDefinition('componentsLoader', ComponentLoader::class);
+        }
+        return $this->container->get('componentsLoader');
     }
 }

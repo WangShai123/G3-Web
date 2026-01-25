@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Components;
 
@@ -87,6 +88,8 @@ class SystemService {
      */
     public const SECURITY_OPTION_KEY = 'g3_option_securities';
 
+    public const QUEUE_OPTION_KEY = 'g3_option_queue';
+
     /**
      * Theme Key
      * 
@@ -118,7 +121,7 @@ class SystemService {
      */
     public static function option(): array
     {
-        return Components::getProperty('Setting', 'option');
+        return get_option(SystemService::OPTION_KEY) ?? [];
     }
 
     /**
@@ -194,6 +197,37 @@ class SystemService {
     {
         global $wpdb;
         $charset = $wpdb->get_charset_collate();
+
+        /**
+         * Log Table
+         * 
+         * 日志表:
+         */
+        $tableName  = $wpdb->prefix . 'g3_logs';
+        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
+        if (!$tableExist) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                `type` varchar(64) NOT NULL COMMENT '日志类型',
+                `level` varchar(64) NOT NULL DEFAULT 'info' COMMENT '日志级别',
+                `module` varchar(64) DEFAULT NULL COMMENT '业务模块',
+                `message` text NOT NULL COMMENT '日志内容',
+                `user_id` int(11) DEFAULT NULL COMMENT '用户id',
+                `ip_address` varchar(64) DEFAULT NULL COMMENT 'ip地址',
+                `meta` longtext COMMENT '元数据',
+                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                PRIMARY KEY (`id`),
+                KEY `type` (`type`),
+                KEY `level` (`level`),
+                KEY `module` (`module`),
+                KEY `user_id` (`user_id`),
+                KEY `ip_address` (`ip_address`),
+                KEY `created_at` (`created_at`)
+            ) ENGINE=InnoDB $charset COMMENT='logs table';";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
 
         /**
          * Swiper Table

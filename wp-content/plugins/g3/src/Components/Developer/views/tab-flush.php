@@ -1,13 +1,13 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 
 Frontend::loadScript('jui');
 settings_errors('flush');
 ?>
 <form action="" method="post">
     <?php
-    echo Container::tip(
+    echo Element::tip(
         __('The actions below will flush the Rewrite / Options / Cache data, please make sure you have a backup before performing the action.', 'G3'),
         'default',
         'mt-4'

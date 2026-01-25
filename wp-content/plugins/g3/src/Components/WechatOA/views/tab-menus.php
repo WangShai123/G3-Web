@@ -1,13 +1,13 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Includes\WechatOAMenuListTable;
 
 Frontend::loadScript('jui');
 
 $table = new WechatOAMenuListTable();
-echo Container::tip(
+echo Element::tip(
     __('In the WeChat client, the menu of the official account is refreshed every 5 minutes. If you want to instantly manually refresh the menu, please re-subscribe the official account and visit.', 'G3'),
     'default',
     'mt-4'
@@ -31,8 +31,7 @@ echo Container::tip(
 <?php $table->display(); ?>
 
 <script>
-    const $ = jQuery;
-    $(document).ready(function () {
+    jQuery(document).ready(function ($) {
         $('.action-delete').on('click', function (e) {
             e.preventDefault()
             let id = $(this).attr('data-id')

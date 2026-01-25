@@ -87,7 +87,7 @@ return [
     'redirect/go/([^/]+)/?$'      => [
         'var'        => 'redirect_url',
         'path'       => 'developer/redirect.php',
-        'dependency' => [\JEALER\G3\Components\Setting::class, 'redirectavailable']
+        'dependency' => [\JEALER\G3\Components\Setting::class, 'redirectAvailable']
     ],
 
 

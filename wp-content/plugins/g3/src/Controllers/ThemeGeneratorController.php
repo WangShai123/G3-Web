@@ -1,5 +1,7 @@
 <?php
 namespace JEALER\G3\Controllers;
+
+use JEALER\G3\Service;
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
 use JEALER\G3\Attributes\Schema;
@@ -80,7 +82,7 @@ class ThemeGeneratorController {
             );
         }
 
-        $service = ThemeGeneratorService::run();
+        $service = Container::run()->get(ThemeGeneratorService::class);
         $service->create($params);
 
         return rest_ensure_response([

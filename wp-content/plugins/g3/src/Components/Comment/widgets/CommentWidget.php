@@ -1,7 +1,8 @@
 <?php
 use JEALER\G3\Components;
 use JEALER\G3\Services\UserService;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Date;
+
 /**
  * Comment Widget: Display a list of comments.
  * 
@@ -170,7 +171,7 @@ class CommentWidget extends WP_Widget {
                 'avatar'     => UserService::getMeta($comment->user_id, UserService::META_KEY, 'avatar', []),
                 'nickname'   => $comment->comment_author,
                 'content'    => mb_substr(strip_tags($comment->comment_content), 0, $length, 'utf-8'),
-                'time'       => Common::humanTime(strtotime($comment->comment_date))
+                'time'       => Date::humanTime(strtotime($comment->comment_date))
             ],
             $comments
         );

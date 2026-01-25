@@ -1,4 +1,6 @@
 <?php
+use JEALER\G3\Utilities\Date;
+
 /**
  * Post List Widget: Display a list of posts.
  * 
@@ -7,7 +9,6 @@
  * @since 1.0.0
  * @author Wang Shai
  */
-use JEALER\G3\Utilities\Common;
 class PostWidget extends WP_Widget {
     private int $count;
     private int $type;
@@ -137,7 +138,7 @@ class PostWidget extends WP_Widget {
                     'id'    => get_the_ID(),
                     'title' => get_the_title(),
                     'link'  => get_permalink(),
-                    'time'  => Common::humanTime(),
+                    'time'  => Date::humanTime(),
                     'cover' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
                 ];
             }

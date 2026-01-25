@@ -2,8 +2,9 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
@@ -14,10 +15,6 @@ class Setting extends Components {
     public array $seo = [];
     public array $rss = [];
 
-    #[Override]
-    protected function front(): void
-    {
-    }
     #[Override]
     protected function options(): void
     {
@@ -45,8 +42,15 @@ class Setting extends Components {
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function system(): void
     {
+        $this->redirectLinkHandle();
+        $this->rssHandle();
+    }
+    #[Override]
+    protected function form(): void
+    {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'g3-settings') return;
         $this->option = Option::cache(SystemService::OPTION_KEY, $this->option);
         $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
         $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
@@ -61,6 +65,10 @@ class Setting extends Components {
     #[Override]
     protected function admin(): void
     {
+        Frontend::loadStyle('jui');
+        Frontend::loadScript('jui');
+        Frontend::loadScript('admin');
+
         $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
             // SEO: add field in edit form for post
@@ -76,6 +84,9 @@ class Setting extends Components {
             }
         }
         $this->pluginAction();
+        add_filter('admin_body_class', function ($classes) {
+            return $classes . ' light j-theme-indigo j-shadow-none j-radius-sm j-font-sm';
+        });
     }
     #[Override]
     protected function adminMenu(): void
@@ -99,12 +110,7 @@ class Setting extends Components {
             1
         );
     }
-    #[Override]
-    protected function system(): void
-    {
-        $this->redirectLinkHandle();
-        $this->rssHandle();
-    }
+
     protected function end(): void
     {
         $this->linksHandle();
@@ -118,7 +124,7 @@ class Setting extends Components {
             'sitemap' => __('SiteMap', 'G3'),
         ];
         echo '<div class="wrap"><h1>' . __('General', 'G3') . '</h1>';
-        Container::tab('Setting', 'general', $tabs);
+        Element::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
     #[Override]
@@ -131,12 +137,12 @@ class Setting extends Components {
             'g3-settings'
         );
         register_setting('general', SystemService::OPTION_KEY);
-        Container::settingFields('g3-settings', 'general', [
+        Element::settingFields('g3-settings', 'general', [
             [
                 'id'       => 'sad',
                 'title'    => __('Sad Mod', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'sad',
@@ -152,7 +158,7 @@ class Setting extends Components {
                 'id'       => 'avatar',
                 'title'    => __('Default Avatar', 'G3'),
                 'callback' => function () {
-                    echo Container::imageInput(
+                    echo Element::imageInput(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'avatar',
@@ -168,7 +174,7 @@ class Setting extends Components {
                 'id'       => 'cover',
                 'title'    => __('Default Cover', 'G3'),
                 'callback' => function () {
-                    echo Container::imageInput(
+                    echo Element::imageInput(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'cover',
@@ -184,7 +190,7 @@ class Setting extends Components {
                 'id'       => 'icp',
                 'title'    => __('ICP Code', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'icp',
@@ -200,7 +206,7 @@ class Setting extends Components {
                 'id'       => 'headerCode',
                 'title'    => __('Header Code', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'headerCode',
@@ -216,7 +222,7 @@ class Setting extends Components {
                 'id'       => 'footerCode',
                 'title'    => __('Footer Code', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'footerCode',
@@ -232,7 +238,7 @@ class Setting extends Components {
                 'id'       => 'customCode',
                 'title'    => __('Custom Code', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'customCode',
@@ -248,7 +254,7 @@ class Setting extends Components {
                 'id'       => 'links',
                 'title'    => __('Links'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'links',
@@ -264,7 +270,7 @@ class Setting extends Components {
                 'id'       => 'redirectLink',
                 'title'    => __('Redirect Link', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         SystemService::OPTION_KEY,
                         $this->option,
                         'redirectLink',
@@ -286,28 +292,25 @@ class Setting extends Components {
             'g3-settings&tab=seo'
         );
         register_setting('seo', SystemService::SEO_OPTION_KEY);
-        Container::settingFields('g3-settings&tab=seo', 'seo', [
+        Element::settingFields('g3-settings&tab=seo', 'seo', [
             [
                 'id'       => 'seo',
                 'title'    => 'SEO',
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         SystemService::SEO_OPTION_KEY,
                         $this->seo,
                         'seo',
                         'SEO',
                         __('You can add custom SEO data for each page.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'seo'
-                ]
+                }
             ],
             [
                 'id'       => 'keywords',
                 'title'    => __('HomePage Keywords', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         SystemService::SEO_OPTION_KEY,
                         $this->seo,
                         'keywords',
@@ -331,21 +334,18 @@ class Setting extends Components {
             'g3-settings&tab=rss'
         );
         register_setting('rss', SystemService::RSS_OPTION_KEY);
-        Container::settingFields('g3-settings&tab=rss', 'rss', [
+        Element::settingFields('g3-settings&tab=rss', 'rss', [
             [
                 'id'       => 'rss',
                 'title'    => 'RSS',
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         SystemService::RSS_OPTION_KEY,
                         $this->rss,
                         'rss',
                         'RSS'
                     );
-                },
-                'args'     => [
-                    'label_for' => 'rss'
-                ]
+                }
             ],
             [
                 'id'       => 'rss1',
@@ -486,9 +486,9 @@ class Setting extends Components {
             ], true);
         }
     }
-    public static function redirectavailable(): bool
+    public static function redirectAvailable(): bool
     {
-        $v = get_option(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
+        $v = Context::get(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
         return $v === '1';
     }
 
@@ -551,10 +551,13 @@ class Setting extends Components {
         $description = get_post_meta($id, PostService::$seoDescriptionKey, true);
         $keywords    = get_post_meta($id, PostService::$seoKeywordsKey, true);
 
-        echo '<div class="j-input-group is-2">';
-        echo '<div class="input-group-item"><label for="seoTitle" class="">' . __('Title', 'G3') . '</label><input type="text" id="seoTitle" name="seoTitle" value="' . $title . '"></div>';
-        echo '<div class="input-group-item"><label for="seoKeywords" class="">' . __('Keywords', 'G3') . '</label><input placeholder="' . __('Separate tags with commas.', 'G3') . '" type="text" id="seoKeywords" name="seoKeywords" value="' . $keywords . '"></div></div>';
-        echo '<div class="j-input-group"><div class="input-group-item"><label for="seoDescription" class="">' . __('Description', 'G3') . '</label><input type="text" id="seoDescription" name="seoDescription" value="' . $description . '"></div></div>';
+        echo '<div class="flex-container">';
+        echo '<div class="flex-col-1 flex-col-xl-3 flex-col-lg-2 flex-col-md-1 flex-col-sm-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Title', 'G3') . '</div></div><input class="j-input" type="text" id="seoTitle" name="seoTitle" value="' . $title . '"></div></div>';
+        echo '<div class="flex-col"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Keywords', 'G3') . '</div></div><input class="j-input" placeholder="' . __('Separate tags with commas.', 'G3') . '" type="text" id="seoKeywords" name="seoKeywords" value="' . $keywords . '"></div></div>';
+        echo '</div>';
+        echo '<div class="flex-container">';
+        echo '<div class="flex-col-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Description', 'G3') . '</div></div><input class="j-input" type="text" id="seoDescription" name="seoDescription" value="' . $description . '"></div></div>';
+        echo '</div>';
 
         /**
          * Custom Action: add custom fields in post SEO metabox
@@ -642,7 +645,7 @@ class Setting extends Components {
     }
     private function permalink(): void
     {
-        if (get_option('permalink_structure') === '/%postname%/') return;
+        if (Context::get('permalink_structure') === '/%postname%/') return;
 
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();

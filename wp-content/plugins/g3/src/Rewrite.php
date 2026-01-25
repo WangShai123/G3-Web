@@ -2,6 +2,7 @@
 namespace JEALER\G3;
 
 use JEALER\G3\Components;
+use JEALER\G3\Container;
 
 /**
  * Rewrite Router
@@ -12,39 +13,29 @@ use JEALER\G3\Components;
  * @author Wang Shai
  */
 class Rewrite {
-    /** @var array rewrite config */
+    /**
+     * @var array rewrite config
+     */
     private array $config = [];
-
-    /** @var self single instance */
-    private static ?self $instance = null;
-
-    private function __construct()
+    private ?Container $container = null;
+    public function __construct()
     {
-        $this->loadConfig();
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
+        if ($this->container === null) {
+            $this->container = Container::run();
         }
-        return self::$instance;
+
+        $this->loadConfig();
     }
 
     private function loadConfig(): void
     {
         // get plugin default config
         $pluginConfigFile = WP_PLUGIN_DIR . '/g3/config/rewriteRouter.php';
-        $pluginConfig     = [];
-
-        if (file_exists($pluginConfigFile)) {
-            $pluginConfig = require $pluginConfigFile;
-        }
+        $pluginConfig     = require $pluginConfigFile;
 
         // get user theme config
         $themeConfigFile = get_stylesheet_directory() . '/config/rewriteRouter.php';
         $themeConfig     = [];
-
         if (file_exists($themeConfigFile)) {
             $themeConfig = require $themeConfigFile;
         }
@@ -156,6 +147,8 @@ class Rewrite {
      */
     public function registerRewriteRules(): void
     {
+        $rulesRegistered = 0;
+
         foreach ($this->config as $url => $route) {
             // ensure route is an array and contains necessary keys
             if (!is_array($route) || !isset($route['var']) || !isset($route['path'])) {
@@ -187,6 +180,11 @@ class Rewrite {
 
             // add rewrite rule
             add_rewrite_rule($url, $query, 'top');
+            $rulesRegistered++;
+        }
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("[G3 Rewrite] Total rules registered: $rulesRegistered");
         }
 
         // check if flush needed, based on config hash
@@ -204,9 +202,26 @@ class Rewrite {
      */
     public static function flushRewriteRules(): void
     {
-        $instance = self::getInstance();
-        $instance->registerRewriteRules();
-        flush_rewrite_rules();
+        try {
+            // 尝试从容器获取实例
+            $container = Container::run();
+            if ($container->has('rewrite')) {
+                $instance = $container->get('rewrite');
+            } else {
+                // 如果容器中没有，创建新实例
+                $instance = new self();
+            }
+
+            $instance->registerRewriteRules();
+            flush_rewrite_rules();
+        }
+        catch (\Exception $e) {
+            // 如果容器方式失败，回退到直接创建实例
+            error_log('[G3 Rewrite] Container access failed, creating direct instance: ' . $e->getMessage());
+            $instance = new self();
+            $instance->registerRewriteRules();
+            flush_rewrite_rules();
+        }
     }
 
     /**

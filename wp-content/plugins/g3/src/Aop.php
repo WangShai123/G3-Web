@@ -46,10 +46,10 @@ class Aop {
      */
     private function initConfig(): array
     {
-        $pluginConfig    = require WP_PLUGIN_DIR . '/g3/config/aop.php' ?: [];
+        $pluginConfig    = require_once WP_PLUGIN_DIR . '/g3/config/aop.php' ?: [];
         $themeConfigFile = get_stylesheet_directory() . '/config/aop.php';
         if (file_exists($themeConfigFile)) {
-            $themeConfig = require $themeConfigFile;
+            $themeConfig = require_once $themeConfigFile;
             return array_merge($pluginConfig, is_array($themeConfig) ? $themeConfig : []);
         }
         return $pluginConfig;

@@ -1,7 +1,7 @@
 <?php
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 
-echo Container::tip(
+echo Element::tip(
     __('Learn more about G3 Web and G3 System on the websites below.', 'G3'),
     'default',
     'mt-4'

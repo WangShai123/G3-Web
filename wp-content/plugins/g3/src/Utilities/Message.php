@@ -9,11 +9,16 @@ final class Message {
     }
     public static function bindSuccess()
     {
-        return __('Binding Successful', 'G3');
+        return __('Bind Successful', 'G3');
     }
 
     public static function forbidden()
     {
         return __('Forbidden', 'G3');
+    }
+
+    public static function updated()
+    {
+        return __('Updated', 'G3');
     }
 }

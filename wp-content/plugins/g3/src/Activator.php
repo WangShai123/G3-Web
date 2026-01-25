@@ -2,6 +2,7 @@
 namespace JEALER\G3;
 
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Queue;
 use JEALER\G3\Utilities\System;
 
 class Activator {
@@ -15,6 +16,8 @@ class Activator {
         if (!isset(self::$instance)) {
             self::$instance = new self();
         }
+
+        Queue::init();
 
         return self::$instance;
     }

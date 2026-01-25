@@ -2,7 +2,11 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Queue;
+use JEALER\G3\Queue\Jobs\EmailJob;
+use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\MailerService;
 use Override;
@@ -12,6 +16,9 @@ class Mail extends Components {
     public array $option = [];
     public array $template = [];
     public string $setGroup = 'set';
+    protected function ready(): void
+    {
+    }
     protected function options(): void
     {
         $this->option   = Option::get(MailerService::OPTION_KEY, [
@@ -31,14 +38,18 @@ class Mail extends Components {
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'mail') return;
         $this->option   = Option::cache(MailerService::OPTION_KEY, $this->option);
         $this->template = Option::cache(MailerService::TEMPLATE_OPTION_KEY, $this->template);
     }
     #[Override]
     protected function init(): void
     {
+        /**
+         * 修改 wordpress 内部邮件配置
+         */
         add_action('phpmailer_init', [$this, 'smtpInit']);
         add_filter('wp_mail_from', [$this, 'wpMailFrom']);
     }
@@ -69,7 +80,7 @@ class Mail extends Components {
             'template' => __('Email Templates', 'G3'),
             'test'     => __('Email Test', 'G3')
         ];
-        Container::tab('Mail', 'set', $tabs);
+        Element::tab('Mail', 'set', $tabs);
         echo '</div>';
     }
     #[Override]
@@ -85,29 +96,25 @@ class Mail extends Components {
             $this->setGroup,
             MailerService::OPTION_KEY,
         );
-        Container::settingFields('mail', $this->setGroup, [
+        Element::settingFields('mail', $this->setGroup, [
             [
                 'id'       => 'enable',
                 'title'    => __('Enable', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'enable',
                         __('System Email', 'G3'),
                         __('The system will use SMTP to send emails.', 'G3'),
                     );
-                },
-                'args'     => [
-                    'label_for' => 'enable',
-                    'class'     => 'field-enable'
-                ]
+                }
             ],
             [
                 'id'       => 'nickname',
                 'title'    => __('Nickname', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'nickname',
@@ -123,7 +130,7 @@ class Mail extends Components {
                 'id'       => 'server',
                 'title'    => __('Server', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'server',
@@ -140,7 +147,7 @@ class Mail extends Components {
                 'id'       => 'port',
                 'title'    => __('Port', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'port',
@@ -157,7 +164,7 @@ class Mail extends Components {
                 'id'       => 'encryption',
                 'title'    => __('SMTP Encryption', 'G3'),
                 'callback' => function () {
-                    echo Container::select(
+                    echo Element::select(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'encryption',
@@ -180,7 +187,7 @@ class Mail extends Components {
                 'id'       => 'address',
                 'title'    => __('Sender\'s Email Address', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'address',
@@ -198,7 +205,7 @@ class Mail extends Components {
                 'id'       => 'secret',
                 'title'    => __('Sender\'s Email Secret', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         MailerService::OPTION_KEY,
                         $this->option,
                         'secret',
@@ -225,7 +232,7 @@ class Mail extends Components {
             'template',
             MailerService::TEMPLATE_OPTION_KEY
         );
-        Container::settingFields(
+        Element::settingFields(
             'mail&tab=template',
             'template',
             [
@@ -233,24 +240,20 @@ class Mail extends Components {
                     'id'       => 'enable',
                     'title'    => __('Custom Email Templates', 'G3'),
                     'callback' => function () {
-                        echo Container::enable(
+                        echo Element::switch(
                             MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'enable',
                             __('Custom Email Templates', 'G3'),
                             __('The system will replace the default email templates of the site with custom email templates.', 'G3'),
                         );
-                    },
-                    'args'     => [
-                        'label_for' => 'enable',
-                        'class'     => 'field-enable'
-                    ]
+                    }
                 ],
                 [
                     'id'       => 'register',
                     'title'    => __('User Registration Notification Template', 'G3'),
                     'callback' => function () {
-                        echo Container::textarea(
+                        echo Element::textarea(
                             MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'register',
@@ -268,7 +271,7 @@ class Mail extends Components {
                     'id'       => 'resetPassword',
                     'title'    => __('Password Recovery Notification Template', 'G3'),
                     'callback' => function () {
-                        echo Container::textarea(
+                        echo Element::textarea(
                             MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'resetPassword',
@@ -286,7 +289,7 @@ class Mail extends Components {
                     'id'       => 'paymentSuccess',
                     'title'    => __('Order Payment Receipt Template', 'G3'),
                     'callback' => function () {
-                        echo Container::textarea(
+                        echo Element::textarea(
                             MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'paymentSuccess',
@@ -318,7 +321,7 @@ class Mail extends Components {
             'mailTo',
             __('Test Email Address', 'G3'),
             function () {
-                echo Container::input(
+                echo Element::input(
                     'test',
                     '',
                     'mailTo',
@@ -389,16 +392,16 @@ class Mail extends Components {
         add_filter('send_site_admin_email_change_email', '__return_false');
     }
 
-    #[Override]
-    protected function debug(): void
-    {
-        add_action('wp_mail_failed', function ($wp_error) {
-            error_log('Mail failed: ' . print_r($wp_error, true));
-        });
-        add_action('wp_mail_succeeded', function ($mail_data) {
-            error_log('Mail succeeded: ' . print_r($mail_data, true));
-        });
-    }
+    // #[Override]
+    // protected function debug(): void
+    // {
+    //     add_action('wp_mail_failed', function ($wp_error) {
+    //         error_log('[G3 Mail] Mail failed: ' . print_r($wp_error, true));
+    //     });
+    //     add_action('wp_mail_succeeded', function ($mail_data) {
+    //         error_log('[G3 Mail] Mail succeeded: ' . print_r($mail_data, true));
+    //     });
+    // }
 
     public function wpMailFrom($original_email)
     {
@@ -407,4 +410,5 @@ class Mail extends Components {
         }
         return is_email($this->option['address']) ? $this->option['address'] : $original_email;
     }
+
 }

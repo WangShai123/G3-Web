@@ -49,43 +49,49 @@
     width: 100%;
 }
 
-.postbox .inside .j-input-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 12px;
+
+.wp-editor-container .quicktags-toolbar {
+    width: 100% !important;
+}
+/**
+ * edit inside input
+ */
+.inside .grid-container:not(:first-child),
+.inside .flex-container:not(:first-child) {
+    margin-top: 1rem;
+}
+.inside .input-group .el-addon + .j-input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0 0 0 -1px;
+}
+.input-group .j-input:has(+ .el-addon) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+@media screen and (max-width: 782px) {
+    .inside .input-group .el-addon+.j-input {
+        min-height: auto;
+    }
+}
+.inside .specification-container .j-input[type="radio"]:checked+.radio-text {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    outline: 1px solid var(--primary);
+}
+.inside .specification-container #specification-content {
+    margin-top: calc(var(--space) * 3);
+}
+.inside .input-inner-group > .j-input:not(:first-child) {
+    padding-left: var(--el-height);
 }
 
-.postbox .inside .j-input-group + .j-input-group {
-    margin-top: 16px;
+table.form-table tbody tr.advanced th::after {
+    content: '*';
+    color: var(--primary);
+    margin-left: 2px;
 }
 
-.postbox .inside .j-input-group .input-group-item {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-    width: 100%;
-}
-
-.postbox .inside .j-input-group.is-4 .input-group-item {
-    width: calc(25% - 12px);
-}
-
-.postbox .inside .j-input-group.is-3 .input-group-item {
-    width: calc(33.33333% - 10.66667px);
-}
-
-.postbox .inside .j-input-group.is-2 .input-group-item {
-    width: calc(50% - 8px);
-}
-
-.postbox .inside .j-input-group .input-group-item label {
-    flex-shrink: 0;
-}
-
-.postbox .inside .j-input-group .input-group-item input {
-    width: 100%;
-}
 
 .j-media-button {
     align-items: center;
@@ -99,20 +105,6 @@
     font-size: 18px;
     height: 18px;
     width: 18px;
-}
-
-@media screen and (max-width: 768px) {
-    .postbox .inside .j-input-group .input-group-item {
-        align-items: flex-start;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .postbox .inside .j-input-group.is-2 .input-group-item,
-    .postbox .inside .j-input-group.is-3 .input-group-item,
-    .postbox .inside .j-input-group.is-4 .input-group-item {
-        width: 100%;
-    }
 }
 
 .form-page-wrap .item {
@@ -1169,41 +1161,28 @@ body#tinymce.wp-editor pre.j-highlight {
     aspect-ratio: 1/1;
     object-fit: cover;
 }
-#g3-metabox-gallery .inside .swiper-slide .gallery-item .action-removeGalleryItem {
-    fill: white;
+#g3-metabox-gallery .inside .action-removeGalleryItem {
     position: absolute;
     right: 4px;
     top: 4px;
 }
-/* product properties */
-#g3-metabox-properties .properties-container .property-item .property-label {
-    margin-bottom: 4px;
+#g3-metabox-gallery .inside .action-removeGalleryItem .icon-close {
+    background-color: var(--ruby-10);
+    color: var(--ruby-surface);
+    border-color: var(--ruby-10);
 }
-#g3-metabox-properties .properties-container .property-item .property-control {
-    display: flex;
-    gap: 4px;
+
+/* product properties */
+#prop-app .prop-item:not(:last-child) {
     margin-bottom: 8px;
 }
-@media (max-width: 768px) { 
-    #g3-metabox-properties .properties-container .property-item .property-control {
-        flex-direction: column
-    }
-    #g3-metabox-properties .properties-container .property-item .action-removeProperty {
-        width: 100%;
-    }
+#prop-app .prop-item > div {
+    margin-bottom: 4px;
 }
-#g3-metabox-properties .properties-container .property-actions {
-    display: flex;
-    align-items: center;
+#prop-app .prop-item > div + .grid-container {
+    margin-top: 0;
 }
-/* product sku */
-#g3-metabox-sku .inside {
-    padding: 0;
-    margin: 8px 0;
-}
-#g3-metabox-sku #sku-tabs .tab-item:active {
-    background-color: var(--accent);
-}
-#g3-metabox-sku #sku-tabs .tab-item.is-active {
-    font-weight: 500;
+#prop-app .prop-item #remove-property:active {
+    outline-color: var(--danger);
+    outline-offset: 1px;
 }

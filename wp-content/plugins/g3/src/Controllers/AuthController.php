@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Controllers;
 
+use JEALER\G3\Service;
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
 use JEALER\G3\Attributes\Schema;
@@ -201,7 +202,7 @@ class AuthController {
         $expiration = 1800;
         set_transient($cacheKey, '', $expiration);
 
-        $service = AuthService::run();
+        $service = Container::run()->get(AuthService::class);
         $result  = $service->getSubscribeLoginQrCode($hash, $expiration);
 
         if (is_wp_error($result)) {
@@ -316,7 +317,7 @@ class AuthController {
         // 30 mins cache
         set_transient($cacheKey, $user->ID, 30 * MINUTE_IN_SECONDS);
 
-        $service = AuthService::run();
+        $service = Container::run()->get(AuthService::class);
         $result  = $service->getSubscribeLoginQrCode($bindHash, 1800);
 
         if (is_wp_error($result)) {
@@ -366,7 +367,7 @@ class AuthController {
     #[Middleware(RestAuthMiddleware::class)]
     public function getBindAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        $service = AuthService::run();
+        $service = Container::run()->get(AuthService::class);
         if (!$service->wechatOAService->available()) {
             return new WP_Error(
                 503,

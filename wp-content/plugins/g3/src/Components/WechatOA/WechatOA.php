@@ -2,8 +2,10 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
+use JEALER\G3\Service;
 use JEALER\G3\Services\WechatOAService;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Response;
 use Override;
@@ -26,14 +28,18 @@ class WechatOA extends Components {
             'defaultMessage' => __('Message received, thanks for your advice!', 'G3'),
         ]);
         $this->eventOption = Option::get(WechatOAService::EVENT_OPTION_KEY, [
-            'lastestPosts' => 'n'
+            'latestPosts' => 'n'
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'wechat-oa') return;
         $this->option      = Option::cache(WechatOAService::OPTION_KEY, $this->option);
         $this->eventOption = Option::cache(WechatOAService::EVENT_OPTION_KEY, $this->eventOption);
+    }
+    protected function init(): void
+    {
     }
     #[Override]
     protected function admin(): void
@@ -76,7 +82,7 @@ class WechatOA extends Components {
             'reply'   => __('Custom Reply', 'G3'),
             'event'   => __('Event Replay', 'G3'),
         ];
-        Container::tab('WechatOA', 'general', $tabs);
+        Element::tab('WechatOA', 'general', $tabs);
         echo '</div>';
     }
     #[Override]
@@ -89,59 +95,50 @@ class WechatOA extends Components {
             'wechat-oa'
         );
         register_setting('wechatOA', WechatOAService::OPTION_KEY);
-        Container::settingFields('wechat-oa', 'wechatOA', [
+        Element::settingFields('wechat-oa', 'wechatOA', [
             [
                 'id'       => 'service',
                 'title'    => __('Wechat OA Service', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'service',
                         __('Wechat OA Service', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'service',
-                ]
+                }
             ],
             [
                 'id'       => 'search',
                 'title'    => __('Search'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'search',
                         __('Search', 'G3'),
                         __('Users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'search',
-                ]
+                }
             ],
             [
                 'id'       => 'storeMessages',
                 'title'    => __('Store Messages', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'storeMessages',
                         __('Store Messages', 'G3'),
                         __('The messages sent to the WeChat Official Account will be stored in the database.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'storeMessages',
-                ]
+                }
             ],
             [
                 'id'       => 'count',
                 'title'    => __('News Count', 'G3'),
                 'callback' => function () {
-                    echo Container::select(
+                    echo Element::select(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'count',
@@ -168,7 +165,7 @@ class WechatOA extends Components {
                 'id'       => 'length',
                 'title'    => __('Max Length of Search Keyword', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'length',
@@ -185,7 +182,7 @@ class WechatOA extends Components {
                 'id'       => 'followMessage',
                 'title'    => __('Subscribe Message', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'followMessage',
@@ -201,7 +198,7 @@ class WechatOA extends Components {
                 'id'       => 'defaultMessage',
                 'title'    => __('Default Message', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         WechatOAService::OPTION_KEY,
                         $this->option,
                         'defaultMessage',
@@ -217,7 +214,7 @@ class WechatOA extends Components {
             //     'id'       => 'visitMessage',
             //     'title'    => __('Visit Message', 'G3'),
             //     'callback' => function () {
-            //         echo Container::textarea(
+            //         echo Element::textarea(
             //             WechatOAService::OPTION_KEY,
             //             $this->option,
             //             'visitMessage',
@@ -238,21 +235,21 @@ class WechatOA extends Components {
             'wechat-oa&tab=event'
         );
         register_setting('eventReply', WechatOAService::EVENT_OPTION_KEY);
-        Container::settingFields('wechat-oa&tab=event', 'eventReply', [
+        Element::settingFields('wechat-oa&tab=event', 'eventReply', [
             [
-                'id'       => 'lastestPosts',
+                'id'       => 'latestPosts',
                 'title'    => __('Latest Posts', 'G3'),
                 'callback' => function () {
-                    echo Container::input(
+                    echo Element::input(
                         WechatOAService::EVENT_OPTION_KEY,
                         $this->eventOption,
-                        'lastestPosts',
+                        'latestPosts',
                         __('Latest Posts', 'G3'),
                         __('The Key that will call the latest posts. Default: n', 'G3')
                     );
                 },
                 'args'     => [
-                    'label_for' => 'lastestPosts',
+                    'label_for' => 'latestPosts',
                 ]
             ],
         ]);
@@ -325,7 +322,7 @@ class WechatOA extends Components {
                 Response::ajaxForbidden();
             }
 
-            $service = WechatOAService::run();
+            $service = Container::run()->get(WechatOAService::class);
             $service->deleteMenus();
             $result = $service->createMenus();
 
@@ -344,7 +341,7 @@ class WechatOA extends Components {
             if (!wp_verify_nonce($_POST['nonce'], 'g3_flush_wechatOA_menus')) {
                 Response::ajaxForbidden();
             }
-            $result = WechatOAService::run()->deleteMenus();
+            $result = Container::run()->get(WechatOAService::class)->deleteMenus();
             if ($result) {
                 Response::ajaxSuccess(__('Data Flush Complete', 'G3'));
             } else {

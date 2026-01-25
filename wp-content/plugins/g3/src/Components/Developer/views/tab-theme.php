@@ -1,7 +1,7 @@
 <?php
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 
-echo Container::tip(
+echo Element::tip(
     __('Quickly create a G3 Web theme project with complete architecture.', 'G3'),
     'default',
     'mt-4'
@@ -105,64 +105,70 @@ echo Container::tip(
         resize: none;
     }
 </style>
-<script type="module">
-    import JUI from '<?php echo G3_JS_URL . '/es/jui.js'; ?>'
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.documentElement.classList.add('j-theme-indigo', 'j-radius-sm');
-        document.querySelector('#createTheme').addEventListener('click', function (e) {
-            const fetchUrl = window.location.origin;
-            fetch(fetchUrl + '/wp-json/api/v1/theme/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: document.querySelector('#name').value,
-                    folder: document.querySelector('#folder').value,
-                    url: document.querySelector('#url').value,
-                    description: document.querySelector('#description').value,
-                    author: document.querySelector('#author').value,
-                    authorUrl: document.querySelector('#authorUrl').value,
-                    version: document.querySelector('#version').value
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.disabled = true
-                    console.log(data)
-                    switch (data.code) {
-                        case 200:
-                            jui.toast.success(data.message, 2000);
-                            setTimeout(() => { this.disabled = false }, 2000)
-                            const tip = `
+        const { toast } = jui
+        const { postJson, q, on, restUrl } = jui.u
+        on(q('#createTheme'), 'click', function (e) {
+            e.preventDefault()
+            const name = q('#name').value
+            const folder = q('#folder').value
+            const url = q('#url').value
+            const description = q('#description').value
+            const author = q('#author').value
+            const authorUrl = q('#authorUrl').value
+            const version = q('#version').value
+            if (!name || !folder || !url || !description || !author || !authorUrl || !version) {
+                toast.error('<?php _e('No data supplied.'); ?>')
+                return
+            }
+            postJson(restUrl + 'api/v1/theme/generate', {
+                name,
+                folder,
+                url,
+                description,
+                author,
+                authorUrl,
+                version
+            }).then(data => {
+                this.disabled = true
+                switch (data.code) {
+                    case 200:
+                        toast.success(data.message, 2000);
+                        const tip = `
                             <div class="j-tip is-success mb-2" id="createTip">
                                 <div class="tip-content">
-                                    <div><b><?php echo __('Theme Created Successfully'); ?></b></div>
+                                    <div><b><?php echo __('Theme Created Successfully', 'G3'); ?></b></div>
                                     <div><?php echo __('Theme Name'); ?>: ${data.data.name}</div>
                                     <div><?php echo __('Theme Directory'); ?>: ${data.data.path}</div>
                                 </div>
                             </div>
                             `;
-                            document.querySelector('form.j-form').insertAdjacentHTML('beforebegin', tip);
-                            break;
-                        case 400:
-                            jui.toast.error(data.message, 2000)
-                            setTimeout(() => { this.disabled = false }, 2000)
-                            break;
-                        case 422:
-                            jui.toast.error(data.data.errors[0], 2000)
-                            setTimeout(() => { this.disabled = false }, 2000)
-                            break;
-                        default:
-                            jui.toast.error(data.message, 2000)
-                            setTimeout(() => { this.disabled = false }, 2000)
-                            break;
-                    }
-                });
-        });
-        document.querySelector('form').addEventListener('reset', function (e) {
-            document.querySelector('#createTheme').disabled = false;
-            if (document.querySelector('#createTip')) document.querySelector('#createTip').remove();
-        });
+                        q('form.j-form').insertAdjacentHTML('beforebegin', tip);
+                        setTimeout(() => {
+                            if (q('#createTip')) q('#createTip').remove();
+                            q('form.j-form').reset()
+                        }, 5000);
+                        break;
+                    case 400:
+                        toast.error(data.message, 2000)
+                        break;
+                    case 422:
+                        toast.error(data.data.errors[0], 2000)
+                        break;
+                    default:
+                        toast.error(data.message, 2000)
+                        break;
+                }
+            }).then(() => { setTimeout(() => { this.disabled = false }, 2000) });
+        })
+        on(q('form'), 'reset', (e) => {
+            q('#createTheme').disabled = false;
+            if (q('#createTip')) {
+                for (const tip of document.querySelectorAll('#createTip')) {
+                    tip.remove();
+                }
+            }
+        })
     });
 </script>

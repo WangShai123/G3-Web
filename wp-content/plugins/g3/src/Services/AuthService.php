@@ -3,6 +3,7 @@ namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Context;
 use WP_User_Query;
 use WP_User;
 use WP_Error;
@@ -117,8 +118,9 @@ class AuthService {
      */
     public static function subscribeLoginAvailable(): bool
     {
-        $data = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
-        return $data === '1' ? true : false;
+        $loader = Context::get('loader')->y();
+        $data   = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
+        return ($data === '1' && $loader) ? true : false;
     }
 
     /**

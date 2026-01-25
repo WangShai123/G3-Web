@@ -2,11 +2,14 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
+use JEALER\G3\Services\ShareService;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\PostService;
+use JEALER\G3\Utilities\RobustEncoder;
 use Override;
 
 class Post extends Components {
@@ -19,19 +22,22 @@ class Post extends Components {
         $this->option   = Option::get(PostService::OPTION_KEY, [
             'enable'       => '1',
             'viewInterval' => '60',
-            'copyright'    => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
+            'notice'       => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
             'autoNotice'   => '0',
+            'copyright'    => '0',
         ]);
         $this->viewsKey = PostService::getViewsKey();
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'post-reading') return;
         $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
     #[Override]
     protected function system(): void
     {
+
     }
     #[Override]
     protected function init(): void
@@ -44,6 +50,7 @@ class Post extends Components {
     #[Override]
     protected function admin(): void
     {
+        add_action('save_post', [$this, 'protected'], 10, 1);
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
 
@@ -53,6 +60,14 @@ class Post extends Components {
             add_action($taxonomy . '_edit_form_fields', [$this, 'addCoverFieldInEditForm']);
             add_action('created_' . $taxonomy, [$this, 'updateCoverField']);
             add_action('edited_' . $taxonomy, [$this, 'updateCoverField']);
+        }
+
+        if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
+            require_once G3_PlUGIN_DIR . '/tests/robustEncoder.php';
+            if (isset($_GET['g3-test']) && $_GET['g3-test'] === 'robustEncoder') {
+                g3TestRobustEncoderPerformance();
+                exit;
+            }
         }
     }
     #[Override]
@@ -74,7 +89,7 @@ class Post extends Components {
         $args = [
             'general' => __('General'),
         ];
-        Container::tab('Post', 'general', $args);
+        Element::tab('Post', 'general', $args);
         echo '</div>';
     }
     #[Override]
@@ -90,29 +105,25 @@ class Post extends Components {
             '__return_false',
             'post-reading'
         );
-        Container::settingFields('post-reading', 'reading', [
+        Element::settingFields('post-reading', 'reading', [
             [
                 'id'       => 'enable',
                 'title'    => __('View Statistics', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         PostService::OPTION_KEY,
                         $this->option,
                         'enable',
                         __('View Statistics', 'G3'),
                         __('To add view statistics function to each post & page.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'enable',
-                    'class'     => 'readingEnable'
-                ]
+                }
             ],
             [
                 'id'       => 'viewInterval',
                 'title'    => __('View Interval', 'G3'),
                 'callback' => function () {
-                    echo Container::select(
+                    echo Element::select(
                         PostService::OPTION_KEY,
                         $this->option,
                         'viewInterval',
@@ -136,26 +147,23 @@ class Post extends Components {
                     );
                 },
                 'args'     => [
-                    'label_for'         => 'viewInterval',
-                    'class'             => 'readingSafeTime',
+                    'class'             => 'advanced',
                     'sanitize_callback' => 'absint',
                     'default'           => '60',
                 ]
             ],
             [
-                'id'       => 'copyright',
+                'id'       => 'notice',
                 'title'    => __('Copyright Notice', 'G3'),
                 'callback' => function () {
-                    echo Container::textarea(
+                    echo Element::textarea(
                         PostService::OPTION_KEY,
                         $this->option,
-                        'copyright',
+                        'notice',
                         __('Copyright Notice', 'G3')
                     );
                 },
                 'args'     => [
-                    'label_for'         => 'copyright',
-                    'class'             => 'readingCopyright',
                     'sanitize_callback' => 'wp_kses_post',
                 ]
             ],
@@ -163,24 +171,29 @@ class Post extends Components {
                 'id'       => 'autoNotice',
                 'title'    => __('Auto Notice', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         PostService::OPTION_KEY,
                         $this->option,
                         'autoNotice',
                         __('Auto Notice', 'G3'),
                         __('Automatically add a notice at the end of the article', 'G3'),
                     );
-                    echo '<script>
-                        const _t = document.querySelector(".option-site-visibility");
-                        const p1 = document.querySelector("tr.option-site-visibility td fieldset p.description");
-                        p1.style.display = "none";
-                        const p2 = _t.previousElementSibling.querySelector("p.description");
-                        p2.style.display = "none";
-                        </script>';
+                }
+            ],
+            [
+                'id'       => 'copyright',
+                'title'    => __('Copyright Protection', 'G3'),
+                'callback' => function () {
+                    echo Element::switch(
+                        PostService::OPTION_KEY,
+                        $this->option,
+                        'copyright',
+                        __('Copyright Protection', 'G3'),
+                        __('Automatically add your encoded & invisible brand mark in the article while saving to protect your content copyright.<br>It will cost several memory while saving. <a href="/wp-admin/admin.php?page=post-reading&g3-test=robustEncoder" target="_blank">Test Performance</a>', 'G3'),
+                    );
                 },
                 'args'     => [
-                    'label_for' => 'autoNotice',
-                    'class'     => 'readingAutoNotice',
+                    'class' => 'advanced'
                 ]
             ]
         ]);
@@ -201,8 +214,8 @@ class Post extends Components {
     public function mountCopyright($content)
     {
         if (isset($this->option['autoNotice']) && $this->option['autoNotice'] === '1') {
-            $copyright = $this->option['copyright'] ?? '';
-            $default   = "<blockquote class='g3-copyright-notice'>$copyright</blockquote>";
+            $notice  = $this->option['notice'] ?? '';
+            $default = "<blockquote class='g3-copyright-notice'>$notice</blockquote>";
 
             /**
              * Custom Filter: g3_filter_mount_copyright
@@ -211,6 +224,113 @@ class Post extends Components {
         }
         return $content;
     }
+    public function protected($postId): void
+    {
+        if (!isset($this->option['copyright']) || $this->option['copyright'] !== '1') {
+            return;
+        }
+
+        // 防止无限循环和权限检查
+        if (
+            wp_is_post_revision($postId) ||
+            wp_is_post_autosave($postId) ||
+            !current_user_can('edit_post', $postId)
+        ) {
+            return;
+        }
+
+        // 获取文章对象，使用缓存
+        static $processed_posts = [];
+        if (isset($processed_posts[$postId])) {
+            return; // 避免重复处理
+        }
+        $processed_posts[$postId] = true;
+
+        $post = get_post($postId);
+        if (!$post) {
+            return;
+        }
+
+        // 忽略列表检查
+        $ignoreList = [
+            'revision',
+            'nav_menu_item',
+            'product',
+            'attachment',
+            'customize_changeset',
+            'oembed_cache',
+            'user_request',
+            'wp_block'
+        ];
+
+        if (in_array($post->post_type, $ignoreList, true)) {
+            return;
+        }
+
+        // 检查内容长度，避免处理空内容或过短内容
+        if (empty($post->post_content) || mb_strlen($post->post_content, 'UTF-8') < 100) {
+            return;
+        }
+
+        // 检查是否已经有幽灵块，避免重复处理
+        if (RobustEncoder::hasGhostBlocks($post->post_content)) {
+            $ghost_count = RobustEncoder::getGhostBlockCount($post->post_content);
+            // 如果已经有足够的幽灵块，跳过处理（现在插入多个块）
+            if ($ghost_count >= 2) {
+                return;
+            }
+        }
+
+        try {
+            // 构造数据 - 使用更紧凑的格式
+            $siteData = json_encode([
+                'siteName' => get_bloginfo('name'),
+                'siteUrl'  => home_url(),
+                'time'     => time(),
+                'postId'   => $postId, // 添加文章ID用于追踪
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            if ($siteData === false) {
+                return;
+            }
+
+            // 清除旧幽灵块
+            $cleanContent = RobustEncoder::removeAllGhostBlocks($post->post_content);
+
+            // 检查清理后的内容长度
+            if (mb_strlen($cleanContent, 'UTF-8') < 50) {
+                return;
+            }
+
+            // 分散嵌入新数据
+            $newContent = RobustEncoder::embedPayloadIntoContent($cleanContent, $siteData);
+
+            // 检查内容是否实际发生了变化
+            if ($newContent === $post->post_content) {
+                return;
+            }
+
+            // 防止循环调用
+            remove_action('save_post', [$this, 'protected'], 10);
+
+            // 使用更高效的更新方式
+            $updated = wp_update_post([
+                'ID'           => $postId,
+                'post_content' => $newContent
+            ], false); // false = 不触发wp_error
+
+            // 恢复钩子
+            add_action('save_post', [$this, 'protected'], 10, 1);
+
+            if (is_wp_error($updated)) {
+                error_log('[G3] RobustEncoder: Failed to update post ' . $postId . ': ' . $updated->get_error_message());
+            }
+        }
+        catch (\Exception $e) {
+            error_log('' . $e->getMessage());
+        }
+    }
+
     private function postViews(): void
     {
         if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
@@ -229,7 +349,12 @@ class Post extends Components {
     }
     private function _setPostViews($postId): void
     {
-        $minute  = (int) $this->option['viewInterval'] ?? 60;
+        if ($this->loader->admin()) {
+            $minute = (int) $this->option['viewInterval'] ?? 60;
+        } else {
+            $minute = 1;
+        }
+
         $hour    = $minute && $minute > 0 ? $minute / 60 : 1;
         $metaKey = $this->viewsKey;
         if (is_singular()) {
@@ -276,12 +401,11 @@ class Post extends Components {
         $dislikeCount   = get_post_meta($postId, PostService::DISLIKE_KEY, true) ?: 0;
         $favoritesCount = get_post_meta($postId, PostService::FAVORITE_KEY, true) ?: 0;
 
-        $html  = '<div class="j-input-group is-2">';
-        $html .= '<div class="input-group-item"><label for="views-count">' . __('View', 'G3') . '</label><input type="number" id="views-count" name="viewsCount" value="' . $viewCount . '" min="0"></div>';
-        $html .= '<div class="input-group-item"><label for="favorites-count">' . __('Favorite', 'G3') . '</label><input type="number" id="favorites-count" name="favoritesCount" value="' . $favoritesCount . '" min="0"></div>';
-        $html .= '</div><div class="j-input-group is-2">';
-        $html .= '<div class="input-group-item"><label for="like-count">' . __('Like', 'G3') . '</label><input type="number" id="like-count" name="likeCount" value="' . $likeCount . '" min="0"></div>';
-        $html .= '<div class="input-group-item"><label for="dislike-count">' . __('Dislike', 'G3') . '</label><input type="number" id="dislike-count" name="dislikeCount" value="' . $dislikeCount . '" min="0"></div>';
+        $html  = '<div class="grid-container grid-col-1 grid-col-sm-2 grid-col-md-2 grid-col-lg-4">';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('View', 'G3') . '</div></div><input class="j-input" type="number" id="views-count" name="viewsCount" value="' . $viewCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Favorite', 'G3') . '</div></div><input class="j-input" type="number" id="favorites-count" name="favoritesCount" value="' . $favoritesCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Like', 'G3') . '</div></div><input class="j-input" type="number" id="like-count" name="likeCount" value="' . $likeCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Dislike', 'G3') . '</div></div><input class="j-input" type="number" id="dislike-count" name="dislikeCount" value="' . $dislikeCount . '" min="0"></div>';
         $html .= '</div>';
         $html .= '<div class="g3-metabox-description">' . __('Tip: You can customize the interaction data according to your operational needs.', 'G3') . '</div>';
 
@@ -353,11 +477,6 @@ HTML;
 
     public function registerCover(): void
     {
-        // $postTypes = get_post_types(['public' => true, '_builtin' => false], 'names');
-        // add_theme_support(
-        //     'post-thumbnails',
-        //     array_merge(['post'], array_keys($postTypes))
-        // );
         add_theme_support('post-thumbnails');
     }
 
@@ -471,7 +590,7 @@ HTML;
 
     protected function metaBox(): void
     {
-        $option = Components::getProperty('Share', 'option');
+        $option = Context::get(ShareService::OPTION_KEY);
         if (!isset($option['enable']) || $option['enable'] !== '1') return;
         add_meta_box('g3_metabox_share', __('Content Distribution', 'G3'), [\JEALER\G3\Components\Share::class, 'metaBoxRender'], 'post', 'side', 'high');
         add_meta_box('g3_metabox_share', __('Content Distribution', 'G3'), [\JEALER\G3\Components\Share::class, 'metaBoxRender'], 'page', 'side', 'high');

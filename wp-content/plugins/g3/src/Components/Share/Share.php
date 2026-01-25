@@ -2,7 +2,7 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\ShareService;
 use Override;
@@ -31,8 +31,9 @@ class Share extends Components {
         ]);
     }
     #[Override]
-    protected function adminOptions(): void
+    protected function form(): void
     {
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'share-settings') return;
         $this->option        = Option::cache(ShareService::OPTION_KEY, $this->option);
         $this->accountOption = Option::cache(ShareService::ACCOUNT_OPTION_KEY, $this->accountOption);
     }
@@ -49,7 +50,7 @@ class Share extends Components {
             __('Share', 'G3'),
             __('Share', 'G3'),
             'manage_options',
-            'share-setting',
+            'share-settings',
             [$this, 'render'],
             4
         );
@@ -61,7 +62,7 @@ class Share extends Components {
             'general' => __('General', 'G3'),
             'account' => __('Social Accounts', 'G3'),
         ];
-        Container::tab('Share', 'general', $args);
+        Element::tab('Share', 'general', $args);
         echo '</div>';
     }
     #[Override]
@@ -71,18 +72,18 @@ class Share extends Components {
             'general',
             null,
             '__return_false',
-            'share-setting&tab=general'
+            'share-settings&tab=general'
         );
         register_setting(
             'general',
             ShareService::OPTION_KEY,
         );
-        Container::settingFields('share-setting&tab=general', 'general', [
+        Element::settingFields('share-settings&tab=general', 'general', [
             [
                 'id'       => 'enable',
                 'title'    => __('Content Distribution', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'enable',
@@ -98,7 +99,7 @@ class Share extends Components {
                 'id'       => 'poster',
                 'title'    => __('Share via Poster', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'poster',
@@ -113,7 +114,7 @@ class Share extends Components {
                 'id'       => 'wechatTitle',
                 'title'    => __('WeChat Title', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'wechatTitle',
@@ -129,7 +130,7 @@ class Share extends Components {
                 'id'       => 'wechatMediaLibrary',
                 'title'    => __('Wechat OA Media Library', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'wechatMediaLibrary',
@@ -145,7 +146,7 @@ class Share extends Components {
             //     'id'       => 'weiBo',
             //     'title'    => __('Share to WeiBo', 'G3'),
             //     'callback' => function () {
-            //         echo Container::enable(
+            //         echo Element::enable(
             //             ShareService::OPTION_KEY,
             //             $this->option,
             //             'weiBo',
@@ -160,7 +161,7 @@ class Share extends Components {
                 'id'       => 'qqZone',
                 'title'    => __('Share to QQ Zone', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'qqZone',
@@ -175,7 +176,7 @@ class Share extends Components {
                 'id'       => 'douYin',
                 'title'    => __('Share to DouYin', 'G3'),
                 'callback' => function () {
-                    echo Container::enable(
+                    echo Element::switch(
                         ShareService::OPTION_KEY,
                         $this->option,
                         'douYin',
@@ -198,7 +199,6 @@ class Share extends Components {
     protected function metaBox(): void
     {
         if (!isset($this->option['wechatTitle']) || $this->option['wechatTitle'] !== '1') return;
-
         add_meta_box(
             'wechatTitle',
             __('WeChat Title', 'G3'),
@@ -215,9 +215,10 @@ class Share extends Components {
         $des      = __('Customize the title that will be displayed when shared on WeChat.', 'G3') . ' ' .
             __('If the title is empty, the title of the post will be used.', 'G3');
         $template = <<<HTML
-<div class="j-input-group">
-    <div class="input-group-item views-data">
-        <input type="text" id="wechat-title" name="wechatTitle" value="$value">
+<div class="grid-container grid-col-1">
+    <div class="input-group">
+        <div class="el-addon"><div class="is-text">$label</div></div>
+        <input class="j-input" type="text" id="wechat-title" name="wechatTitle" value="$value">
     </div>
 </div>
 <div class="g3-metabox-description">$des</div>

@@ -1,11 +1,16 @@
 <?php
 namespace JEALER\G3;
+
+use JEALER\G3\Queue;
 use WP_Error;
+
 class Deactivator {
     public static function deactivate(): void
     {
         flush_rewrite_rules();
         self::cleanOptions();
+
+        Queue::unregisterCron();
     }
 
     private static function cleanOptions()

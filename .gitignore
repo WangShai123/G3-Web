@@ -31,12 +31,26 @@
 
 # Local files in plugin g3
 /g3.php
+/wp-content/plugins/
+!/wp-content/plugins/g3/
 /wp-content/plugins/g3/backup/
 /wp-content/plugins/g3/documents/
+/wp-content/plugins/g3/extensions/linux/
+/wp-content/plugins/g3/extensions/mac/
+/wp-content/plugins/g3/extensions/windows/
 /wp-content/plugins/g3/extensions/jl.php
-#/wp-content/plugins/g3/dist/
 
-# Advanced tests
+# Static assets
+/wp-content/plugins/g3/public/javascript/
+!wp-content/plugins/g3/public/javascript/*.min.js
+!wp-content/plugins/g3/public/javascript/*.umd.js
+!wp-content/plugins/g3/public/javascript/es/jui.js
+!wp-content/plugins/g3/public/javascript/es/*.esm.js
+wp-content/plugins/g3/public/css/
+!wp-content/plugins/g3/public/css/*.min.css
+!wp-content/plugins/g3/public/css/fonts/*
+
+# Global tests
 /wp-content/plugins/g3/tests/
 # Component tests
 /wp-content/plugins/g3/src/Components/*/tests/
@@ -51,24 +65,20 @@
 /wp-content/object-cache.php.bak
 /wp-content/db.php
 
-# Other plugins
-/wp-content/plugins/loco-translate/
-/wp-content/plugins/query-monitor/
-
 # Tools
-/.github
-/.idea
-/.vscode
-/.lingma
-/.trae
-/*.txt
+.github/
+.idea/
+.vscode/
+.lingma/
+.trae/
+*.txt
 
 # Log files
-/*.log
-/wp-content/*.log
+*.log
+wp-content/*.log
 
 # htaccess
-/.htaccess
+.htaccess
 
 # DS_Store
 .DS_Store

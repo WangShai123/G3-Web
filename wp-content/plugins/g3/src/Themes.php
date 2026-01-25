@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3;
-use JEALER\G3\Utilities\Common;
+
 use JEALER\G3\Utilities\Frontend;
 use WP_THEME;
 class Themes {
@@ -27,11 +27,6 @@ class Themes {
             add_filter('template', [$this, 'mobileTemplate']);
             add_filter('stylesheet', [$this, 'mobileStylesheet']);
         }
-    }
-
-    public static function run(): Themes
-    {
-        return Common::singleton(__CLASS__);
     }
 
     public function lowTemplate(): string

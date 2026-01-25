@@ -1,8 +1,6 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\System;
 
-Frontend::loadStyle('jui');
 global $wpdb;
 ?>
 <div class="mt-4">

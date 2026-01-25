@@ -5,7 +5,17 @@ use ReflectionClass;
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
 use JEALER\G3\Attributes\Schema;
+use JEALER\G3\Attributes\Inject;
+use Psr\Container\ContainerInterface;
+use JEALER\G3\Container;
+use JEALER\G3\Container\ContainerBuilder;
+use JEALER\G3\Container\FactoryDefinition;
+use JEALER\G3\Middleware\SchemaMiddleware;
 use WP_REST_Request;
+use RuntimeException;
+use SplFileInfo;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 /**
  * REST API Router, Easy to build RESTful API by Controller Class
@@ -16,6 +26,8 @@ use WP_REST_Request;
  * @author Wang Shai
  */
 class Router {
+    // private ContainerInterface $container;
+    private Container $container;
     private string $baseDir;
     private string $baseNamespace;
 
@@ -37,10 +49,14 @@ class Router {
      */
     private array $additionalRouters = [];
 
-    public function __construct(string $baseDir, string $baseNamespace)
-    {
+    public function __construct(
+        string $baseDir,
+        string $baseNamespace,
+        #[Inject] Container $container // 自动注入 JEALER\G3\Container
+    ) {
         $this->baseDir       = rtrim($baseDir, '/');
         $this->baseNamespace = trim($baseNamespace, '\\');
+        $this->container     = $container;
     }
 
     /**
@@ -109,7 +125,7 @@ class Router {
                     // if method defined Schema, attach SchemaMiddleware automatically
                     if ($schema) {
                         $middlewares[] = [
-                            'class'  => \JEALER\G3\Middleware\SchemaMiddleware::class,
+                            'class'  => SchemaMiddleware::class,
                             'params' => [$schema]
                         ];
                     }
@@ -133,10 +149,6 @@ class Router {
             $router->discover();
         }
 
-        // 调试信息
-        // if (\defined('WP_DEBUG') && WP_DEBUG) {
-        //     error_log('Router discovered ' . \count($this->restDefs) . ' routes');
-        // }
     }
 
     /**
@@ -150,52 +162,48 @@ class Router {
      */
     public function registerRestRoutes(): void
     {
-        // if (\defined('WP_DEBUG') && WP_DEBUG) {
-        //     error_log('Registering ' . \count($this->restDefs) . ' REST routes');
-        // }
-
         foreach ($this->restDefs as $def) {
-            // debug info
-            // if (\defined('WP_DEBUG') && WP_DEBUG) {
-            //     error_log('Registering route: ' . $def['namespace'] . $def['route']);
-            // }
-
             register_rest_route($def['namespace'], $def['route'], [
                 'methods'             => $def['methods'],
                 'callback'            => function (WP_REST_Request $req) use ($def) {
                     // execute middlewares
                     foreach ($def['middlewares'] as $middlewareDef) {
                         $middlewareClass = $middlewareDef['class'];
-                        if (class_exists($middlewareClass)) {
-                            try {
-                                // create middleware instance, pass parameters
-                                $middleware = !empty($middlewareDef['params'])
-                                    ? new $middlewareClass(...$middlewareDef['params'])
-                                    : new $middlewareClass();
+                        $params          = $middlewareDef['params'] ?? [];
 
-                                if (method_exists($middleware, 'handle')) {
-                                    $result = $middleware->handle($req);
-                                    if ($result !== true) {
-                                        // if middleware returns not true, interrupt execution and return error
-                                        return $result;
-                                    }
+                        try {
+                            if (!class_exists($middlewareClass)) {
+                                continue;
+                            }
+
+                            $middleware = !empty($params)
+                                ? new $middlewareClass(...$params)
+                                : new $middlewareClass();
+
+                            if (method_exists($middleware, 'handle')) {
+                                $result = $middleware->handle($req);
+                                if ($result !== true) {
+                                    return $result;
                                 }
                             }
-                            catch (\Exception $e) {
-                                // if (\defined('WP_DEBUG') && WP_DEBUG) {
-                                //     error_log('Middleware execution error: ' . $e->getMessage());
-                                // }
-                                // even if middleware errors, continue execution
-                            }
                         }
-                        // else {
-                        // if (\defined('WP_DEBUG') && WP_DEBUG) {
-                        //     error_log("Middleware class not found: $middlewareClass.");
-                        // }
-                        // }
+                        catch (\Exception $e) {
+                            continue;
+                        }
                     }
+                    // $obj = new ($def['class'])();
+    
+                    // —————— 使用容器创建控制器 ——————
+                    $controllerClass = $def['class'];
 
-                    $obj = new ($def['class'])();
+                    if (!$this->container->has($controllerClass)) {
+                        $factory = new FactoryDefinition($controllerClass);
+                        // 控制器每次请求新建, true
+                        $factory->singleton(true);
+                        $this->container->setRawDefinition($controllerClass, $factory);
+                    }
+                    $obj = $this->container->get($controllerClass);
+
                     return $obj->{$def['method']}($req);
                 },
                 'permission_callback' => '__return_true'
@@ -220,20 +228,15 @@ class Router {
      */
     private function requirePhpFiles(string $dir): void
     {
-        if (!is_dir($dir)) {
-            // if (\defined('WP_DEBUG') && WP_DEBUG) {
-            //     error_log("Directory does not exist: $dir.");
-            // }
-            return;
-        }
+        if (!is_dir($dir)) return;
 
-        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
-        /** @var \SplFileInfo $f */
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+
+        /**
+         * @var \SplFileInfo $f
+         */
         foreach ($it as $f) {
             if ($f->isFile() && $f->getExtension() === 'php') {
-                // if (\defined('WP_DEBUG') && WP_DEBUG) {
-                //     error_log('Requiring file: ' . $f->getPathname());
-                // }
                 require_once $f->getPathname();
             }
         }
@@ -250,23 +253,26 @@ class Router {
      */
     private function requireMiddlewareClasses(): void
     {
-        // 加载中间件接口
+        // Load middleware interface
         $middlewareInterface = __DIR__ . '/Middleware/MiddlewareInterface.php';
         if (file_exists($middlewareInterface)) {
             require_once $middlewareInterface;
         }
 
-        // 加载中间件注解类
+        // Load middleware attribute
         $middlewareAttribute = __DIR__ . '/Attributes/Middleware.php';
         if (file_exists($middlewareAttribute)) {
             require_once $middlewareAttribute;
         }
 
-        // 加载内置中间件
+        // Load built-in middleware
         $middlewareDir = __DIR__ . '/Middleware';
         if (is_dir($middlewareDir)) {
-            $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($middlewareDir));
-            /** @var \SplFileInfo $f */
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($middlewareDir));
+
+            /**
+             * @var \SplFileInfo $f
+             */
             foreach ($it as $f) {
                 if ($f->isFile() && $f->getExtension() === 'php') {
                     require_once $f->getPathname();

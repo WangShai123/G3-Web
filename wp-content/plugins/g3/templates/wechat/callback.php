@@ -1,12 +1,13 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+use JEALER\G3\Service;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\WechatOAService;
 use Psr\Http\Message\ResponseInterface;
 
 try {
-    $service = WechatOAService::run();
+    $service = Container::run()->get(WechatOAService::class);
 
     if (!$service->available()) {
         http_response_code(503);

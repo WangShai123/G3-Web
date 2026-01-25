@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Queue\Jobs\EmailJob;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Exception;
@@ -45,13 +46,14 @@ class MailerService {
      * 
      * @param string $to Recipient email
      * @param string $subject Email subject
-     * @param string $body Email body
+     * @param string $messages Email messages
      * @param array $attachments Optional attachments
+     * @param array $headers Optional headers
      * @return bool|string True on success, error message on failure
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function send(string $to, string $subject, string $body, array $attachments = []): bool|string
+    public static function send(string $to, string $subject, string $messages, array $attachments = [], array $headers = []): bool|string
     {
         try {
             // check if PHPMailer exists
@@ -89,11 +91,16 @@ class MailerService {
             // Add recipient
             $mail->addAddress($to);
 
+            // Add custom headers
+            foreach ($headers as $name => $value) {
+                $mail->addCustomHeader($name, $value);
+            }
+
             // Content
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
             $mail->Subject = $subject;
-            $mail->Body    = $body;
+            $mail->Body    = $messages;
 
             // attachments
             foreach ($attachments as $attachment) {
@@ -112,6 +119,16 @@ class MailerService {
             return $e->getMessage();
         }
     }
+
+    // public static function send(string $to, string $subject, string $messages, array $attachments = [], array $headers = []): bool|string
+    // {
+    //     $queue = get_option(SystemService::QUEUE_OPTION_KEY)['email'] ?? '0';
+    //     if ($queue === '1') {
+    //         return EmailJob::send($to, $subject, $messages, $attachments, $headers);
+    //     } else {
+    //         return self::_send($to, $subject, $messages, $attachments, $headers);
+    //     }
+    // }
 
     /**
      * Configure SMTP settings

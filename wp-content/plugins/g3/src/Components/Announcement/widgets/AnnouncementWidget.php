@@ -1,5 +1,6 @@
 <?php
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Date;
+
 /**
  * Announcement Widget
  * 
@@ -137,7 +138,7 @@ class AnnouncementWidget extends WP_Widget {
                     'id'    => get_the_ID(),
                     'title' => get_the_title(),
                     'link'  => get_permalink(),
-                    'time'  => Common::humanTime(),
+                    'time'  => Date::humanTime(),
                     'cover' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
                 ];
             }

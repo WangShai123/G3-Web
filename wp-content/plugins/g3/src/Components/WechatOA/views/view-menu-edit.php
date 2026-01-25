@@ -1,6 +1,5 @@
 <?php
 use JEALER\G3\Services\WechatOAService;
-use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 
 $id          = $_GET['id'] ?? 0;
@@ -37,9 +36,6 @@ $options = [
     '12' => 'article_id',
     '13' => 'article_view_limited',
 ];
-
-Frontend::loadStyle('jui');
-Frontend::loadScript('jui');
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo $id ? __('Edit') : __('Add New Menu', 'G3') ?></h1>

@@ -95,6 +95,20 @@ $time = Developer::time();
                         _e('Easy to implement intercept, log, etc. through AOP configuration and AOP Attribute.', 'G3');
                         ?>
                     </li>
+                    <li>
+                        <b>DI:</b>
+                        <?php
+                        // 利用容器获取和管理对象与依赖注入。
+                        _e('Easy to get and manage objects & dependencies by DI container.', 'G3');
+                        ?>
+                    </li>
+                    <li>
+                        <b>Queue:</b>
+                        <?php
+                        // 利用队列轻松处理异步任务
+                        _e('Easy to handle asynchronous tasks through Queue.', 'G3');
+                        ?>
+                    </li>
                 </ul>
             </div>
             <h3><?php _e('Over 20 Subsystem Components', 'G3'); ?></h3>

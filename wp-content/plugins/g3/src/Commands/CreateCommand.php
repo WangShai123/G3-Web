@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Helper\QuestionHelper;
 
+use JEALER\G3\Service;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Services\ThemeGeneratorService;
@@ -134,7 +135,7 @@ class CreateCommand extends Command {
             'authorUrl'   => $author_uri,
             'version'     => $theme_version,
         ];
-        $service = ThemeGeneratorService::run();
+        $service = Container::run()->get(ThemeGeneratorService::class);
         $service->create($params);
 
         // continue

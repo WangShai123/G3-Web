@@ -1,6 +1,12 @@
 import jui from 'jui'
 
-document.documentElement.classList.add('j-theme-indigo')
+const hasJThemeClass = Array.from(document.documentElement.classList).some((className) =>
+  className.startsWith('j-theme-'),
+)
+if (!hasJThemeClass) {
+  document.documentElement.classList.add('j-theme-indigo')
+}
+
 const langs = {
   zh: {
     'Login via WeChat QrCode': '微信扫码登录',
@@ -59,18 +65,17 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
           hash: `login:${hash}`,
         })
 
-        if (qrRes.code !== 200 || !qrRes.data?.url) {
+        // if (qrRes.code !== 200 || !qrRes.data?.url) {
+        //   throw new Error(qrRes.message || t('Failed to get QrCode'))
+        // }
+        if (qrRes.code !== 200 || !qrRes.data || !qrRes.data.url) {
           throw new Error(qrRes.message || t('Failed to get QrCode'))
         }
 
         // render qrcode
         setTimeout(() => {
           modal.hideLoading()
-          wrap.innerHTML = `<img 
-							src="${qrRes.data.url}" 
-							alt="${t('Login via WeChat QrCode')}"
-							style="width:280px; height:auto; outline:1px solid var(--gray-3)"
-						/>`
+          wrap.innerHTML = `<img src="${qrRes.data.url}" alt="${t('Login via WeChat QrCode')}" style="width:280px; height:auto; outline:1px solid var(--gray-3)" />`
         }, 800)
 
         // delay polling validate
@@ -92,22 +97,21 @@ for (const element of document.querySelectorAll('[data-login-element]')) {
           if (res.success === true) {
             jui.toast.success(res.message)
             jui.u.deleteCookie(subscribeCookie)
+            stopPolling()
             setTimeout(() => {
               window.location.href = '/'
-            }, 500)
+            }, 1000)
           } else {
             if (res.status && res.status === 'expired') {
               jui.toast.warning(res.message)
               jui.u.deleteCookie(subscribeCookie)
-              // stop polling
+              stopPolling()
               return
             }
             // pending
-            // setTimeout(poll, pollInterval)
             currentPollingTimer = setTimeout(poll, pollInterval)
           }
         } catch {
-          // setTimeout(poll, pollInterval * 2)
           currentPollingTimer = setTimeout(poll, pollInterval * 2)
         }
       }

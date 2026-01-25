@@ -1,6 +1,8 @@
 <?php
+
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Services\PageService;
 
 $name = get_bloginfo('name');
@@ -38,6 +40,9 @@ get_header();
                 <button type="submit" class="j-button is-primary w-full" id="submit"><?php _e('Submit'); ?></button>
                 <button type="reset" class="j-button is-default w-full"><?php _e('Cancel'); ?></button>
             </div>
+            <div class="form-item" id="tip">
+                <div class="text-center text-xs text-gray-8">Security Tip: Only 5 times you can try in 5 minutes.</div>
+            </div>
         </form>
     </section>
 </div>
@@ -54,16 +59,17 @@ get_header();
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.documentElement.classList.add('j-theme-indigo', 'j-radius-sm', 'dark');
+        const { postJson, getCookie, q, restUrl } = jui.u;
+        document.documentElement.classList.add('dark', 'j-theme-indigo', 'j-radius-sm', 'j-shadow-none', 'j-font-sm');
         bg();
 
         const name = 'oaLoginCookie';
-        const form = document.querySelector('#login');
-        const action = form.querySelector('#action');
-        const submitBtn = form.querySelector('#submit');
-        const username = form.querySelector('#username');
-        const password = form.querySelector('#password');
-        const warning = form.querySelector('#warning');
+        const form = q('#login');
+        const action = q('#action', form);
+        const submitBtn = q('#submit', form);
+        const username = q('#username', form);
+        const password = q('#password', form);
+        const warning = q('#warning', form);
 
         if (!submitBtn.dataset.originalText) {
             submitBtn.dataset.originalText = submitBtn.textContent.trim();
@@ -85,32 +91,31 @@ get_header();
             submitBtn.disabled = true;
             submitBtn.innerHTML = loader;
 
-            const origin = window.location.origin;
-            jui.u.postJson(origin + '/wp-json/api/v1/oa/admin/auth', {
+            postJson(restUrl + 'api/v1/oa/admin/auth', {
                 username: username.value,
                 password: password.value
             }).then(res => {
                 if (res.code === 200) {
                     jui.toast.success(res.message, 1500)
                     setTimeout(function () {
-                        window.location.href = origin + '/dashboard';
+                        submitBtn.textContent = '<?php echo Message::loginSuccess(); ?>';
+                        location.href = location.origin + '/dashboard';
                     }, 1500);
                     clearInterval(timer);
                 } else {
                     jui.toast.error(res.message, 2000)
-
                     if (res.code === 429) {
                         const expireTime = new Date(Date.now() + 60 * 5 * 1000);
                         document.cookie = `${name}=1; expires=${expireTime.toUTCString()}; path=/; SameSite=Strict`;
                     } else {
                         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
                     }
+                    setTimeout(function () {
+                        submitBtn.textContent = text;
+                        submitBtn.disabled = false;
+                        isSubmitting = false;
+                    }, 2000);
                 }
-                setTimeout(function () {
-                    submitBtn.innerHTML = text;
-                    submitBtn.disabled = false;
-                    isSubmitting = false;
-                }, 2000);
             })
                 .catch(function (error) {
                     console.error('Login request failed:', error);
@@ -123,8 +128,7 @@ get_header();
         function updateSubmitButtonState() {
             if (isSubmitting) return;
 
-            // const cookie = getCookie(name);
-            const cookie = jui.u.getCookie(name)
+            const cookie = getCookie(name)
 
             if (cookie === lastCookie) {
                 return;

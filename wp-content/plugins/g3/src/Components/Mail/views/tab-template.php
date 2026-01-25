@@ -7,14 +7,11 @@
 </form>
 
 <script>
-    const $ = jQuery;
-    const target = $('.field-enable');
-    const select = target.find('select');
-
-    select.val() == 1 ? target.siblings('tr').show() : target.siblings('tr').hide();
-
-    select.change(function () {
-        $(this).val() == 1 ? target.siblings('tr').fadeIn() : target.siblings('tr').fadeOut();
+    const target = jQuery('.field-enable');
+    const switcher = jQuery('#switch-enable');
+    switcher.checked ? target.siblings('tr').show() : target.siblings('tr').hide();
+    switcher.change(function () {
+        this.checked ? target.siblings('tr').fadeIn() : target.siblings('tr').fadeOut();
     });
 
 </script>

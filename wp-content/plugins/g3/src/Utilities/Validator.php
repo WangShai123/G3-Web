@@ -206,4 +206,10 @@ final class Validator {
 
         return true;
     }
+
+    public static function screen(string $id): bool
+    {
+        $screen = get_current_screen();
+        return $screen->id === $id;
+    }
 }

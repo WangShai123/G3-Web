@@ -3,7 +3,7 @@ namespace JEALER\G3\Components;
 
 use JEALER\G3\Components;
 use JEALER\G3\Services\SwiperService;
-use JEALER\G3\Utilities\Container;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Response;
@@ -50,7 +50,7 @@ class Swiper extends Components {
             'swipers'   => __('Edit Swipers', 'G3'),
             'locations' => __('Manage Locations', 'G3'),
         ];
-        Container::tab('Swiper', 'swipers', $tabs);
+        Element::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
     public function editSwiper(): void

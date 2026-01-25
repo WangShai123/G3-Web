@@ -2,32 +2,27 @@
 namespace JEALER\G3;
 
 use JEALER\G3\Helper;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Container;
+use JEALER\G3\Queue\CronSchedules;
+use JEALER\G3\Utilities\Context;
 
 class Loader {
-    public static $instance = null;
+    public ?Container $container = null;
     public function __construct()
     {
+        if ($this->container === null) {
+            $this->container = Container::run();
+        }
         $this->init();
-        Helper::loader();
     }
-    public static function run(): Loader
+    private function init(): void
     {
-        if (!isset(self::$instance)) {
-            self::$instance = Common::singleton(__CLASS__);
+        if (!$this->container->has('loader')) {
+            $this->container->setRawDefinition('loader', Helper::class);
+            $this->container->get('loader')->loader();
+        } else {
+            $this->container->get('loader')->loader();
         }
-        return self::$instance;
-    }
-    private function init()
-    {
-        global $loader;
-        if (!$loader instanceof Helper) {
-            $loader = Helper::run();
-        }
-        add_action('init', [$this, 'textDomain']);
-    }
-    public function textDomain()
-    {
-        load_plugin_textdomain('G3', false, 'g3/public/languages');
+        CronSchedules::initIfNeeded();
     }
 }

@@ -4,6 +4,7 @@ namespace JEALER\G3\Includes;
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Date;
 
 class WechatOAReplyListTable extends WP_List_Table {
     private int $perPage;
@@ -271,7 +272,7 @@ class WechatOAReplyListTable extends WP_List_Table {
             };
 
             $row['status']   = $row['status'] ? __('Enabled') : __('Disabled');
-            $row['modified'] = Common::dateTime(strtotime($row['updated']));
+            $row['modified'] = Date::dateTime(strtotime($row['updated']));
         }
 
         return $results ?: [];

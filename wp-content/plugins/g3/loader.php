@@ -22,6 +22,8 @@
  * Author: JEALER
  * Author URI: https://www.jealer.com/
  * Sponsor: https://www.jealer.com/sponsor/
+ * Text Domain: G3
+ * Domain Path: /public/languages
  * License: GPLv2 or later
  */
 
@@ -65,4 +67,19 @@ register_deactivation_hook(__FILE__, [JEALER\G3\Deactivator::class, 'deactivate'
 /**
  * @description Load Plugin
  */
-JEALER\G3\Loader::run();
+$container = JEALER\G3\Container::run();
+if (!$container->has('app')) {
+    $container->setRawDefinition('app', JEALER\G3\Loader::class);
+    $container->get('app');
+}
+
+/**
+ * @description Load Test Script (for debugging rewrite rules)
+ */
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    add_action('wp_footer', function () {
+        if (isset($_GET['g3_test_rewrite'])) {
+            include __DIR__ . '/test-rewrite.php';
+        }
+    });
+}
