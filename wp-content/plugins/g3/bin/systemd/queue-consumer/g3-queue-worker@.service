@@ -1,0 +1,68 @@
+[Unit]
+Description=G3 Queue Worker (%i)
+Documentation=https://www.jealer.com/g3-system/g3-web/
+After=network.target mysql.service
+Wants=network.target
+Requires=mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/html
+
+# 动态命令配置 - 根据队列类型自动调整参数
+ExecStart=/usr/bin/php /var/www/html/wp-content/plugins/g3/bin/queue-worker.php --daemon --verbose --queue=%i --sleep=3 --tries=3 --timeout=60
+
+# 健康检查
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -TERM $MAINPID
+
+# 重启策略 - 平衡稳定性和响应性
+Restart=always
+RestartSec=5
+StartLimitInterval=300
+StartLimitBurst=5
+
+# 信号处理
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=15
+SendSIGKILL=yes
+
+# 安全配置 - 生产环境最佳实践
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/www/html/wp-content/uploads /tmp /var/log
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# 资源限制 - 适中配置，可根据需要调整
+LimitNOFILE=65536
+LimitNPROC=4096
+MemoryLimit=512M
+CPUQuota=80%
+
+# 环境变量
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=HOME=/var/www
+Environment=USER=www-data
+Environment=LANG=en_US.UTF-8
+Environment=LC_ALL=en_US.UTF-8
+
+# 日志配置
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=g3-queue-worker-%i
+
+[Install]
+WantedBy=multi-user.target

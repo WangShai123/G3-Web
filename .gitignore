@@ -31,8 +31,9 @@
 
 # Local files in plugin g3
 /g3.php
-/wp-content/plugins/
+/wp-content/plugins/*
 !/wp-content/plugins/g3/
+!/wp-content/plugins/g3/**/*
 /wp-content/plugins/g3/backup/
 /wp-content/plugins/g3/documents/
 /wp-content/plugins/g3/extensions/linux/

@@ -72,14 +72,3 @@ if (!$container->has('app')) {
     $container->setRawDefinition('app', JEALER\G3\Loader::class);
     $container->get('app');
 }
-
-/**
- * @description Load Test Script (for debugging rewrite rules)
- */
-if (defined('WP_DEBUG') && WP_DEBUG) {
-    add_action('wp_footer', function () {
-        if (isset($_GET['g3_test_rewrite'])) {
-            include __DIR__ . '/test-rewrite.php';
-        }
-    });
-}
