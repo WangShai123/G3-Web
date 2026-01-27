@@ -1,8 +1,8 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Rewrite;
 
-use JEALER\G3\Components;
-use JEALER\G3\Container;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Container\Container;
 
 /**
  * Rewrite Router
@@ -183,9 +183,9 @@ class Rewrite {
             $rulesRegistered++;
         }
 
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("[G3 Rewrite] Total rules registered: $rulesRegistered");
-        }
+        // if (defined('WP_DEBUG') && WP_DEBUG) {
+        //     error_log("[G3 Debug][Rewrite] Total rules registered: $rulesRegistered");
+        // }
 
         // check if flush needed, based on config hash
         // $this->checkIfFlushNeeded();
@@ -203,12 +203,10 @@ class Rewrite {
     public static function flushRewriteRules(): void
     {
         try {
-            // 尝试从容器获取实例
             $container = Container::run();
             if ($container->has('rewrite')) {
                 $instance = $container->get('rewrite');
             } else {
-                // 如果容器中没有，创建新实例
                 $instance = new self();
             }
 
@@ -216,8 +214,7 @@ class Rewrite {
             flush_rewrite_rules();
         }
         catch (\Exception $e) {
-            // 如果容器方式失败，回退到直接创建实例
-            error_log('[G3 Rewrite] Container access failed, creating direct instance: ' . $e->getMessage());
+            error_log('[G3 Debug][Rewrite] Container access failed, creating direct instance: ' . $e->getMessage());
             $instance = new self();
             $instance->registerRewriteRules();
             flush_rewrite_rules();
@@ -239,6 +236,9 @@ class Rewrite {
         if (!$this->verifyRewriteRules()) {
             self::flushRewriteRules();
         }
+        // if (defined('WP_DEBUG') && WP_DEBUG) {
+        //     error_log('[G3 Debug][Helper] Rewrite auto check and fix enabled');
+        // }
     }
 
     /**

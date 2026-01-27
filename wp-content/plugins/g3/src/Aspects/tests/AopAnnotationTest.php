@@ -8,11 +8,11 @@
  */
 
 // 加载必要的类
-require_once __DIR__ . '/../../Aop.php';
-require_once __DIR__ . '/../../Attributes/Aop.php';
+require_once __DIR__ . '/../../Aspects.php';
+require_once __DIR__ . '/../../Attributes/Aspects.php';
 
-use JEALER\G3\Aop;
-use JEALER\G3\Attributes\Aop as AopAttr;
+use JEALER\G3\Aspects\Aspects as Aop;
+use JEALER\G3\Attributes\Aspects as AopAttr;
 
 /**
  * 日志收集器

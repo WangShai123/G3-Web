@@ -5,7 +5,7 @@ use JEALER\G3\Services\SwiperService;
 wp_enqueue_media();
 wp_enqueue_script('media-grid');
 wp_enqueue_script('media');
-Frontend::loadScript('media.image');
+Frontend::loadScript('g3.media.image');
 
 $t         = $_GET['t'] ?? '';
 $pageTitle = $t === 'new' ? __('Add Swiper', 'G3') : __('Edit Swiper', 'G3');

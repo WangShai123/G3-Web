@@ -49,36 +49,30 @@ final class Frontend {
     public static function loadStyle(string $handle, bool $cdn = false, string $media = 'all')
     {
         $styles = [
-            'jui'           => [G3_CSS_URL . '/jui.min.css', [], '1.0.0'],
-            'jui.core'      => [G3_CSS_URL . '/jui.core.min.css', [], '1.0.0'],
+            'jui'          => [G3_CSS_URL . '/jui.min.css', [], '1.0.0'],
+            'jui.core'     => [G3_CSS_URL . '/jui.core.min.css', [], '1.0.0'],
 
             /**
              * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
              * @link https://github.com/highlightjs/highlight.js
              */
-            'highlight'     => [G3_CSS_URL . '/highlight.atom-one-dark.min.css', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css'],
+            'highlight'    => [G3_CSS_URL . '/highlight.atom-one-dark.min.css', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css'],
             /**
              * Quill: a modern WYSIWYG editor built for compatibility and extensibility
              * @link https://github.com/slab/quill
              */
-            'quill'         => [G3_CSS_URL . '/quill.snow.min.css', [], '2.0.3', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css'],
-            'quill.custom'  => [G3_CSS_URL . '/quill.snow.custom.min.css', [], '1.3.6'],
+            'quill'        => [G3_CSS_URL . '/quill.snow.min.css', [], '2.0.3', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css'],
+            'quill.custom' => [G3_CSS_URL . '/quill.snow.custom.min.css', [], '1.3.6'],
             /**
              * Swiper: The most modern mobile touch slider with hardware accelerated transitions
              * @link https://github.com/nolimits4web/Swiper
              */
-            'swiper'        => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.0.3', 'https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.css'],
+            'swiper'       => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.0.3', 'https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.css'],
             /**
              * katex: Fast math typesetting for the web
              * @see https://github.com/KaTeX/KaTeX
              */
-            'katex'         => [G3_CSS_URL . '/katex.min.css', [], '0.16.25', 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css'],
-            /**
-             * handsontable
-             * @see https://www.npmjs.com/package/handsontable
-             */
-            'ht.table.core' => [G3_CSS_URL . '/handsontable.min.css', [], '16.2.0', 'https://cdn.jsdelivr.net/npm/handsontable/styles/handsontable.min.css'],
-            'ht.table'      => [G3_CSS_URL . '/ht-theme-main.min.css', ['ht.table.core'], '16.2.0', 'https://cdn.jsdelivr.net/npm/handsontable/styles/ht-theme-main.min.css'],
+            'katex'        => [G3_CSS_URL . '/katex.min.css', [], '0.16.25', 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css'],
         ];
         /**
          * Custom Filter: g3_filter_style
@@ -123,21 +117,17 @@ final class Frontend {
         $scripts = [
             // jQuery
             'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://cdn.jsdelivr.net/npm/jquery'],
-            // G3
-            'redirect.link'      => [G3_JS_URL . '/g3.redirect.link.min.js', [], '1.0.0'],
             // JUI
             'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0'],
             'jui.form.validator' => [G3_JS_URL . '/jui.form.validator.min.js', [], '1.0.0'],
             'jui.pca'            => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
             'jui.cascading'      => [G3_JS_URL . '/jui.cascading.min.js', [], '1.0.0'],
-            // Admin
-            'admin'              => [WP_PLUGIN_URL . '/g3/dist/javascript/admin.js', ['jquery'], '1.0.0'],
+            // G3
+            'g3.redirect.link'   => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.redirect.link.min.js', [], '1.0.0'],
+            'g3.admin'           => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
             // Template Scripts
-            'media.upload'       => [G3_JS_URL . '/template.media.upload.min.js', ['jquery'], '1.0.0'],
-            'media.image'        => [G3_JS_URL . '/template.media.image.upload.min.js', ['jquery'], '1.0.0'],
-            'cover.upload'       => [G3_JS_URL . '/template.cover.upload.min.js', ['jquery'], '1.0.0'],
-            'avatar.upload'      => [G3_JS_URL . '/template.avatar.upload.min.js', ['jquery'], '1.0.0'],
-            'profile.edit'       => [G3_JS_URL . '/template.profile.edit.min.js', ['jquery'], '1.0.0'],
+            'g3.media.upload'    => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.template.media.upload.min.js', ['jquery'], '1.0.0'],
+            'g3.media.image'     => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
             /**
              * Axios: 
              * @link https://github.com/axios/axios
@@ -190,11 +180,6 @@ final class Frontend {
              * @link https://github.com/davidshimjs/qrcodejs
              */
             'qrcode'             => [G3_JS_URL . '/qrcode.min.js', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'],
-            /**
-             * handsontable
-             * @link https://www.npmjs.com/package/handsontable
-             */
-            'ht.table'           => [G3_JS_URL . '/handsontable.full.min.js', [], '16.2.0', 'https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js']
         ];
 
         /**

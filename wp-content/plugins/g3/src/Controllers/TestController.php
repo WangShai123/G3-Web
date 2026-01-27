@@ -9,7 +9,7 @@ use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Utilities\System;
-use JEALER\G3\Container;
+use JEALER\G3\Container\Container;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;

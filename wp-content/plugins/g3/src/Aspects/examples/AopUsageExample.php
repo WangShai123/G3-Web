@@ -7,11 +7,11 @@
  * 展示如何在实际项目中使用 G3 AOP 系统
  */
 
-require_once __DIR__ . '/../../Aop.php';
-require_once __DIR__ . '/../../Attributes/Aop.php';
+require_once __DIR__ . '/../../Aspects.php';
+require_once __DIR__ . '/../../Attributes/Aspects.php';
 
-use JEALER\G3\Aop;
-use JEALER\G3\Attributes\Aop as AopAttr;
+use JEALER\G3\Aspects\Aspects as Aop;
+use JEALER\G3\Attributes\Aspects as AopAttr;
 
 /**
  * 示例 1: 用户服务类 - 使用配置文件方式
@@ -55,18 +55,31 @@ class UserService {
 /**
  * 示例 2: 订单服务类 - 使用注解方式
  */
-#[AopAttr('method', 'before', '*', function ($target, $method, $args) {
+#[AopAttr(
+    'method',
+    'before',
+    '*',
+function ($target, $method, $args) {
     echo "[LOG] 调用订单服务方法: {$method}\n";
-    })]
+    }
+)]
 class OrderService {
     private array $orders = [];
 
-    #[AopAttr('method', 'before', callback: function ($target, $method, $args) {
+    #[AopAttr(
+        'method',
+        'before',
+        function ($target, $method, $args) {
             echo "[AUDIT] 创建订单，数据: " . json_encode($args[0]) . "\n";
-            })]
-    #[AopAttr('method', 'after', callback: function ($target, $method, $args, $result) {
+            }
+    )]
+    #[AopAttr(
+        'method',
+        'after',
+        function ($target, $method, $args, $result) {
             echo "[AUDIT] 订单创建完成，ID: {$result}\n";
-            })]
+            }
+    )]
     public function createOrder(array $orderData): int
     {
         $orderId                 = count($this->orders) + 1;
@@ -76,9 +89,13 @@ class OrderService {
         return $orderId;
     }
 
-    #[AopAttr('method', 'before', callback: function ($target, $method, $args) {
+    #[AopAttr(
+        'method',
+        'before',
+        function ($target, $method, $args) {
             echo "[SECURITY] 检查订单访问权限，订单ID: {$args[0]}\n";
-            })]
+            }
+    )]
     public function getOrder(int $orderId): ?array
     {
         return $this->orders[$orderId] ?? null;
@@ -136,16 +153,29 @@ class CacheService {
 /**
  * 示例 4: 数据库模型类 - 复杂切面场景
  */
-#[AopAttr('method', 'before', 'save*', function ($target, $method, $args) {
+#[AopAttr(
+    'method',
+    'before',
+    'save*',
+function ($target, $method, $args) {
     echo "[DB] 准备保存数据到数据库\n";
-    })]
-#[AopAttr('method', 'after', 'save*', function ($target, $method, $args, $result) {
+    }
+)]
+#[AopAttr(
+    'method',
+    'after',
+    'save*',
+function ($target, $method, $args, $result) {
     echo "[DB] 数据保存完成，结果: " . ($result ? '成功' : '失败') . "\n";
-    })]
+    }
+)]
 class ProductModel {
     private array $products = [];
 
-    #[AopAttr('method', 'before', callback: function ($target, $method, $args) {
+    #[AopAttr(
+        'method',
+        'before',
+        function ($target, $method, $args) {
             // 数据验证
             $data = $args[0];
                 if (empty($data['name'])) {
@@ -154,7 +184,8 @@ class ProductModel {
                 if (empty($data['price']) || $data['price'] <= 0) {
                 throw new Exception('产品价格必须大于0');
                 }
-            })]
+            }
+    )]
     public function saveProduct(array $productData): bool
     {
         $productId                  = $productData['id'] ?? (count($this->products) + 1);

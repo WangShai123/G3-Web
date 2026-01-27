@@ -201,18 +201,18 @@ class AopTestRunner {
 
         try {
             // 测试配置文件加载
-            $configFile = WP_PLUGIN_DIR . '/g3/config/aop.php';
+            $configFile = WP_PLUGIN_DIR . '/g3/config/aspects.php';
             if (!file_exists($configFile)) {
                 file_put_contents($configFile, '<?php return [];');
             }
 
             // 测试 AOP 类加载
-            require_once __DIR__ . '/../../Aop.php';
-            require_once __DIR__ . '/../../Attributes/Aop.php';
+            require_once __DIR__ . '/../../Aspects.php';
+            require_once __DIR__ . '/../../Attributes/Aspects.php';
 
-            $aop = JEALER\G3\Aop::run();
+            $aop = JEALER\G3\Aspects\Aspects::run();
 
-            if (!$aop instanceof JEALER\G3\Aop) {
+            if (!$aop instanceof JEALER\G3\Aspects\Aspects) {
                 $errors[] = 'AOP 实例创建失败';
             }
 

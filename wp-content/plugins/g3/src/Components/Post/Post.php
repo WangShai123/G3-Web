@@ -1,7 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Components\Share;
 use JEALER\G3\Services\ShareService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
@@ -383,14 +384,14 @@ class Post extends Components {
     }
     public function initPostbox(): void
     {
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'post', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'page', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'news', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'activity', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'forum', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'circle', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'product', 'normal', 'high');
-        add_meta_box('post-custom-data', __('Custom interaction data', 'G3'), [$this, 'postboxRender'], 'announcement', 'normal', 'high');
+        add_meta_box(
+            'post-custom-data',
+            __('Custom interaction data', 'G3'),
+            [$this, 'postboxRender'],
+            get_post_types([], 'names'),
+            'normal',
+            'high'
+        );
     }
     public function postboxRender($post): void
     {
@@ -485,7 +486,7 @@ HTML;
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('media.image');
+        Frontend::loadScript('g3.media.image');
         $cover  = __('Cover', 'G3');
         $upload = __('Select Image');
         echo <<<HTML
@@ -501,7 +502,7 @@ HTML;
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('media.image');
+        Frontend::loadScript('g3.media.image');
         $cover = get_term_meta($tag->term_id, PostService::COVER_KEY, true);
         ?>
         <tr class="form-field">
@@ -591,8 +592,24 @@ HTML;
     protected function metaBox(): void
     {
         $option = Context::get(ShareService::OPTION_KEY);
-        if (!isset($option['enable']) || $option['enable'] !== '1') return;
-        add_meta_box('g3_metabox_share', __('Content Distribution', 'G3'), [\JEALER\G3\Components\Share::class, 'metaBoxRender'], 'post', 'side', 'high');
-        add_meta_box('g3_metabox_share', __('Content Distribution', 'G3'), [\JEALER\G3\Components\Share::class, 'metaBoxRender'], 'page', 'side', 'high');
+
+        if (isset($option['enable']) && $option['enable'] === '1') {
+            if (
+                $option['wechatMediaLibrary'] === '0' &&
+                $option['qqZone'] === '0' &&
+                $option['douYin'] === '0'
+            ) {
+                error_log('Share options are all disabled, skip rendering share meta box.');
+                return;
+            }
+            add_meta_box(
+                'g3_metabox_share',
+                __('Content Distribution', 'G3'),
+                [Share::class, 'metaBoxRender'],
+                get_post_types([], 'names'),
+                'side',
+                'high'
+            );
+        }
     }
 }

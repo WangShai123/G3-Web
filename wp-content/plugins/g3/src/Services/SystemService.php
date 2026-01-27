@@ -3,7 +3,7 @@ namespace JEALER\G3\Services;
 
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\System;
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 
 class SystemService {
 
@@ -570,7 +570,7 @@ class SystemService {
         if (file_exists(WP_CONTENT_DIR . '/object-cache.php')) {
             rename(WP_CONTENT_DIR . '/object-cache.php', WP_CONTENT_DIR . '/object-cache.php.bak');
         }
-        copy(WP_PLUGIN_DIR . '/g3/extensions/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
+        copy(WP_PLUGIN_DIR . '/g3/extensions/cache/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
     }
 
     /**

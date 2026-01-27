@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3;
 
-use JEALER\G3\Helper;
-use JEALER\G3\Container;
+use JEALER\G3\Helper\Helper;
+use JEALER\G3\Container\Container;
 use JEALER\G3\Queue\CronSchedules;
 use JEALER\G3\Utilities\Context;
 

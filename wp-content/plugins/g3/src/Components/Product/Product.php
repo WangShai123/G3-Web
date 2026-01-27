@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Services\ProductService;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Utilities\Element;
@@ -115,7 +115,7 @@ class Product extends Components {
             'has_archive'        => true,
             'hierarchical'       => false,
             'menu_position'      => null,
-            // 'supports'           => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
+            'show_in_rest'       => true,
             'supports'           => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail'],
             'menu_icon'          => 'dashicons-cart',
             'taxonomies'         => ['product_category', 'product_brand', 'post_tag'],
@@ -297,29 +297,44 @@ class Product extends Components {
         );
         wp_enqueue_script('g3-admin-product');
 
-        Frontend::loadStyle('ht.table');
-        Frontend::loadScript('ht.table');
-
         $this->localizeData();
     }
 
     private function localizeData(): void
     {
         $postId = get_the_ID();
-        $spec   = get_post_meta($postId, ProductService::SPEC_KEY, true) ?: 'single';
+        $type   = get_post_meta($postId, ProductService::TYPE_KEY, true) ?: 'product';
         $prop   = get_post_meta($postId, ProductService::PROP_KEY, true) ?: [];
+        $specs  = ['颜色', '尺寸'];
+        $sku    = [
+            [
+                'specs'         => ['红色', 'M'],
+                'originalPrice' => '100.00',
+                'salePrice'     => '80.00',
+                'weight'        => '1.00',
+                'size'          => '2',
+                'stock'         => '1000',
+                'sold'          => '20'
+            ],
+            [
+                'specs'         => ['蓝色', 'L'],
+                'originalPrice' => '110.00',
+                'salePrice'     => '90.00',
+                'weight'        => '2.00',
+                'size'          => '',
+                'stock'         => '100',
+                'sold'          => '2'
+            ]
+        ];
 
         $data = [
             'nonce' => wp_create_nonce('product_nonce_action'),
             'data'  => [
-                'spec'    => [
-                    'key'           => ProductService::SPEC_KEY,
-                    'type'          => $spec,
-                    'originalPrice' => '100.00',
-                    'salePrice'     => '80.00',
-                    'weight'        => '1.00',
-                    'stock'         => '1000',
-                    'sold'          => '20'
+                'data'    => [
+                    'key'   => ProductService::TYPE_KEY,
+                    'type'  => $type,
+                    'specs' => $specs,
+                    'sku'   => $sku,
                 ],
                 'prop'    => [
                     'key'   => ProductService::PROP_KEY,

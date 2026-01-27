@@ -1,5 +1,5 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Router;
 
 use ReflectionClass;
 use JEALER\G3\Attributes\RestRouter;
@@ -7,7 +7,7 @@ use JEALER\G3\Attributes\Middleware;
 use JEALER\G3\Attributes\Schema;
 use JEALER\G3\Attributes\Inject;
 use Psr\Container\ContainerInterface;
-use JEALER\G3\Container;
+use JEALER\G3\Container\Container;
 use JEALER\G3\Container\ContainerBuilder;
 use JEALER\G3\Container\FactoryDefinition;
 use JEALER\G3\Middleware\SchemaMiddleware;

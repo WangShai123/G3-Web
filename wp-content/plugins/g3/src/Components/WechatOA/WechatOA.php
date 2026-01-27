@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Service;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;

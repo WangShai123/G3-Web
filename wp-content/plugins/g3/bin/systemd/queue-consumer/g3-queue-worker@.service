@@ -32,18 +32,20 @@ SendSIGKILL=yes
 
 # 安全配置 - 生产环境最佳实践
 NoNewPrivileges=yes
-ProtectSystem=strict
+# ProtectSystem=strict
+ProtectSystem=full
 ProtectHome=yes
-ReadWritePaths=/www/wwwlogs/g3/consumer
+ReadWritePaths=/www/wwwlogs/g3/consumer/
+ReadWritePaths=/www/wwwroot/g3/G3-Web/wp-content/plugins/g3/
 ProtectKernelTunables=yes
 ProtectKernelModules=yes
 ProtectControlGroups=yes
 RestrictRealtime=yes
 RestrictNamespaces=yes
 LockPersonality=yes
-MemoryDenyWriteExecute=yes
+# MemoryDenyWriteExecute=yes
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
-SystemCallFilter=@system-service
+# SystemCallFilter=@system-service
 SystemCallErrorNumber=EPERM
 
 # 资源限制 - 适中配置，可根据需要调整

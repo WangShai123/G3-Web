@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3;
 
-use JEALER\G3\Queue;
+use JEALER\G3\Queue\Queue;
 use WP_Error;
 
 class Deactivator {

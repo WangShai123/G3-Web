@@ -1,5 +1,5 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Container;
 
 use JEALER\G3\Container\DefinitionInterface;
 use JEALER\G3\Container\FactoryDefinition;
@@ -494,7 +494,7 @@ class Container implements PsrContainerInterface {
     public function logServices(string $prefix = 'Container Services'): void
     {
         $ids = $this->getRegisteredServiceIds();
-        error_log("$prefix: " . json_encode($ids, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        error_log("[G3 Debug][Container] $prefix: " . json_encode($ids, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     // —————— 管理器访问方法 ——————

@@ -1,7 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Services\ShareService;
@@ -203,7 +204,7 @@ class Share extends Components {
             'wechatTitle',
             __('WeChat Title', 'G3'),
             [$this, 'wechatTitleRender'],
-            'post',
+            get_post_types([], 'names'),
             'normal',
             'default'
         );

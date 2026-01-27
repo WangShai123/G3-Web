@@ -252,3 +252,44 @@ sudo systemctl restart g3-queue-worker@default.service
 - **资源敏感**：需要精确的资源控制
 
 这个配置方案提供了企业级的可靠性和安全性，适合对稳定性要求较高的生产环境。
+
+
+## 简易步骤：
+
+1. 配置文件
+
+把 .service 模板文件复制到 /etc/systemd/system/ 目录，并修改文件内路径为你的 WordPress 安装路径。
+
+/etc/systemd/system/g3-queue-worker@.service
+
+2. 关闭 php-cli.init JIT
+
+以 宝塔面板 PHP 8.3 为例
+PHP_CLI_INI="/www/server/php/83/etc/php-cli.ini"
+
+```bash
+; === 关键：禁用 JIT（仅 CLI）===
+opcache.jit=0
+; opcache.jit_buffer_size=128M   ← 必须注释或删除！
+```
+
+3. 重载
+
+```bash
+# 重载 systemd 配置
+sudo systemctl daemon-reload
+
+# 启用并启动服务
+sudo systemctl enable g3-queue-worker@default.service
+sudo systemctl restart g3-queue-worker@default.service
+```
+
+4. 验证
+
+```bash
+# 查看实时日志
+sudo journalctl -u g3-queue-worker@default.service -f
+
+# 检查服务状态
+systemctl status g3-queue-worker@default.service
+```

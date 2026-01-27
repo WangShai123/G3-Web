@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-use JEALER\G3\Queue;
+use JEALER\G3\Queue\Queue;
 use JEALER\G3\Queue\RedisQueue;
 use JEALER\G3\Queue\DatabaseQueue;
 

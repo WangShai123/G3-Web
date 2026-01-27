@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
@@ -67,7 +67,7 @@ class Setting extends Components {
     {
         Frontend::loadStyle('jui');
         Frontend::loadScript('jui');
-        Frontend::loadScript('admin');
+        Frontend::loadScript('g3.admin');
 
         $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
@@ -440,7 +440,7 @@ class Setting extends Components {
             return;
         }
         add_action('wp_footer', function () {
-            Frontend::loadScript('redirect.link');
+            Frontend::loadScript('g3.redirect.link');
         });
         // Modify content url while saving
         add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);

@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use Override;
 
 class Activity extends Components {
@@ -60,6 +60,7 @@ class Activity extends Components {
             'hierarchical'       => false,
             //菜单定位
             'menu_position'      => null,
+            'show_in_rest'       => true,
             //该文章类型支持的功能
             'supports'           => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
             'menu_icon'          => 'dashicons-universal-access-alt',

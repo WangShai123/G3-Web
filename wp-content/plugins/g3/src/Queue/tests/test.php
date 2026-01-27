@@ -7,8 +7,8 @@
  * @author Wang Shai
  */
 
-use JEALER\G3\Container;
-use JEALER\G3\Queue;
+use JEALER\G3\Container\Container;
+use JEALER\G3\Queue\Queue;
 
 // 防止直接访问
 if (!defined('ABSPATH')) {

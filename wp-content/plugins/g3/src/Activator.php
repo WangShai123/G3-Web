@@ -2,7 +2,7 @@
 namespace JEALER\G3;
 
 use JEALER\G3\Services\SystemService;
-use JEALER\G3\Queue;
+use JEALER\G3\Queue\Queue;
 use JEALER\G3\Utilities\System;
 
 class Activator {

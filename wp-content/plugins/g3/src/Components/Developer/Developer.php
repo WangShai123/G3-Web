@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
-use JEALER\G3\Rewrite;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Rewrite\Rewrite;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
@@ -1014,7 +1014,7 @@ class Developer extends Components {
     {
         if (isset($_POST['jl_generate_object_cache']) && current_user_can('manage_options')) {
             $file   = WP_CONTENT_DIR . '/object-cache.php';
-            $source = G3_EXT_DIR . '/object-cache.php';
+            $source = G3_EXT_DIR . '/cache/object-cache.php';
             if (!file_exists($file)) {
                 if (@copy($source, $file)) {
                     add_settings_error('flush', 'object_cache_generated', __('object-cache.php file generated successfully!', 'G3'), 'updated');
@@ -1204,26 +1204,24 @@ class Developer extends Components {
 
     protected function scripts(): void
     {
-        if (!isset($this->settingOption['gutenberg']) || $this->settingOption['gutenberg'] !== '0') {
-            return;
+        if (isset($this->settingOption['gutenberg']) && $this->settingOption['gutenberg'] !== '1') {
+            /** Remove Gutenberg styles */
+            wp_dequeue_style('wp-block-library');
+            /** Remove Gutenberg theme styles */
+            wp_dequeue_style('wp-block-library-theme');
+            /** Remove classic theme styles */
+            wp_dequeue_style('classic-theme-styles');
         }
-        /** Remove Gutenberg styles */
-        wp_dequeue_style('wp-block-library');
-        /** Remove Gutenberg theme styles */
-        wp_dequeue_style('wp-block-library-theme');
-        /** Remove classic theme styles */
-        wp_dequeue_style('classic-theme-styles');
     }
 
     private function gutenbergInAdmin(): void
     {
-        if (!isset($this->settingOption['gutenberg']) || $this->settingOption['gutenberg'] !== '0') {
-            return;
+        if (isset($this->settingOption['gutenberg']) && $this->settingOption['gutenberg'] !== '1') {
+            remove_theme_support('widgets-block-editor');
+            /** Disable Gutenberg editor for all posts */
+            add_filter('use_block_editor_for_post', '__return_false');
+            add_filter('use_block_editor_for_post_type', '__return_false');
         }
-        remove_theme_support('widgets-block-editor');
-        /** Disable Gutenberg editor for all posts */
-        add_filter('use_block_editor_for_post', '__return_false');
-        add_filter('use_block_editor_for_post_type', '__return_false');
     }
 
     public function noticeInAdminBar($wp_admin_bar)

@@ -2,7 +2,7 @@
 namespace JEALER\G3\Container;
 
 use Psr\Container\ContainerInterface;
-use JEALER\G3\Container;
+use JEALER\G3\Container\Container;
 use JEALER\G3\Container\ConfigLoader;
 use JEALER\G3\Container\FactoryDefinition;
 use JEALER\G3\Container\Reference;

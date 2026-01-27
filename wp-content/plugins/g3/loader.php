@@ -67,7 +67,7 @@ register_deactivation_hook(__FILE__, [JEALER\G3\Deactivator::class, 'deactivate'
 /**
  * @description Load Plugin
  */
-$container = JEALER\G3\Container::run();
+$container = JEALER\G3\Container\Container::run();
 if (!$container->has('app')) {
     $container->setRawDefinition('app', JEALER\G3\Loader::class);
     $container->get('app');

@@ -24,7 +24,7 @@ class FactoryDefinition implements DefinitionInterface {
 
     public function __construct(private string $class)
     {
-        // error_log("FactoryDefinition: " . $this->class);
+        // error_log("[G3 Debug][Container FactoryDefinition] FactoryDefinition: " . $this->class);
     }
 
     public function getClass(): string

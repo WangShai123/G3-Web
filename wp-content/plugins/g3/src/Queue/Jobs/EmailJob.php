@@ -10,8 +10,8 @@
 
 namespace JEALER\G3\Queue\Jobs;
 
-use JEALER\G3\Container;
-use JEALER\G3\Queue;
+use JEALER\G3\Container\Container;
+use JEALER\G3\Queue\Queue;
 use JEALER\G3\Queue\Job;
 use JEALER\G3\Services\LogService;
 use JEALER\G3\Services\MailerService;

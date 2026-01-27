@@ -48,6 +48,9 @@
 #postimagediv .inside img {
     width: 100%;
 }
+#poststuff .inside {
+    margin: 12px 0 0;
+}
 
 
 .wp-editor-container .quicktags-toolbar {
@@ -81,6 +84,27 @@
 }
 .inside .specification-container #specification-content {
     margin-top: calc(var(--space) * 3);
+}
+.inside #sku-app table.j-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+}
+.inside #sku-app table.j-table th:not(:has(input)){
+    background-color: var(--gray-a3);
+    text-align: left;
+    padding: 0 10px;
+}
+.inside #sku-app table.j-table th input {
+    width: 100%;
+}
+.inside #sku-app table.j-table th,
+.inside #sku-app table.j-table td { 
+    border: 1px solid var(--gray-a8);
+}
+.inside #sku-app table.j-table input.j-input {
+    border-color: transparent;
+    margin: 0;
 }
 .inside .input-inner-group > .j-input:not(:first-child) {
     padding-left: var(--el-height);

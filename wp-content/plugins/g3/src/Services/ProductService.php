@@ -38,5 +38,5 @@ class ProductService {
      */
     public const PROP_KEY = 'g3_product_prop';
 
-    public const SPEC_KEY = 'g3_product_spec';
+    public const TYPE_KEY = 'g3_product_type';
 }

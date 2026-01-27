@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Context;
 class PageService {
 

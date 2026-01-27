@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Services\SidebarService;
 use Override;
 
@@ -52,6 +52,7 @@ class Announcement extends Components {
                 'capability_type' => 'post',
                 'has_archive'     => true,
                 'menu_position'   => null,
+                'show_in_rest'    => true,
                 'supports'        => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
                 'menu_icon'       => 'dashicons-megaphone',
                 'taxonomies'      => ['announcement_category', 'post_tag'],

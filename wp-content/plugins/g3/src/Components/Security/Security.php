@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;

@@ -1,25 +1,25 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Aspects;
 
 use ReflectionClass;
 use ReflectionObject;
 use Throwable;
-use JEALER\G3\Attributes\Aop as AopAttr;
+use JEALER\G3\Attributes\Aspects as AopAttr;
 
-class Aop {
-    protected static ?Aop $instance = null;
+class Aspects {
+    protected static ?Aspects $instance = null;
     protected array $config = [];
 
     /**
-     * Run AOP Framework
+     * Run Aspects Framework
      * 
-     * AOP 框架运行器
+     * Aspects 框架运行器
      * 
-     * @return Aop
+     * @return Aspects
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function run(): Aop
+    public static function run(): Aspects
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -36,18 +36,18 @@ class Aop {
     }
 
     /**
-     * Initialize AOP Configuration
+     * Initialize Aspects Configuration
      * 
-     * 初始化AOP配置，加载插件和主题的AOP配置文件
+     * 初始化Aspects配置，加载插件和主题的Aspects配置文件
      * 
-     * @return array AOP配置数组
+     * @return array Aspects配置数组
      * @since 1.0.0
      * @author Wang Shai
      */
     private function initConfig(): array
     {
-        $pluginConfig    = require_once WP_PLUGIN_DIR . '/g3/config/aop.php' ?: [];
-        $themeConfigFile = get_stylesheet_directory() . '/config/aop.php';
+        $pluginConfig    = require_once WP_PLUGIN_DIR . '/g3/config/aspects.php' ?: [];
+        $themeConfigFile = get_stylesheet_directory() . '/config/aspects.php';
         if (file_exists($themeConfigFile)) {
             $themeConfig = require_once $themeConfigFile;
             return array_merge($pluginConfig, is_array($themeConfig) ? $themeConfig : []);
@@ -56,11 +56,11 @@ class Aop {
     }
 
     /**
-     * Get AOP Configuration
+     * Get Aspects Configuration
      * 
-     * 获取AOP配置
+     * 获取Aspects配置
      * 
-     * @return array AOP配置数组
+     * @return array Aspects配置数组
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -70,7 +70,7 @@ class Aop {
     }
 
     /**
-     * Create Object with AOP Aspects
+     * Create Object with Aspects Aspects
      * 
      * 创建对象时织入切面（支持注解扫描）
      * 
@@ -94,7 +94,7 @@ class Aop {
     }
 
     /**
-     * Wrap Object with AOP Aspects
+     * Wrap Object with Aspects Aspects
      * 
      * 包装对象，拦截方法 & 属性访问
      * 

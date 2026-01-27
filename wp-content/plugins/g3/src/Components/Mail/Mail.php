@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components;
-use JEALER\G3\Queue;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Queue\Queue;
 use JEALER\G3\Queue\Jobs\EmailJob;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Context;

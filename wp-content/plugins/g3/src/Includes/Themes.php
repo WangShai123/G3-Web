@@ -1,5 +1,5 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Includes;
 
 use JEALER\G3\Utilities\Frontend;
 use WP_THEME;

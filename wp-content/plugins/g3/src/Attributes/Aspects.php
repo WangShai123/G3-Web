@@ -6,12 +6,12 @@ use Attribute;
  * Aspect-Oriented Programming Attribute
  * @Annotation
  * @Target({TARGET_METHOD, TARGET_CLASS, TARGET_PROPERTY})
- * @Repeatable(Aop::class)
+ * @Repeatable(Aspects::class)
  * @since 1.0.0
  * @author Wang Shai
  */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class Aop {
+class Aspects {
     /**
      * 切面类型
      * @var string $type method | property | construct | exception

@@ -1,6 +1,7 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Components;
 
+use JEALER\G3\Container\Container;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\System;
 
@@ -108,7 +109,7 @@ class ComponentLoader {
             $componentInfo = $this->resolveComponentFile($componentName);
 
             if (!$componentInfo) {
-                error_log("[G3 ComponentLoader] Component file not found: {$componentName}");
+                error_log("[G3 Debug][ComponentLoader] Component file not found: {$componentName}");
                 return;
             }
 
@@ -117,7 +118,7 @@ class ComponentLoader {
 
             // 检查类是否存在
             if (!class_exists($componentInfo['class_name'])) {
-                error_log("[G3 ComponentLoader] Component class not found: {$componentInfo['class_name']}");
+                error_log("[G3 Debug][ComponentLoader] Component class not found: {$componentInfo['class_name']}");
                 return;
             }
 
@@ -132,12 +133,12 @@ class ComponentLoader {
 
             $source = $componentInfo['is_theme_override'] ? 'theme' : 'plugin';
             // if (defined('WP_DEBUG') && WP_DEBUG) {
-            //     error_log("[G3 ComponentLoader] Component loaded from {$source}: {$componentName}");
+            //     error_log("[G3 Debug][ComponentLoader] Component loaded from {$source}: {$componentName}");
             // }
 
         }
         catch (\Exception $e) {
-            error_log("[G3 ComponentLoader] Failed to load component {$componentName}: " . $e->getMessage());
+            error_log("[G3 Debug][ComponentLoader] Failed to load component {$componentName}: " . $e->getMessage());
         }
     }
 
@@ -235,13 +236,13 @@ class ComponentLoader {
         // 3. 处理 configs 配置
         if (!isset($configData['configs'])) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[G3 ComponentLoader] No configs section found in components.php');
+                error_log('[G3 Debug][ComponentLoader] No configs section found in components.php');
             }
             return;
         }
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[G3 ComponentLoader] Processing configs: ' . print_r($configData['configs'], true));
+            error_log('[G3 Debug][ComponentLoader] Processing configs: ' . print_r($configData['configs'], true));
         }
 
         foreach ($configData['configs'] as $componentName => $configGroups) {
@@ -253,7 +254,7 @@ class ComponentLoader {
 
                 if (empty($optionKey)) {
                     if (defined('WP_DEBUG') && WP_DEBUG) {
-                        error_log("[G3 ComponentLoader] Empty option key for {$componentName}.{$groupName}");
+                        error_log("[G3 Debug][ComponentLoader] Empty option key for {$componentName}.{$groupName}");
                     }
                     continue;
                 }
@@ -261,7 +262,7 @@ class ComponentLoader {
                 $optionData = get_option($optionKey, $defaultValue);
 
                 if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[G3 ComponentLoader] Loading config {$componentName}.{$groupName} from {$optionKey}: " . print_r($optionData, true));
+                    error_log("[G3 Debug][ComponentLoader] Loading config {$componentName}.{$groupName} from {$optionKey}: " . print_r($optionData, true));
                 }
 
                 // 自动映射到Parameter系统
@@ -277,7 +278,7 @@ class ComponentLoader {
                         $container->setParameter($parameterKey, $value);
 
                         if (defined('WP_DEBUG') && WP_DEBUG) {
-                            error_log("[G3 ComponentLoader] Set parameter: {$parameterKey} = " . print_r($value, true));
+                            error_log("[G3 Debug][ComponentLoader] Set parameter: {$parameterKey} = " . print_r($value, true));
                         }
                     }
 
@@ -285,7 +286,7 @@ class ComponentLoader {
                     $container->setParameter($parameterPrefix, $optionData);
 
                     if (defined('WP_DEBUG') && WP_DEBUG) {
-                        error_log("[G3 ComponentLoader] Set parameter group: {$parameterPrefix} = " . print_r($optionData, true));
+                        error_log("[G3 Debug][ComponentLoader] Set parameter group: {$parameterPrefix} = " . print_r($optionData, true));
                     }
                 }
             }

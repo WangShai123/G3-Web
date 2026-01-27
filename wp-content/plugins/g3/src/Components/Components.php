@@ -1,9 +1,9 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Components;
 
-use JEALER\G3\Helper;
-use JEALER\G3\Container;
-use JEALER\G3\Queue;
+use JEALER\G3\Helper\Helper;
+use JEALER\G3\Container\Container;
+use JEALER\G3\Queue\Queue;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\System;
@@ -163,7 +163,7 @@ abstract class Components {
     protected function debug(string $message): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("[G3 {$this->componentName}] {$message}");
+            error_log("[G3 Debug][{$this->componentName}] {$message}");
         }
     }
 

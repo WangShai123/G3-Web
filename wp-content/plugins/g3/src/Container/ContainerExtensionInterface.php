@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Container;
 
-use JEALER\G3\Container;
+use JEALER\G3\Container\Container;
 
 /**
  * Container Extension Interface

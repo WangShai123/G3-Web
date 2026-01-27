@@ -1,11 +1,11 @@
 <?php
-namespace JEALER\G3;
+namespace JEALER\G3\Helper;
 
-use JEALER\G3\Router;
-use JEALER\G3\Rewrite;
-use JEALER\G3\Components;
-use JEALER\G3\ComponentLoader;
-use JEALER\G3\Container;
+use JEALER\G3\Router\Router;
+use JEALER\G3\Rewrite\Rewrite;
+use JEALER\G3\Components\Components;
+use JEALER\G3\Components\ComponentLoader;
+use JEALER\G3\Container\Container;
 use JEALER\G3\Container\ValueDefinition;
 use JEALER\G3\Container\FactoryDefinition;
 use JEALER\G3\Services\SystemService;
@@ -104,9 +104,6 @@ final class Helper {
         // Auto check and fix rewrite rules in development environment
         if (System::debug()) {
             add_action('parse_request', [$this->rewrite, 'checkAndFixRewriteRules'], 1);
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[G3 Helper] Debug mode: Auto check and fix enabled');
-            }
         }
     }
 
@@ -316,7 +313,7 @@ final class Helper {
         self::loadComponents();
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[G3 Helper] Legacy component system loaded');
+            error_log('[G3 Debug][Helper] Legacy component system loaded');
         }
     }
 
