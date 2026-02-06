@@ -46,11 +46,6 @@ class Themes extends Components {
     }
 
     #[Override]
-    protected function admin(): void
-    {
-        $this->themeHandle();
-    }
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -70,6 +65,7 @@ class Themes extends Components {
     #[Override]
     protected function settings(): void
     {
+        $this->themeHandle();
         add_settings_section(
             'section_themes',
             null,

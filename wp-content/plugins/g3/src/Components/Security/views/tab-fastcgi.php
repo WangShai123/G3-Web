@@ -2,7 +2,7 @@
 use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
-    __('This tab is for Nginx FastCGI Cache configuration.', 'G3'),
+    __('This tab is for Nginx FastCGI Cache configuration advice.', 'G3'),
     'default',
     'mt-4'
 );
@@ -41,10 +41,77 @@ echo Element::tip(
     <h2>
         <?php _e('Configuration Guide', 'G3'); ?>
     </h2>
+    <h4>Nginx <?php _e('Configuration', 'G3'); ?></h4>
+    <p>
+        <?php _e('You need to define the cache file storage directory, such as: ', 'G3'); ?><code>/www/cache/nginx</code>
+    </p>
+
+    <div class="mt-3 flex flex-col">
+        <code>fastcgi_cache_path /www/cache/nginx levels=1:2 keys_zone=WORDPRESS:100m inactive=60m;</code>
+        <code>fastcgi_cache_key "$scheme$request_method$host$request_uri";</code>
+        <code>fastcgi_cache_use_stale error timeout invalid_header http_500;</code>
+        <code>fastcgi_ignore_headers Cache-Control Expires Set-Cookie;</code>
+    </div>
+    <h4>
+        <?php _e('Website Configuration', 'G3'); ?>
+    </h4>
+    <p>
+        <?php _e('Config as below in <code>Server {}</code> module:', 'G3'); ?>
+    </p>
+    <pre># <?php _e('Define cache switch', 'G3'); ?>
+
+set $skip_cache 0;
+
+# <?php _e('POST requests are not cached', 'G3'); ?>
+
+if ($request_method = POST) {
+    set $skip_cache 1;
+}
+
+# <?php _e('URLs with query parameters are not cached', 'G3'); ?>
+
+if ($query_string != "") {
+    set $skip_cache 1;
+}
+
+# <?php _e('Admin panel, special files, and REST API are not cached', 'G3'); ?>
+
+if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*\.php|/feed/|/sitemap|/wp-json/") {
+    set $skip_cache 1;
+}
+
+# <?php _e('Logged-in users are not cached', 'G3'); ?>
+
+if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wptouch_switch_toggle") {
+    set $skip_cache 1;
+}
+
+# <?php _e('PHP processing block', 'G3'); ?>
+
+location ~ \.php$ {
+    # <?php _e('From the PHP configuration file (such as enable-php-83.conf), confirm and modify this path:', 'G3'); ?>
+    
+    fastcgi_pass unix:/tmp/php-cgi-83.sock;
+
+    fastcgi_index index.php;
+    include fastcgi.conf;
+    include pathinfo.conf;
+
+    # FastCGI Cache
+    fastcgi_cache_bypass $skip_cache;
+    fastcgi_no_cache $skip_cache;
+    fastcgi_cache WORDPRESS;
+    fastcgi_cache_valid 200 301 302 1h;
+    add_header X-Cache "$upstream_cache_status From $host";
+}</pre>
 </div>
 <style>
     .tip-content ul {
         list-style: disc;
         margin-left: 16px;
+    }
+
+    .j-content pre {
+        font-size: 12px;
     }
 </style>

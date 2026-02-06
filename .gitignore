@@ -43,14 +43,17 @@
 
 # Static assets
 /wp-content/plugins/g3/public/css/*
+!/wp-content/plugins/g3/public/css/*.min.css
+
 /wp-content/plugins/g3/public/javascript/**
 !/wp-content/plugins/g3/public/javascript/*.min.js
 !/wp-content/plugins/g3/public/javascript/*.umd.js
+
+#/wp-content/plugins/g3/public/javascript/es/**
 !/wp-content/plugins/g3/public/javascript/es/
 !/wp-content/plugins/g3/public/javascript/es/*.min.js
 !/wp-content/plugins/g3/public/javascript/es/*.esm.js
-!/wp-content/plugins/g3/public/javascript/es/jui.js
-!/wp-content/plugins/g3/public/css/*.min.css
+!/wp-content/plugins/g3/public/javascript/es/*.mjs
 
 # Global tests
 /wp-content/plugins/g3/tests/

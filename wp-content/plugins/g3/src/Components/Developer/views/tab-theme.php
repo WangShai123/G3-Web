@@ -107,8 +107,7 @@ echo Element::tip(
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { toast } = jui
-        const { postJson, q, on, restUrl } = jui.u
+        const { toast, postJson, q, on, restUrl } = jui
         on(q('#createTheme'), 'click', function (e) {
             e.preventDefault()
             const name = q('#name').value

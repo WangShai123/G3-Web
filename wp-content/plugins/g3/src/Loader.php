@@ -19,10 +19,12 @@ class Loader {
     {
         if (!$this->container->has('loader')) {
             $this->container->setRawDefinition('loader', Helper::class);
-            $this->container->get('loader')->loader();
-        } else {
-            $this->container->get('loader')->loader();
         }
+        $manager = $this->container->getTagManager();
+        if (!$manager->hasTag('loader', 'loader')) {
+            $manager->tag('loader', 'loader', 'helper', 'raven');
+        }
+        $this->container->get('loader')->loader();
         CronSchedules::initIfNeeded();
     }
 }

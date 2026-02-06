@@ -41,7 +41,7 @@ class Share extends Components {
     #[Override]
     protected function admin(): void
     {
-        $this->saveWechatTitle();
+        add_action('save_post', [$this, 'saveShareMeta']);
     }
     #[Override()]
     protected function adminMenu(): void
@@ -200,19 +200,12 @@ class Share extends Components {
     protected function metaBox(): void
     {
         if (!isset($this->option['wechatTitle']) || $this->option['wechatTitle'] !== '1') return;
-        add_meta_box(
-            'wechatTitle',
-            __('WeChat Title', 'G3'),
-            [$this, 'wechatTitleRender'],
-            get_post_types([], 'names'),
-            'normal',
-            'default'
-        );
+        add_action('g3_action_seo', [$this, 'addWechatTitleField']);
     }
-    public function wechatTitleRender(): void
+    public function addWechatTitleField($post): void
     {
         $label    = __('WeChat Title', 'G3');
-        $value    = get_post_meta(get_the_ID(), ShareService::WECHAT_TITLE_KEY, true);
+        $value    = get_post_meta($post->ID, ShareService::WECHAT_TITLE_KEY, true);
         $des      = __('Customize the title that will be displayed when shared on WeChat.', 'G3') . ' ' .
             __('If the title is empty, the title of the post will be used.', 'G3');
         $template = <<<HTML
@@ -226,15 +219,19 @@ class Share extends Components {
 HTML;
         echo $template;
     }
-    private function saveWechatTitle(): void
+
+    public function saveShareMeta($postId): void
     {
+        $this->saveWechatTitle($postId);
+    }
+    private function saveWechatTitle($postId): void
+    {
+
         if (!isset($_POST['wechatTitle']) || !isset($this->option['wechatTitle']) || $this->option['wechatTitle'] !== '1') return;
 
-        add_action('save_post', function ($postId) {
-            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-            $value = empty($_POST['wechatTitle']) ? sanitize_text_field($_POST['post_title']) : sanitize_text_field($_POST['wechatTitle']);
-            update_post_meta($postId, ShareService::WECHAT_TITLE_KEY, $value);
-        });
+        $value = empty($_POST['wechatTitle']) ? sanitize_text_field($_POST['post_title']) : sanitize_text_field($_POST['wechatTitle']);
+        update_post_meta($postId, ShareService::WECHAT_TITLE_KEY, $value);
     }
 }

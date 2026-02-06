@@ -27,7 +27,7 @@ return [
         'Jui'          => true,
         'Activity'     => true,
         'Announcement' => true,
-        'Order'        => true,
+        'Orders'       => true,
         'Swiper'       => true,
         'Stock'        => true,
         'Themes'       => true,

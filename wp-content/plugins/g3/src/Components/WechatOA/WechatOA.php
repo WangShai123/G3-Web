@@ -2,7 +2,7 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
-use JEALER\G3\Service;
+use JEALER\G3\Container\Container;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Element;
@@ -106,7 +106,10 @@ class WechatOA extends Components {
                         'service',
                         __('Wechat OA Service', 'G3')
                     );
-                }
+                },
+                'args'     => [
+                    'class' => 'advanced'
+                ]
             ],
             [
                 'id'       => 'search',
@@ -256,7 +259,12 @@ class WechatOA extends Components {
     }
     private function serviceAvailable(): bool
     {
-        return $this->option['service'] ? true : false;
+        $container = Container::run();
+        if ($container->has('loader')) {
+            $result = $container->get('loader')->y();
+            return $this->option['service'] && $result;
+        }
+        return false;
     }
     private function checkServiceInAjax(): void
     {

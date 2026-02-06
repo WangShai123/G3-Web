@@ -7,6 +7,8 @@ use JEALER\G3\Attributes\Schema;
 use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
+use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Container\Container;
@@ -41,6 +43,7 @@ class TestController {
             'code'         => 200,
             'message'      => 'G3 Test API is working! from G3-Web plugin.',
             'time'         => current_time('mysql'),
+            'testConfig'   => Context::get(SystemService::OPTION_KEY),
             'server_info'  => [
                 'php_version'       => phpversion(),
                 'wordpress_version' => get_bloginfo('version'),

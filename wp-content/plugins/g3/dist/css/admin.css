@@ -32,6 +32,11 @@
 .color-error {
     color: var(--error40);
 }
+.color-error[disabled] {
+    color: gray;
+    cursor: not-allowed;
+    user-select: none;
+}
 
 #wpwrap .ab-top-menu li.g3-license-notice a {
     display: flex;
@@ -49,7 +54,11 @@
     width: 100%;
 }
 #poststuff .inside {
-    margin: 12px 0 0;
+    margin: 0;
+    padding: 12px;
+}
+#titlediv div.inside {
+    padding: 0;
 }
 
 
@@ -77,12 +86,12 @@
         min-height: auto;
     }
 }
-.inside .specification-container .j-input[type="radio"]:checked+.radio-text {
+.inside .type-container .j-input[type="radio"]:checked+.radio-text {
     background-color: var(--primary);
     color: var(--primary-foreground);
     outline: 1px solid var(--primary);
 }
-.inside .specification-container #specification-content {
+.inside .type-container #specification-content {
     margin-top: calc(var(--space) * 3);
 }
 .inside #sku-app table.j-table {
@@ -91,23 +100,37 @@
     border-collapse: collapse;
 }
 .inside #sku-app table.j-table th:not(:has(input)){
-    background-color: var(--gray-a3);
     text-align: left;
-    padding: 0 10px;
-}
-.inside #sku-app table.j-table th input {
-    width: 100%;
+    padding: 8px 10px;
+    min-width: 80px;
 }
 .inside #sku-app table.j-table th,
 .inside #sku-app table.j-table td { 
     border: 1px solid var(--gray-a8);
 }
-.inside #sku-app table.j-table input.j-input {
+.inside #sku-app table.j-table input.j-input,
+.inside #sku-app table.j-table select.j-select {
     border-color: transparent;
     margin: 0;
 }
-.inside .input-inner-group > .j-input:not(:first-child) {
-    padding-left: var(--el-height);
+.inside #sku-app table.j-table th:has(select) {
+    min-width: 100px
+}
+.inside #sku-app table.j-table th:has(select),
+.inside #sku-app table.j-table td:has(select),
+.inside #sku-app table.j-table td:has(input) {
+    padding: 0;
+}
+.inside #sku-app table.j-table th,
+.inside #sku-app table.j-table td:has(select.j-select) {
+    background-color: var(--gray-a3);
+}
+.inside #sku-app table.j-table select.j-select{
+    background-color: transparent;
+}
+.inside #sku-app table.j-table .input-group select.j-select + .el-addon .icon-close {
+    border-color: transparent;
+    background-color: transparent;
 }
 
 table.form-table tbody tr.advanced th::after {
@@ -790,7 +813,9 @@ ul#adminmenu > li.current > a.current:after {
 .media-selection .attachment.selection.details .thumbnail {
     box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--brandColor);
 }
-
+.theme-browser .theme .theme-name {
+    height: 48px;
+}
 .theme-browser .theme.active .theme-name,
 .theme-browser .theme.add-new-theme a:focus:after,
 .theme-browser .theme.add-new-theme a:hover:after {
@@ -1197,16 +1222,17 @@ body#tinymce.wp-editor pre.j-highlight {
 }
 
 /* product properties */
-#prop-app .prop-item:not(:last-child) {
+#prop-app .prop-item {
     margin-bottom: 8px;
-}
-#prop-app .prop-item > div {
-    margin-bottom: 4px;
-}
-#prop-app .prop-item > div + .grid-container {
-    margin-top: 0;
 }
 #prop-app .prop-item #remove-property:active {
     outline-color: var(--danger);
     outline-offset: 1px;
+}
+
+.j-loading.is-active {
+    --drop-blur-s: 20px;
+    --loading-background: var(--gray-1);
+    --loading-index: 99;
+    --loading-spinner-background: var(--gray-5);
 }

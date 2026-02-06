@@ -59,7 +59,7 @@ get_header();
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { postJson, getCookie, q, restUrl } = jui.u;
+        const { postJson, getCookie, q, restUrl } = jui;
         document.documentElement.classList.add('dark', 'j-theme-indigo', 'j-radius-sm', 'j-shadow-none', 'j-font-sm');
         bg();
 

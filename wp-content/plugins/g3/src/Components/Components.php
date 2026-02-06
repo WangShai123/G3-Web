@@ -104,10 +104,10 @@ abstract class Components {
          * Compatible with traditional theme mode and front-end separation mode
          */
         if (Common::themeModeAvailable()) {
-            add_action('after_setup_theme', [$this, 'initDataActions']);
+            add_action('after_setup_theme', [$this, 'prepareDataActions']);
         } else {
             if (!$this->loader) return;
-            add_action('plugins_loaded', [$this, 'initDataActions']);
+            add_action('plugins_loaded', [$this, 'prepareDataActions']);
         }
 
         add_action('init', [$this, 'initActions']);
@@ -267,7 +267,7 @@ abstract class Components {
         return isset(self::$components[$componentName]);
     }
 
-    public function initDataActions(): void
+    public function prepareDataActions(): void
     {
         if ($this->loader->admin()) $this->ready();
         $this->options();
@@ -284,6 +284,7 @@ abstract class Components {
     }
     public function adminInitActions(): void
     {
+        $this->prepareInAdmin();
         if ($this->loader->admin()) $this->admin();
         $this->form();
         $this->ajax();
@@ -346,6 +347,9 @@ abstract class Components {
     {
     }
     protected function init(): void
+    {
+    }
+    protected function prepareInAdmin(): void
     {
     }
     protected function admin(): void

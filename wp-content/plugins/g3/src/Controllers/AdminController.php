@@ -41,7 +41,7 @@ class AdminController {
         return rest_ensure_response([
             'success'   => true,
             'processed' => $processed,
-            'message'   => sprintf(__('Processed %d jobs from queue.', 'G3'), $processed)
+            'message'   => sprintf('Processed %d jobs from queue.', $processed)
         ]);
     }
 

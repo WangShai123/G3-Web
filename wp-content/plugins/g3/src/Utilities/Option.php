@@ -14,12 +14,12 @@ final class Option {
      * 
      * @param string $key Option key
      * @param mixed $default Default option value.
-     * @param bool $autoload
+     * @param bool $autoload Whether to load the option when the site is initialized.
      * @return mixed Option value
      * @since 1.0.0
      * @author Wang Shai
      */
-    public static function get(string $key, mixed $default = '', bool $autoload = false): mixed
+    public static function get(string $key, mixed $default = '', bool $autoload = true): mixed
     {
         $value = Context::get($key);
         if ($value !== null) {

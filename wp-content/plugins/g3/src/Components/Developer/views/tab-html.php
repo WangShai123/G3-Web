@@ -1,9 +1,8 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
+
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Image;
 
-Frontend::loadScript('jui');
 echo Element::tip(
     __('HTML element demo in admin panel.', 'G3'),
     'default',

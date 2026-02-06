@@ -25,7 +25,7 @@ $openId = AuthService::OPENID_META_KEY;
 </div>
 <?php get_footer(); ?>
 <script type="module">
-    import JUI from '<?php echo G3_JS_URL . '/es/jui.js'; ?>';
+    import JUI from '<?php echo G3_JS_URL . '/es/jui.esm.js'; ?>';
     document.addEventListener('DOMContentLoaded', function () {
         const btn = document.querySelector('#bind');
         if (!btn) return;

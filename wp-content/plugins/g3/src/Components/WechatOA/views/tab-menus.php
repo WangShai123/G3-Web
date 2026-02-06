@@ -1,10 +1,9 @@
 <?php
+
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Includes\WechatOAMenuListTable;
-
-Frontend::loadScript('jui');
 
 $table = new WechatOAMenuListTable();
 echo Element::tip(

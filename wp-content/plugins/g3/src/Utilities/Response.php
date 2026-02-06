@@ -86,6 +86,13 @@ final class Response {
         ]);
     }
 
+    public static function ajaxIllegal(): void
+    {
+        wp_send_json_error([
+            'message' => __('Illegal request', 'G3')
+        ]);
+    }
+
     /**
      * Send AJAX error response: Failed
      * 

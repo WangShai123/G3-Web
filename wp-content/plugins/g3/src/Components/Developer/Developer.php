@@ -23,21 +23,6 @@ class Developer extends Components {
     #[Override]
     protected function options(): void
     {
-        $this->formOption    = Option::get(SystemService::FORM_OPTION_KEY, [
-            'key1'  => 'Element::input',
-            'key2'  => 'regular-text',
-            'key3'  => 'Element::uploadInput',
-            'key4'  => G3_IMG_URL . '/avatar.png',
-            'key5'  => '5',
-            'key6'  => 'Some texts here for textarea testing.',
-            'key7'  => 'option2',
-            'key8'  => '0',
-            'key9'  => 'option2',
-            'key10' => 'option2',
-            'key11' => ['1', '2'],
-            'key12' => ['0'],
-            'key13' => ['1'],
-        ]);
         $this->settingOption = Option::get(SystemService::SETTING_OPTION_KEY, [
             'environment'     => 'production',
             'wpAutoUpdate'    => '0',
@@ -70,6 +55,25 @@ class Developer extends Components {
             'token'          => '',
             'encodingAESKey' => '',
         ]);
+    }
+    #[Override]
+    protected function prepareInAdmin(): void
+    {
+        $this->formOption = Option::get(SystemService::FORM_OPTION_KEY, [
+            'key1'  => 'Element::input',
+            'key2'  => 'regular-text',
+            'key3'  => 'Element::uploadInput',
+            'key4'  => G3_IMG_URL . '/avatar.png',
+            'key5'  => '5',
+            'key6'  => 'Some texts here for textarea testing.',
+            'key7'  => 'option2',
+            'key8'  => '0',
+            'key9'  => 'option2',
+            'key10' => 'option2',
+            'key11' => ['1', '2'],
+            'key12' => ['0'],
+            'key13' => ['1'],
+        ], false);
     }
     #[Override]
     protected function form(): void
@@ -1138,7 +1142,6 @@ class Developer extends Components {
         if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '1') {
             return;
         }
-
         // Remove default node: LOGO
         $wp_admin_bar->remove_node('wp-logo');
     }

@@ -224,7 +224,8 @@ final class Frontend {
     public static function loadModule(string $handle, bool $cdn = false): bool
     {
         $modules = [
-            'jui'                => [G3_JS_URL . '/es/jui.js', [], '1.0.0'],
+            'jui'                => [G3_JS_URL . '/es/jui.esm.js', [], '1.0.0'],
+            'jui.mjs'            => [G3_JS_URL . '/es/jui.mjs', [], '1.0.0'],
             /**
              * ky: Tiny & elegant JavaScript HTTP client based on the Fetch API
              * @link: https://github.com/sindresorhus/ky

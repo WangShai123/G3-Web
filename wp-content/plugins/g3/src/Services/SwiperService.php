@@ -161,7 +161,7 @@ class SwiperService {
         $data = wp_cache_get($id, self::CACHE_GROUP);
         if (false === $data) {
             global $wpdb;
-            $table = $wpdb->prefix . 'g3_swipers';
+            $table = $wpdb->prefix . self::TABLE;
             $data  = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $id), ARRAY_A);
             if ($data) {
                 wp_cache_set($id, $data, self::CACHE_GROUP);

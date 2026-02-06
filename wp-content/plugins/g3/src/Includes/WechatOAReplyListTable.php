@@ -241,7 +241,7 @@ class WechatOAReplyListTable extends WP_List_Table {
                  LEFT JOIN {$this->keywordTable} k ON r.id = k.reply_id
                  WHERE r.content LIKE %s OR k.keyword LIKE %s
                  GROUP BY r.id
-                 ORDER BY r.updated DESC
+                 ORDER BY r.updated_at DESC
                  LIMIT %d OFFSET %d",
                 $like,
                 $like,
@@ -254,7 +254,7 @@ class WechatOAReplyListTable extends WP_List_Table {
                  FROM {$this->replyTable} r
                  LEFT JOIN {$this->keywordTable} k ON r.id = k.reply_id
                  GROUP BY r.id
-                 ORDER BY r.updated DESC
+                 ORDER BY r.updated_at DESC
                  LIMIT %d OFFSET %d",
                 $perPage,
                 $offset
@@ -272,7 +272,7 @@ class WechatOAReplyListTable extends WP_List_Table {
             };
 
             $row['status']   = $row['status'] ? __('Enabled') : __('Disabled');
-            $row['modified'] = Date::dateTime(strtotime($row['updated']));
+            $row['modified'] = Date::dateTime(strtotime($row['updated_at']));
         }
 
         return $results ?: [];

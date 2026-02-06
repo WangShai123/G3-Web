@@ -32,6 +32,16 @@ class Post extends Components {
     #[Override]
     protected function form(): void
     {
+        $this->postViewsControl();
+        add_action('save_post', [$this, 'savePost']);
+        $taxonomies = get_taxonomies();
+        foreach ($taxonomies as $taxonomy) {
+            add_action($taxonomy . '_add_form_fields', [$this, 'addCoverFieldInAddForm']);
+            add_action($taxonomy . '_edit_form_fields', [$this, 'addCoverFieldInEditForm']);
+            add_action('created_' . $taxonomy, [$this, 'updateCoverField']);
+            add_action('edited_' . $taxonomy, [$this, 'updateCoverField']);
+        }
+
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'post-reading') return;
         $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
@@ -43,7 +53,7 @@ class Post extends Components {
     #[Override]
     protected function init(): void
     {
-        $this->postViews();
+        $this->initPostViews();
         $this->removeAutoP();
         add_filter('the_content', [$this, 'mountCopyright']);
         $this->registerCover();
@@ -51,17 +61,10 @@ class Post extends Components {
     #[Override]
     protected function admin(): void
     {
-        add_action('save_post', [$this, 'protected'], 10, 1);
+        add_action('save_post', [$this, 'savePostPro']);
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
-
-        $taxonomies = get_taxonomies();
-        foreach ($taxonomies as $taxonomy) {
-            add_action($taxonomy . '_add_form_fields', [$this, 'addCoverFieldInAddForm']);
-            add_action($taxonomy . '_edit_form_fields', [$this, 'addCoverFieldInEditForm']);
-            add_action('created_' . $taxonomy, [$this, 'updateCoverField']);
-            add_action('edited_' . $taxonomy, [$this, 'updateCoverField']);
-        }
+        add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
 
         if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
             require_once G3_PlUGIN_DIR . '/tests/robustEncoder.php';
@@ -225,7 +228,94 @@ class Post extends Components {
         }
         return $content;
     }
-    public function protected($postId): void
+
+    private function initPostViews(): void
+    {
+        if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
+            return;
+        }
+        add_action('wp_head', [$this, '_initPostViews']);
+    }
+    private function postViewsControl(): void
+    {
+        if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
+            return;
+        }
+        add_filter('manage_posts_columns', [$this, 'addViewsColumn'], 10, 2);
+        add_action('manage_posts_custom_column', [$this, 'showViewsColumn'], 10, 2);
+        add_filter('manage_pages_columns', [$this, 'addViewsColumn'], 10, 2);
+        add_action('manage_pages_custom_column', [$this, 'showViewsColumn'], 10, 2);
+        add_filter('manage_edit-post_sortable_columns', [$this, 'addViewsSortableColumn']);
+        add_filter('manage_edit-page_sortable_columns', [$this, 'addViewsSortableColumn']);
+        add_action('pre_get_posts', [$this, 'viewsSorting']);
+    }
+    private function _setPostViews($postId): void
+    {
+        if ($this->loader->admin()) {
+            $minute = (int) $this->option['viewInterval'] ?? 60;
+        } else {
+            $minute = 1;
+        }
+
+        $hour    = $minute && $minute > 0 ? $minute / 60 : 1;
+        $metaKey = $this->viewsKey;
+        if (is_singular()) {
+            $count       = get_post_meta($postId, $metaKey, true);
+            $viewed      = $_COOKIE[$metaKey] ?? '';
+            $viewedArray = explode(',', $viewed);
+            if (!in_array($postId, $viewedArray)) {
+                $viewed = $viewed . $postId . ',';
+                setcookie($metaKey, $viewed, time() + $hour * 3600, '/');
+                switch ($count) {
+                    case '':
+                        delete_post_meta($postId, $metaKey);
+                        add_post_meta($postId, $metaKey, '0');
+                        break;
+                    default:
+                        $count++;
+                        update_post_meta($postId, $metaKey, $count);
+                        break;
+                }
+            }
+        }
+    }
+    public function _initPostViews()
+    {
+        return $this->_setPostViews(get_the_ID());
+    }
+    public function postboxRender($post): void
+    {
+        $postId = $post->ID ?? 0;
+
+        $viewCount      = get_post_meta($postId, $this->viewsKey, true) ?: 0;
+        $likeCount      = get_post_meta($postId, PostService::LIKE_KEY, true) ?: 0;
+        $dislikeCount   = get_post_meta($postId, PostService::DISLIKE_KEY, true) ?: 0;
+        $favoritesCount = get_post_meta($postId, PostService::FAVORITE_KEY, true) ?: 0;
+
+        $html  = '<div class="grid-container grid-col-1 grid-col-sm-2 grid-col-md-2 grid-col-lg-4">';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('View', 'G3') . '</div></div><input class="j-input" type="number" id="views-count" name="viewsCount" value="' . $viewCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Favorite', 'G3') . '</div></div><input class="j-input" type="number" id="favorites-count" name="favoritesCount" value="' . $favoritesCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Like', 'G3') . '</div></div><input class="j-input" type="number" id="like-count" name="likeCount" value="' . $likeCount . '" min="0"></div>';
+        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Dislike', 'G3') . '</div></div><input class="j-input" type="number" id="dislike-count" name="dislikeCount" value="' . $dislikeCount . '" min="0"></div>';
+        $html .= '</div>';
+        $html .= '<div class="g3-metabox-description">' . __('Tip: You can customize the interaction data according to your operational needs.', 'G3') . '</div>';
+
+        echo $html;
+
+        /**
+         * Custom Action: g3_action_post_views
+         */
+        do_action('g3_action_post_views', $post);
+    }
+    public function savePost($postId): void
+    {
+        $this->saveCustomData($postId);
+    }
+    public function savePostPro($postId): void
+    {
+        $this->copyrightProtected($postId);
+    }
+    private function copyrightProtected($postId): void
     {
         if (!isset($this->option['copyright']) || $this->option['copyright'] !== '1') {
             return;
@@ -312,7 +402,7 @@ class Post extends Components {
             }
 
             // 防止循环调用
-            remove_action('save_post', [$this, 'protected'], 10);
+            remove_action('save_post', [$this, 'copyrightProtected'], 10);
 
             // 使用更高效的更新方式
             $updated = wp_update_post([
@@ -321,7 +411,7 @@ class Post extends Components {
             ], false); // false = 不触发wp_error
 
             // 恢复钩子
-            add_action('save_post', [$this, 'protected'], 10, 1);
+            add_action('save_post', [$this, 'copyrightProtected'], 10, 1);
 
             if (is_wp_error($updated)) {
                 error_log('[G3] RobustEncoder: Failed to update post ' . $postId . ': ' . $updated->get_error_message());
@@ -331,93 +421,7 @@ class Post extends Components {
             error_log('' . $e->getMessage());
         }
     }
-
-    private function postViews(): void
-    {
-        if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
-            return;
-        }
-        add_action('wp_head', [$this, 'setPostViews']);
-        add_action('add_meta_boxes', [$this, 'initPostbox'], 10, 2);
-        add_action('save_post', [$this, 'updatePostboxViews'], 10, 2);
-        add_filter('manage_posts_columns', [$this, 'addViewsColumn'], 10, 2);
-        add_action('manage_posts_custom_column', [$this, 'showViewsColumn'], 10, 2);
-        add_filter('manage_pages_columns', [$this, 'addViewsColumn'], 10, 2);
-        add_action('manage_pages_custom_column', [$this, 'showViewsColumn'], 10, 2);
-        add_filter('manage_edit-post_sortable_columns', [$this, 'addViewsSortableColumn']);
-        add_filter('manage_edit-page_sortable_columns', [$this, 'addViewsSortableColumn']);
-        add_action('pre_get_posts', [$this, 'viewsSorting']);
-    }
-    private function _setPostViews($postId): void
-    {
-        if ($this->loader->admin()) {
-            $minute = (int) $this->option['viewInterval'] ?? 60;
-        } else {
-            $minute = 1;
-        }
-
-        $hour    = $minute && $minute > 0 ? $minute / 60 : 1;
-        $metaKey = $this->viewsKey;
-        if (is_singular()) {
-            $count       = get_post_meta($postId, $metaKey, true);
-            $viewed      = $_COOKIE[$metaKey] ?? '';
-            $viewedArray = explode(',', $viewed);
-            if (!in_array($postId, $viewedArray)) {
-                $viewed = $viewed . $postId . ',';
-                setcookie($metaKey, $viewed, time() + $hour * 3600, '/');
-                switch ($count) {
-                    case '':
-                        delete_post_meta($postId, $metaKey);
-                        add_post_meta($postId, $metaKey, '0');
-                        break;
-                    default:
-                        $count++;
-                        update_post_meta($postId, $metaKey, $count);
-                        break;
-                }
-            }
-        }
-    }
-    public function setPostViews()
-    {
-        return $this->_setPostViews(get_the_ID());
-    }
-    public function initPostbox(): void
-    {
-        add_meta_box(
-            'post-custom-data',
-            __('Custom interaction data', 'G3'),
-            [$this, 'postboxRender'],
-            get_post_types([], 'names'),
-            'normal',
-            'high'
-        );
-    }
-    public function postboxRender($post): void
-    {
-        $postId = $post->ID ?? 0;
-
-        $viewCount      = get_post_meta($postId, $this->viewsKey, true) ?: 0;
-        $likeCount      = get_post_meta($postId, PostService::LIKE_KEY, true) ?: 0;
-        $dislikeCount   = get_post_meta($postId, PostService::DISLIKE_KEY, true) ?: 0;
-        $favoritesCount = get_post_meta($postId, PostService::FAVORITE_KEY, true) ?: 0;
-
-        $html  = '<div class="grid-container grid-col-1 grid-col-sm-2 grid-col-md-2 grid-col-lg-4">';
-        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('View', 'G3') . '</div></div><input class="j-input" type="number" id="views-count" name="viewsCount" value="' . $viewCount . '" min="0"></div>';
-        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Favorite', 'G3') . '</div></div><input class="j-input" type="number" id="favorites-count" name="favoritesCount" value="' . $favoritesCount . '" min="0"></div>';
-        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Like', 'G3') . '</div></div><input class="j-input" type="number" id="like-count" name="likeCount" value="' . $likeCount . '" min="0"></div>';
-        $html .= '<div class="input-group"><div class="el-addon"><div class="is-text">' . __('Dislike', 'G3') . '</div></div><input class="j-input" type="number" id="dislike-count" name="dislikeCount" value="' . $dislikeCount . '" min="0"></div>';
-        $html .= '</div>';
-        $html .= '<div class="g3-metabox-description">' . __('Tip: You can customize the interaction data according to your operational needs.', 'G3') . '</div>';
-
-        echo $html;
-
-        /**
-         * Custom Action: g3_action_post_views
-         */
-        do_action('g3_action_post_views', $post);
-    }
-    public function updatePostboxViews($postId): void
+    private function saveCustomData($postId): void
     {
         if ((!isset($_POST['viewsCount'])) || (!isset($_POST['likeCount'])) || (!isset($_POST['dislikeCount'])) || (!isset($_POST['favoritesCount']))) {
             return;
@@ -429,7 +433,7 @@ class Post extends Components {
         update_post_meta($postId, $this->viewsKey, $viewCount);
         update_post_meta($postId, PostService::LIKE_KEY, $likeCount);
         update_post_meta($postId, PostService::DISLIKE_KEY, $dislikeCount);
-        update_post_meta($postId, PostService::DISLIKE_KEY, $favoritesCount);
+        update_post_meta($postId, PostService::FAVORITE_KEY, $favoritesCount);
     }
     public function addViewsColumn(array $columns): array
     {
@@ -591,15 +595,22 @@ HTML;
 
     protected function metaBox(): void
     {
-        $option = Context::get(ShareService::OPTION_KEY);
+        add_meta_box(
+            'post-custom-data',
+            __('Custom interaction data', 'G3'),
+            [$this, 'postboxRender'],
+            get_post_types([], 'names'),
+            'normal',
+            'high'
+        );
 
+        $option = Context::get(ShareService::OPTION_KEY);
         if (isset($option['enable']) && $option['enable'] === '1') {
             if (
                 $option['wechatMediaLibrary'] === '0' &&
                 $option['qqZone'] === '0' &&
                 $option['douYin'] === '0'
             ) {
-                error_log('Share options are all disabled, skip rendering share meta box.');
                 return;
             }
             add_meta_box(
@@ -611,5 +622,31 @@ HTML;
                 'high'
             );
         }
+    }
+    public function enhanceAdminPostSearch($where, $query)
+    {
+        if (!is_admin() || !$query->is_main_query()) {
+            return $where;
+        }
+        // safe check
+        $current_screen = get_current_screen();
+        if ($current_screen->base !== 'edit') {
+            return $where;
+        }
+
+        $searchKeyword = $query->get('s');
+        if (empty($searchKeyword)) {
+            return $where;
+        }
+
+        // enhance: ID Search Support
+        if (ctype_digit($searchKeyword) && $searchKeyword > 0) {
+            $postId = (int) $searchKeyword;
+            // build ID search query
+            global $wpdb;
+            $core_condition = ltrim($where, ' AND');
+            return " AND ( ({$core_condition}) OR {$wpdb->posts}.ID = {$postId} )";
+        }
+        return $where;
     }
 }

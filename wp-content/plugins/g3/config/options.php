@@ -8,10 +8,12 @@ return [
     'g3_option_op_wechatOA',
     'g3_option_securities',
 
-
     'g3_option_swiper_locations',
     'g3_option_swipers_query',
     'g3_option_themes',
+
+    // 'g3_option_shop',
+    // 'g3_option_specs',
 
     'g3_option_general',
     'g3_option_seo',

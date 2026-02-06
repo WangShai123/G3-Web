@@ -50,21 +50,6 @@ class Setting extends Components {
     #[Override]
     protected function form(): void
     {
-        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'g3-settings') return;
-        $this->option = Option::cache(SystemService::OPTION_KEY, $this->option);
-        $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
-        $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
-    }
-    #[Override]
-    protected function init(): void
-    {
-        add_action('wp_head', [$this, 'sadHandle']);
-        add_action('wp_head', [$this, 'headerCodeHandle']);
-        add_action('wp_footer', [$this, 'footerCodeHandle']);
-    }
-    #[Override]
-    protected function admin(): void
-    {
         Frontend::loadStyle('jui');
         Frontend::loadScript('jui');
         Frontend::loadScript('g3.admin');
@@ -87,7 +72,20 @@ class Setting extends Components {
         add_filter('admin_body_class', function ($classes) {
             return $classes . ' light j-theme-indigo j-shadow-none j-radius-sm j-font-sm';
         });
+
+        if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'g3-settings') return;
+        $this->option = Option::cache(SystemService::OPTION_KEY, $this->option);
+        $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
+        $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
     }
+    #[Override]
+    protected function init(): void
+    {
+        add_action('wp_head', [$this, 'sadHandle']);
+        add_action('wp_head', [$this, 'headerCodeHandle']);
+        add_action('wp_footer', [$this, 'footerCodeHandle']);
+    }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -561,13 +559,13 @@ class Setting extends Components {
 
         /**
          * Custom Action: add custom fields in post SEO metabox
-         * Action: g3_seo_action
+         * Action: g3_action_seo
          * 
          * @param object $post The post object.
          * @since 1.0.0
          * @author Wang Shai
          */
-        do_action('g3_seo_action', $post);
+        do_action('g3_action_seo', $post);
     }
     /**
      * SEO: add keywords field in add & edit form for all taxonomies
@@ -666,7 +664,7 @@ class Setting extends Components {
     }
     private function linksHandle(): void
     {
-        if (!SystemService::isLinksAvailable()) {
+        if (!SystemService::hasLinkService()) {
             return;
         }
         add_filter('pre_option_link_manager_enabled', '__return_true');

@@ -287,13 +287,13 @@ class Mail extends Components {
                 ],
                 [
                     'id'       => 'paymentSuccess',
-                    'title'    => __('Order Payment Receipt Template', 'G3'),
+                    'title'    => __('Orders Payment Receipt Template', 'G3'),
                     'callback' => function () {
                         echo Element::textarea(
                             MailerService::TEMPLATE_OPTION_KEY,
                             $this->template,
                             'paymentSuccess',
-                            __('Order Payment Receipt Template', 'G3'),
+                            __('Orders Payment Receipt Template', 'G3'),
                             __('Send an email notification to the user after successful payment.', 'G3'),
                         );
                     },

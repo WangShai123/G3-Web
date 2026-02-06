@@ -122,7 +122,7 @@ $time = Developer::time();
                 <div><?php _e('Shop System', 'G3'); ?></div>
                 <div><?php _e('SKU System', 'G3'); ?></div>
                 <div><?php _e('Payment System', 'G3'); ?></div>
-                <div><?php _e('Order System', 'G3'); ?></div>
+                <div><?php _e('Orders System', 'G3'); ?></div>
                 <div><?php _e('Balance Management', 'G3'); ?></div>
                 <div><?php _e('Transaction System', 'G3'); ?></div>
                 <div><?php _e('Credits System', 'G3'); ?></div>

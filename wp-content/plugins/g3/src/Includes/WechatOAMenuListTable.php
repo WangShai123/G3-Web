@@ -18,7 +18,7 @@ class WechatOAMenuListTable extends WP_List_Table {
         return [
             'name'   => __('Name'),
             'sort'   => __('Sort', 'G3'),
-            'type'   => __('Type', 'G3'),
+            'type'   => __('Type'),
             'value'  => 'Key/URL/ID',
             'action' => __('Action')
         ];

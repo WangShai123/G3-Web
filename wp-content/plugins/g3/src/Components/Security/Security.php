@@ -246,6 +246,7 @@ class Security extends Components {
         echo '<h1 class="wp-heading-inline">' . __('Performance', 'G3') . '</h1>';
         $args = [
             'queue'   => __('Queue', 'G3'),
+            'opcache' => 'OPCache',
             'fastcgi' => 'FastCGI',
             'redis'   => 'Redis',
             'theme'   => __('Hybrid Theme', 'G3'),

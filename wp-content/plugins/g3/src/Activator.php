@@ -2,8 +2,10 @@
 namespace JEALER\G3;
 
 use JEALER\G3\Services\SystemService;
-use JEALER\G3\Queue\Queue;
+use JEALER\G3\Services\DBService;
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Rewrite\Rewrite;
+use Redis;
 
 class Activator {
     public static $instance = null;
@@ -17,14 +19,13 @@ class Activator {
             self::$instance = new self();
         }
 
-        Queue::init();
-
         return self::$instance;
     }
     private function init(): void
     {
         self::checkDependencies();
         $this->checkPHP();
+        $this->checkRedis();
         $this->checkWordPress();
 
         $this->initTables();
@@ -50,6 +51,22 @@ class Activator {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
             wp_die(
                 __('G3-Web requires PHP 8.3+. Please upgrade your PHP version.', 'G3'),
+                __('Failed to active G3-Web plugin!', 'G3'),
+                ['back_link' => true]
+            );
+        }
+    }
+
+    private function checkRedis(): void
+    {
+        try {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1', 6379);
+        }
+        catch (\Throwable $th) {
+            deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
+            wp_die(
+                __('G3-Web requires Redis server. Please make sure Redis is installed and running.', 'G3'),
                 __('Failed to active G3-Web plugin!', 'G3'),
                 ['back_link' => true]
             );
@@ -143,7 +160,7 @@ class Activator {
 
     private function initTables(): void
     {
-        SystemService::initTables();
+        DBService::initTables();
     }
 
     private function param(): void

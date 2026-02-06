@@ -1,8 +1,8 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
-use JEALER\G3\Utilities\Frontend;
 use Override;
 
 class Jui extends Components {
@@ -17,19 +17,6 @@ class Jui extends Components {
     {
         add_filter('g3_filter_html_class', [$this, 'initHtmlClass']);
         add_action('body_class', [$this, 'initBodyClass']);
-    }
-
-    protected function initStyle()
-    {
-        Frontend::loadStyle('jui');
-    }
-    protected function initScript(): void
-    {
-        Frontend::loadScript('jui');
-    }
-    protected function initModule(): void
-    {
-        Frontend::loadModule('jui');
     }
 
     /**

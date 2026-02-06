@@ -1,8 +1,7 @@
 <?php
-use JEALER\G3\Utilities\Frontend;
+
 use JEALER\G3\Utilities\Element;
 
-Frontend::loadScript('jui');
 settings_errors('flush');
 ?>
 <form action="" method="post">

@@ -30,13 +30,13 @@ class WechatOAMessageListTable extends WP_List_Table {
     public function get_columns(): array
     {
         return [
-            'cb'       => '<input type="checkbox" />',
-            'openid'   => 'OpenID',
-            'nickname' => __('Nickname'),
-            'type'     => __('Type'),
-            'content'  => __('Content'),
-            'created'  => __('Time'),
-            'action'   => __('Action')
+            'cb'         => '<input type="checkbox" />',
+            'openid'     => 'OpenID',
+            'nickname'   => __('Nickname'),
+            'type'       => __('Type'),
+            'content'    => __('Content'),
+            'created_at' => __('Time'),
+            'action'     => __('Action')
         ];
     }
 
@@ -69,7 +69,7 @@ class WechatOAMessageListTable extends WP_List_Table {
             'type' => $item->type,
             // 'content' => $this->renderContent($item->content),
             'content' => Common::truncateHtml($item->content, 50),
-            'created' => wp_date('Y-m-d H:i:s', strtotime($item->created)),
+            'created_at' => wp_date('Y-m-d H:i:s', strtotime($item->created_at)),
             default => isset($item->$column_name) ? $item->$column_name : '-',
         };
     }

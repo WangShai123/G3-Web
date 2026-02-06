@@ -3,6 +3,8 @@ namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
 use EasyWeChat\Kernel\Message;
+use JEALER\G3\Container\Container;
+use JEALER\G3\Container\TagManager;
 use JEALER\G3\Service;
 use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
@@ -149,6 +151,8 @@ class WechatOAService {
 
     private function init(): void
     {
+        $x = Container::run()->getServicesByTag('raven')['loader']->x();
+        if ($x) return;
         $this->option  = get_option(self::OPTION_KEY);
         $serviceEnable = $this->option['service'] ?? false;
 
@@ -250,18 +254,18 @@ class WechatOAService {
 
         // Prepare message data
         $data = [
-            'msgid'    => $message['MsgID'] ?? $message['MsgId'] ?? '',
-            'openid'   => $openid,
-            'nickname' => $nickname,
-            'type'     => $message['MsgType'] ?? '',
-            'content'  => '',
-            'created'  => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : current_time('mysql'),
+            'msgid'      => $message['MsgID'] ?? $message['MsgId'] ?? '',
+            'openid'     => $openid,
+            'nickname'   => $nickname,
+            'type'       => $message['MsgType'] ?? '',
+            'content'    => '',
+            'created_at' => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : current_time('mysql'),
         ];
 
         // Handle timestamp conversion if available
         if (!empty($message['CreateTime'])) {
             // Convert timestamp to MySQL datetime format
-            $data['created'] = date('Y-m-d H:i:s', $message['CreateTime']);
+            $data['created_at'] = date('Y-m-d H:i:s', $message['CreateTime']);
         }
 
         // Handle different message types
@@ -359,7 +363,7 @@ class WechatOAService {
         $offset = ($page - 1) * $per_page;
 
         // Prepare query
-        $query    = "SELECT * FROM {$table} {$where} ORDER BY created DESC LIMIT %d OFFSET %d";
+        $query    = "SELECT * FROM {$table} {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d";
         $params[] = $per_page;
         $params[] = $offset;
 
@@ -552,7 +556,7 @@ class WechatOAService {
     {
         global $wpdb;
         $table = $wpdb->prefix . self::MESSAGES_TABLE;
-        $query = "DELETE FROM $table WHERE created < DATE_SUB(NOW(), INTERVAL $days DAY)";
+        $query = "DELETE FROM $table WHERE created_at < DATE_SUB(NOW(), INTERVAL $days DAY)";
         return $wpdb->query($query);
     }
 
@@ -1112,11 +1116,11 @@ class WechatOAService {
     private static function _insertReply(array $data, array $keywords): int|WP_Error
     {
         $replyId = self::insertReply([
-            'type'    => sanitize_text_field($data['type'] ?? 'text'),
-            'content' => trim($data['content']),
-            'status'  => (int) ($data['status'] ?? 1),
-            'created' => current_time('mysql', true),
-            'updated' => current_time('mysql', true)
+            'type'       => sanitize_text_field($data['type'] ?? 'text'),
+            'content'    => trim($data['content']),
+            'status'     => (int) ($data['status'] ?? 1),
+            'created_at' => current_time('mysql', true),
+            'updated'    => current_time('mysql', true)
         ]);
 
         if (!$replyId) {
