@@ -1,5 +1,15 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
+/**
+ * Frontend Utilities
+ * 
+ * 前端工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Frontend {
 
     /**
@@ -11,12 +21,11 @@ final class Frontend {
      * 
      * @param bool $echo whether to echo the class attribute
      * @return mixed whether to return the class attribute or echo it
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function htmlClass($echo = true)
     {
         $classes = ['g3-web'];
+
         /**
          * @var array $classes
          * Custom Filter: g3_filter_html_class
@@ -43,14 +52,12 @@ final class Frontend {
      * @param bool $cdn Whether to load the style from a CDN (default: false).
      * @param string $media The media type for the style (default: 'all').
      * @return
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function loadStyle(string $handle, bool $cdn = false, string $media = 'all')
     {
         $styles = [
-            'jui'          => [G3_CSS_URL . '/jui.min.css', [], '1.0.0'],
-            'jui.core'     => [G3_CSS_URL . '/jui.core.min.css', [], '1.0.0'],
+            'jui'          => [G3_CSS_URL . '/jui.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.min.css'],
+            'jui.core'     => [G3_CSS_URL . '/jui.core.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.pure.min.css'],
 
             /**
              * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
@@ -67,7 +74,8 @@ final class Frontend {
              * Swiper: The most modern mobile touch slider with hardware accelerated transitions
              * @link https://github.com/nolimits4web/Swiper
              */
-            'swiper'       => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.0.3', 'https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.css'],
+            'swiper'       => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'],
+            'tiny.swiper'  => [G3_CSS_URL . '/tiny.swiper.min.css', [], '1.0.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.css'],
             /**
              * katex: Fast math typesetting for the web
              * @see https://github.com/KaTeX/KaTeX
@@ -108,48 +116,39 @@ final class Frontend {
      * @param bool $cdn Whether to load the script from a CDN (default: false).
      * @param bool $in_footer Whether to load the script in the footer (default: true).
      * @return bool Whether the script is successfully loaded.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function loadScript(string $handle, bool $cdn = false, bool $in_footer = true): bool
     {
         // static $scripts;
         $scripts = [
             // jQuery
-            'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://cdn.jsdelivr.net/npm/jquery'],
+            'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://unpkg.com/jquery@latest/dist/jquery.min.js'],
             // JUI
-            'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0'],
+            'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.umd.js'],
             'jui.form.validator' => [G3_JS_URL . '/jui.form.validator.min.js', [], '1.0.0'],
             'jui.pca'            => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
             'jui.cascading'      => [G3_JS_URL . '/jui.cascading.min.js', [], '1.0.0'],
             // G3
-            'g3.redirect.link'   => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.redirect.link.min.js', [], '1.0.0'],
-            'g3.admin'           => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
+            'g3.redirect.link'   => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.redirect.link.min.js', [], '1.0.0'],
+            'g3.admin'           => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
             // Template Scripts
-            'g3.media.upload'    => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.template.media.upload.min.js', ['jquery'], '1.0.0'],
-            'g3.media.image'     => [WP_PLUGIN_URL . '/g3/dist/javascript/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
+            'g3.media.upload'    => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.upload.min.js', ['jquery'], '1.0.0'],
+            'g3.media.image'     => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
             /**
              * Axios: 
              * @link https://github.com/axios/axios
              */
-            'axios'              => [G3_JS_URL . '/axios.min.js', [], '1.13.2', 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js'],
+            'axios'              => [G3_JS_URL . '/axios.min.js', [], '1.13.5', 'https://unpkg.com/axios@1.13.5/dist/axios.min.js'],
             /**
              * Axios Cache Interceptor
              * @link https://github.com/arthurfiorette/axios-cache-interceptor
              */
-            'axios.cache'        => [G3_JS_URL . '/axios-cache-interceptor.min.js', ['axios'], '1.9.0', 'https://cdn.jsdelivr.net/npm/axios-cache-interceptor@1/dist/index.bundle.js'],
-            /**
-             * Quill: a modern WYSIWYG editor built for compatibility and extensibility
-             * @link https://github.com/slab/quill
-             */
-            'quill'              => [G3_JS_URL . '/quill.min.js', [], '2.0.3', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js'],
-            'quill.features'     => [G3_JS_URL . '/quill.features.js', ['jquery'], '1.0.0'],
-            'quill.image.resize' => [G3_JS_URL . '/quill.image-resize.min.js', [], '3.0.9'],
+            'axios.cache'        => [G3_JS_URL . '/axios-cache-interceptor.min.js', ['axios'], '1.11.4', 'https://unpkg.com/axios-cache-interceptor@1.11.4/dist/index.bundle.js'],
             /**
              * katex: Fast math typesetting for the web
              * @link https://github.com/KaTeX/KaTeX
              */
-            'katex'              => [G3_JS_URL . '/katex.min.js', [], '0.16.25', 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js'],
+            'katex'              => [G3_JS_URL . '/katex.min.js', [], '0.16.32', 'https://unpkg.com/katex@0.16.32/dist/katex.min.js'],
             /**
              * Decimal: An arbitrary-precision Decimal type for JavaScript
              * @link https://github.com/MikeMcl/decimal.js
@@ -161,10 +160,15 @@ final class Frontend {
              */
             'pace'               => [G3_JS_URL . '/pace.min.js', [], '1.2.4', 'https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js'],
             /**
+             * tiny.swiper: Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience.
+             * @link https://github.com/joe223/tiny-swiper
+             */
+            'tiny.swiper'        => [G3_JS_URL . '/tiny-swiper.full@2.2.0.min.js', [], '2.2.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.full.js'],
+            /**
              * Swiper: The most modern mobile touch slider with hardware accelerated transitions
              * @link https://github.com/nolimits4web/Swiper
              */
-            'swiper'             => [G3_JS_URL . '/swiper-bundle.min.js', [], '12.0.3', 'https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.js'],
+            'swiper'             => [G3_JS_URL . '/swiper-bundle.min.js', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js'],
             /**
              * vanilla-lazyload: it leverages IntersectionObserver to lazy load images, backgrounds, videos, iframes and scripts.
              * @link https://github.com/verlok/vanilla-lazyload
@@ -186,8 +190,6 @@ final class Frontend {
          * Custom Filter: g3_filter_scripts
          * @param  array $scripts The array of script handles.
          * @return array The filtered array of script handles.
-         * @since 1.0.0
-         * @author Wang Shai
          */
         $scripts = apply_filters('g3_filter_scripts', $scripts);
 
@@ -218,27 +220,22 @@ final class Frontend {
      * @param  string $handle The module handle.
      * @param  bool   $cdn    Whether to load the module from a CDN (default: false).
      * @return bool True if the module is loaded successfully, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function loadModule(string $handle, bool $cdn = false): bool
     {
         $modules = [
-            'jui'                => [G3_JS_URL . '/es/jui.esm.js', [], '1.0.0'],
-            'jui.mjs'            => [G3_JS_URL . '/es/jui.mjs', [], '1.0.0'],
-            /**
-             * ky: Tiny & elegant JavaScript HTTP client based on the Fetch API
-             * @link: https://github.com/sindresorhus/ky
-             */
-            'ky'                 => [G3_JS_URL . '/es/ky.esm.js', [], '1.14.1', 'https://cdn.jsdelivr.net/npm/ky@1.14.1/+esm'],
+            'jui'                => [G3_JS_URL . '/es/jui.esm.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.esm.js'],
+            'jui.module'         => [G3_JS_URL . '/es/jui.module.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.module.js'],
+
+            'g3.login.modal'     => [G3_ASSETS_URL . '/javascript/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
+            'g3.subscribe.modal' => [G3_ASSETS_URL . '/javascript/es/g3.subscribe.modal.min.js', ['jui'], '1.0.0'],
+            'g3.login.oa'        => [G3_ASSETS_URL . '/javascript/es/g3.login.oa.min.js', ['jui'], '1.0.0'],
+
             /**
              * qrcodeJS: Cross-browser QRCode generator for javascript
              * @link: https://github.com/davidshimjs/qrcodejs
              */
             'qrcode'             => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm'],
-
-            'g3.login.modal'     => [G3_DIST_URL . '/javascript/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
-            'g3.subscribe.modal' => [G3_DIST_URL . '/javascript/es/g3.subscribe.modal.min.js', ['jui'], '1.0.0'],
         ];
 
         /**
@@ -307,8 +304,6 @@ final class Frontend {
      * 检查当前浏览器是否为低端浏览器
      *
      * @return bool True if the browser is low-end, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isLowEndBrowser(): bool
     {

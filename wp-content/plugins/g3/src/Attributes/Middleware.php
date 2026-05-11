@@ -1,5 +1,7 @@
 <?php
+
 namespace JEALER\G3\Attributes;
+
 use Attribute;
 
 /**
@@ -12,6 +14,7 @@ use Attribute;
  */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class Middleware {
+
     /**
      * @param string $middleware 中间件类名
      * @param array $params 中间件参数

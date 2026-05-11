@@ -41,7 +41,21 @@
 /wp-content/plugins/g3/extensions/windows/
 /wp-content/plugins/g3/extensions/jl.php
 
+/wp-content/plugins/g3/node_modules/
+/wp-content/plugins/g3/.eslintignore
+/wp-content/plugins/g3/.prettierignore
+/wp-content/plugins/g3/eslint.config.js
+/wp-content/plugins/g3/package-lock.json
+/wp-content/plugins/g3/package.json
+/wp-content/plugins/g3/pnpm-lock.yaml
+/wp-content/plugins/g3/prettier.config.js
+
 # Static assets
+/wp-content/plugins/g3/assets/css/*.css
+!/wp-content/plugins/g3/assets/css/*.min.css
+/wp-content/plugins/g3/assets/javascript/**/*.js
+!/wp-content/plugins/g3/assets/javascript/**/*.min.js
+
 /wp-content/plugins/g3/public/css/*
 !/wp-content/plugins/g3/public/css/*.min.css
 
@@ -49,11 +63,9 @@
 !/wp-content/plugins/g3/public/javascript/*.min.js
 !/wp-content/plugins/g3/public/javascript/*.umd.js
 
-#/wp-content/plugins/g3/public/javascript/es/**
 !/wp-content/plugins/g3/public/javascript/es/
 !/wp-content/plugins/g3/public/javascript/es/*.min.js
-!/wp-content/plugins/g3/public/javascript/es/*.esm.js
-!/wp-content/plugins/g3/public/javascript/es/*.mjs
+!/wp-content/plugins/g3/public/javascript/es/*.js
 
 # Global tests
 /wp-content/plugins/g3/tests/
@@ -75,6 +87,7 @@
 .idea/
 .vscode/
 .lingma/
+.lingmaignore
 .trae/
 *.txt
 

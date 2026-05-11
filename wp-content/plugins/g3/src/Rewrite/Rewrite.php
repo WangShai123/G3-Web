@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Rewrite;
 
 use JEALER\G3\Components\Components;
@@ -13,14 +14,16 @@ use JEALER\G3\Container\Container;
  * @author Wang Shai
  */
 class Rewrite {
+
     /**
      * @var array rewrite config
      */
     private array $config = [];
-    private ?Container $container = null;
+    private Container $container;
+
     public function __construct()
     {
-        if ($this->container === null) {
+        if (!isset($this->container)) {
             $this->container = Container::run();
         }
 
@@ -52,8 +55,6 @@ class Rewrite {
      * 检查是否需要刷新rewrite规则（基于配置哈希），24小时有效期
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function checkIfFlushNeeded(): void
     {
@@ -79,8 +80,6 @@ class Rewrite {
      * 验证当前rewrite规则是否与配置一致
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function verifyRewriteRules(): bool
     {
@@ -128,8 +127,6 @@ class Rewrite {
      * 获取rewrite配置
      * 
      * @return array rewrite config
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getConfig(): array
     {
@@ -142,8 +139,6 @@ class Rewrite {
      * 注册rewrite规则
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function registerRewriteRules(): void
     {
@@ -197,8 +192,6 @@ class Rewrite {
      * 立即刷新rewrite规则（用于插件激活等需要立即生效的场景）
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function flushRewriteRules(): void
     {
@@ -227,8 +220,6 @@ class Rewrite {
      * 主动检查并修复rewrite规则。在请求早期调用，确保规则一致性
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function checkAndFixRewriteRules(): void
     {
@@ -247,9 +238,7 @@ class Rewrite {
      * 自动注册查询变量
      * 
      * @param array $vars registered query vars
-     * @return array 
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return array
      */
     public function registerQueryVars(array $vars): array
     {
@@ -275,8 +264,6 @@ class Rewrite {
      * 
      * @param string $template
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function bindTemplateDispatch(string $template): string
     {
@@ -358,8 +345,6 @@ class Rewrite {
      * 
      * @param mixed $dependency
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function isDependencySatisfied($dependency): bool
     {

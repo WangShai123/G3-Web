@@ -1,100 +1,93 @@
 <?php
+
 namespace JEALER\G3\Services;
+
 use JEALER\G3\Components\Components;
 use JEALER\G3\Services\PageService;
+use JEALER\G3\Utilities\Context;
 use WP_Post;
+use WP_Query;
+
+/**
+ * Post Service
+ * 
+ * 文章服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class PostService {
 
     /**
      * Option Key
      * 
      * 配置项 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_reading';
+    const OPTION_KEY = 'g3_option_reading';
 
     /**
      * SEO Title Key
      * 
      * SEO 标题 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static string $seoTitleKey = 'g3_title';
+    const TITLE_KEY = 'g3_title';
 
     /**
      * SEO Keywords Key
      * 
      * SEO 关键词 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static string $seoKeywordsKey = 'g3_keywords';
+    const KEYWORDS_KEY = 'g3_keywords';
 
     /**
      * SEO Description Key
      * 
      * SEO 描述 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static string $seoDescriptionKey = 'g3_description';
+    const DESCRIPTION_KEY = 'g3_description';
 
     /**
      * Cover Key
      * 
      * 封面 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const COVER_KEY = 'g3_cover';
+    const COVER_KEY = 'g3_cover';
 
     /**
      * Views Key
      * 
      * 浏览量 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const VIEW_KEY = 'g3_views';
+    const VIEW_KEY = 'g3_views';
 
     /**
      * Like Key
      * 
      * 点赞 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const LIKE_KEY = 'g3_like';
+    const LIKE_KEY = 'g3_like';
 
     /**
      * Dislike Key
      * 
      * 踩 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const DISLIKE_KEY = 'g3_dislike';
+    const DISLIKE_KEY = 'g3_dislike';
 
     /**
      * Favorite Key
      * 
      * 收藏 Key
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const FAVORITE_KEY = 'g3_favorite';
+    const FAVORITE_KEY = 'g3_favorite';
 
+    /**
+     * Get views key
+     * 
+     * 获取浏览量 Key
+     * 
+     * @return string
+     */
     public static function getViewsKey(): string
     {
         if (defined('G3_POST_VIEWS_KEY') && is_string(constant('G3_POST_VIEWS_KEY')) && constant('G3_POST_VIEWS_KEY') !== '') {
@@ -114,8 +107,6 @@ class PostService {
      * @param string $arrayKey array key if meta value is array
      * @param mixed $default default value if meta not exists
      * @return mixed meta value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMeta(int|object $id, string $metaKey, string $arrayKey = '', mixed $default = null): mixed
     {
@@ -144,8 +135,6 @@ class PostService {
      * Custom Filter: g3_filter_title
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getTitle(): string
     {
@@ -159,7 +148,7 @@ class PostService {
                 $title = sprintf(__('Page %s', 'G3'), $page) . ' - ' . $title;
             }
         } elseif (is_singular()) {
-            $title = get_post_meta(get_queried_object_id(), self::$seoTitleKey, true);
+            $title = get_post_meta(get_queried_object_id(), self::TITLE_KEY, true);
             if (empty($title)) {
                 $title = get_the_title();
             }
@@ -198,8 +187,6 @@ class PostService {
      * @param  int $maxLength The max length of excerpt.
      * @param  object $post The post object.
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getExcerpt(int $maxLength = 150, $post = null): string
     {
@@ -220,15 +207,13 @@ class PostService {
      * Custom Filter: g3_filter_description
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getDescription(): string
     {
         $description = get_bloginfo('description');
 
         if (is_singular()) {
-            $description = get_post_meta(get_queried_object_id(), self::$seoDescriptionKey, true);
+            $description = get_post_meta(get_queried_object_id(), self::DESCRIPTION_KEY, true);
             if (empty($description)) {
                 $description = self::getExcerpt();
             }
@@ -262,8 +247,6 @@ class PostService {
      * Custom Filter: g3_filter_keywords
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getKeywords(): string
     {
@@ -271,12 +254,12 @@ class PostService {
         $siteName = get_bloginfo('name');
 
         if (is_home() || is_front_page()) {
-            $keywords = Components::getProperty('DigitalOperations', 'seo')['keywords'] ?? '';
+            $keywords = Context::get(SystemService::SEO_OPTION_KEY)['keywords'] ?? '';
             $keywords = !empty($keywords) ? $keywords : $siteName;
         } elseif (is_singular()) {
-            $keywords = get_post_meta(get_the_ID(), self::$seoKeywordsKey, true);
+            $keywords = get_post_meta(get_the_ID(), self::KEYWORDS_KEY, true);
             if (empty($keywords)) {
-                // get post_tag if no data in self::$seoKeywordsKey
+                // get post_tag if no data in self::KEYWORDS_KEY
                 $terms = get_the_terms(get_the_ID(), 'post_tag');
                 if (!empty($terms)) {
                     $keywords = array_column($terms, 'name');
@@ -323,11 +306,49 @@ class PostService {
      * 
      * @param  int $termId The term id.
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getTermKeywords(int $termId): string
     {
-        return get_term_meta($termId, self::$seoKeywordsKey, true);
+        return get_term_meta($termId, self::KEYWORDS_KEY, true);
+    }
+
+    public static function query(string $postType, int $number = 1, int $offset = 0): WP_Query
+    {
+        return new WP_Query([
+            'post_type'      => $postType,
+            'posts_per_page' => $number,
+            'offset'         => $offset
+        ]);
+    }
+
+    /**
+     * Get post taxonomies
+     * 
+     * 获取POST的分类法数据
+     * 
+     * @param int $postId POST ID
+     * @param array $taxonomies taxonomy names
+     * @param string $postType post type
+     * @return array taxonomy data array
+     */
+    public static function getTerms(int $postId, array $taxonomies, string $postType): array|null
+    {
+        $post = get_post($postId);
+        if (!$post || $post->post_type !== $postType) return null;
+
+        $result = [];
+        foreach ($taxonomies as $taxonomy) {
+            $terms = wp_get_post_terms($postId, $taxonomy, ['fields' => 'all']);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                $result[$taxonomy] = array_map(function ($term) {
+                    return [
+                        'id'   => $term->term_id,
+                        'name' => $term->name,
+                        'slug' => $term->slug,
+                    ];
+                }, $terms);
+            }
+        }
+        return $result;
     }
 }

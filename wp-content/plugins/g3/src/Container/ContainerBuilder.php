@@ -1,16 +1,21 @@
 <?php
+
 namespace JEALER\G3\Container;
 
-use Psr\Container\ContainerInterface;
 use JEALER\G3\Container\Container;
 use JEALER\G3\Container\ConfigLoader;
 use JEALER\G3\Container\FactoryDefinition;
 use JEALER\G3\Container\Reference;
+use Psr\Container\ContainerInterface;
 
 class ContainerBuilder {
+
     private array $definitions = [];
+
     private array $parameters = [];
+
     private array $tagConfig = [];
+
     private array $decoratorConfig = [];
 
     public function addDefinitions(array $definitions): self
@@ -151,7 +156,7 @@ class ContainerBuilder {
     {
         $container = $this->build();
 
-        // 应用标签配置
+        // 应用标签配置 
         if (!empty($this->tagConfig)) {
             $container->getTagManager()->batchTag($this->tagConfig);
         }

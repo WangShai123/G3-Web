@@ -1,9 +1,21 @@
 <?php
+
 namespace JEALER\G3\Services;
 
-use Exception;
+use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Common;
 use WP_Error;
+use Exception;
+use wpdb;
 
+/**
+ * Product Service
+ * 
+ * 商品服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class ProductService {
 
     /**
@@ -12,9 +24,6 @@ class ProductService {
      * 配置项键名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
     const OPTION_KEY = 'g3_option_shop';
 
@@ -24,9 +33,6 @@ class ProductService {
      * 商品相册配置项键名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
     const GALLERY_KEY = 'g3_product_gallery';
 
@@ -36,9 +42,6 @@ class ProductService {
      * 商品属性配置项键名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
     const PROP_KEY = 'g3_product_prop';
 
@@ -46,18 +49,22 @@ class ProductService {
      * SKU Table
      */
     const SKU_TABLE = 'g3_sku';
+
     /**
      * Global Specs Table
      */
     const SPECS_TABLE = 'g3_specs';
+
     /**
      * Global Specs Options Table
      */
     const SPECS_OPTIONS_TABLE = 'g3_specs_options';
+
     /**
      * Product Specs Relation Table
      */
     const PRODUCT_SPECS_TABLE = 'g3_product_specs';
+
     /**
      * Sku Specs Relation Table
      */
@@ -82,7 +89,7 @@ class ProductService {
      */
     const EXPIRE_IN_GLOBAL = WEEK_IN_SECONDS;
 
-    private $wpdb;
+    private wpdb $wpdb;
 
     public function __construct()
     {
@@ -91,45 +98,59 @@ class ProductService {
     }
 
     /**
-     * Get Cache Key
+     * render spec scope
      * 
-     * 获取缓存键名
+     * 渲染规格应用范围
      * 
-     * @param string $key 缓存键名
-     * @param string $suffix 缓存键名后缀
-     * @return string 缓存键名
-     * @since 1.0.0
-     * @author Wang Shai
+     * @param int $id
+     * @return string
      */
-    private function getCacheKey($postId, $suffix = ''): string
-    {
-        return "product_{$postId}" . ($suffix ? "_{$suffix}" : '');
-    }
-
-    public static function renderScope(int $id)
+    public static function renderScope(int $id): string
     {
         return match ($id) {
             0 => __('All'),
             1 => __('Product', 'G3'),
-            2 => __('Category'),
-            3 => __('Tag'),
-            4 => __('Brand'),
+            2 => __('Categories'),
+            3 => __('Tags'),
+            4 => __('Brand', 'G3'),
             default => 'All'
+        };
+    }
+
+    /**
+     * Render SKU TYPE
+     * 
+     * 渲染SKU类型 1: general, 2: digital, 3: membership, 4: download
+     * 
+     * @param int $typeId
+     * @return string
+     */
+    public static function renderSkuType(int $typeId): string
+    {
+        return match ($typeId) {
+            1 => __('General Product', 'G3'),
+            2 => __('Digital Product', 'G3'),
+            3 => __('Membership Product', 'G3'),
+            4 => __('Download Product', 'G3'),
+            default => __('Unknown')
         };
     }
 
     /**
      * Update Product Spec
      * 
+     * 更新产品规格
+     * 
      * @param array $data
      * @return int|bool
      */
     public function updateSpec(array $data): int|bool
     {
-        if (!isset($data['name']) || !isset($data['key']) || empty($data['name']) || empty($data['key'])) {
+        if (!isset($data['name']) || !isset($data['key']) || trim($data['name']) === '' || trim($data['name']) === '') {
             return false;
         }
-        $cacheKey = 'specs_names';
+
+        $cacheKey = Common::getCacheKey('specs', 'all');
         $table    = $this->wpdb->prefix . self::SPECS_TABLE;
         $id       = $data['id'] ?? 0;
 
@@ -154,9 +175,17 @@ class ProductService {
         }
         return false;
     }
+
+    /**
+     * Get all specs
+     * 
+     * 获取所有规格
+     * 
+     * @return array
+     */
     public function getSpecs(): array
     {
-        $cacheKey = 'specs_names';
+        $cacheKey = Common::getCacheKey('specs', 'all');
         $specs    = wp_cache_get($cacheKey, self::CACHE_GROUP);
 
         if ($specs === false) {
@@ -170,13 +199,35 @@ class ProductService {
 
         return $specs;
     }
+
+    /**
+     * Delete a spec
+     * 
+     * 删除一个规格
+     * 
+     * @param int $id
+     * @return bool|int
+     */
     public function deleteSpec(int $id): bool|int
     {
-        return $this->wpdb->delete($this->wpdb->prefix . ProductService::SPECS_TABLE, ['id' => $id]);
+        $result = $this->wpdb->delete($this->wpdb->prefix . ProductService::SPECS_TABLE, ['id' => $id]);
+        if ($result !== false) {
+            wp_cache_delete(Common::getCacheKey('specs', 'all'), self::CACHE_GROUP);
+        }
+        return $result;
     }
-    public function updateSpecOption(array $data): bool|int
+
+    /**
+     * update a spec option
+     * 
+     * 更新一个规格选项
+     * 
+     * @param array $data
+     * @return bool|int|WP_Error
+     */
+    public function updateSpecOption(array $data): bool|int|WP_Error
     {
-        $cacheKey = "spec_options_{$data['spec_id']}";
+        $cacheKey = Common::getCacheKey($data['spec_id'], 'option', 'spec');
         $table    = $this->wpdb->prefix . ProductService::SPECS_OPTIONS_TABLE;
         $id       = $data['id'] ?? 0;
         if ($id > 0) {
@@ -192,46 +243,59 @@ class ProductService {
                 return $this->wpdb->insert_id;
             }
             if ($this->wpdb->last_error && strpos($this->wpdb->last_error, 'Duplicate entry') !== false) {
-                new WP_Error('db_error', $this->wpdb->last_error);
-                return -1;
+                return new WP_Error('db_error', $this->wpdb->last_error);
             }
         }
         return false;
     }
 
     /**
-     * Render SKU TYPE
+     * create sku code
      * 
-     * 渲染SKU类型 1: general, 2: digital, 3: membership, 4: download
+     * 创建 sku 编码
      * 
+     * @param int $productId
      * @param int $typeId
+     * @param string $prefix default 'G'
+     * @param string $separator default '-'
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public function renderSkuType(int $typeId): string
-    {
-        return match ($typeId) {
-            1 => __('General Product', 'G3'),
-            2 => __('Digital Product', 'G3'),
-            3 => __('Membership Product', 'G3'),
-            4 => __('Download Product', 'G3'),
-            default => 'Unknown'
-        };
-    }
-
-    public function generateSkuCode(int $productId, int $typeId): string
+    public function createSkuCode(int $productId, int $typeId, string $prefix = 'G', string $separator = '-'): string
     {
         /**
-         * SKU CODE RULE:
-         * @todo
          * 临时策略:
          *  - prefix: G
          *  - typeId: 00, 如果不足2位，则前面补0 
+         *  - productBrand: 取 slug
+         *  - productCategory: 取 slug
          *  - productId: 000000，如果不足6位，则前面补0
-         *  - dash: 用 - 连接
+         *  - separator: dash
          */
-        return 'G-' . str_pad($typeId, 2, '0', STR_PAD_LEFT) . '-' . str_pad($productId, 6, '0', STR_PAD_LEFT);
+
+        if ($productId <= 0) {
+            throw new Exception("Invalid product ID: {$productId}. Must be greater than 0.");
+        }
+
+        if ($typeId <= 0) {
+            throw new Exception("Invalid type ID: {$typeId}. Must be greater than 0.");
+        }
+
+        $termsData = PostService::getTerms($productId, ['product_brand', 'product_category'], 'product');
+
+        $brandSlug = '';
+        if (!empty($termsData['product_brand']) && is_array($termsData['product_brand'])) {
+            $brandSlug = $termsData['product_brand'][0]['slug'] ?? '';
+        }
+
+        $categoryIds = [];
+        if (!empty($termsData['product_category']) && is_array($termsData['product_category'])) {
+            $categoryIds = array_column($termsData['product_category'], 'slug');
+        }
+        $categories = implode('-', $categoryIds);
+
+        $skuCode = $prefix . str_pad($typeId, 2, '0', STR_PAD_LEFT) . "{$separator}{$brandSlug}{$separator}{$categories}{$separator}" . str_pad($productId, 6, '0', STR_PAD_LEFT);
+
+        return $skuCode;
     }
 
     /**
@@ -241,23 +305,20 @@ class ProductService {
      * 
      * @param array $data
      * @return int|bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public function updateSku(array $data)
+    public function updateSku(array $data): bool|int
     {
         if (!isset($data['id']) || !isset($data['product_id'])) {
             return false;
         }
 
         $table = $this->wpdb->prefix . self::SKU_TABLE;
-        $skuId = $data['id'];
+        $skuId = (int) $data['id'];
         unset($data['id']);
 
         $result = $this->wpdb->update($table, $data, ['id' => $skuId]);
 
         if ($result !== false) {
-            // 清除缓存
             $this->clearProductCache($data['product_id']);
             return $skuId;
         }
@@ -272,16 +333,14 @@ class ProductService {
      * 
      * @param array $data
      * @return int|bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public function createSku(array $data)
+    public function createSku(array $data): bool|int
     {
         if (!isset($data['product_id'])) {
             return false;
         }
         if (!isset($data['sku_code']) || !$data['sku_code']) {
-            $data['sku_code'] = $this->generateSkuCode($data['product_id'], $data['type']);
+            $data['sku_code'] = $this->createSkuCode($data['product_id'], $data['type']);
         }
 
         $table = $this->wpdb->prefix . self::SKU_TABLE;
@@ -290,7 +349,6 @@ class ProductService {
 
         if ($result !== false) {
             $skuId = $this->wpdb->insert_id;
-            // 清除缓存
             $this->clearProductCache($data['product_id']);
             return $skuId;
         }
@@ -299,19 +357,64 @@ class ProductService {
     }
 
     /**
+     * delete sku
+     * 
+     * 删除一条 sku 数据
+     *
+     * @param int $skuId
+     * @return bool
+     */
+    public function deleteSku($skuId): bool
+    {
+        if ($skuId <= 0) return false;
+
+        $this->wpdb->query('START TRANSACTION');
+
+        try {
+            // 1. delete from sku table
+            $skuTable  = $this->wpdb->prefix . self::SKU_TABLE;
+            $skuResult = $this->wpdb->delete($skuTable, ['id' => $skuId]);
+
+            if ($skuResult === false) {
+                throw new Exception("Failed to delete SKU from table: {$skuTable}");
+            }
+
+            // 2. delete from specs_relations
+            $relationTable  = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
+            $relationResult = $this->wpdb->delete($relationTable, ['sku_id' => $skuId]);
+
+            if ($relationResult === false) {
+                throw new Exception("Failed to delete SKU relations from table: {$relationTable}");
+            }
+
+            // 3. commit transaction
+            $this->wpdb->query('COMMIT');
+
+            // 4. clear cache if needed
+
+            return true;
+        }
+        catch (Exception $e) {
+            // rollback transaction
+            $this->wpdb->query('ROLLBACK');
+
+            error_log("Error deleting SKU (ID: {$skuId}): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Delete SKU Spec Relations
      * 
      * 删除SKU规格关系
      * 
      * @param int $skuId
-     * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return bool|int
      */
-    public function deleteSkuSpecRelations(int $skuId): bool
+    public function deleteSkuSpecRelations(int $skuId): bool|int
     {
         $table = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
-        return $this->wpdb->delete($table, ['sku_id' => $skuId]) !== false;
+        return $this->wpdb->delete($table, ['sku_id' => $skuId]);
     }
 
     /**
@@ -322,11 +425,9 @@ class ProductService {
      * @param int $skuId
      * @param int $specId
      * @param int $specOptionId
-     * @return 
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return bool|int
      */
-    public function addSkuSpecRelation(int $skuId, int $specId, int $specOptionId)
+    public function addSkuSpecRelation(int $skuId, int $specId, int $specOptionId): bool|int
     {
         $table = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
 
@@ -335,10 +436,199 @@ class ProductService {
             'spec_option_id' => $specOptionId,
         ];
 
-        // $result = $this->wpdb->insert($table, $data);
-        // return $result;
-        return $this->wpdb->insert($table, $data) !== false;
+        return $this->wpdb->insert($table, $data);
     }
+
+    /**
+     * add product spec relation
+     * 
+     * 添加商品规格关系
+     * 
+     * @param int $productId
+     * @param int $specId
+     * @return int|bool
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public function addProductSpecRelations(int $productId, int $specId): int|bool
+    {
+        $table  = $this->wpdb->prefix . self::PRODUCT_SPECS_TABLE;
+        $result = $this->wpdb->insert(
+            $table,
+            [
+                'product_id' => $productId,
+                'spec_id'    => $specId,
+            ]
+        );
+        if ($result) {
+            $key = Common::getCacheKey($productId, 'spec');
+            wp_cache_delete($key, self::CACHE_GROUP);
+        }
+        return $result;
+    }
+
+    /**
+     * delete product spec relation
+     * 
+     * 删除商品规格关系
+     *
+     * @param int $productId
+     * @return bool|int
+     */
+    public function deleteProductSpecRelation($productId): bool|int
+    {
+        $table  = $this->wpdb->prefix . self::PRODUCT_SPECS_TABLE;
+        $result = $this->wpdb->delete($table, ['product_id' => $productId]);
+        if ($result) {
+            $key = Common::getCacheKey($productId, 'spec');
+            wp_cache_delete($key, self::CACHE_GROUP);
+        }
+        return $result;
+    }
+
+    /**
+     * check if cart feature available
+     * 
+     * 检查购物车功能是否可用
+     * 
+     * @return bool|string
+     */
+    public static function isCartAvailable()
+    {
+        return Context::get(self::OPTION_KEY)['cart'] ?? false;
+    }
+
+    /**
+     * Get Product All SKU, with specs options
+     * 
+     * 获取商品所有 SKU（含规格选项 ID 列表）
+     * 
+     * @param int $productId
+     * @return array
+     */
+    public function getSkusByProductId(int $productId)
+    {
+        $cacheKey = Common::getCacheKey($productId, 'sku', 'product');
+        $skus     = wp_cache_get($cacheKey, self::CACHE_GROUP);
+
+        if ($skus === false) {
+            $table = $this->wpdb->prefix . self::SKU_TABLE;
+            $rows  = $this->wpdb->get_results(
+                $this->wpdb->prepare(
+                    "SELECT * FROM {$table} WHERE product_id = %d ORDER BY id ASC",
+                    $productId
+                ),
+                ARRAY_A
+            );
+
+            foreach ($rows as &$row) {
+                $row['specs'] = $this->getSkuSpecs($row['id']);
+            }
+
+            $skus = $rows ?: [];
+            wp_cache_set($cacheKey, $skus, self::CACHE_GROUP, self::EXPIRE_IN_GLOBAL);
+        }
+
+        return $skus;
+    }
+
+    /**
+     * Get Specs By Sku ID
+     * 
+     * 获取 SKU 关联的规格组合 [ [spec_id=>1, option_id=>2, spec_name=>'颜色', option_name=>'红色'], [spec_id=>1, option_id=>3, spec_name=>'颜色', option_name=>'蓝色'] ] 
+     * 
+     * @param int $skuId
+     * @return array
+     */
+    private function getSkuSpecs(int $skuId): array
+    {
+        $relTable          = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
+        $specsOptionsTable = $this->wpdb->prefix . self::SPECS_OPTIONS_TABLE;
+        $specsTable        = $this->wpdb->prefix . self::SPECS_TABLE;
+
+        // 查询 SKU 关联的规格选项，通过关系表连接规格选项表和规格表获取完整的规格信息
+        $relations = $this->wpdb->get_results(
+            $this->wpdb->prepare(
+                "SELECT 
+                so.spec_id AS spec_id,
+                sr.spec_option_id AS option_id,
+                s.name AS spec_name,
+                so.name AS option_name
+             FROM {$relTable} sr 
+             INNER JOIN {$specsOptionsTable} so ON sr.spec_option_id = so.id 
+             INNER JOIN {$specsTable} s ON so.spec_id = s.id
+             WHERE sr.sku_id = %d 
+             ORDER BY s.sort ASC, so.sort ASC",
+                $skuId
+            ),
+            ARRAY_A
+        );
+
+        return $relations ?: [];
+    }
+
+    /**
+     * Get Spec Options By Spec Id
+     * 
+     * 根据规格ID获取规格选项
+     * 
+     * @param int $specId 规格ID
+     * @param bool $enabled 是否启用
+     * @return array
+     */
+    public function getSpecOptionsBySpecId(int $specId, bool $enabled = true): array
+    {
+        $cacheKey = Common::getCacheKey($specId, 'option', 'spec');
+        $options  = wp_cache_get($cacheKey, self::CACHE_GROUP);
+
+        if ($options === false) {
+            $table       = $this->wpdb->prefix . self::SPECS_OPTIONS_TABLE;
+            $whereClause = $enabled ? "WHERE spec_id = %d AND status = 1" : "WHERE spec_id = %d";
+
+            $options = $this->wpdb->get_results(
+                $this->wpdb->prepare(
+                    "SELECT id, name, `key` FROM {$table} {$whereClause} ORDER BY sort ASC",
+                    $specId
+                ),
+                ARRAY_A
+            );
+            wp_cache_set($cacheKey, $options, self::CACHE_GROUP, self::EXPIRE_IN_ADMIN);
+        }
+
+        return $options;
+    }
+
+    /**
+     * Clear Product Cache
+     *
+     * 清除商品缓存
+     *
+     * @param int $postId
+     * @return void
+     */
+    public function clearProductCache(int $postId): void
+    {
+        wp_cache_delete(Common::getCacheKey($postId, 'product'), self::CACHE_GROUP);
+        wp_cache_delete(Common::getCacheKey($postId, 'option', 'spec'), self::CACHE_GROUP);
+        wp_cache_delete(Common::getCacheKey($postId, 'sku', 'product'), self::CACHE_GROUP);
+        wp_cache_delete(Common::getCacheKey($postId, 'spec'), self::CACHE_GROUP);
+    }
+
+    /**
+     * clear product data while delete product post
+     * 
+     * @param int $postId
+     */
+    public function clearProductData(int $postId)
+    {
+        //@todo delete product related data: sku, specs, cache...
+    }
+
+
+
+
+
+
 
 
 
@@ -354,12 +644,10 @@ class ProductService {
      * 
      * @param int $postId
      * @return array|null
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getProduct(int $postId): array|null
     {
-        $cacheKey = $this->getCacheKey($postId);
+        $cacheKey = Common::getCacheKey($postId, 'product');
         $product  = wp_cache_get($cacheKey, self::CACHE_GROUP);
 
         if ($product === false) {
@@ -392,109 +680,12 @@ class ProductService {
     }
 
     /**
-     * Get Product All SKU, with specs options
-     * 
-     * 获取商品所有 SKU（含规格选项 ID 列表）
-     * 
-     * @param int $productId
-     * @return array
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function getSkusByProductId(int $productId)
-    {
-        $cacheKey = $this->getCacheKey($productId, 'skus');
-        $skus     = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if ($skus === false) {
-            $table = $this->wpdb->prefix . self::SKU_TABLE;
-            $rows  = $this->wpdb->get_results(
-                $this->wpdb->prepare(
-                    "SELECT * FROM {$table} WHERE product_id = %d ORDER BY id ASC",
-                    $productId
-                ),
-                ARRAY_A
-            );
-
-            // 补充每个 SKU 的 spec_option_ids（用于前端渲染规格组合）
-            foreach ($rows as &$row) {
-                // $row['spec_option_ids'] = $this->getSkuSpecOptionIds($row['id']);
-                $row['specs'] = $this->getSkuSpecs($row['id']);
-            }
-
-            $skus = $rows ?: [];
-            wp_cache_set($cacheKey, $skus, self::CACHE_GROUP, self::EXPIRE_IN_GLOBAL);
-        }
-
-        return $skus;
-    }
-
-    /**
-     * Get Specs By Sku ID
-     * 
-     * 获取 SKU 关联的规格组合 [ [spec_id=>1, option_id=>2, spec_name=>'颜色', option_name=>'红色'], [spec_id=>1, option_id=>3, spec_name=>'颜色', option_name=>'蓝色'] ] 
-     * 
-     * @param int $skuId
-     * @return array
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function getSkuSpecs(int $skuId): array
-    {
-        $relTable          = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
-        $specsOptionsTable = $this->wpdb->prefix . self::SPECS_OPTIONS_TABLE;
-        $specsTable        = $this->wpdb->prefix . self::SPECS_TABLE;
-
-        // 查询 SKU 关联的规格选项，通过关系表连接规格选项表和规格表获取完整的规格信息
-        $relations = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT 
-                so.spec_id AS spec_id,
-                sr.spec_option_id AS option_id,
-                s.name AS spec_name,
-                so.name AS option_name
-             FROM {$relTable} sr 
-             INNER JOIN {$specsOptionsTable} so ON sr.spec_option_id = so.id 
-             INNER JOIN {$specsTable} s ON so.spec_id = s.id
-             WHERE sr.sku_id = %d 
-             ORDER BY s.sort ASC, so.sort ASC",
-                $skuId
-            ),
-            ARRAY_A
-        );
-
-        return $relations ?: [];
-    }
-    /**
-     * Get Spec Option IDs By Sku ID
-     * 
-     * 获取 SKU 关联的规格选项 ID 列表
-     * 
-     * @param int $skuId
-     * @return array
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function getSkuSpecOptionIds(int $skuId): array
-    {
-        $relTable = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
-        return $this->wpdb->get_col(
-            $this->wpdb->prepare(
-                "SELECT spec_option_id FROM {$relTable} WHERE sku_id = %d",
-                $skuId
-            )
-        );
-    }
-
-    /**
      * Get Global Specs
      * 
      * 获取全局规格
      * 
      * @param bool $enabled 是否启用
      * @return array
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getGlobalSpecs(bool $enabled = true): array
     {
@@ -515,51 +706,16 @@ class ProductService {
     }
 
     /**
-     * Get Spec Options By Spec Id
-     * 
-     * 根据规格ID获取规格选项
-     * 
-     * @param int $specId 规格ID
-     * @param bool $enabled 是否启用
-     * @return array
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function getSpecOptionsBySpecId(int $specId, bool $enabled = true): array
-    {
-        $cacheKey = "spec_options_{$specId}";
-        $options  = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if ($options === false) {
-            $table       = $this->wpdb->prefix . self::SPECS_OPTIONS_TABLE;
-            $whereClause = $enabled ? "WHERE spec_id = %d AND status = 1" : "WHERE spec_id = %d";
-
-            $options = $this->wpdb->get_results(
-                $this->wpdb->prepare(
-                    "SELECT id, name, `key` FROM {$table} {$whereClause} ORDER BY sort ASC",
-                    $specId
-                ),
-                ARRAY_A
-            );
-            wp_cache_set($cacheKey, $options, self::CACHE_GROUP, self::EXPIRE_IN_ADMIN);
-        }
-
-        return $options;
-    }
-
-    /**
      * Get Product Specs
      * 
      * 获取商品关联的规格，主要用于渲染，含 required
      * 
      * @param int $productId 商品ID
      * @return array 商品规格
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getProductSpecs(int $productId): array
     {
-        $cacheKey  = $this->getCacheKey($productId, 'specs');
+        $cacheKey  = Common::getCacheKey($productId, 'spec');
         $relations = wp_cache_get($cacheKey, self::CACHE_GROUP);
 
         if ($relations === false) {
@@ -584,24 +740,5 @@ class ProductService {
         return $relations;
     }
 
-    /**
-     * Clear Product Cache
-     *
-     * 清除商品缓存
-     *
-     * @param int $postId
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function clearProductCache(int $postId): void
-    {
-        wp_cache_delete($this->getCacheKey($postId), self::CACHE_GROUP);
-        wp_cache_delete($this->getCacheKey($postId, 'skus'), self::CACHE_GROUP);
-        wp_cache_delete($this->getCacheKey($postId, 'specs'), self::CACHE_GROUP);
-
-        // 如果影响了全局规格缓存（如删除了最后一个使用某规格的商品？一般不需要）
-        // 可选择不清除 global_specs 缓存，因其由规格管理页控制
-    }
 
 }

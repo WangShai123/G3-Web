@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
 /**
@@ -10,6 +11,7 @@ namespace JEALER\G3\Utilities;
  * @author Wang Shai
  */
 class Event {
+
     /**
      * Listeners storage
      * 
@@ -28,8 +30,6 @@ class Event {
      * @param callable $callback Callback function
      * @param int $priority Priority of the listener (lower numbers are executed first)
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function subscribe(string $event, callable $callback, int $priority = 10): void
     {
@@ -54,8 +54,6 @@ class Event {
      * @param string $event Event name
      * @param mixed ...$args Arguments to pass to the callbacks
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function dispatch(string $event, ...$args): void
     {
@@ -76,8 +74,6 @@ class Event {
      * @param string $event Event name
      * @param callable|null $callback Specific callback to remove, or null to remove all
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function removeListener(string $event, ?callable $callback = null): void
     {
@@ -107,8 +103,6 @@ class Event {
      * 
      * @param string $event Event name
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function sortListeners(string $event): void
     {
@@ -123,8 +117,6 @@ class Event {
      * 清空所有监听器
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function clearListeners(): void
     {

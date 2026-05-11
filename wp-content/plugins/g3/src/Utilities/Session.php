@@ -1,7 +1,17 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
 use WP_Session_Tokens;
 
+/**
+ * Session Utilities
+ * 
+ * 会话工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Session {
 
     /**
@@ -10,8 +20,6 @@ final class Session {
      * 获取当前会话
      * 
      * @return array | null Current session data or null if no session exists
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function current(): array|null
     {

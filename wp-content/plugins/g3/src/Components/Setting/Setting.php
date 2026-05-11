@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
@@ -11,9 +12,14 @@ use JEALER\G3\Services\SystemService;
 use Override;
 
 class Setting extends Components {
+
     public array $option = [];
+
     public array $seo = [];
+
     public array $rss = [];
+
+    private array $config = [];
 
     #[Override]
     protected function options(): void
@@ -41,12 +47,17 @@ class Setting extends Components {
             'atom' => get_bloginfo('atom_url'),
         ]);
     }
+
     #[Override]
     protected function system(): void
     {
+        add_filter('g3_filter_html_class', [$this, 'initHtmlClass']);
+        add_action('body_class', [$this, 'initBodyClass']);
+
         $this->redirectLinkHandle();
         $this->rssHandle();
     }
+
     #[Override]
     protected function form(): void
     {
@@ -78,6 +89,7 @@ class Setting extends Components {
         $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
         $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
     }
+
     #[Override]
     protected function init(): void
     {
@@ -100,8 +112,8 @@ class Setting extends Components {
         );
         add_submenu_page(
             'g3-settings',
-            __('General', 'G3'),
-            __('General', 'G3'),
+            __('General'),
+            __('General'),
             'manage_options',
             'g3-settings',
             [$this, 'render'],
@@ -113,18 +125,20 @@ class Setting extends Components {
     {
         $this->linksHandle();
     }
+
     public function render(): void
     {
         $tabs = [
-            'general' => __('General', 'G3'),
+            'general' => __('General'),
             'seo'     => 'SEO',
             'rss'     => 'RSS',
             'sitemap' => __('SiteMap', 'G3'),
         ];
-        echo '<div class="wrap"><h1>' . __('General', 'G3') . '</h1>';
+        echo '<div class="wrap"><h1>' . __('General') . '</h1>';
         Element::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
+
     #[Override]
     protected function settings(): void
     {
@@ -147,10 +161,7 @@ class Setting extends Components {
                         __('Sad Mod', 'G3'),
                         __('The entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'sad',
-                ]
+                }
             ],
             [
                 'id'       => 'avatar',
@@ -259,10 +270,7 @@ class Setting extends Components {
                         __('Links'),
                         __('The links feature helps you manage your friendship links.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'links',
-                ]
+                }
             ],
             [
                 'id'       => 'redirectLink',
@@ -275,10 +283,7 @@ class Setting extends Components {
                         __('Redirect Link', 'G3'),
                         __('All outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3')
                     );
-                },
-                'args'     => [
-                    'label_for' => 'redirectLink',
-                ]
+                }
             ]
         ]);
 
@@ -490,14 +495,7 @@ class Setting extends Components {
         return $v === '1';
     }
 
-    /**
-     * SEO: init postbox
-     * @return void
-     * @param  string $post_type The post type.
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function initPostbox()
+    public function initPostbox(): void
     {
         $post_types = get_post_types(['public' => true], 'names', 'and');
         foreach ($post_types as $post_type) {
@@ -511,14 +509,8 @@ class Setting extends Components {
             );
         }
     }
-    /**
-     * SEO: update postbox
-     * @param  int $post_id The post ID.
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function updateSeoPostbox($post_id): void
+
+    public function updateSeoPostbox(int $post_id): void
     {
         if (!isset($_POST['seoKeywords']) || !isset($_POST['seoDescription']) || !isset($_POST['seoTitle'])) {
             return;
@@ -528,26 +520,17 @@ class Setting extends Components {
             return;
         }
 
-        $post_keyword   = $_POST['seoKeywords'];
-        $post_des       = $_POST['seoDescription'];
-        $post_seo_title = $_POST['seoTitle'];
-        update_post_meta($post_id, PostService::$seoKeywordsKey, $post_keyword);
-        update_post_meta($post_id, PostService::$seoDescriptionKey, $post_des);
-        update_post_meta($post_id, PostService::$seoTitleKey, $post_seo_title);
+        update_post_meta($post_id, PostService::TITLE_KEY, $_POST['seoTitle']);
+        update_post_meta($post_id, PostService::DESCRIPTION_KEY, $_POST['seoDescription']);
+        update_post_meta($post_id, PostService::KEYWORDS_KEY, $_POST['seoKeywords']);
     }
-    /**
-     * SEO: render postbox
-     * @param  object $post The post object.
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public function renderPostbox($post): void
+
+    public function renderPostbox(object $post): void
     {
         $id          = $post->ID ?? 0;
-        $title       = get_post_meta($id, PostService::$seoTitleKey, true);
-        $description = get_post_meta($id, PostService::$seoDescriptionKey, true);
-        $keywords    = get_post_meta($id, PostService::$seoKeywordsKey, true);
+        $title       = get_post_meta($id, PostService::TITLE_KEY, true);
+        $description = get_post_meta($id, PostService::DESCRIPTION_KEY, true);
+        $keywords    = get_post_meta($id, PostService::KEYWORDS_KEY, true);
 
         echo '<div class="flex-container">';
         echo '<div class="flex-col-1 flex-col-xl-3 flex-col-lg-2 flex-col-md-1 flex-col-sm-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Title', 'G3') . '</div></div><input class="j-input" type="text" id="seoTitle" name="seoTitle" value="' . $title . '"></div></div>';
@@ -562,48 +545,38 @@ class Setting extends Components {
          * Action: g3_action_seo
          * 
          * @param object $post The post object.
-         * @since 1.0.0
-         * @author Wang Shai
          */
         do_action('g3_action_seo', $post);
     }
-    /**
-     * SEO: add keywords field in add & edit form for all taxonomies
-     * @since 1.0.0
-     * @author Wang Shai
-     */
+
     public function addKeywordsField(): void
     {
         echo '<div class="form-field"><label for="seoKeywords">';
         echo 'SEO ' . __('Keywords', 'G3') . '</label><input name="seoKeywords" id="seoKeywords" type="text" value="" size="40"><p>';
         echo __('Separate tags with commas.', 'G3') . '</p></div>';
     }
+
     public function editKeywordsField($tag): void
     {
         echo '<tr class="form-field"><th scope="row"><label for="seoKeywords">';
         echo 'SEO ' . __('Keywords', 'G3');
         echo '</label></th><td><input name="seoKeywords" id="seoKeywords" type="text" value="';
-        echo esc_attr(get_term_meta($tag->term_id, PostService::$seoKeywordsKey, true));
+        echo esc_attr(get_term_meta($tag->term_id, PostService::KEYWORDS_KEY, true));
         echo '" size="40"/><p class="description">' . __('Separate tags with commas.', 'G3') . '</p></td></tr>';
     }
-    public function updateKeywordsField($term_id)
+
+    public function updateKeywordsField(int $term_id): bool|int
     {
         if (isset($_POST['seoKeywords'])) {
             if (!current_user_can('manage_categories')) {
                 return $term_id;
             }
             $v = $_POST['seoKeywords'];
-            update_term_meta($term_id, PostService::$seoKeywordsKey, $v);
+            update_term_meta($term_id, PostService::KEYWORDS_KEY, $v);
         }
         return true;
     }
 
-    /**
-     * rss handle
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
-     */
     public function rssHandle(): void
     {
         if (!isset($this->rss['rss']) || $this->rss['rss'] !== '0') {
@@ -629,6 +602,7 @@ class Setting extends Components {
         add_filter('feed_links_show_posts_feed', '__return_false', 999);
         add_filter('feed_links_show_comments_feed', '__return_false', 999);
     }
+
     public function disableRss(): void
     {
         wp_die(
@@ -641,6 +615,7 @@ class Setting extends Components {
             ]
         );
     }
+
     private function permalink(): void
     {
         if (Context::get('permalink_structure') === '/%postname%/') return;
@@ -648,6 +623,7 @@ class Setting extends Components {
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();
     }
+
     private function pluginAction(): void
     {
         add_filter('plugin_row_meta', function ($links, $file) {
@@ -662,6 +638,7 @@ class Setting extends Components {
             return $links;
         });
     }
+
     private function linksHandle(): void
     {
         if (!SystemService::hasLinkService()) {
@@ -670,4 +647,38 @@ class Setting extends Components {
         add_filter('pre_option_link_manager_enabled', '__return_true');
     }
 
+    public function initBodyClass(array $classes): array
+    {
+        $classes[] = 'jui bg-background text-foreground';
+        return $classes;
+    }
+
+    public function initHtmlClass(array $classes): array
+    {
+        if (!is_admin()) {
+            // $classes[] = 'jui';
+            $classes[] = $this->getConfigString();
+        }
+        return $classes;
+    }
+
+    private function getConfigString(): string
+    {
+        $this->config = $this->getConfigJson();
+        $config       = array_map(function (string $key, string $value) {
+            if ($key !== 'mode' && $key !== 'key') {
+                if ($key === 'render') {
+                    return $value;
+                }
+                return 'j-' . $key . '-' . $value;
+            }
+        }, array_keys($this->config), array_values($this->config));
+        return implode(' ', $config);
+    }
+
+    private function getConfigJson(): array
+    {
+        $cookie = $_COOKIE['jui-theme'] ?? '{}';
+        return json_decode(stripslashes($cookie), true);
+    }
 }

@@ -8,6 +8,7 @@ use JEALER\G3\Services\MailerService;
 
 echo Element::tip(
     __('<div>Test Email will be sent according to <a href="/wp-admin/admin.php?page=performance&tab=queue">Performance Settings</a>. If using the default synchronous mode, the email sending will take a long time, please wait patiently.</div>', 'G3'),
+    '',
     'default',
     'mt-4'
 );

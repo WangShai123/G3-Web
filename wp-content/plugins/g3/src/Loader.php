@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3;
 
 use JEALER\G3\Helper\Helper;
@@ -6,15 +7,26 @@ use JEALER\G3\Container\Container;
 use JEALER\G3\Queue\CronSchedules;
 use JEALER\G3\Utilities\Context;
 
+/**
+ * Loader
+ * 
+ * 加载器
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class Loader {
-    public ?Container $container = null;
+
+    public Container $container;
+
     public function __construct()
     {
-        if ($this->container === null) {
+        if (!isset($this->container)) {
             $this->container = Container::run();
         }
         $this->init();
     }
+
     private function init(): void
     {
         if (!$this->container->has('loader')) {

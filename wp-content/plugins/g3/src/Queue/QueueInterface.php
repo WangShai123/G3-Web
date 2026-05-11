@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Queue;
 
 /**
@@ -10,6 +11,7 @@ namespace JEALER\G3\Queue;
  * @author Wang Shai
  */
 interface QueueInterface {
+
     /**
      * Push a job to the queue
      * 

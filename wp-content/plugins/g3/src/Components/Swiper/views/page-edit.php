@@ -224,7 +224,9 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 } else {
                     jui.toast.error(res.data.message, 2000);
                 }
-            })
+            }).catch(function (error) {
+                console.error(error)
+            });
         });
     });
 </script>

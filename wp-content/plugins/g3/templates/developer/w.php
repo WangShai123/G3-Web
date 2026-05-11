@@ -9,7 +9,7 @@ $time = Developer::time();
 <div class="wrap">
     <h1>
         <?php _e('Welcome!', 'G3'); ?>
-        <?php _e('Your G3 Web has been activated.', 'G3'); ?>
+        <?php if ($time) _e('Your G3 Web has been activated.', 'G3'); ?>
     </h1>
     <div class="mt-4 welcome-wrap">
         <div class="j-tip <?php echo $time ? 'is-success' : 'is-danger'; ?>">
@@ -70,6 +70,7 @@ $time = Developer::time();
 
             <h2><?php echo __('G3-Web helps you easily create a clean, modern and full-fledged website.', 'G3'); ?>
             </h2>
+
             <h3><?php _e('Useful Development Features', 'G3'); ?></h3>
             <div class="features">
                 <ul>
@@ -98,49 +99,65 @@ $time = Developer::time();
                     <li>
                         <b>DI:</b>
                         <?php
-                        // 利用容器获取和管理对象与依赖注入。
                         _e('Easy to get and manage objects & dependencies by DI container.', 'G3');
                         ?>
                     </li>
                     <li>
                         <b>Queue:</b>
                         <?php
-                        // 利用队列轻松处理异步任务
                         _e('Easy to handle asynchronous tasks through Queue.', 'G3');
                         ?>
                     </li>
                 </ul>
             </div>
-            <h3><?php _e('Over 20 Subsystem Components', 'G3'); ?></h3>
+
+            <h3><?php _e('Over 30 Subsystem Components', 'G3'); ?></h3>
             <div class="functions">
-                <div><?php echo __('Cache') . ' ' . __('Support'); ?></div>
-                <div>SEO <?php _e('Support'); ?></div>
+                <div>SEO</div>
                 <div><?php _e('Post Extension', 'G3'); ?></div>
-                <div><?php _e('Social Login', 'G3'); ?></div>
                 <div><?php _e('Content Distribution', 'G3'); ?></div>
-                <div><?php _e('Membership System', 'G3'); ?></div>
+                <div><?php _e('Frontend Editor', 'G3'); ?></div>
+                <div><?php _e('Activity Feature', 'G3'); ?></div>
+                <div><?php _e('Announcement Feature', 'G3'); ?></div>
+                <div><?php _e('Community System', 'G3'); ?></div>
+                <div><?php _e('Ads Management', 'G3'); ?></div>
+
                 <div><?php _e('Shop System', 'G3'); ?></div>
                 <div><?php _e('SKU System', 'G3'); ?></div>
-                <div><?php _e('Payment System', 'G3'); ?></div>
                 <div><?php _e('Orders System', 'G3'); ?></div>
+                <div><?php _e('Payment System', 'G3'); ?></div>
                 <div><?php _e('Balance Management', 'G3'); ?></div>
                 <div><?php _e('Transaction System', 'G3'); ?></div>
                 <div><?php _e('Credits System', 'G3'); ?></div>
                 <div>Tokens Support</div>
                 <div><?php _e('Store Management System', 'G3'); ?></div>
-                <div><?php _e('Ads Management', 'G3'); ?></div>
-                <div><?php _e('Activity Feature', 'G3'); ?></div>
-                <div><?php _e('Announcement Feature', 'G3'); ?></div>
-                <div><?php _e('Community System', 'G3'); ?></div>
+
                 <div><?php _e('Wechat OA Support', 'G3'); ?></div>
+
+                <div><?php _e('Membership System', 'G3'); ?></div>
+
+                <div><?php _e('Marketing', 'G3'); ?></div>
+
+                <div><?php _e('Social Login', 'G3'); ?></div>
+                <div><?php _e('Subscribe Login', 'G3'); ?></div>
+
                 <div><?php _e('Multiple Themes Mode', 'G3'); ?></div>
-                <div><?php _e('OSS Support', 'G3'); ?></div>
-                <div><?php _e('SMTP Support', 'G3'); ?></div>
-                <div><?php _e('Marketing Tools', 'G3'); ?></div>
-                <div><?php _e('Security Tools', 'G3'); ?></div>
-                <div><?php _e('Developer Mode', 'G3'); ?></div>
+                <div><?php _e('Cloud File Storage', 'G3'); ?></div>
+                <div>SMTP</div>
+                <div><?php _e('Custom Email Template', 'G3'); ?></div>
+                <div><?php _e('Object Cache', 'G3'); ?></div>
+                <div><?php _e('File Cache', 'G3'); ?></div>
+                <div><?php _e('Queue Service', 'G3'); ?></div>
                 <div><?php _e('Custom Admin', 'G3'); ?></div>
+                <div><?php _e('Security Extension', 'G3'); ?></div>
+                <div><?php _e('Junk Cleaner', 'G3'); ?></div>
+                <div><?php _e('Developer Mode', 'G3'); ?></div>
             </div>
+
+            <h3><?php _e('Lazy Load', 'G3') ?></h3>
+            <p><?php _e('All functional components are loaded only on demand, ensuring excellent runtime performance. Furthermore, users can freely combine and override them as needed.', 'G3'); ?>
+            </p>
+
             <h3><?php _e('Free and Helpful Courses', 'G3'); ?></h3>
             <p><?php _e('Even if you have no technical knowledge, our course can still help you
                 systematically learn about Internet application technologies in 7-14 days and enable you to independently complete

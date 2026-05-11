@@ -1,6 +1,6 @@
 <?php
+
 /**
- * 
  * Define the CONSTANTS
  *  - 1. WordPress核心目录
  *  - 2. G3核心目录和URL
@@ -9,7 +9,6 @@
  * 
  * @since 1.0.0
  * @author Wang Shai
- * 
  */
 
 
@@ -87,6 +86,9 @@ defined('G3_SRC_DIR') or define('G3_SRC_DIR', G3_PlUGIN_DIR . '/src');
  */
 defined('G3_TEMPLATE_DIR') or define('G3_TEMPLATE_DIR', G3_PlUGIN_DIR . '/templates');
 
+
+defined('G3_ASSETS_DIR') or define('G3_ASSETS_DIR', G3_PlUGIN_DIR . '/assets');
+defined('G3_ASSETS_URL') or define('G3_ASSETS_URL', G3_PlUGIN_URL . '/assets');
 
 defined('G3_DIST_DIR') or define('G3_DIST_DIR', G3_PlUGIN_DIR . '/dist');
 defined('G3_DIST_URL') or define('G3_DIST_URL', G3_PlUGIN_URL . '/dist');

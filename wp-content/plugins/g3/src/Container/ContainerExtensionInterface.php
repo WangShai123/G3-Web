@@ -1,18 +1,19 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use JEALER\G3\Container\Container;
 
 /**
  * Container Extension Interface
- * 容器扩展接口
  * 
- * 定义容器扩展的标准接口，支持可插拔的功能模块
+ * 容器扩展接口。定义容器扩展的标准接口，支持可插拔的功能模块
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface ContainerExtensionInterface {
+
     /**
      * 获取扩展名称
      * 

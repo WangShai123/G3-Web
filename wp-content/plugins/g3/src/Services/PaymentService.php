@@ -1,5 +1,15 @@
 <?php
+
 namespace JEALER\G3\Services;
+
+/**
+ * Payment Service
+ * 
+ * 支付服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class PaymentService {
 
     /**
@@ -15,6 +25,7 @@ class PaymentService {
      * 支付记录表
      */
     const TABLE = 'g3_payment_log';
+
     private $wpdb;
 
     public function __construct()
@@ -22,5 +33,4 @@ class PaymentService {
         global $wpdb;
         $this->wpdb = $wpdb;
     }
-
 }

@@ -1,9 +1,11 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use Psr\Container\ContainerInterface;
 
 class Reference implements DefinitionInterface {
+
     public function __construct(private string $id)
     {
     }

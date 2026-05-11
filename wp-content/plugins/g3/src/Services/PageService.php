@@ -1,7 +1,18 @@
 <?php
+
 namespace JEALER\G3\Services;
+
 use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Context;
+
+/**
+ * Page Service
+ * 
+ * 页面服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class PageService {
 
     /**
@@ -11,8 +22,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isUser(): bool
     {
@@ -26,8 +35,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isMy(): bool
     {
@@ -41,8 +48,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isLogin(): bool
     {
@@ -56,8 +61,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isRegister(): bool
     {
@@ -71,8 +74,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isLostPassword(): bool
     {
@@ -86,8 +87,6 @@ class PageService {
      * 
      * @todo
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isResetPassword(): bool
     {
@@ -100,8 +99,6 @@ class PageService {
      * 当前模板页是否是自定义后台登录页面。
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isAdminLogin(): bool
     {

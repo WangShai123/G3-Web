@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use Override;
 
@@ -38,36 +37,24 @@ class Activity extends Components {
         ];
         $args   = [
             'labels'             => $labels,
-            //是否公开
             'public'             => true,
-            //是否可查询
             'publicly_queryable' => true,
-            //显示在后台菜单中
             'show_ui'            => true,
-            //显示在后台菜单中
             'show_in_menu'       => true,
             'show_in_admin_bar'  => true,
             'show_in_nav_menus'  => true,
-            //是否可以查询，和publicly_queryable一起使用
             'query_var'          => true,
-            //重写url
             'rewrite'            => ['slug' => $this->postType],
-            //该文章类型的权限
             'capability_type'    => 'post',
-            //是否有归档
             'has_archive'        => true,
-            //是否水平，如果水平就是页面，否则类似文章这种可以有分类目录（需要自定义分类目录）
             'hierarchical'       => false,
-            //菜单定位
             'menu_position'      => null,
             'show_in_rest'       => true,
-            //该文章类型支持的功能
             'supports'           => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
             'menu_icon'          => 'dashicons-universal-access-alt',
         ];
         register_post_type($this->postType, $args);
     }
-
     #[Override]
     public function taxonomy(): void
     {

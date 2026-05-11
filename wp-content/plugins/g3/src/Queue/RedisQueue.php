@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Queue;
 
 use Redis;
@@ -12,6 +13,7 @@ use Redis;
  * @author Wang Shai
  */
 class RedisQueue implements QueueInterface {
+
     protected Redis $redis;
     protected string $prefix;
 
@@ -75,7 +77,7 @@ class RedisQueue implements QueueInterface {
             // 推送到队列并获取新的长度（即索引位置）
             $newLength = $this->redis->lPush($queueKey, $payload);
 
-            // 返回格式：queuekey:index
+            // 返回格式：queueKey:index
             return $queue . ':' . $newLength;
         }
     }

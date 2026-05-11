@@ -5,8 +5,18 @@ namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\System;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Psr\Log\InvalidArgumentException;
+use Stringable;
 use WP_Error;
 
+/**
+ * Log Service
+ * 
+ * 日志服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class LogService implements LoggerInterface {
 
     /**
@@ -15,10 +25,8 @@ class LogService implements LoggerInterface {
      * 日志表名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    private string $tableName;
+    private string $table;
 
     /**
      * Cache group name
@@ -26,47 +34,35 @@ class LogService implements LoggerInterface {
      * 缓存组名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    private const CACHE_GROUP = 'logs';
+    const CACHE_GROUP = 'g3_logs';
 
     /**
-     * Cache expire time
+     * Log table name
      * 
-     * 缓存过期时间，默认 1 小时
+     * 日志表名
      * 
-     * @var int
-     * @since 1.0.0
-     * @author Wang Shai
+     * @var string
      */
-    private const CACHE_EXPIRE = 3600;
+    const TABLE_NAME = 'g3_logs';
 
-    /**
-     * Constructor
-     * 
-     * 构造函数
-     * 
-     * @since 1.0.0
-     * @author Wang Shai
-     */
     public function __construct()
     {
         global $wpdb;
-        $this->tableName = $wpdb->prefix . 'g3_logs';
+        $this->table = $wpdb->prefix . self::TABLE_NAME;
     }
 
     /**
      * System is unusable.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function emergency(string|\Stringable $message, array $context = []): void
+    public function emergency(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -77,14 +73,14 @@ class LogService implements LoggerInterface {
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function alert(string|\Stringable $message, array $context = []): void
+    public function alert(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
@@ -94,14 +90,14 @@ class LogService implements LoggerInterface {
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function critical(string|\Stringable $message, array $context = []): void
+    public function critical(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
@@ -110,14 +106,14 @@ class LogService implements LoggerInterface {
      * Runtime errors that do not require immediate action but should typically
      * be logged and monitored.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function error(string|\Stringable $message, array $context = []): void
+    public function error(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -128,14 +124,14 @@ class LogService implements LoggerInterface {
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function warning(string|\Stringable $message, array $context = []): void
+    public function warning(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
@@ -143,14 +139,14 @@ class LogService implements LoggerInterface {
     /**
      * Normal but significant events.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function notice(string|\Stringable $message, array $context = []): void
+    public function notice(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
@@ -160,14 +156,14 @@ class LogService implements LoggerInterface {
      *
      * Example: User logs in, SQL logs.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function info(string|\Stringable $message, array $context = []): void
+    public function info(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -175,14 +171,14 @@ class LogService implements LoggerInterface {
     /**
      * Detailed debug information.
      *
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function debug(string|\Stringable $message, array $context = []): void
+    public function debug(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -191,14 +187,14 @@ class LogService implements LoggerInterface {
      * Logs with an arbitrary level.
      *
      * @param mixed $level
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function log($level, string|\Stringable $message, array $context = []): void
+    public function log($level, string|Stringable $message, array $context = []): void
     {
         $message = (string) $message;
 
@@ -252,8 +248,6 @@ class LogService implements LoggerInterface {
      * 获取请求信息
      * 
      * @return array
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function getRequestInfo(): array
     {
@@ -284,8 +278,6 @@ class LogService implements LoggerInterface {
      * @param array $meta Additional metadata
      * @param array $request Request information
      * @return int|WP_Error Log ID on success, WP_Error on failure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function create(
         string $type,
@@ -355,7 +347,7 @@ class LogService implements LoggerInterface {
         if (!empty($request)) $formats[] = '%s'; // request
 
         // Insert into database
-        $result = $wpdb->insert($this->tableName, $data, $formats);
+        $result = $wpdb->insert($this->table, $data, $formats);
 
         if ($result === false) {
             return new WP_Error(
@@ -391,8 +383,6 @@ class LogService implements LoggerInterface {
      * 
      * @param int $logId Log ID
      * @return array|false Log data or false if not found
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function get(int $logId): array|false
     {
@@ -407,7 +397,7 @@ class LogService implements LoggerInterface {
         // If not in cache, query the database
         $log = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT id, type, level, message, meta, request, created_at FROM " . $this->tableName . " WHERE id = %d",
+                "SELECT id, type, level, message, meta, request, created_at FROM " . $this->table . " WHERE id = %d",
                 $logId
             ),
             ARRAY_A
@@ -445,8 +435,6 @@ class LogService implements LoggerInterface {
      * @param int $logId Log ID
      * @param array $data Data to update
      * @return bool|WP_Error True on success, WP_Error on failure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function update(int $logId, array $data): bool|WP_Error
     {
@@ -511,7 +499,7 @@ class LogService implements LoggerInterface {
         $where_format = ['%d'];
 
         $result = $wpdb->update(
-            $this->tableName,
+            $this->table,
             $updateData,
             $where,
             $format,
@@ -539,8 +527,6 @@ class LogService implements LoggerInterface {
      * 
      * @param int $logId Log ID
      * @return bool|WP_Error True on success, WP_Error on failure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function delete(int $logId): bool|WP_Error
     {
@@ -548,7 +534,7 @@ class LogService implements LoggerInterface {
 
         // Delete from database
         $result = $wpdb->delete(
-            $this->tableName,
+            $this->table,
             ['id' => $logId],
             ['%d']
         );
@@ -578,8 +564,6 @@ class LogService implements LoggerInterface {
      * @param string $orderBy Column to order by
      * @param string $order Direction of order
      * @return array Array of logs and total count
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function query(array $filters = [], int $limit = 20, int $offset = 0, string $orderBy = 'id', string $order = 'DESC'): array
     {
@@ -642,14 +626,14 @@ class LogService implements LoggerInterface {
         }
 
         // Get total count
-        $countQuery = "SELECT COUNT(*) FROM " . $this->tableName . " " . $whereClause;
+        $countQuery = "SELECT COUNT(*) FROM " . $this->table . " " . $whereClause;
         if (!empty($params)) {
             $countQuery = $wpdb->prepare($countQuery, $params);
         }
         $totalCount = $wpdb->get_var($countQuery);
 
         // Get logs
-        $query    = "SELECT id, type, level, module, user_id, ip_address, message, meta, request, created_at FROM " . $this->tableName . " " . $whereClause . " ORDER BY " . $orderBy . " " . $order . " LIMIT %d OFFSET %d";
+        $query    = "SELECT id, type, level, module, user_id, ip_address, message, meta, request, created_at FROM " . $this->table . " " . $whereClause . " ORDER BY " . $orderBy . " " . $order . " LIMIT %d OFFSET %d";
         $params[] = $limit;
         $params[] = $offset;
 
@@ -690,8 +674,6 @@ class LogService implements LoggerInterface {
      * 
      * @param int $logId Log ID
      * @return array|false Cached log data or false if not found
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function getCache(int $logId): array|false
     {
@@ -708,12 +690,10 @@ class LogService implements LoggerInterface {
      * @param int $logId Log ID
      * @param array $data Log data
      * @return bool True on success
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function setCache(int $logId, array $data): bool
     {
-        return wp_cache_set($logId, $data, self::CACHE_GROUP, self::CACHE_EXPIRE);
+        return wp_cache_set($logId, $data, self::CACHE_GROUP, HOUR_IN_SECONDS);
     }
 
     /**
@@ -723,8 +703,6 @@ class LogService implements LoggerInterface {
      * 
      * @param int $logId Log ID
      * @return bool True on success
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function deleteCache(int $logId): bool
     {
@@ -737,8 +715,6 @@ class LogService implements LoggerInterface {
      * 清除所有日志缓存
      * 
      * @return bool True on success
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function clearAllCaches(): bool
     {
@@ -752,8 +728,6 @@ class LogService implements LoggerInterface {
      * 
      * @param int $days Number of days to retain logs
      * @return int|WP_Error Number of deleted logs or WP_Error on failure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function cleanOldLogs(int $days = 30): int|WP_Error
     {
@@ -763,7 +737,7 @@ class LogService implements LoggerInterface {
 
         $result = $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM " . $this->tableName . " WHERE created_at < %s",
+                "DELETE FROM " . $this->table . " WHERE created_at < %s",
                 $dateThreshold
             )
         );

@@ -1,9 +1,12 @@
 <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
+
 /**
  * Default Rewrite Config
+ * 
  * 默认 rewrite 配置
  * 
  * 配置格式:
@@ -34,8 +37,6 @@ if (!defined('ABSPATH')) {
  * 注意9: 在 Production 环境下，需要手动刷新 rewrite 规则
  * 
  * @return array
- * @since 1.0.0
- * @author Wang Shai
  */
 return [
     // Admin Login
@@ -102,5 +103,4 @@ return [
         'var'  => ['multiple_id', 'multiple_name'],
         'path' => 'test/multiple.php',
     ],
-
 ];

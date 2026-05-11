@@ -1,6 +1,8 @@
 <?php
+
 namespace JEALER\G3\Middleware;
 
+use JEALER\G3\Services\AuthService;
 use WP_REST_Request;
 use WP_Error;
 
@@ -13,17 +15,9 @@ use WP_Error;
  * @author Wang Shai
  */
 class RestAuthMiddleware implements MiddlewareInterface {
-    /**
-     * Check if user is authenticated for REST API requests.
-     * 
-     * 检查用户是否已登录（适用于REST API）
-     *
-     * @param WP_REST_Request $request
-     * @return bool|WP_Error
-     */
+
     public function handle(WP_REST_Request $request): bool|WP_Error
     {
-        // Check if user is already logged in
         if (is_user_logged_in()) {
             return true;
         }
@@ -53,41 +47,11 @@ class RestAuthMiddleware implements MiddlewareInterface {
     private function attemptAuthentication(): void
     {
         // 1. Check WordPress login cookie
-        $this->checkWordPressCookie();
+        AuthService::checkWordPressCookie();
 
         // 2. If first step fails, try alternative authentication methods
         if (!is_user_logged_in()) {
             $this->checkAlternativeAuth();
-        }
-    }
-
-    /**
-     * Check WordPress login cookie.
-     * 
-     * 检查WordPress登录cookie
-     * 
-     * @return void
-     */
-    private function checkWordPressCookie(): void
-    {
-        // 确保必要的常量已定义
-        if (!\defined('COOKIEHASH')) {
-            wp_cookie_constants();
-        }
-
-        // 检查标准的WordPress登录cookie
-        $cookie_name = 'wordpress_logged_in_' . COOKIEHASH;
-
-        if (isset($_COOKIE[$cookie_name])) {
-            $cookie = $_COOKIE[$cookie_name];
-
-            // 验证cookie
-            $user_id = wp_validate_auth_cookie($cookie, 'logged_in');
-
-            if ($user_id) {
-                // 设置当前用户
-                wp_set_current_user($user_id);
-            }
         }
     }
 

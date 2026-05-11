@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use JEALER\G3\Container\Container;
@@ -15,6 +16,7 @@ use RuntimeException;
  * @author Wang Shai
  */
 class ExtensionManager implements ExtensionManagerInterface {
+
     /**
      * @var array<string, ContainerExtensionInterface> 已注册的扩展
      */
@@ -50,12 +52,12 @@ class ExtensionManager implements ExtensionManagerInterface {
         $name = $extension->getName();
 
         if (isset($this->extensions[$name])) {
-            throw new InvalidArgumentException("Extension '{$name}' is already registered");
+            throw new InvalidArgumentException("[G3 ExtensionManager] Extension '{$name}' is already registered");
         }
 
         // 验证扩展名称
         if (!$this->isValidExtensionName($name)) {
-            throw new InvalidArgumentException("Invalid extension name '{$name}'");
+            throw new InvalidArgumentException("[G3 ExtensionManager] Invalid extension name '{$name}'");
         }
 
         $this->extensions[$name] = $extension;

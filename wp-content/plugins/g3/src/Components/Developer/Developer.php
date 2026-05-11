@@ -1,25 +1,33 @@
 <?php
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Rewrite\Rewrite;
+use JEALER\G3\Services\TemplateService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
+use JEALER\G3\Utilities\Response;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
 use Override;
 use WP_Error;
+use WP_Query;
 
 class Developer extends Components {
     public array $formOption;
     public array $settingOption;
     public array $opMPOption;
-    protected string $version = '1.0.0';
     public $v;
     public static $z;
+    private TemplateService $template;
 
+    #[Override]
+    protected function start(): void
+    {
+        /** @var TemplateService */
+        $this->template = $this->container->get(TemplateService::class);
+    }
     #[Override]
     protected function options(): void
     {
@@ -56,6 +64,7 @@ class Developer extends Components {
             'encodingAESKey' => '',
         ]);
     }
+
     #[Override]
     protected function prepareInAdmin(): void
     {
@@ -75,6 +84,7 @@ class Developer extends Components {
             'key13' => ['1'],
         ], false);
     }
+
     #[Override]
     protected function form(): void
     {
@@ -86,15 +96,19 @@ class Developer extends Components {
             $this->opMPOption = Option::cache(SystemService::OPEN_WECHAT_OA_KEY, $this->opMPOption);
         }
     }
+
     #[Override]
     protected function init(): void
     {
+        add_filter('single_template', [$this->template, 'singleTemplate'], 99);
+
         add_filter('map_meta_cap', [$this, 'themeCustomizeHandle'], 20, 4);
         add_filter('translations_api', [$this, 'translationsApiHandle'], 10, 3);
         $this->wpAutoUpdateHandle();
         $this->emojiHandle();
         $this->wpHeadHandle();
     }
+
     #[Override]
     protected function admin(): void
     {
@@ -122,7 +136,9 @@ class Developer extends Components {
             $this->generateObjectCacheFile();
             $this->opMpSetting();
         }
+        $this->cleanerSetting();
     }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -130,7 +146,29 @@ class Developer extends Components {
         $this->welcomePage();
         $this->toolsPageHandle();
         $this->pluginsPageHandle();
-        $this->openPlatformMenu();
+
+        // open platform menu
+        add_submenu_page(
+            'g3-settings',
+            __('Open Platform', 'G3'),
+            __('Open Platform', 'G3'),
+            'manage_options',
+            'open-platform',
+            [$this, 'openPlatform'],
+            18
+        );
+        // junk cleaner menu
+        add_submenu_page(
+            'g3-settings',
+            __('Junk Cleaner', 'G3'),
+            __('Junk Cleaner', 'G3'),
+            'manage_options',
+            'junk-cleaner',
+            [$this, 'renderJunkCleaner'],
+            19
+        );
+
+        // developer menu
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
         } else {
@@ -144,8 +182,8 @@ class Developer extends Components {
                 20
             );
         }
-
     }
+
     #[Override]
     protected function system(): void
     {
@@ -173,6 +211,7 @@ class Developer extends Components {
             }
         }
     }
+
     #[Override]
     protected function front(): void
     {
@@ -268,18 +307,18 @@ class Developer extends Components {
         add_settings_section('devSetting', '', '__return_false', 'developer-mode&tab=setting');
         register_setting('devSetting', SystemService::SETTING_OPTION_KEY);
         Element::settingFields('developer-mode&tab=setting', 'devSetting', [
-            [
-                'id'       => 'environment',
-                'title'    => __('Environment', 'G3'),
-                'callback' => function () {
-                    echo Element::select(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'environment', __('Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
-                        'local'       => __('Local Env', 'G3'),
-                        'development' => __('Development Env', 'G3'),
-                        'staging'     => __('Staging Env', 'G3'),
-                        'production'  => __('Production Env', 'G3')
-                    ]);
-                }
-            ],
+            // [
+            //     'id'       => 'environment',
+            //     'title'    => __('Environment', 'G3'),
+            //     'callback' => function () {
+            //         echo Element::select(SystemService::SETTING_OPTION_KEY, $this->settingOption, 'environment', __('Environment', 'G3'), __('Select the environment you are working in.', 'G3'), 'dev-environment', [
+            //             'local'       => __('Local Env', 'G3'),
+            //             'development' => __('Development Env', 'G3'),
+            //             'staging'     => __('Staging Env', 'G3'),
+            //             'production'  => __('Production Env', 'G3')
+            //         ]);
+            //     }
+            // ],
             [
                 'id'       => 'wpAutoUpdate',
                 'title'    => __('WordPress Auto Update', 'G3'),
@@ -544,6 +583,7 @@ class Developer extends Components {
             ]
         ]);
     }
+
     public function formSetting()
     {
         add_settings_section(
@@ -709,7 +749,8 @@ class Developer extends Components {
             ]
         ]);
     }
-    public function _flushOptions()
+
+    public function _flushOptions(): void
     {
         $options = @require_once G3_PlUGIN_DIR . '/backup/options.php';
 
@@ -720,279 +761,41 @@ class Developer extends Components {
         foreach ($options as $optionKey => $optionValue) {
             update_option($optionKey, $optionValue);
         }
-
-        // // 广告设置
-        // add_option('g3_ad_locations', [
-        //     'header-ad' => 'Header Ads Area',
-        //     'swiper-ad' => 'Swiper Ads Area',
-        //     'post-ad'   => 'Post Ads Area',
-        //     'footer-ad' => 'Footer Ads Area',
-        // ]);
-
-        // // 邮件设置
-        // add_option('g3_option_mail_smtp', [
-        //     'enable'          => '0',
-        //     'nickname'        => '',
-        //     'display_address' => '',
-        //     'server'          => '',
-        //     'port'            => '',
-        //     'encryption'      => '0',
-        //     'address'         => '',
-        //     'secret'          => '',
-        // ]);
-        // add_option('g3_option_mail_templates', [
-        //     'enable'          => '0',
-        //     'register'        => '',
-        //     'reset_password'  => '',
-        //     'payment_success' => '',
-        // ]);
-
-        // // 阅读设置
-        // add_option('g3_option_reading', [
-        //     'enable'      => '1',
-        //     'safe_time'   => '60',
-        //     'copyright'   => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
-        //     'auto_notice' => ['0'],
-        // ]);
-
-        // // 编辑器设置
-        // add_option('g3_option_editor', [
-        //     'editor'    => '0',
-        //     'autosave'  => '0',
-        //     'interval'  => '60',
-        //     'revisions' => '0',
-        // ]);
-
-        // // 知识付费设置
-        // add_option('g3_option_paywall', [
-        //     'login_to'   => '0',
-        //     'comment_to' => '0',
-        //     'pay_to'     => '0',
-        //     'role_to'    => '0',
-        //     'vip_to'     => '0',
-        // ]);
-
-        // // 钱包设置
-        // add_option('g3_option_wallet', [
-        //     'enable'   => '0',
-        //     'recharge' => '0',
-        // ]);
-
-        // // 支付设置
-        // add_option('g3_option_pay', [
-        //     // 余额支付
-        //     0 => 'balance pay',
-        //     // 微信支付
-        //     1 => 'wechat pay',
-        //     // 支付宝
-        //     2 => 'alipay',
-        //     // 微信转账
-        //     3 => 'wechat transfer',
-        //     // 支付宝转账
-        //     4 => 'alipay transfer',
-        //     // 现金支付
-        //     5 => 'cash pay',
-        // ]);
-
-        // // 订单设置
-        // add_option('g3_option_order', [
-        //     'order_from'   => [
-        //         // 网页订单
-        //         0 => 'web order',
-        //         // 手动补单
-        //         1 => 'manual order',
-        //         // 微信小程序订单
-        //         2 => 'wechat sp order',
-        //         // 抖音订单
-        //         3 => 'douyin order',
-        //     ],
-        //     'order_status' => [
-        //         // 待支付
-        //         0 => 'pending',
-        //         // 待发货
-        //         1 => 'processing',
-        //         // 待收货
-        //         2 => 'shipping',
-        //         // 已完成
-        //         3 => 'completed',
-        //         // 已取消
-        //         4 => 'cancelled',
-        //         // 已退款
-        //         5 => 'refunded',
-        //         // 已删除
-        //         6 => 'deleted',
-        //     ],
-        //     'order_type'   => [
-        //         // 商品订单
-        //         0 => 'product order',
-        //         // 赞赏订单
-        //         1 => 'appreciate order',
-        //         // 知识付费订单
-        //         2 => 'paywall order',
-        //         // 充值订单
-        //         3 => 'recharge order',
-        //         // 会员订单
-        //         4 => 'vip order',
-        //         // 提现订单
-        //         5 => 'withdraw order',
-        //     ]
-        // ]);
-        // // 第三方接口设置
-        // add_option('g3_option_op_openai', [
-        //     'appkey'       => '0',
-        //     'organization' => '',
-        // ]);
-        // add_option('g3_option_op_wechat', [
-        //     'auth'      => '0',
-        //     'bind'      => '0',
-        //     'appid'     => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_alipay', [
-        //     'appid'     => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_toutiao', [
-        //     'appkey'    => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_douyin', [
-        //     'appkey'    => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_baidu', [
-        //     'appkey'    => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_weibo', [
-        //     'appkey'    => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_qq', [
-        //     'appkey'    => '',
-        //     'appSecret' => '',
-        // ]);
-        // add_option('g3_option_op_amap', [
-        //     'appkey' => '',
-        // ]);
-
-        // /**
-        //  * 用户选项
-        //  */
-        // // 性别选项
-        // add_option('g3_option_gender', [
-        //     0 => 'Unknown',
-        //     1 => __('Male', 'G3'),
-        //     2 => __('Female', 'G3'),
-        // ]);
-
-        // // 用户角色选项
-        // add_option('g3_option_roles', [
-        //     [
-        //         'name' => __('Restrict User', 'G3'),
-        //         'slug' => 'restrict',
-        //         'from' => -INF,
-        //         'to'   => 0
-        //     ],
-        //     [
-        //         'name' => __('Junior User', 'G3'),
-        //         'slug' => 'junior',
-        //         'from' => 0,
-        //         'to'   => 500
-        //     ],
-        //     [
-        //         'name' => __('Senior User', 'G3'),
-        //         'slug' => 'senior',
-        //         'from' => 500,
-        //         'to'   => 5000
-        //     ],
-        //     [
-        //         'name' => __('Principal User', 'G3'),
-        //         'slug' => 'principal',
-        //         'from' => 5000,
-        //         'to'   => INF
-        //     ],
-        // ]);
-
-        // // VIP角色选项
-        // add_option('g3_option_vips', [
-        //     [
-        //         'name' => 'VIP',
-        //         'slug' => 'vip'
-        //     ],
-        // ]);
-
-        // // 管理角色选项
-        // add_option('g3_option_manages', [
-        //     [
-        //         'name' => __('Administrator', 'G3'),
-        //         'slug' => 'administrator',
-        //         'type' => 0,
-        //     ],
-        //     [
-        //         'name' => __('Director', 'G3'),
-        //         'slug' => 'director',
-        //         'type' => 1,
-        //     ],
-        //     [
-        //         'name' => __('Manager', 'G3'),
-        //         'slug' => 'manager',
-        //         'type' => 1,
-        //     ],
-        // ]);
-
-        // // 认证选项
-        // add_option('g3_option_auths', [
-        //     [
-        //         'name'   => __('Principal Author', 'G3'),
-        //         'slug'   => 'principal',
-        //         'status' => 1,
-        //     ],
-        // ]);
-
-        // // VIP过期时间选项
-        // add_option('g3_option_vip_expiry', [
-        //     -1       => __('Never Expire', 'G3'),
-        //     60       => __('1 Minute', 'G3'),
-        //     3600     => __('1 Hour', 'G3'),
-        //     86400    => __('1 Day', 'G3'),
-        //     604800   => __('1 Week', 'G3'),
-        //     2592000  => __('30 Days', 'G3'),
-        //     7776000  => __('90 Days', 'G3'),
-        //     31536000 => __('365 Days', 'G3'),
-        // ]);
-
     }
 
-    /** Callback in Component */
-    public function _flushRewriteButton()
+    public function _flushRewriteButton(): void
     {
         echo '<button class="button button-error" name="jl_flush_rewrite_rules" type="submit">' . __('Flush Rewrite Rules', 'G3') . '</button>';
         echo '<p class="description">' . __('Flush and fix the rewrite rules.', 'G3') . '</p>';
     }
-    public function _flushOptionButton()
+
+    public function _flushOptionButton(): void
     {
         echo '<button class="button" id="g3-action__flush-options" type="button">' . __('Flush Setting Options', 'G3') . '</button>';
         echo '<p class="description">' . __('Flush and restore setting options from the last auto-generated backup data. File:', 'G3') . '<code>/wp-plugins/g3/backup/options.php</code></p>';
     }
-    public function _flushCacheButton()
+
+    public function _flushCacheButton(): void
     {
         echo '<button class="button" name="jl_flush_cache" type="submit">' . __('Flush Cache', 'G3') . '</button>';
         echo '<p class="description">' . __('Flush all the cache data.', 'G3') . '</p>';
     }
-    public function _generateObjectCacheButton()
+
+    public function _generateObjectCacheButton(): void
     {
         echo '<button class="button button-primary" name="jl_generate_object_cache" type="submit">' . __('Generate object-cache.php', 'G3') . '</button>';
         echo '<p class="description">' . __('Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>wp-content</i></code> directory if it does not exist.', 'G3') . '</p>';
     }
-    public function flushRewriteRulesHandle()
+
+    public function flushRewriteRulesHandle(): void
     {
         if (isset($_POST['jl_flush_rewrite_rules']) && current_user_can('manage_options')) {
             Rewrite::flushRewriteRules();
             add_settings_error('flush', 'rewrite_flushed', __('Rewrite rules flushed successfully!', 'G3'), 'updated');
         }
     }
-    public function _ajaxFlushOptions()
+
+    public function _ajaxFlushOptions(): void
     {
         if (current_user_can('manage_options')) {
             $this->_flushOptions();
@@ -1007,6 +810,7 @@ class Developer extends Components {
             ], 403);
         }
     }
+
     public function flushCacheHandle(): void
     {
         if (isset($_POST['jl_flush_cache']) && current_user_can('manage_options')) {
@@ -1014,6 +818,7 @@ class Developer extends Components {
             add_settings_error('flush', 'cache_flushed', __('Cache flushed successfully!', 'G3'), 'updated');
         }
     }
+
     public function generateObjectCacheFile(): void
     {
         if (isset($_POST['jl_generate_object_cache']) && current_user_can('manage_options')) {
@@ -1038,6 +843,7 @@ class Developer extends Components {
             }
         }
     }
+
     public function wpAutoUpdateHandle(): void
     {
         if (!is_admin()) return;
@@ -1094,6 +900,7 @@ class Developer extends Components {
         if (isset($this->settingOption['permalink']) && $this->settingOption['permalink'] === '0')
             remove_submenu_page('options-general.php', 'options-permalink.php');
     }
+
     /**
      * Remove theme customize
      * @param array $caps
@@ -1125,6 +932,7 @@ class Developer extends Components {
 
         return new WP_Error('translations_api_disabled', 'Translations API disabled');
     }
+
     /**
      * Remove help link
      */
@@ -1137,6 +945,7 @@ class Developer extends Components {
         $screen = get_current_screen();
         $screen->remove_help_tabs();
     }
+
     public function adminBarMenuHandle($wp_admin_bar): void
     {
         if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '1') {
@@ -1145,6 +954,7 @@ class Developer extends Components {
         // Remove default node: LOGO
         $wp_admin_bar->remove_node('wp-logo');
     }
+
     /**
      * Remove top toolbar
      * 移除顶部工具栏
@@ -1156,6 +966,7 @@ class Developer extends Components {
         }
         return false;
     }
+
     public function emojiHandle(): void
     {
         if (!isset($this->settingOption['emoji']) || $this->settingOption['emoji'] !== '0') {
@@ -1173,6 +984,7 @@ class Developer extends Components {
         // close emoji feature
         add_filter('emoji_svg_url', '__return_false');
     }
+
     public function wpHeadHandle(): void
     {
         if (!isset($this->settingOption['wpHead']) || $this->settingOption['wpHead'] !== '1') {
@@ -1264,6 +1076,7 @@ class Developer extends Components {
     {
         self::$z = $this->loader;
     }
+
     public static function time()
     {
         return self::$z ? self::$z->gE() : false;
@@ -1381,6 +1194,7 @@ class Developer extends Components {
             return $title . ' - ' . get_bloginfo('name');
         }, 10, 2);
     }
+
     private function thanksHandle()
     {
         if (!isset($this->settingOption['footerThanks']) || !$this->settingOption['footerThanks']) {
@@ -1390,6 +1204,7 @@ class Developer extends Components {
             return $this->settingOption['footerThanks'];
         });
     }
+
     private function upgradeHandle()
     {
         if (!isset($this->settingOption['footerUpgrade']) || !$this->settingOption['footerUpgrade']) {
@@ -1399,6 +1214,7 @@ class Developer extends Components {
             return $this->settingOption['footerUpgrade'];
         }, 999);
     }
+
     private function toolsPageHandle()
     {
         if (!isset($this->settingOption['toolsPage']) || $this->settingOption['toolsPage'] !== '0') {
@@ -1406,6 +1222,7 @@ class Developer extends Components {
         }
         remove_menu_page('tools.php');
     }
+
     private function pluginsPageHandle()
     {
         if (!isset($this->settingOption['pluginsPage']) || $this->settingOption['pluginsPage'] !== '0') {
@@ -1415,6 +1232,7 @@ class Developer extends Components {
             remove_menu_page('plugins.php');
         }, 999);
     }
+
     private function themeInstallHandle()
     {
         if (!isset($this->settingOption['themeInstall']) || $this->settingOption['themeInstall'] !== '0') {
@@ -1424,6 +1242,7 @@ class Developer extends Components {
             echo '<style>a.hide-if-no-js.page-title-action{display:none}</style>';
         }
     }
+
     protected function dashboard(): void
     {
         if (!isset($this->settingOption['dashboard'])) {
@@ -1449,18 +1268,7 @@ class Developer extends Components {
             remove_meta_box('dashboard_primary', 'dashboard', 'side');
         }
     }
-    private function openPlatformMenu(): void
-    {
-        add_submenu_page(
-            'g3-settings',
-            __('Open Platform', 'G3'),
-            __('Open Platform', 'G3'),
-            'manage_options',
-            'open-platform',
-            [$this, 'openPlatform'],
-            18
-        );
-    }
+
     public function openPlatform(): void
     {
         echo '<div class="wrap">';
@@ -1471,16 +1279,17 @@ class Developer extends Components {
         Element::tab('Developer', 'wechatOA', $args);
         echo '</div>';
     }
+
     private function opMpSetting(): void
     {
         add_settings_section(
-            'opwechatOA',
+            'opWechatOA',
             null,
             '__return_false',
-            'open-platform&tab=mp'
+            'open-platform&tab=wechatOA'
         );
-        register_setting('opwechatOA', SystemService::OPEN_WECHAT_OA_KEY);
-        Element::settingFields('open-platform&tab=mp', 'opwechatOA', [
+        register_setting('opWechatOA', SystemService::OPEN_WECHAT_OA_KEY);
+        Element::settingFields('open-platform&tab=wechatOA', 'opWechatOA', [
             [
                 'id'       => 'type',
                 'title'    => __('Official Account Type', 'G3'),
@@ -1500,10 +1309,7 @@ class Developer extends Components {
                             '4' => __('Verified Subscription Account', 'G3'),
                         ]
                     );
-                },
-                'args'     => [
-                    'label_for' => 'type',
-                ]
+                }
             ],
             [
                 'id'       => 'slug',
@@ -1592,4 +1398,122 @@ class Developer extends Components {
         ]);
     }
 
+    public function renderJunkCleaner(): void
+    {
+        require_once __DIR__ . '/views/tab-junk-cleaner.php';
+    }
+
+    private function cleanerSetting(): void
+    {
+        $postTypes = get_post_types([
+            'public'  => true,
+            'show_ui' => true,
+        ]);
+        unset($postTypes['attachment']);
+        $postTypes = array_values($postTypes);
+
+        $draft     = 0;
+        $autoDraft = 0;
+        $trash     = 0;
+
+        foreach ($postTypes as $postType) {
+            $postCount  = wp_count_posts($postType);
+            $draft     += $postCount->draft ?? 0;
+            $autoDraft += $postCount->{'auto-draft'} ?? 0;
+            $trash     += $postCount->trash ?? 0;
+        }
+
+        $revision = new WP_Query([
+            'post_type'      => 'revision',
+            'posts_per_page' => -1,
+            'post_status'    => 'any',
+        ]);
+        $revision = $revision->found_posts;
+
+        $fields = [
+            [
+                'id'       => 'draft',
+                'title'    => __('Draft'),
+                'callback' => function () use ($draft) {
+                    $this->renderActions('clear-draft', $draft);
+                }
+            ],
+            [
+                'id'       => 'auto-draft',
+                'title'    => __('Auto Draft'),
+                'callback' => function () use ($autoDraft) {
+                    $this->renderActions('clear-auto-draft', $autoDraft);
+                }
+            ],
+            [
+                'id'       => 'trash',
+                'title'    => __('Trash', 'G3'),
+                'callback' => function () use ($trash) {
+                    $this->renderActions('clear-trash', $trash);
+                }
+            ],
+            [
+                'id'       => 'revision',
+                'title'    => __('Revision'),
+                'callback' => function () use ($revision) {
+                    $this->renderActions('clear-revision', $revision);
+                }
+            ]
+        ];
+        add_settings_section(
+            'junk-cleaner',
+            null,
+            '__return_false',
+            'junk-cleaner'
+        );
+        register_setting('junk-cleaner', 'junk-cleaner');
+        Element::settingFields('junk-cleaner', 'junk-cleaner', $fields);
+    }
+
+    private function renderActions(string $action, int|string $count)
+    {
+        $total = __('Total', 'G3');
+        $clear = __('Clear');
+        echo "<button class='button junk-action-button' type='button' data-action='{$action}' data-count='{$count}'>{$clear}</button>";
+        echo "<p class='description'>{$total}: <span class='junk-count'>{$count}</span></p>";
+    }
+
+    public function ajax(): void
+    {
+        $this->addJunkCleanerAjax('g3_clear_draft', 'draft');
+        $this->addJunkCleanerAjax('g3_clear_auto_draft', 'auto-draft');
+        $this->addJunkCleanerAjax('g3_clear_trash', 'trash');
+        $this->addJunkCleanerAjax('g3_clear_revision', 'inherit', 'revision');
+    }
+
+    private function addJunkCleanerAjax(string $action, string $status, string $postType = 'any')
+    {
+        add_action('wp_ajax_' . $action, function () use ($status, $postType) {
+            if (!current_user_can('manage_options') || !is_admin()) {
+                Response::ajaxIllegal();
+            }
+            $result = $this->deletePostsByStatus($status, $postType);
+            if ($result) {
+                Response::ajaxDeleted();
+            } else {
+                Response::ajaxFailed();
+            }
+        });
+    }
+
+    private function deletePostsByStatus(string $status, string $postType = 'any'): bool
+    {
+        $query = new WP_Query([
+            'post_type'      => $postType,
+            'post_status'    => $status,
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ]);
+        while ($query->have_posts()) {
+            $query->the_post();
+            wp_delete_post(get_the_ID(), true);
+        }
+        wp_reset_postdata();
+        return $query->found_posts > 0;
+    }
 }

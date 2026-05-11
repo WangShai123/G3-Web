@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Tag Manager
- * 标签管理器实现
  * 
- * 支持服务标签管理，提供按标签查找和分组功能
+ * 标签管理器实现。支持服务标签管理，提供按标签查找和分组功能
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 class TagManager implements TagManagerInterface {
+
     /**
      * @var array<string, array<string>> 服务ID => 标签数组
      */

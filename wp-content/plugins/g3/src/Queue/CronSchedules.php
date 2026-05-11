@@ -1,13 +1,13 @@
 <?php
+
 namespace JEALER\G3\Queue;
 
 use JEALER\G3\Utilities\System;
 
 /**
  * Cron Schedules and Events Management
- * Cron计划和事件管理类
  * 
- * 负责G3队列的cron计划注册和cron事件管理
+ * Cron计划和事件管理类。负责G3队列的cron计划注册和cron事件管理
  * 
  * @since 1.0.0
  * @author Wang Shai
@@ -16,6 +16,7 @@ class CronSchedules {
 
     /**
      * Initialize cron schedules and events (only when needed)
+     * 
      * 初始化cron计划和事件（仅在需要时）
      * 
      * @return void
@@ -28,11 +29,12 @@ class CronSchedules {
         // 注册cron处理钩子
         add_action('g3_process_queue', [self::class, 'processQueue']);
 
-        error_log('[G3] CronSchedules: Cron schedules and hooks registered.');
+        error_log('[G3 CronSchedules] Cron schedules and hooks registered.');
     }
 
     /**
      * Initialize if needed based on queue configuration
+     * 
      * 根据队列配置按需初始化
      * 
      * @return void
@@ -50,16 +52,17 @@ class CronSchedules {
                 $intervalMinutes = $queueConfig['cron']['interval_minutes'] ?? 1;
                 self::scheduleCron($intervalMinutes);
 
-                error_log('[G3] CronSchedules: Initialized for cron consumer.');
+                error_log('[G3 CronSchedules] Initialized for cron consumer.');
             }
         }
         catch (\Exception $e) {
-            error_log('[G3] CronSchedules: Failed to initialize: ' . $e->getMessage());
+            error_log('[G3 CronSchedules] Failed to initialize: ' . $e->getMessage());
         }
     }
 
     /**
      * Add G3 cron schedules
+     * 
      * 添加G3 cron计划
      * 
      * @param array $schedules Existing schedules
@@ -101,13 +104,13 @@ class CronSchedules {
 
         // 检查计划是否存在
         if (!self::scheduleExists($schedule)) {
-            error_log("[G3] CronSchedules: Schedule {$schedule} not found");
+            error_log("[G3 CronSchedules] Schedule {$schedule} not found");
             return false;
         }
 
         // 检查是否已经调度
         if (wp_next_scheduled('g3_process_queue')) {
-            error_log("[G3] CronSchedules: Cron already scheduled");
+            error_log("[G3 CronSchedules] Cron already scheduled");
             return true;
         }
 
@@ -115,16 +118,17 @@ class CronSchedules {
         $scheduled = wp_schedule_event(time(), $schedule, 'g3_process_queue');
 
         if ($scheduled !== false) {
-            error_log("[G3] CronSchedules: Cron scheduled successfully with interval: {$schedule}");
+            error_log("[G3 CronSchedules] Cron scheduled successfully with interval: {$schedule}");
             return true;
         } else {
-            error_log("[G3] CronSchedules: Failed to schedule cron");
+            error_log("[G3 CronSchedules] Failed to schedule cron");
             return false;
         }
     }
 
     /**
      * Unschedule cron event
+     * 
      * 取消调度cron事件
      * 
      * @return bool Success status
@@ -135,19 +139,21 @@ class CronSchedules {
         if ($timestamp) {
             $result = wp_unschedule_event($timestamp, 'g3_process_queue');
             if ($result) {
-                error_log("[G3] CronSchedules: Cron unscheduled successfully");
+                error_log("[G3 CronSchedules] Cron unscheduled successfully");
                 return true;
             } else {
-                error_log("[G3] CronSchedules: Failed to unschedule cron");
+                error_log("[G3 CronSchedules] Failed to unschedule cron");
                 return false;
             }
         }
 
-        return true; // 没有调度的任务也算成功
+        // 没有调度的任务也算成功
+        return true;
     }
 
     /**
      * Reschedule cron event with new interval
+     * 
      * 重新调度cron事件（新间隔）
      * 
      * @param int $intervalMinutes New interval in minutes
@@ -164,6 +170,7 @@ class CronSchedules {
 
     /**
      * Process queue (cron hook callback)
+     * 
      * 处理队列（cron钩子回调）
      * 
      * @return void
@@ -171,7 +178,7 @@ class CronSchedules {
     public static function processQueue(): void
     {
         try {
-            error_log("[G3] CronSchedules: Processing queue via cron");
+            error_log("[G3 CronSchedules] Processing queue via cron");
 
             // 加载队列配置
             $queueConfig = System::config('queue');
@@ -181,16 +188,17 @@ class CronSchedules {
             $processor = new QueueCronProcessor($queueConfig);
             $results   = $processor->process();
 
-            error_log("[G3] CronSchedules: Queue processing completed - Jobs: {$results['processed_jobs']}, Time: {$results['execution_time']}ms");
+            error_log("[G3 CronSchedules] Queue processing completed - Jobs: {$results['processed_jobs']}, Time: {$results['execution_time']}ms");
 
         }
         catch (\Exception $e) {
-            error_log("[G3] CronSchedules: Queue processing failed: " . $e->getMessage());
+            error_log("[G3 CronSchedules] Queue processing failed: " . $e->getMessage());
         }
     }
 
     /**
      * Get schedule name based on interval minutes
+     * 
      * 根据间隔分钟数获取计划名称
      * 
      * @param int $minutes Interval in minutes
@@ -208,6 +216,7 @@ class CronSchedules {
 
     /**
      * Check if a schedule exists
+     * 
      * 检查计划是否存在
      * 
      * @param string $schedule Schedule name
@@ -221,6 +230,7 @@ class CronSchedules {
 
     /**
      * Get schedule interval
+     * 
      * 获取计划间隔
      * 
      * @param string $schedule Schedule name
@@ -234,6 +244,7 @@ class CronSchedules {
 
     /**
      * Check if cron is currently scheduled
+     * 
      * 检查cron是否当前已调度
      * 
      * @return bool
@@ -245,6 +256,7 @@ class CronSchedules {
 
     /**
      * Get next scheduled time
+     * 
      * 获取下次调度时间
      * 
      * @return array
@@ -259,6 +271,13 @@ class CronSchedules {
         ];
     }
 
+    /**
+     * Queue cron processor
+     * 
+     * 队列cron处理器
+     * 
+     * @return void
+     */
     public static function queueCronProcessor()
     {
         try {
@@ -267,7 +286,7 @@ class CronSchedules {
 
         }
         catch (\Exception $e) {
-            error_log("[G3] Queue cron hook failed: " . $e->getMessage());
+            error_log("[G3 CronSchedules] Queue cron hook failed: " . $e->getMessage());
         }
     }
 }

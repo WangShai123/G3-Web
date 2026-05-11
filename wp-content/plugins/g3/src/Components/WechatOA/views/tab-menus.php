@@ -3,11 +3,12 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Image;
-use JEALER\G3\Includes\WechatOAMenuListTable;
+use JEALER\G3\Components\WechatOA\Includes\WechatOAMenuListTable;
 
 $table = new WechatOAMenuListTable();
 echo Element::tip(
     __('In the WeChat client, the menu of the official account is refreshed every 5 minutes. If you want to instantly manually refresh the menu, please re-subscribe the official account and visit.', 'G3'),
+    '',
     'default',
     'mt-4'
 );

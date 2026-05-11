@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Service Decorator
- * 服务装饰器实现
  * 
- * 支持链式装饰器，按注册顺序应用装饰器
+ * 服务装饰器实现。支持链式装饰器，按注册顺序应用装饰器
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 class ServiceDecorator implements ServiceDecoratorInterface {
+
     /**
      * @var array<string, array<callable>> 装饰器存储
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Helper\Helper;
@@ -9,10 +10,12 @@ use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Context;
-use JEALER\G3\Utilities\Event;
+use Exception;
 
 /**
- * Base Components Class - Provides foundational methods for all components
+ * Base Components Class
+ * 
+ * 简易版 G3 组件系统
  * 
  * @since 1.0.0
  * @author Wang Shai
@@ -20,15 +23,14 @@ use JEALER\G3\Utilities\Event;
 abstract class Components {
 
     /**
-     * @var Container|null 容器实例（用户不需要知道）
+     * @var Container|null 容器实例
      */
-    private ?Container $container = null;
+    protected ?Container $container = null;
 
     /**
      * @var string 组件名称（自动推断）
      */
     protected string $componentName;
-
 
     /**
      * @var array Loaded components instances. Key is component ID, value is component instance.
@@ -59,12 +61,10 @@ abstract class Components {
 
     public function __construct()
     {
-        // $this->initialize();
-
         // 自动推断组件名称
         $this->componentName = $this->getComponentName();
 
-        // 内部初始化（用户不感知）
+        // 内部初始化
         $this->internalInit();
     }
 
@@ -79,25 +79,20 @@ abstract class Components {
         return strtolower($className);
     }
 
-    /**
-     * 内部初始化（用户不需要知道）
-     * 
-     * @return void
-     */
     private function internalInit(): void
     {
         if ($this->container === null) {
             $this->container = Container::run();
         }
 
-        // 自动注册到容器（用户不感知）
+        // 自动注册到容器
         $serviceId = 'component.' . $this->componentName;
         if (!$this->container->has($serviceId)) {
             $this->container->setRawDefinition($serviceId, $this);
         }
 
         $this->loader = $this->container->get('loader');
-        // $this->_init();
+
         $this->start();
 
         /**
@@ -114,9 +109,10 @@ abstract class Components {
         add_action('admin_init', [$this, 'adminInitActions']);
         add_action('admin_menu', [$this, 'adminMenuActions']);
         add_action('widgets_init', [$this, 'widgetsInitActions']);
-        add_action('wp_dashboard_setup', [$this, 'dashboardSetupActions']);
+
         add_filter('query_vars', [$this, 'queryVars']);
 
+        add_action('wp_dashboard_setup', [$this, 'dashboardSetupActions']);
         add_action('add_meta_boxes', [$this, 'metaBoxActions']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScriptsActions']);
         add_action('wp_enqueue_scripts', [$this, 'wpEnqueueScriptsActions'], 20);
@@ -124,11 +120,8 @@ abstract class Components {
         $this->end();
     }
 
-    // ========== 可选的便利方法 ==========
-    // 用户可以选择使用，也可以完全忽略
-
     /**
-     * 获取服务（可选使用）
+     * 获取服务
      * 
      * @param string $serviceClass 服务类名
      * @return object|null
@@ -138,13 +131,13 @@ abstract class Components {
         try {
             return $this->container->get($serviceClass);
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return null;
         }
     }
 
     /**
-     * 检查服务是否存在（可选使用）
+     * 检查服务是否存在
      * 
      * @param string $serviceClass 服务类名
      * @return bool
@@ -155,7 +148,7 @@ abstract class Components {
     }
 
     /**
-     * 调试日志（可选使用）
+     * 调试日志
      * 
      * @param string $message 日志信息
      * @return void
@@ -166,9 +159,6 @@ abstract class Components {
             error_log("[G3 Debug][{$this->componentName}] {$message}");
         }
     }
-
-    // ========== 用户完全不需要重写的方法 ==========
-    // 这些方法存在只是为了内部使用
 
     /**
      * 获取组件名称
@@ -181,7 +171,7 @@ abstract class Components {
     }
 
     /**
-     * 获取容器实例（高级用户可选使用）
+     * 获取容器实例
      * 
      * @return Container|null
      */
@@ -189,13 +179,6 @@ abstract class Components {
     {
         return $this->container;
     }
-
-    private function _init(): void
-    {
-        $this->loader = Context::get('Loader');
-    }
-
-
 
     /**
      * Register query variables
@@ -213,9 +196,10 @@ abstract class Components {
      * 
      * 创建组件实例
      * 
+     * @deprecated 1.0.0
+     * 
      * @param string $componentName
      * @return mixed
-     * @since 1.0.0
      */
     public static function make(string $componentName)
     {
@@ -274,6 +258,7 @@ abstract class Components {
         if ($this->loader->x()) $this->x();
         if ($this->loader->y()) $this->y();
     }
+
     public function initActions(): void
     {
         if ($this->loader->admin()) $this->system();
@@ -316,6 +301,7 @@ abstract class Components {
     {
         $this->scripts();
     }
+
     protected function ready(): void
     {
     }

@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Extension Manager Interface
- * 扩展管理器接口
  * 
- * 负责管理容器扩展的注册、加载和依赖解析
+ * 扩展管理器接口。负责管理容器扩展的注册、加载和依赖解析
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface ExtensionManagerInterface {
+
     /**
      * 注册扩展
      * 

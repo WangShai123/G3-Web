@@ -1,5 +1,7 @@
 <?php
+
 namespace JEALER\G3\Attributes;
+
 use Attribute;
 
 /**
@@ -12,8 +14,9 @@ use Attribute;
  */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class RestRouter {
+
     /**
-     * @param string $namespace  The namespace for the route, e.g. 'myplugin/v1'
+     * @param string $namespace  The namespace for the route, e.g. 'my/v1'
      * @param string $route  The route path, e.g. '/books/(?P<id>\d+)'
      * @param string|array $methods  Single or multiple HTTP methods, e.g. 'GET' or ['GET', 'POST']
      */

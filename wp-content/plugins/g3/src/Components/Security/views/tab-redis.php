@@ -3,11 +3,12 @@ use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
     __('This tab is for Redis Cache advice.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
 ?>
-<div class="j-content">
+<div class="g3-content">
     <h2>
         <?php _e('For Object Cache', 'G3'); ?>
     </h2>
@@ -46,15 +47,29 @@ echo Element::tip(
     </div>
 
     <h2>
-        <?php _e('Redis Rules in G3-Web', 'G3'); ?>
+        Redis <?php _e('Database'); ?>
     </h2>
-    <div class="j-tip is-default mt-2">
-        <div class="tip-content">
-            <div>
-                <?php
-                _e('G3-Web will create 2 databases in Redis to cache regular data and queue tasks. Regular data is stored in database 0, and queue tasks are stored in database 1.', 'G3');
-                ?>
-            </div>
-        </div>
-    </div>
+    <?php
+    echo Element::tip(
+        __('G3-Web will create 2 databases in Redis to cache regular data and queue tasks. Regular data is stored in database 0, and queue tasks are stored in database 1.', 'G3'),
+        false,
+        '',
+        'mt-2',
+    );
+    ?>
+
+    <h2>
+        <?php _e('Recommended configuration', 'G3'); ?>
+    </h2>
+    <p><?php _e('Use Redis\'s <b>LRU</b> eviction policy to avoid redundant cached data. Configure memory management in <code>redis.conf</code> to allow Redis to automatically evict infrequently used data:', 'G3'); ?>
+    </p>
+    <pre>
+# <?php _e('Set the maximum memory as needed, such as 512MB.', 'G3'); ?>
+
+maxmemory 512mb
+
+# <?php _e('Use the LRU (Least Recently Used) strategy to automatically evict the least recently used key.', 'G3'); ?>
+
+maxmemory-policy allkeys-lru
+</pre>
 </div>

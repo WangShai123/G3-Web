@@ -1,12 +1,27 @@
 <?php
+
 namespace JEALER\G3\Cache;
 
+use JEALER\G3\Services\WechatOAService;
 use Psr\SimpleCache\CacheInterface;
 use DateInterval;
 
+/**
+ * EasyWechat Cache Adapter
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class EasyWechat implements CacheInterface {
-    private $prefix = 'easywechat:';
-    private $group = 'easywechat';
+
+    private string $prefix;
+    private string $group;
+
+    public function __construct()
+    {
+        $this->prefix = 'easyWechat:';
+        $this->group  = WechatOAService::CACHE_GROUP;
+    }
 
     public function get(string $key, mixed $default = null): mixed
     {
@@ -20,8 +35,8 @@ class EasyWechat implements CacheInterface {
             $ttl = $ttl->s;
         }
 
-        // unit: seconds, 12 hour
-        return wp_cache_set($this->prefix . $key, $value, $this->group, $ttl ?: 43200);
+        // unit: seconds, 24 hour
+        return wp_cache_set($this->prefix . $key, $value, $this->group, $ttl ?: DAY_IN_SECONDS);
     }
 
     public function delete(string $key): bool

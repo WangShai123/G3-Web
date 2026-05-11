@@ -1,10 +1,11 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use InvalidArgumentException;
-use JEALER\G3\Utilities\System;
 
 class ConfigLoader {
+
     /**
      * Force load PHP array config file
      * 

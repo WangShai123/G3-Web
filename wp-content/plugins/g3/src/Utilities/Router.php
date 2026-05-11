@@ -1,5 +1,15 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
+/**
+ * Router Utilities
+ * 
+ * 路由工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Router {
 
     /**
@@ -9,8 +19,6 @@ final class Router {
      * 
      * @param string $query
      * @return array query_var
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function extractQueryVarsFromQuery(string $query): array
     {
@@ -35,8 +43,6 @@ final class Router {
      * @param string $regex
      * @param string $query
      * @return string route id
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function routeId(string $class, string $method, string $regex, string $query): string
     {

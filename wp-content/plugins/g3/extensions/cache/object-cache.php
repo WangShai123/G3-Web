@@ -36,6 +36,11 @@ if (!defined('WP_CACHE_KEY_SALT')) {
     define('WP_CACHE_KEY_SALT', '');
 }
 
+/** 默认缓存有效期（秒）: 7 天 */
+if (!defined('G3_CACHE_DEFAULT_TTL')) {
+    define('G3_CACHE_DEFAULT_TTL', 86400 * 7);
+}
+
 /**
  * 初始化缓存对象
  */
@@ -187,6 +192,9 @@ class WP_Object_Cache {
     private $cache = []; // 内存层缓存（key => value）
     private $driver = 'array'; // memcached|redis|array
     private $mc = null; // Memcached 实例
+    /**
+     * @var Redis|null
+     */
     private $redis = null; // Redis 实例
     private $blog_prefix = '';
     private $global_prefix = '';
@@ -362,7 +370,7 @@ class WP_Object_Cache {
 
         switch ($this->driver) {
             case 'memcached':
-                $val = $this->mc->get($key);
+                $val   = $this->mc->get($key);
                 $found = ($this->mc->getResultCode() !== Memcached::RES_NOTFOUND);
                 if ($found) {
                     $this->add_to_internal($key, $val);
@@ -377,7 +385,7 @@ class WP_Object_Cache {
                     $this->delete_from_internal($key);
                     return false;
                 }
-                $un = @unserialize($val);
+                $un    = @unserialize($val);
                 $found = true;
                 $this->add_to_internal($key, $un);
                 return $un;
@@ -424,7 +432,7 @@ class WP_Object_Cache {
         $key = $this->build_key($id, $group);
 
         if ($this->is_non_persistent_group($group)) {
-            $cur = $this->get_from_internal($key) ?: $initial_value;
+            $cur  = $this->get_from_internal($key) ?: $initial_value;
             $cur += $offset;
             $this->add_to_internal($key, $cur);
             return $cur;
@@ -454,7 +462,7 @@ class WP_Object_Cache {
                 }
                 return $res;
             default:
-                $cur = $this->get_from_internal($key) ?: $initial_value;
+                $cur  = $this->get_from_internal($key) ?: $initial_value;
                 $cur += $offset;
                 $this->add_to_internal($key, $cur);
                 return $cur;
@@ -466,7 +474,7 @@ class WP_Object_Cache {
         $key = $this->build_key($id, $group);
 
         if ($this->is_non_persistent_group($group)) {
-            $cur = $this->get_from_internal($key) ?: $initial_value;
+            $cur  = $this->get_from_internal($key) ?: $initial_value;
             $cur -= $offset;
             if ($cur < 0) $cur = 0;
             $this->add_to_internal($key, $cur);
@@ -499,7 +507,7 @@ class WP_Object_Cache {
                 }
                 return $res;
             default:
-                $cur = $this->get_from_internal($key) ?: $initial_value;
+                $cur  = $this->get_from_internal($key) ?: $initial_value;
                 $cur -= $offset;
                 if ($cur < 0) $cur = 0;
                 $this->add_to_internal($key, $cur);
@@ -675,12 +683,12 @@ class WP_Object_Cache {
                     $cas_token = null;
                     return false;
                 }
-                $un = @unserialize($val);
+                $un        = @unserialize($val);
                 $cas_token = md5($val); // token 为序列化字符串的 md5
                 $this->add_to_internal($key, $un);
                 return $un;
             default:
-                $val = $this->get($id, $group);
+                $val       = $this->get($id, $group);
                 $cas_token = $val === false ? null : md5(serialize($val));
                 return $val;
         }

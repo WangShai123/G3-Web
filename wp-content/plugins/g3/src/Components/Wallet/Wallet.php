@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
@@ -9,29 +10,35 @@ use JEALER\G3\Services\PaymentService;
 use Override;
 
 class Wallet extends Components {
+
     public array $option = [];
 
     #[Override]
     protected function options(): void
     {
         $this->option = Option::get(PaymentService::WALLET_OPTION_KEY, [
+            'exchange' => '0',
             'enable'   => '0',
             'recharge' => '0',
         ]);
     }
+
     protected function init(): void
     {
     }
+
     #[Override]
     protected function form(): void
     {
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'wallet-settings') return;
         $this->option = Option::cache(PaymentService::WALLET_OPTION_KEY, $this->option);
     }
+
     #[Override]
     protected function admin(): void
     {
     }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -45,18 +52,21 @@ class Wallet extends Components {
             14
         );
     }
+
     public function render(): void
     {
         echo '<div class="wrap">';
         echo '<h1>' . __('Wallet', 'G3') . '</h1>';
         $tabs = [
-            'general'        => __('General', 'G3'),
+            'general'        => __('General'),
+            'credits'        => __('Credits', 'G3'),
             'withdrawal'     => __('Withdrawal', 'G3'),
             'cryptocurrency' => __('Cryptocurrency', 'G3'),
         ];
         Element::tab('Wallet', 'general', $tabs);
         echo '</div>';
     }
+
     #[Override]
     protected function settings(): void
     {

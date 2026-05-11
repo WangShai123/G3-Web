@@ -1,6 +1,8 @@
 <?php
+
 namespace JEALER\G3\Controllers;
 
+use JEALER\G3\Container\Container;
 use JEALER\G3\Service;
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
@@ -153,6 +155,23 @@ class AuthController {
         ]);
     }
 
+    #[RestRouter(
+        namespace: 'api/v1',
+        route: 'auth/logout/',
+        methods: 'POST'
+    )]
+    public function loginOut(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        wp_logout();
+
+        setcookie('g3-user', '', time() - 3600, '/');
+
+        return rest_ensure_response([
+            'code'    => 200,
+            'message' => Message::logoutSuccess()
+        ]);
+    }
+
     /**
      * Get temporary Wechat OA Subscribe Login QRCode
      *
@@ -202,6 +221,9 @@ class AuthController {
         $expiration = 1800;
         set_transient($cacheKey, '', $expiration);
 
+        /**
+         * @var AuthService
+         */
         $service = Container::run()->get(AuthService::class);
         $result  = $service->getSubscribeLoginQrCode($hash, $expiration);
 
@@ -226,6 +248,8 @@ class AuthController {
      * 
      * @param WP_REST_Request $request
      * @return WP_REST_Response|WP_Error
+     * @since 1.0.0
+     * @author Wang Shai
      */
     #[RestRouter(
         namespace: 'api/v1',
@@ -298,6 +322,14 @@ class AuthController {
         ]);
     }
 
+    /**
+     * Get temporary Wechat OA Subscribe Bind QRCode
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     #[RestRouter(
         namespace: 'api/v1',
         route: 'auth/wechat/bind/qrcode',
@@ -317,6 +349,9 @@ class AuthController {
         // 30 mins cache
         set_transient($cacheKey, $user->ID, 30 * MINUTE_IN_SECONDS);
 
+        /**
+         * @var AuthService
+         */
         $service = Container::run()->get(AuthService::class);
         $result  = $service->getSubscribeLoginQrCode($bindHash, 1800);
 
@@ -367,6 +402,9 @@ class AuthController {
     #[Middleware(RestAuthMiddleware::class)]
     public function getBindAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
+        /**
+         * @var AuthService
+         */
         $service = Container::run()->get(AuthService::class);
         if (!$service->wechatOAService->available()) {
             return new WP_Error(
@@ -412,7 +450,4 @@ class AuthController {
     public function wechatAuthCallback(WP_REST_Request $request)
     {
     }
-
-
-
 }

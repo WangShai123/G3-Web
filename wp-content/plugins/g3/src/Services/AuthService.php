@@ -1,15 +1,28 @@
 <?php
+
 namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Option;
 use WP_User_Query;
 use WP_User;
 use WP_Error;
 use Exception;
+use wpdb;
 
+/**
+ * AuthService
+ * 
+ * 认证服务类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class AuthService {
+
+    const string InvitationCodeTable = 'g3_invite_codes';
 
     /**
      * General Auth Option Key
@@ -18,10 +31,8 @@ class AuthService {
      * 
      * @var string
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_auth';
+    const OPTION_KEY = 'g3_option_auth';
 
     /**
      * WeChat Auth Option Key
@@ -30,26 +41,16 @@ class AuthService {
      * 
      * @var string
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const WECHAT_OPTION_KEY = 'g3_option_auth_wechat';
+    const WECHAT_OPTION_KEY = 'g3_option_auth_wechat';
 
-    /**
-     * Wechat OpenId User Meta Key
-     * 
-     * 微信OpenId User Meta键名
-     * 
-     * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public const OPENID_META_KEY = 'g3_wechat_openId';
+    const OPENID_META_KEY = 'g3_wechat_openId';
+    const WX_OPEN_ID_KEY  = 'wx_openId';
+    const WX_UNION_ID_KEY = 'wx_unionId';
 
-    public const SUBSCRIBE_HASH_PREFIX = 'g3_SubscribeLoginHash_';
+    const SUBSCRIBE_HASH_PREFIX = 'g3_SubscribeLoginHash_';
 
-    public const WECHAT_CALLBACK = '/api/v1/auth/wechat/callback';
+    const WECHAT_CALLBACK = '/api/v1/auth/wechat/callback';
 
     /**
      * Wechat OA Application
@@ -58,8 +59,6 @@ class AuthService {
      * 
      * @var Application
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public Application $wechatOA;
 
@@ -68,37 +67,54 @@ class AuthService {
      * 
      * @var WechatOAService
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public $wechatOAService;
+    public WechatOAService $wechatOAService;
 
-    /**
-     * Auth Instance
-     * 
-     * @var AuthService
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static $instance = null;
+    private wpdb $wpdb;
+    private string $fullInviteCodesTable;
 
     public function __construct()
     {
-        $this->initService();
-    }
-
-    public static function run()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    private function initService()
-    {
         $this->wechatOAService = WechatOAService::run();
+        global $wpdb;
+        $this->wpdb                 = $wpdb;
+        $this->fullInviteCodesTable = $wpdb->prefix . self::InvitationCodeTable;
+    }
+
+    /************************************************************
+     * 
+     * Cookie Handle
+     * 
+     ************************************************************/
+
+    /**
+     * Check WordPress login cookie.
+     * 
+     * 检查WordPress登录cookie
+     * 
+     * @return void
+     */
+    public static function checkWordPressCookie(): void
+    {
+        // 确保必要的常量已定义
+        if (!defined('COOKIEHASH')) {
+            wp_cookie_constants();
+        }
+
+        // 检查标准的WordPress登录cookie
+        $cookie_name = 'wordpress_logged_in_' . COOKIEHASH;
+
+        if (isset($_COOKIE[$cookie_name])) {
+            $cookie = $_COOKIE[$cookie_name];
+
+            // 验证cookie
+            $userId = wp_validate_auth_cookie($cookie, 'logged_in');
+
+            if ($userId) {
+                // 设置当前用户
+                wp_set_current_user($userId);
+            }
+        }
     }
 
     /************************************************************
@@ -113,8 +129,6 @@ class AuthService {
      * 微信公众号订阅登录功能是否可用
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function subscribeLoginAvailable(): bool
     {
@@ -131,8 +145,6 @@ class AuthService {
      * @param string $hash
      * @param int $seconds
      * @return array|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getSubscribeLoginQrCode(string $hash, int $seconds): array|WP_Error
     {
@@ -140,13 +152,11 @@ class AuthService {
     }
 
     /**
-     * 
+     * Handle Post Subscribe Login
      * 
      * 标记用户已绑定，供前端轮训
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function handlePostSubscribeLogin(string $openid, string $hash): void
     {
@@ -175,8 +185,6 @@ class AuthService {
      * @param string $redirectUri 回调地址
      * @param string $state 状态参数，用于区分登录或绑定场景
      * @return string 授权 URL
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getOAuthUrl(string $redirectUri, string $state = ''): string
     {
@@ -198,8 +206,6 @@ class AuthService {
      *
      * @param string $code 微信返回的授权码
      * @return string|WP_Error OpenID 或错误对象
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getOpenIdByCode(string $code)
     {
@@ -228,9 +234,7 @@ class AuthService {
      * 根据 OpenID 查找 WordPress 用户
      *
      * @param string $openid 微信 OpenID
-     * @return \WP_User|false 找到的用户对象，否则 false
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return WP_User|false 找到的用户对象，否则 false
      */
     public static function findUserByOpenId(string $openid)
     {
@@ -251,8 +255,6 @@ class AuthService {
      *
      * @param string $openid 微信 OpenID
      * @return int|WP_Error 新用户的 ID 或错误对象
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function createWpUserByOpenId(string $openid): int|WP_Error
     {
@@ -283,8 +285,6 @@ class AuthService {
      * @param int $userId WordPress 用户 ID
      * @param string $openid 微信 OpenID
      * @return bool|WP_Error 成功返回 true，失败返回错误
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function bindOpenIdToUser(int $userId, string $openid)
     {
@@ -308,14 +308,119 @@ class AuthService {
      *
      * @param WP_User $user
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function doWPLogin(WP_User $user): void
     {
         wp_set_current_user($user->ID, $user->user_login);
         wp_set_auth_cookie($user->ID);
         do_action('wp_login', $user->user_login, $user);
+
+        setcookie('g3-user', $user->ID, time() + 86400 * 365, '/');
+    }
+
+    /**
+     * Generate invite code
+     * 
+     * 生成邀请码
+     *
+     * @param bool $source 是否为系统生成源
+     * @return string|false
+     */
+    public function generateInviteCode(bool $source = false): string|false
+    {
+        // Define character set: 0-9, a-G, A-G (Hexadecimal characters, case-sensitive)
+        $characters = '0123456789abcdefgABCDEFG';
+        $length     = 16;
+        // Prevent infinite loop in case of extreme collision or DB issues
+        $maxRetries = 10;
+        $code       = '';
+        $isUnique   = false;
+
+        for ($i = 0; $i < $maxRetries; $i++) {
+            // Generate random code
+            $code      = '';
+            $charCount = strlen($characters);
+            for ($j = 0; $j < $length; $j++) {
+                // Use random_int for cryptographically secure pseudo-random integer
+                $index  = random_int(0, $charCount - 1);
+                $code  .= $characters[$index];
+            }
+
+            // Check for uniqueness
+            $existing = $this->wpdb->get_var($this->wpdb->prepare("SELECT COUNT(*) FROM {$this->fullInviteCodesTable} WHERE code = %s", $code));
+
+            if ($existing == 0) {
+                $isUnique = true;
+                break;
+            }
+        }
+        if (!$isUnique) {
+            // Could not generate a unique code after max retries
+            return false;
+        }
+
+        $expireDays    = (int) (Option::get(self::OPTION_KEY)['expire'] ?? '7');
+        $expireSeconds = $expireDays * 86400;
+
+        $now = gmdate('Y-m-d H:i:s');
+
+        $data   = [
+            'code'       => $code,
+            'source'     => $source ? 1 : 2,
+            'start_time' => $now,
+            'end_time'   => gmdate('Y-m-d H:i:s', time() + $expireSeconds),
+            'status'     => 0,
+            'creator_id' => get_current_user_id(),
+            'created_at' => $now
+        ];
+        $result = $this->wpdb->insert($this->fullInviteCodesTable, $data);
+        if ($result !== false) {
+            return $code;
+        } else {
+            error_log('[G3 AuthService] Failed to insert invitation code into database.');
+            return false;
+        }
+    }
+
+    public function getInviteCode(string $code)
+    {
+
+    }
+
+    /**
+     * Delete an invitation code from the database.
+     *
+     * @param int|string $id The ID of the invitation code or the code itself.
+     * @return int|false The number of rows deleted, or false on failure.
+     */
+    public function deleteInviteCode(int|string $id): int|false
+    {
+        if (is_int($id)) {
+            // Delete by primary key ID
+            return $this->wpdb->delete(
+                $this->fullInviteCodesTable,
+                ['id' => $id],
+                ['%d']
+            );
+        } elseif (is_string($id)) {
+            // Delete by invitation code
+            return $this->wpdb->delete(
+                $this->fullInviteCodesTable,
+                ['code' => $id],
+                ['%s']
+            );
+        }
+
+        return false;
+    }
+
+    public static function renderCodeSource(int $id): string
+    {
+        return match ($id) {
+            1 => __('System Generated', 'G3'),
+            2 => __('User Bought', 'G3'),
+            default => __('Unknown'),
+        };
     }
 
 
@@ -324,6 +429,14 @@ class AuthService {
      * Auth UI
      * 
      ************************************************************/
+
+    /**
+     * Login Element
+     * 
+     * @param string $element Login HTML element
+     * @param bool $modal Whether to use modal for login
+     * @return string Login HTML element
+     */
     public static function loginElement(string $element, bool $modal = false): string
     {
         if (!$modal) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Controllers;
 
 use JEALER\G3\Attributes\RestRouter;
@@ -15,10 +16,13 @@ use WP_REST_Response;
 use WP_Error;
 
 class AdminController {
+
     /**
      * Process queue jobs via REST API
      * 
      * 通过REST API处理队列任务
+     * 
+     * @todo
      * 
      * @param WP_REST_Request $request
      * @return WP_Error|WP_REST_Response
@@ -36,7 +40,15 @@ class AdminController {
         $limit = $data['limit'] ?? 10;
         $queue = $data['queue'] ?? 'default';
 
-        $processed = Queue::processJobs((int) $limit, $queue);
+        return rest_ensure_response([
+            'success'   => true,
+            'processed' => 0,
+            'message'   => '@todo'
+        ]);
+
+        // @todo: Process queue jobs
+        $processed = '@todo';
+        // $processed = Queue::processJobs((int) $limit, $queue);
 
         return rest_ensure_response([
             'success'   => true,
@@ -50,6 +62,8 @@ class AdminController {
      * 
      * @param WP_REST_Request $request
      * @return WP_Error|WP_REST_Response
+     * @since 1.0.0
+     * @author Wang Shai
      */
     #[RestRouter(
         namespace: 'api/v1',
@@ -89,6 +103,8 @@ class AdminController {
      * 
      * @param WP_REST_Request $request
      * @return WP_Error|WP_REST_Response
+     * @since 1.0.0
+     * @author Wang Shai
      */
     #[RestRouter(
         namespace: 'api/v1',
@@ -118,5 +134,4 @@ class AdminController {
             'message' => __('Deleted', 'G3')
         ]);
     }
-
 }

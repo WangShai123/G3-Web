@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3;
 
 use JEALER\G3\Services\SystemService;
@@ -6,13 +7,27 @@ use JEALER\G3\Services\DBService;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Rewrite\Rewrite;
 use Redis;
+use Throwable;
 
+/**
+ * Activator
+ * 
+ * 激活类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class Activator {
-    public static $instance = null;
+
+    public static Activator $instance;
+    private DBService $DBManager;
+
     public function __construct()
     {
+        $this->DBManager = DBService::run();
         $this->init();
     }
+
     public static function activate(): Activator
     {
         if (!isset(self::$instance)) {
@@ -21,6 +36,7 @@ class Activator {
 
         return self::$instance;
     }
+
     private function init(): void
     {
         self::checkDependencies();
@@ -63,7 +79,7 @@ class Activator {
             $redis = new Redis();
             $redis->connect('127.0.0.1', 6379);
         }
-        catch (\Throwable $th) {
+        catch (Throwable $th) {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
             wp_die(
                 __('G3-Web requires Redis server. Please make sure Redis is installed and running.', 'G3'),
@@ -95,8 +111,6 @@ class Activator {
      * - PHP Jealer
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function checkDependencies(): void
     {
@@ -160,7 +174,7 @@ class Activator {
 
     private function initTables(): void
     {
-        DBService::initTables();
+        $this->DBManager->initTables();
     }
 
     private function param(): void

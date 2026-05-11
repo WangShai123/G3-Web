@@ -1,7 +1,7 @@
 <?php
 
 use JEALER\G3\Container\Container;
-use JEALER\G3\Includes\SpecOptionsListTable;
+use JEALER\G3\Components\Product\Includes\SpecOptionsListTable;
 use JEALER\G3\Services\ProductService;
 
 $table = new SpecOptionsListTable();
@@ -85,19 +85,23 @@ $specs = json_encode($specs);
                             toast.success(res.data.message);
                             setTimeout(function () {
                                 location.reload();
-                            }, 1000);
-                            return;
+                            }, 800);
+                        } else {
+                            toast.error(res.data.message);
+                            editModal.hideLoading();
                         }
-                        toast.error(res.data.message);
                     },
                     error: function (res) {
                         toast.error(ts('keyExists'))
                         setTimeout(function () {
                             editModal.hideLoading()
-                        }, 1000);
+                        }, 800);
                         return;
                     },
                 })
+            },
+            onHidden: () => {
+                editModal.reset()
             }
         })
         $(document).on('click', 'button#add-spec-option', (e) => {
@@ -106,27 +110,46 @@ $specs = json_encode($specs);
         })
         $(document).on('click', 'span.edit-spec-option', (e) => {
             const t = $(e.currentTarget)
-            editModal.setFields({
-                name: t.attr('data-name'),
-                key: t.attr('data-key'),
-                spec_id: t.attr('data-spec'),
-                status: t.attr('data-status'),
-                is_global: t.attr('data-global'),
-                scope: t.attr('data-scope'),
-                owner_ids: t.attr('data-ids'),
-            })
+            editModal.setFields([
+                {
+                    label: '<?php _e('Name'); ?>',
+                    type: 'text',
+                    name: 'name',
+                    value: t.data('name'),
+                    required: true,
+                },
+                {
+                    label: 'Key',
+                    type: 'text',
+                    name: 'key',
+                    value: t.data('key'),
+                    required: true,
+                },
+                {
+                    label: '<?php _e('Status', 'G3'); ?>',
+                    type: 'select',
+                    name: 'status',
+                    options: [
+                        { value: '1', text: '<?php _e('Enabled'); ?>' },
+                        { value: '0', text: '<?php _e('Disabled'); ?>' }
+                    ],
+                    value: t.data('status'),
+                    required: true
+                }
+            ])
             editModal.addFields({
-                id: t.attr('data-id'),
+                id: t.data('id'),
+                spec_id: t.data('spec'),
             })
             editModal.show()
         })
-        $(document).on('click', 'span.delete-spec-option', function (e) {
+        $(document).on('click', 'span.delete-spec-option', (e) => {
             const t = $(e.currentTarget)
             if (t.attr('data-count') > 0 || t.attr('disabled')) {
                 toast.lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
                 return
             }
-            if (!confirm('<?php _e('Are you sure you want to delete it?'); ?>')) return
+            if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',

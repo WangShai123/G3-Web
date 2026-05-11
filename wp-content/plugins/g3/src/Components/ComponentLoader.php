@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Container\Container;
@@ -7,26 +8,25 @@ use JEALER\G3\Utilities\System;
 
 /**
  * Component Loader
- * 组件加载器 - 与原系统完全相同的使用体验
+ * 
+ * 组件加载器
+ * 
+ * 简易版G3组件系统
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 class ComponentLoader {
-    /**
-     * @var array 已加载的组件
-     */
+
     private array $loadedComponents = [];
 
-    /**
-     * @var bool 是否已初始化
-     */
     private bool $initialized = false;
-    private ?Container $container = null;
+
+    private ?Container $container;
 
     public function __construct()
     {
-        if ($this->container === null) {
+        if (!isset($this->container)) {
             $this->container = Container::run();
         }
     }
@@ -58,9 +58,7 @@ class ComponentLoader {
         // $configs = $config['configs'];
         // $this->preloadConfigs($configs);
 
-        /**
-         * 按需加载组件
-         */
+        // 按需加载
         $components = $config['components'];
         foreach ($components as $componentName => $enabled) {
             if ($enabled === true || $enabled === '1') {
@@ -78,10 +76,8 @@ class ComponentLoader {
      */
     private function getConfig(): array
     {
-        // 加载插件默认配置
         $config = require G3_PlUGIN_DIR . '/config/components.php';
 
-        // 主题配置覆盖（与原系统完全相同）
         $themeConfig = get_stylesheet_directory() . '/config/components.php';
         if (file_exists($themeConfig)) {
             $themeData = require $themeConfig;
@@ -113,16 +109,13 @@ class ComponentLoader {
                 return;
             }
 
-            // 加载组件文件
             require_once $componentInfo['file_path'];
 
-            // 检查类是否存在
             if (!class_exists($componentInfo['class_name'])) {
                 error_log("[G3 Debug][ComponentLoader] Component class not found: {$componentInfo['class_name']}");
                 return;
             }
 
-            // 创建组件实例
             if (!$this->container->has($componentInfo['class_name'])) {
                 $this->container->setRawDefinition($componentInfo['class_name'], $componentInfo['class_name']::class);
             }
@@ -131,11 +124,10 @@ class ComponentLoader {
             // 存储组件实例
             $this->loadedComponents[$componentName] = $component;
 
-            $source = $componentInfo['is_theme_override'] ? 'theme' : 'plugin';
+            // $source = $componentInfo['is_theme_override'] ? 'theme' : 'plugin';
             // if (defined('WP_DEBUG') && WP_DEBUG) {
             //     error_log("[G3 Debug][ComponentLoader] Component loaded from {$source}: {$componentName}");
             // }
-
         }
         catch (\Exception $e) {
             error_log("[G3 Debug][ComponentLoader] Failed to load component {$componentName}: " . $e->getMessage());
@@ -143,7 +135,7 @@ class ComponentLoader {
     }
 
     /**
-     * 解析组件文件路径（支持主题覆盖）
+     * 解析组件文件路径，用户主题组件，优先级最高，覆盖系统组件
      * 
      * @param string $componentName 组件名称
      * @return array|null
@@ -152,7 +144,6 @@ class ComponentLoader {
     {
         $className = ucfirst($componentName);
 
-        // 1. 检查主题组件文件（优先级最高）
         $themeComponentFile = get_stylesheet_directory() . "/src/Components/{$className}/{$className}.php";
         if (file_exists($themeComponentFile)) {
             return [
@@ -162,7 +153,6 @@ class ComponentLoader {
             ];
         }
 
-        // 2. 检查插件组件文件
         $pluginComponentFile = G3_PlUGIN_DIR . "/src/Components/{$className}/{$className}.php";
         if (file_exists($pluginComponentFile)) {
             return [
@@ -216,6 +206,10 @@ class ComponentLoader {
         }
     }
 
+    /**
+     * @deprecated 1.0.0
+     * 删除 Parameter 相关方案
+     */
     private function preloadConfigs(array $componentConfig): void
     {
         $container = Container::run();

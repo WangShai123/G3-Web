@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Tag Manager Interface
- * 标签管理器接口
  * 
- * 负责管理服务标签，支持按标签查找和分组服务
+ * 标签管理器接口。负责管理服务标签，支持按标签查找和分组服务
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface TagManagerInterface {
+
     /**
      * 为服务添加标签
      * 

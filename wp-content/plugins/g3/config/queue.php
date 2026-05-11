@@ -64,5 +64,4 @@ return [
         // 是否启用动态cron注册（队列有任务时自动注册cron）
         'dynamic_registration'  => true,
     ],
-
 ];

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
 /**
@@ -10,6 +11,7 @@ namespace JEALER\G3\Utilities;
  * @author Wang Shai
  */
 class Context {
+
     /**
      * Shared data storage
      * 
@@ -40,8 +42,6 @@ class Context {
      * @param string $key Data key
      * @param mixed $value Data value
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function set(string $key, mixed $value, bool $listen = false): void
     {
@@ -62,8 +62,6 @@ class Context {
      * @param string $key Data key
      * @param mixed $default Default value if key doesn't exist
      * @return mixed Data value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function get(string $key, mixed $default = null): mixed
     {
@@ -77,8 +75,6 @@ class Context {
      * 
      * @param string $key Data key
      * @return bool Whether the key exists
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function has(string $key): bool
     {
@@ -92,8 +88,6 @@ class Context {
      * 
      * @param string $key Data key
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function remove(string $key): void
     {
@@ -106,8 +100,6 @@ class Context {
      * 清空所有共享数据
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function clear(): void
     {
@@ -123,8 +115,6 @@ class Context {
      * @param mixed $value Cache value
      * @param int $ttl Time to live in seconds (default: 3600 seconds = 1 hour)
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function setCache(string $key, mixed $value, int $ttl = 3600): void
     {
@@ -142,8 +132,6 @@ class Context {
      * @param string $key Cache key
      * @param mixed $default Default value if key doesn't exist or has expired
      * @return mixed Cache value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getCache(string $key, mixed $default = null): mixed
     {
@@ -167,8 +155,6 @@ class Context {
      * 
      * @param string $key Cache key
      * @return bool Whether the cache exists and is valid
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function hasCache(string $key): bool
     {
@@ -192,8 +178,6 @@ class Context {
      * 
      * @param string $key Cache key
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function removeCache(string $key): void
     {
@@ -206,8 +190,6 @@ class Context {
      * 清空所有缓存数据
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function clearCache(): void
     {
@@ -220,8 +202,6 @@ class Context {
      * 获取所有共享数据的键
      * 
      * @return array Array of keys
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getKeys(): array
     {
@@ -234,8 +214,6 @@ class Context {
      * 获取所有缓存数据的键
      * 
      * @return array Array of keys
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getCacheKeys(): array
     {
@@ -253,7 +231,13 @@ class Context {
     }
 
     /**
+     * Add data change listener
+     * 
      * 添加数据变化监听器
+     * 
+     * @param string $key Data key
+     * @param callable $callback Callback function
+     * @return void
      */
     public static function addListener(string $key, callable $callback): void
     {
@@ -264,7 +248,14 @@ class Context {
     }
 
     /**
+     * Trigger data change event
+     * 
      * 触发数据变化事件
+     * 
+     * @param string $key
+     * @param mixed $oldValue
+     * @param mixed $newValue
+     * @return void
      */
     private static function triggerChange(string $key, mixed $oldValue, mixed $newValue): void
     {
@@ -276,7 +267,14 @@ class Context {
     }
 
     /**
+     * Define computed property
+     * 
      * 定义计算属性
+     * 
+     * @param string $key
+     * @param callable $compute
+     * @param array $dependencies
+     * @return void
      */
     public static function computed(string $key, callable $compute, array $dependencies): void
     {
@@ -285,7 +283,7 @@ class Context {
             'dependencies' => $dependencies
         ];
 
-        // 监听依赖变化
+        // Listen for dependency changes
         foreach ($dependencies as $dep) {
             self::addListener($dep, function () use ($key) {
                 self::updateComputed($key);
@@ -293,6 +291,14 @@ class Context {
         }
     }
 
+    /**
+     * Update computed property
+     * 
+     * 更新计算属性
+     * 
+     * @param string $key
+     * @return void
+     */
     private static function updateComputed(string $key): void
     {
         if (isset(self::$computed[$key])) {

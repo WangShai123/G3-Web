@@ -3,6 +3,15 @@ namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
 use WP_User;
+
+/**
+ * User Service
+ * 
+ * 用户服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class UserService {
 
     /**
@@ -11,10 +20,16 @@ class UserService {
      * 元数据键
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const META_KEY = 'g3_user_meta';
+    const META_KEY = 'g3_user_meta';
+
+    const ROLE_OPTION_KEY    = 'g3_option_roles';
+    const GROUP_OPTION_KEY   = 'g3_option_groups';
+    const MANAGER_OPTION_KEY = 'g3_option_managers';
+    const PREMIUM_OPTION_KEY = 'g3_option_premiums';
+
+    const MEMBERSHIP_OPTION_KEY = 'g3_option_memberships';
+    const DURATION_OPTION_KEY   = 'g3_option_durations';
 
     /**
      * Get user meta data
@@ -26,8 +41,6 @@ class UserService {
      * @param string $arrayKey array key if meta value is array
      * @param mixed $default default value if meta not exists
      * @return mixed meta value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMeta(int|object $id, string $metaKey, string $arrayKey = '', mixed $default = null): mixed
     {
@@ -54,8 +67,6 @@ class UserService {
      * 获取默认头像 URL
      *
      * @return string avatar url
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getDefaultAvatarUrl(): string
     {
@@ -70,8 +81,6 @@ class UserService {
      *
      * @param int $userId user id
      * @return string avatar url
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getAvatarUrl($userId = 0): string
     {
@@ -90,13 +99,20 @@ class UserService {
         return $userAvatar;
     }
 
-    public static function renderStatus(int $statusId)
+    /**
+     * Render User Status
+     * 
+     * 渲染用户状态
+     * 
+     * @param int $statusId status id
+     * @return string status text
+     */
+    public static function renderStatus(int $statusId): string
     {
-        match ($statusId) {
+        return match ($statusId) {
             100 => __('Unknown', 'G3'),
             101 => __('Pending'),
-            default => __('Actived')
+            default => __('Active')
         };
     }
-
 }

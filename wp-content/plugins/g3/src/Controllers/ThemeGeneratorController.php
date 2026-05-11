@@ -1,6 +1,8 @@
 <?php
+
 namespace JEALER\G3\Controllers;
 
+use JEALER\G3\Container\Container;
 use JEALER\G3\Service;
 use JEALER\G3\Attributes\RestRouter;
 use JEALER\G3\Attributes\Middleware;
@@ -14,6 +16,21 @@ use WP_Error;
 
 class ThemeGeneratorController {
 
+    private ThemeGeneratorService $service;
+
+    public function __construct()
+    {
+        $this->service = Container::run()->get(ThemeGeneratorService::class);
+    }
+
+    /**
+     * Generate a new theme.
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_Error|WP_REST_Response
+     * @since 1.0.0
+     * @author Wang Shai
+     */
     #[RestRouter(
         namespace: 'api/v1',
         route: 'theme/generate',
@@ -82,8 +99,7 @@ class ThemeGeneratorController {
             );
         }
 
-        $service = Container::run()->get(ThemeGeneratorService::class);
-        $service->create($params);
+        $this->service->create($params);
 
         return rest_ensure_response([
             'code'    => 200,

@@ -2,31 +2,23 @@
 
 namespace JEALER\G3\Queue;
 
+use JEALER\G3\Queue\Queue;
+use JEALER\G3\Queue\RedisQueue;
+use JEALER\G3\Queue\DatabaseQueue;
+use Exception;
+
 /**
  * G3 Queue Cron Processor
- * G3队列定时任务处理器
  * 
- * 这个脚本专门用于WordPress cron系统处理队列任务
- * 包含自动清除和超时过期清除功能
+ * G3队列定时任务处理器。
+ * 
+ * 这个脚本专门用于 WordPress cron 系统处理队列任务，包含自动清除和超时过期清除功能
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
-
-// 防止直接访问
-if (!defined('ABSPATH')) {
-    exit;
-}
-
-use JEALER\G3\Queue\Queue;
-use JEALER\G3\Queue\RedisQueue;
-use JEALER\G3\Queue\DatabaseQueue;
-
-/**
- * G3 Queue Cron Processor Class
- * G3队列定时任务处理器类
- */
 class QueueCronProcessor {
+
     protected Queue $queue;
     protected array $config;
     protected static int $cronRunCount = 0;
@@ -44,6 +36,7 @@ class QueueCronProcessor {
 
     /**
      * Process queue jobs in cron context
+     * 
      * 在cron上下文中处理队列任务
      * 
      * @return array Processing results
@@ -77,9 +70,9 @@ class QueueCronProcessor {
             }
 
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $results['errors'][] = $e->getMessage();
-            error_log("[G3] Queue cron processing error: " . $e->getMessage());
+            error_log("[G3 QueueCronProcessor] Processing error: " . $e->getMessage());
         }
 
         // 记录执行统计
@@ -115,6 +108,7 @@ class QueueCronProcessor {
 
     /**
      * Process regular queue jobs
+     * 
      * 处理常规队列任务
      * 
      * @param int $limit Maximum number of jobs to process
@@ -134,8 +128,8 @@ class QueueCronProcessor {
                 $this->executeJob($job);
                 $processed++;
             }
-            catch (\Exception $e) {
-                error_log("[G3] Cron job execution failed: " . $e->getMessage());
+            catch (Exception $e) {
+                error_log("[G3 QueueCronProcessor] Cron job execution failed: " . $e->getMessage());
                 // 继续处理其他任务
             }
         }
@@ -145,11 +139,12 @@ class QueueCronProcessor {
 
     /**
      * Execute a single job
+     * 
      * 执行单个任务
      * 
      * @param array $job Job data
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     protected function executeJob(array $job): void
     {
@@ -158,7 +153,7 @@ class QueueCronProcessor {
         $attempts = $job['attempts'] ?? 0;
 
         if (!$jobClass || !class_exists($jobClass)) {
-            throw new \Exception("Job class {$jobClass} does not exist");
+            throw new Exception("Job class {$jobClass} does not exist");
         }
 
         $success     = false;
@@ -171,19 +166,19 @@ class QueueCronProcessor {
                 $success = true;
             }
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $maxAttempts = 3; // 最大尝试次数
             if ($attempts < $maxAttempts) {
                 // 重新加入队列（带延迟）
                 $delay = pow(2, $attempts) * 60; // 指数退避，以分钟为单位
                 $this->queue->push($jobClass, $jobData, $delay);
-                error_log("[G3] Cron job failed, retrying in {$delay} seconds: " . $e->getMessage());
+                error_log("[G3 QueueCronProcessor] Cron job failed, retrying in {$delay} seconds: " . $e->getMessage());
             } else {
                 // 超过最大尝试次数，调用失败处理
                 if ($jobInstance && method_exists($jobInstance, 'failed')) {
                     $jobInstance->failed($jobData, $e);
                 }
-                error_log("[G3] Cron job failed permanently: " . $e->getMessage());
+                error_log("[G3 QueueCronProcessor] Cron job failed permanently: " . $e->getMessage());
             }
 
             throw $e;
@@ -197,6 +192,7 @@ class QueueCronProcessor {
 
     /**
      * Delete completed job
+     * 
      * 删除已完成的任务
      * 
      * @param array $job Job data
@@ -216,13 +212,14 @@ class QueueCronProcessor {
             }
             // 对于Redis驱动，任务已经在pop时被移除了
         }
-        catch (\Exception $e) {
-            error_log("[G3] Failed to delete completed job in cron: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 QueueCronProcessor] Failed to delete completed job in cron: " . $e->getMessage());
         }
     }
 
     /**
      * Perform cleanup operations
+     * 
      * 执行清理操作
      * 
      * @return int Number of items cleaned up
@@ -243,19 +240,20 @@ class QueueCronProcessor {
             $cleaned = $this->queue->getDriver()->cleanup($cleanupOptions);
 
             if ($cleaned > 0) {
-                error_log("[G3] Cron cleanup completed: {$cleaned} items cleaned up");
+                error_log("[G3 QueueCronProcessor] Cron cleanup completed: {$cleaned} items cleaned up");
             }
 
             return $cleaned;
         }
-        catch (\Exception $e) {
-            error_log("[G3] Cron cleanup failed: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 QueueCronProcessor] Cron cleanup failed: " . $e->getMessage());
             return 0;
         }
     }
 
     /**
      * Check if should process delayed jobs
+     * 
      * 检查是否应该处理延迟任务
      * 
      * @return bool
@@ -287,6 +285,7 @@ class QueueCronProcessor {
 
     /**
      * Check if auto cleanup is enabled
+     * 
      * 检查是否启用自动清除
      * 
      * @return bool
@@ -304,6 +303,7 @@ class QueueCronProcessor {
 
     /**
      * Log processing results
+     * 
      * 记录处理结果
      * 
      * @param array $results Processing results
@@ -313,7 +313,7 @@ class QueueCronProcessor {
     {
         if ($results['processed_jobs'] > 0 || $results['cleaned_up'] > 0 || !empty($results['errors'])) {
             $message = sprintf(
-                "[G3] Cron run #%d completed - Jobs: %d, Cleaned: %d, Time: %sms, Memory: %sMB",
+                "[G3 QueueCronProcessor] Cron run #%d completed - Jobs: %d, Cleaned: %d, Time: %sms, Memory: %sMB",
                 self::$cronRunCount,
                 $results['processed_jobs'],
                 $results['cleaned_up'],
@@ -331,6 +331,7 @@ class QueueCronProcessor {
 
     /**
      * Get queue statistics
+     * 
      * 获取队列统计信息
      * 
      * @return array
@@ -355,6 +356,11 @@ class QueueCronProcessor {
         return $stats;
     }
 
+    /**
+     * Queue cron processor
+     * 
+     * 队列cron处理器
+     */
     public static function queueProcessor()
     {
         try {
@@ -362,8 +368,8 @@ class QueueCronProcessor {
             $results   = $processor->process();
 
         }
-        catch (\Exception $e) {
-            error_log("[G3] Queue cron hook failed: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 QueueCronProcessor] Queue cron hook failed: " . $e->getMessage());
         }
     }
 }

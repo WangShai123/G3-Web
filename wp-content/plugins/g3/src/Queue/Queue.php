@@ -1,10 +1,12 @@
 <?php
+
 namespace JEALER\G3\Queue;
 
 use JEALER\G3\Queue\QueueInterface;
 use JEALER\G3\Queue\RedisQueue;
 use JEALER\G3\Queue\DatabaseQueue;
 use JEALER\G3\Utilities\System;
+use Exception;
 
 /**
  * Queue Manager
@@ -15,22 +17,16 @@ use JEALER\G3\Utilities\System;
  * @author Wang Shai
  */
 class Queue {
-    protected static ?QueueInterface $driver = null;
+
+    protected static QueueInterface $driver;
     protected static array $config = [];
 
     // 实例模式属性
-    protected ?QueueInterface $instanceDriver = null;
+    protected QueueInterface $instanceDriver;
     protected array $instanceConfig = [];
     // 已处理任务计数器
     protected int $processedJobsCount = 0;
 
-    /**
-     * Constructor for instance mode
-     * 
-     * 实例模式构造函数
-     * 
-     * @param array $config Configuration array
-     */
     public function __construct(array $config = [])
     {
         $this->instanceConfig = empty($config) ? System::config('queue') : $config;
@@ -115,7 +111,7 @@ class Queue {
      */
     public static function driver(): QueueInterface
     {
-        if (!self::$driver) {
+        if (!isset(self::$driver)) {
             self::init();
         }
 
@@ -187,7 +183,7 @@ class Queue {
         $attempts = $job['attempts'] ?? 0;
 
         if (!$jobClass || !class_exists($jobClass)) {
-            error_log("[G3 Debug][Queue] job class {$jobClass} does not exist");
+            error_log("[G3 Queue] Job class {$jobClass} does not exist");
             return;
         }
 
@@ -197,7 +193,7 @@ class Queue {
                 $jobInstance->handle($jobData);
             }
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $maxAttempts = 3; // 最大尝试次数
             if ($attempts < $maxAttempts) {
                 // 重新加入队列（带延迟）
@@ -209,7 +205,7 @@ class Queue {
                 }
             }
 
-            error_log("[G3 Debug][Queue] job failed: " . $e->getMessage());
+            error_log("[G3 Queue] Job failed: " . $e->getMessage());
         }
     }
 
@@ -228,7 +224,7 @@ class Queue {
         $attempts = $job['attempts'] ?? 0;
 
         if (!$jobClass || !class_exists($jobClass)) {
-            error_log("[G3 Debug][Queue] job class {$jobClass} does not exist");
+            error_log("[G3 Queue] Job class {$jobClass} does not exist");
             return;
         }
 
@@ -242,7 +238,7 @@ class Queue {
                 $success = true;
             }
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $maxAttempts = 3; // 最大尝试次数
             if ($attempts < $maxAttempts) {
                 // 重新加入队列（带延迟）
@@ -254,7 +250,7 @@ class Queue {
                 }
             }
 
-            error_log("[G3 Debug][Queue] job failed: " . $e->getMessage());
+            error_log("[G3 Queue] Job failed: " . $e->getMessage());
         }
 
         // 如果启用自动清除，任务成功完成后删除
@@ -311,8 +307,8 @@ class Queue {
                 return;
             }
         }
-        catch (\Exception $e) {
-            error_log("[G3 Debug][Queue] Failed to delete completed job: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 Queue] Failed to delete completed job: " . $e->getMessage());
         }
     }
 
@@ -359,8 +355,8 @@ class Queue {
 
             return $this->instanceDriver->cleanup($cleanupOptions);
         }
-        catch (\Exception $e) {
-            error_log("[G3 Debug][Queue] cleanup failed: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 Queue] Cleanup failed: " . $e->getMessage());
             return 0;
         }
     }
@@ -403,14 +399,14 @@ class Queue {
         $timestamp = wp_next_scheduled('g3_process_queue');
         if ($timestamp) {
             wp_unschedule_event($timestamp, 'g3_process_queue');
-            error_log("[G3 Debug][Queue] cron unscheduled successfully");
+            error_log("[G3 Queue] Cron unscheduled successfully");
         }
 
         // 取消智能cron检查任务
         $checkTimestamp = wp_next_scheduled('g3_check_queue_cron');
         if ($checkTimestamp) {
             wp_unschedule_event($checkTimestamp, 'g3_check_queue_cron');
-            error_log("[G3 Debug][Queue] Smart cron check unscheduled successfully");
+            error_log("[G3 Queue] Smart cron check unscheduled successfully");
         }
 
         // 取消旧的门面模式定时任务（向后兼容）

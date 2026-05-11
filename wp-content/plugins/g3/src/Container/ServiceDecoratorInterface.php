@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Service Decorator Interface
- * 服务装饰器接口
  * 
- * 负责管理服务装饰器，允许在不修改原服务的情况下扩展功能
+ * 服务装饰器接口。负责管理服务装饰器，允许在不修改原服务的情况下扩展功能
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface ServiceDecoratorInterface {
+
     /**
      * 装饰服务
      * 

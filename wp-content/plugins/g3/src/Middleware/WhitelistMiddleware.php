@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Middleware;
 
 use JEALER\G3\Utilities\Message;
@@ -16,6 +17,7 @@ use WP_Error;
  * @author Wang Shai
  */
 class WhitelistMiddleware implements MiddlewareInterface {
+
     /**
      * Allowed IPs
      * 
@@ -25,39 +27,11 @@ class WhitelistMiddleware implements MiddlewareInterface {
      */
     private array $allowedIps;
 
-    /**
-     * Constructor
-     * 
-     * 构造函数
-     * 
-     * @param array $allowedIps Allowed IP addresses
-     */
     public function __construct(array $allowedIps = [])
     {
         $this->allowedIps = $allowedIps ?: $this->getDefaultAllowedIps();
     }
 
-    /**
-     * Get default allowed IPs from config
-     * 
-     * 从配置获取默认允许的IP地址
-     * 
-     * @return array
-     */
-    private function getDefaultAllowedIps(): array
-    {
-        $whitelist = System::config('whitelist');
-        return is_array($whitelist) ? $whitelist : [];
-    }
-
-    /**
-     * Process the middleware
-     * 
-     * 处理中间件
-     * 
-     * @param WP_REST_Request $request
-     * @return bool|WP_Error
-     */
     public function handle(WP_REST_Request $request): bool|WP_Error
     {
         $clientIp = $this->getClientIp();
@@ -72,6 +46,19 @@ class WhitelistMiddleware implements MiddlewareInterface {
         }
 
         return true;
+    }
+
+    /**
+     * Get default allowed IPs from config
+     * 
+     * 从配置获取默认允许的IP地址
+     * 
+     * @return array
+     */
+    private function getDefaultAllowedIps(): array
+    {
+        $whitelist = System::config('whitelist');
+        return is_array($whitelist) ? $whitelist : [];
     }
 
     /**
@@ -195,7 +182,6 @@ class WhitelistMiddleware implements MiddlewareInterface {
             filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) &&
             filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
         ) {
-
             // 对于IPv6的CIDR检查
             return $this->ipv6InRange($ip, $subnet, (int) $mask);
         }
@@ -225,14 +211,14 @@ class WhitelistMiddleware implements MiddlewareInterface {
         $bytesToCheck = intval($mask / 8);
         $bitsToCheck  = $mask % 8;
 
-        // 检查完整的字节
+        // check full bytes
         for ($i = 0; $i < $bytesToCheck; $i++) {
             if ($ipBytes[$i] !== $subnetBytes[$i]) {
                 return false;
             }
         }
 
-        // 检查剩余的位
+        // check remaining bits
         if ($bitsToCheck > 0 && $bytesToCheck < strlen($ipBytes)) {
             $maskByte = chr((0xFF00 >> $bitsToCheck) & 0xFF);
             if (($ipBytes[$bytesToCheck] & $maskByte) !== ($subnetBytes[$bytesToCheck] & $maskByte)) {

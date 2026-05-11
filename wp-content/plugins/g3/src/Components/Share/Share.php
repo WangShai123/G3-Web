@@ -60,7 +60,7 @@ class Share extends Components {
     {
         echo '<div class="wrap"><h1>' . __('Share', 'G3') . '</h1>';
         $args = [
-            'general' => __('General', 'G3'),
+            'general' => __('General'),
             'account' => __('Social Accounts', 'G3'),
         ];
         Element::tab('Share', 'general', $args);

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use JEALER\G3\Attributes\Inject;
@@ -18,13 +19,16 @@ use LogicException;
  * - 默认参数回退
  */
 class FactoryDefinition implements DefinitionInterface {
+
     private bool $singleton = true;
+
     private array $arguments = [];
+
     private ?array $resolvedArguments = null;
 
     public function __construct(private string $class)
     {
-        // error_log("[G3 Debug][Container FactoryDefinition] FactoryDefinition: " . $this->class);
+        // error_log("[G3 FactoryDefinition] FactoryDefinition: " . $this->class);
     }
 
     public function getClass(): string
@@ -90,7 +94,7 @@ class FactoryDefinition implements DefinitionInterface {
 
     private function resolveConstructorParameters(ContainerInterface $container): void
     {
-        $reflector   = new \ReflectionClass($this->class);
+        $reflector   = new ReflectionClass($this->class);
         $constructor = $reflector->getConstructor();
 
         if (!$constructor) {
@@ -128,7 +132,7 @@ class FactoryDefinition implements DefinitionInterface {
                     if ($className = $this->getInjectableClassName($param)) {
                         $args[] = $container->get($className);
                     } else {
-                        throw new LogicException("Cannot auto-inject parameter \${$param->getName()} in {$this->class}: no type hint or not a class.");
+                        throw new LogicException("[G3 FactoryDefinition] Cannot auto-inject parameter \${$param->getName()} in {$this->class}: no type hint or not a class.");
                     }
                 }
                 continue;
@@ -151,7 +155,7 @@ class FactoryDefinition implements DefinitionInterface {
             // 5. 无法解析：抛出异常
             $typeDesc = $param->hasType() ? (string) $param->getType() : 'mixed';
             throw new LogicException(
-                "Cannot resolve required parameter \${$paramName} (type: {$typeDesc}) in {$this->class}. " .
+                "[G3 FactoryDefinition] Cannot resolve required parameter \${$paramName} (type: {$typeDesc}) in {$this->class}. " .
                 "Provide via constructor(), #[Inject('service_id')], or bind the type explicitly."
             );
         }
@@ -197,5 +201,4 @@ class FactoryDefinition implements DefinitionInterface {
 
         return $type->getName();
     }
-
 }

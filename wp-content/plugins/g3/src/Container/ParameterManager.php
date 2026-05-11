@@ -1,16 +1,19 @@
 <?php
+
 namespace JEALER\G3\Container;
+
+use RuntimeException;
 
 /**
  * Parameter Manager
- * 参数管理器实现
  * 
- * 支持参数解析、环境变量、常量等多种参数类型
+ * 参数管理器实现。支持参数解析、环境变量、常量等多种参数类型
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 class ParameterManager implements ParameterManagerInterface {
+
     /**
      * @var array 参数存储
      */
@@ -82,13 +85,13 @@ class ParameterManager implements ParameterManagerInterface {
      * @param string $expression 表达式
      * @param int $depth 递归深度
      * @return mixed 解析结果
-     * @throws \RuntimeException 如果递归深度超限
+     * @throws RuntimeException 如果递归深度超限
      */
     private function doResolve(string $expression, int $depth): mixed
     {
         // 防止无限递归
         if ($depth > $this->maxRecursionDepth) {
-            throw new \RuntimeException("Parameter resolution depth exceeded: {$expression}");
+            throw new RuntimeException("[G3 ParameterManager] Parameter resolution depth exceeded: {$expression}");
         }
 
         // 普通参数：%parameter%
@@ -101,7 +104,7 @@ class ParameterManager implements ParameterManagerInterface {
             }
 
             if (!$this->has($paramName)) {
-                throw new \RuntimeException("Parameter '{$paramName}' not found");
+                throw new RuntimeException("[G3 ParameterManager] Parameter '{$paramName}' not found");
             }
 
             $value = $this->get($paramName);
@@ -125,7 +128,7 @@ class ParameterManager implements ParameterManagerInterface {
             }
 
             if (!isset($_ENV[$envName])) {
-                throw new \RuntimeException("Environment variable '{$envName}' not found");
+                throw new RuntimeException("[G3 ParameterManager] Environment variable '{$envName}' not found");
             }
 
             return $_ENV[$envName];
@@ -136,7 +139,7 @@ class ParameterManager implements ParameterManagerInterface {
             $constName = $matches[1];
 
             if (!defined($constName)) {
-                throw new \RuntimeException("Constant '{$constName}' not defined");
+                throw new RuntimeException("[G3 ParameterManager] Constant '{$constName}' not defined");
             }
 
             return constant($constName);
@@ -148,7 +151,7 @@ class ParameterManager implements ParameterManagerInterface {
             $argsStr  = $matches[2] ?? '';
 
             if (!function_exists($funcName)) {
-                throw new \RuntimeException("Function '{$funcName}' not found");
+                throw new RuntimeException("[G3 ParameterManager] Function '{$funcName}' not found");
             }
 
             $args = $argsStr ? explode(',', $argsStr) : [];
@@ -267,7 +270,7 @@ class ParameterManager implements ParameterManagerInterface {
             if (!isset($visited[$dep])) {
                 $this->detectCircularDependency($dep, $visited, $recursionStack, $errors);
             } elseif (isset($recursionStack[$dep])) {
-                $errors[] = "Circular dependency detected: {$paramName} -> {$dep}";
+                $errors[] = "[G3 ParameterManager] Circular dependency detected: {$paramName} -> {$dep}";
             }
         }
 

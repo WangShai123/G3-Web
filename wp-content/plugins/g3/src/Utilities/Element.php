@@ -1,8 +1,17 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
 use JEALER\G3\Utilities\Frontend;
 
+/**
+ * Element utilities
+ * 
+ * 元素工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Element {
 
     /**
@@ -14,8 +23,6 @@ final class Element {
      * @param string $defaultTabName Default tab name
      * @param array $args Tab list ['key'=>'name']
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function tab(string $componentName, string $defaultTabName, array $args = []): void
     {
@@ -50,39 +57,6 @@ final class Element {
         }
     }
 
-    public static function newTab(string $componentName, string $defaultTabName, array $args = []): void
-    {
-        $current = $_REQUEST['tab'] ?? $defaultTabName;
-        $header  = '<h2 class="nav-tab-wrapper">';
-        foreach ($args as $tab_key => $tab_name) {
-            $header .= \sprintf(
-                '<a href="%s" class="nav-tab %s">%s</a>',
-                add_query_arg(
-                    [
-                        'tab'     => $tab_key,
-                        'sub-tab' => false
-                    ]
-                ),
-                $tab_key == $current ? 'nav-tab-active' : '',
-                $tab_name
-            );
-        }
-        $header .= '</h2>';
-        echo $header;
-        if (isset($_REQUEST['sub-tab'])) {
-            $current = $_REQUEST['sub-tab'];
-        }
-        $template_path = G3_SRC_DIR . "/NewComponents/{$componentName}/views/tab-{$current}.php";
-        if (file_exists($template_path)) {
-            require_once $template_path;
-        } else {
-            echo '<div class="wrap">' . \sprintf(
-                __('Template file does not exist: %s', 'G3'),
-                $template_path
-            ) . '</div>';
-        }
-    }
-
     /**
      * Generate admin setting option field: select
      * 
@@ -96,9 +70,7 @@ final class Element {
      * @param string $class Field class
      * @param array $options Option list ['key'=>'name']
      * @param bool $isArray Whether it is an array
-     * @return string html
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return string HTML
      */
     public static function select(
         string $optionName,
@@ -186,8 +158,6 @@ final class Element {
      * @param string $class Input class
      * @param bool $isArray Whether it is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function input(
         string $optionName,
@@ -234,8 +204,6 @@ final class Element {
      * @param string $class Input class
      * @param bool $isArray Whether it is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function uploadInput(
         string $optionName,
@@ -290,8 +258,6 @@ final class Element {
      * @param bool $isArray Whether it is an array
      * @param string $default Custom default value when customizing the form
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function imageInput(
         string $optionName,
@@ -352,8 +318,6 @@ final class Element {
      * @param array $counter Counter config
      * @param bool $isArray Whether it is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function counterInput(
         string $optionName,
@@ -410,8 +374,6 @@ final class Element {
      * @param int $cols Textarea cols
      * @param bool $isArray Whether it is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function textarea(
         string $optionName,
@@ -461,8 +423,6 @@ final class Element {
      * @param bool $horizontal Whether to display horizontally
      * @param bool $isArray Whether it is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function radio(
         string $optionName,
@@ -530,8 +490,6 @@ final class Element {
      * @param bool $horizontal Whether to display horizontally
      * @param bool $isArray Whether option_name's value is an array
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function checkbox(
         string $optionName,
@@ -600,8 +558,6 @@ final class Element {
      * @param bool $isArray Whether it is an array
      * @param string $size Switch size: sm|md
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function switch(
         string $optionName,
@@ -645,8 +601,6 @@ final class Element {
         return $html;
     }
 
-
-
     /**
      * Register multiple Settings API fields at once
      * 
@@ -664,8 +618,6 @@ final class Element {
      *     'args'     => [],             // (optional) array    Additional arguments
      * ]
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function settingFields(string $page, string $section, array $fieldArgs): void
     {
@@ -711,13 +663,9 @@ final class Element {
      * @param string $message Tip message
      * @param string $type Tip type
      * @return string HTML
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static function tip(string $message, string $type = 'default', string $className = ''): string
+    public static function tip(string $message, string|bool $title = '', string $type = 'default', string $className = ''): string
     {
-        $title = __('Tip', 'G3');
-
         $type = match ($type) {
             'success' => 'success',
             'warning' => 'warning',
@@ -725,11 +673,26 @@ final class Element {
             default => 'default',
         };
 
+        $titleString = '';
+
+        if ($title !== false) {
+            $finalTitle = '';
+            if (is_string($title) && $title !== '') {
+                $finalTitle = $title;
+            } else {
+                $finalTitle = __('Tip', 'G3');
+            }
+
+            if (!empty($finalTitle)) {
+                $titleString = "<div class=\"tip-title\">{$finalTitle}</div>";
+            }
+        }
+
         $result = <<<HTML
-<div class="j-tip is-$type $className">
-    <div class="tip-title">$title</div>
+<div class="j-tip is-{$type} {$className}">
+    {$titleString}
     <div class="tip-content">
-        $message
+        {$message}
     </div>
 </div>
 HTML;

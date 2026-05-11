@@ -1,12 +1,4 @@
 <?php
-/**
- * Email Job
- * 
- * 专门用于处理邮件发送的队列任务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 
 namespace JEALER\G3\Queue\Jobs;
 
@@ -17,21 +9,30 @@ use JEALER\G3\Services\LogService;
 use JEALER\G3\Services\MailerService;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\System;
+use WP_Error;
+use Throwable;
+use Exception;
 
 /**
- * 邮件发送任务类
+ * Email Job
+ * 
+ * 专门用于处理邮件发送的队列任务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
  */
 class EmailJob extends Job {
-    /**
-     * 执行邮件发送任务
-     * 
-     * @param array $data 邮件数据
-     * @return void
-     * @throws \Exception
-     */
+
+    private LogService $log;
+
+    public function __construct()
+    {
+        $this->log = Container::use(LogService::class);
+    }
+
     public function handle(array $data): void
     {
-        error_log('[G3 Jobs] handle ready');
+        error_log('[G3 EmailJob] handle ready');
 
         // 验证必需的邮件数据
         $this->validateEmailData($data);
@@ -43,8 +44,8 @@ class EmailJob extends Job {
         $attachments = $data['attachments'] ?? [];
 
         // 记录开始发送邮件
-        $this->log("Starting to send email to: {$to}");
-        $this->log("Subject: {$subject}");
+        error_log("[G3 EmailJob] Starting to send email to: {$to}");
+        error_log("[G3 EmailJob] Subject: {$subject}");
 
         try {
             // 处理邮件头
@@ -59,17 +60,17 @@ class EmailJob extends Job {
             error_log('[G3 EmailJob] Email sent result: ' . print_r($result, true));
 
             if ($result !== true) {
-                throw new \Exception('Failed to send email');
+                throw new Exception('Failed to send email');
             }
 
-            $this->log("Email sent successfully to: {$to}");
+            error_log("[G3 EmailJob] Email sent successfully to: {$to}");
 
             // 记录发送成功的邮件
             $this->logEmailSent($data);
 
         }
-        catch (\Exception $e) {
-            $this->log("Failed to send email: " . $e->getMessage());
+        catch (Exception $e) {
+            error_log("[G3 EmailJob] Failed to send email: " . $e->getMessage());
             throw $e;
         }
     }
@@ -78,10 +79,10 @@ class EmailJob extends Job {
      * 处理任务失败
      * 
      * @param array $data 邮件数据
-     * @param \Throwable $exception 异常
+     * @param Throwable $exception 异常
      * @return void
      */
-    public function failed(array $data, \Throwable $exception): void
+    public function failed(array $data, Throwable $exception): void
     {
         $to      = $data['to'] ?? 'unknown';
         $subject = $data['subject'] ?? 'unknown';
@@ -107,7 +108,7 @@ class EmailJob extends Job {
      * 
      * @param array $data 邮件数据
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     private function validateEmailData(array $data): void
     {
@@ -115,7 +116,7 @@ class EmailJob extends Job {
 
         foreach ($required as $field) {
             // if (empty($data[$field])) {
-            //     throw new \Exception("Missing required email field: {$field}");
+            //     throw new Exception("Missing required email field: {$field}");
             // }
             if (empty($data[$field])) {
                 // 获取调用栈信息，找出调用者
@@ -134,18 +135,18 @@ class EmailJob extends Job {
                     json_encode($data, JSON_UNESCAPED_UNICODE)
                 );
 
-                throw new \Exception($errorMessage);
+                throw new Exception($errorMessage);
             }
         }
 
         // 验证邮件地址格式
         if (!is_email($data['to'])) {
-            throw new \Exception("Invalid email address: {$data['to']}");
+            throw new Exception("Invalid email address: {$data['to']}");
         }
 
         // 验证邮件主题长度
         if (strlen($data['subject']) > 998) {
-            throw new \Exception("Email subject too long (max 998 characters)");
+            throw new Exception("Email subject too long (max 998 characters)");
         }
     }
 
@@ -199,7 +200,7 @@ class EmailJob extends Job {
             if (is_string($attachment) && file_exists($attachment)) {
                 $processedAttachments[] = $attachment;
             } else {
-                $this->log("Warning: Attachment not found or invalid: " . print_r($attachment, true));
+                error_log("[G3 EmailJob] Warning: Attachment not found or invalid: " . print_r($attachment, true));
             }
         }
 
@@ -207,14 +208,16 @@ class EmailJob extends Job {
     }
 
     /**
-     * 记录邮件发送成功
+     * Log when email is sent to the database.
      * 
-     * @param array $data 邮件数据
-     * @return void
+     * 记录邮件发送成功的日志。
+     * 
+     * @param array $data
+     * @return int|WP_Error
      */
-    private function logEmailSent(array $data): void
+    private function logEmailSent(array $data): int|WP_Error
     {
-        Container::use(LogService::class)->create(
+        return $this->log->create(
             'email',
             'success',
             'info',
@@ -232,15 +235,17 @@ class EmailJob extends Job {
     }
 
     /**
-     * 记录邮件发送失败
+     * Log when email fails to be sent to the database.
      * 
-     * @param array $data 邮件数据
-     * @param \Throwable $exception 异常
-     * @return void
+     * 记录邮件发送失败的日志。
+     * 
+     * @param array $data
+     * @param Throwable $exception
+     * @return int|WP_Error
      */
-    private function logEmailFailed(array $data, \Throwable $exception): void
+    private function logEmailFailed(array $data, Throwable $exception): int|WP_Error
     {
-        Container::use(LogService::class)->create(
+        return $this->log->create(
             'email',
             'failed',
             'error',
@@ -258,21 +263,23 @@ class EmailJob extends Job {
     }
 
     /**
-     * 通知管理员邮件发送失败
+     * Notify admin of email failure.
      * 
-     * @param array $data 邮件数据
-     * @param \Throwable $exception 异常
+     * 通知管理员邮件发送失败。
+     * 
+     * @param array $data
+     * @param Throwable $exception
      * @return void
      */
-    private function notifyAdminOfFailure(array $data, \Throwable $exception): void
+    private function notifyAdminOfFailure(array $data, Throwable $exception): void
     {
-        // 获取管理员邮箱
+        // Get admin email
         $adminEmail = get_option('admin_email');
         if (!$adminEmail) {
             return;
         }
 
-        // 避免无限循环（如果给管理员发送邮件也失败）
+        // Avoid infinite loop (if sending email to admin also fails)
         if (isset($data['is_admin_notification'])) {
             return;
         }
@@ -291,31 +298,22 @@ class EmailJob extends Job {
             current_time('mysql')
         );
 
-        // 直接发送通知，不通过队列
+        // Send notification directly, not through the queue
         MailerService::send($adminEmail, $subject, $messages);
     }
 
     /**
-     * 记录日志
+     * Send email
      * 
-     * @param string $messages 日志消息
-     * @return void
-     */
-    private function log(string $messages): void
-    {
-        error_log("[G3 EmailJob] " . $messages);
-    }
-
-    /**
      * 创建邮件任务的静态方法
      * 
-     * @param string $to 收件人邮箱
-     * @param string $subject 邮件主题
-     * @param string $messages 邮件内容
-     * @param array $headers 邮件头（可选）
-     * @param array $attachments 附件（可选）
-     * @param int $delay 延迟时间（秒，可选）
-     * @return mixed 任务ID
+     * @param string $to
+     * @param string $subject
+     * @param string $messages
+     * @param array $headers Optional
+     * @param array $attachments Optional
+     * @param int $delay second, Optional
+     * @return mixed job ID
      */
     public static function send(
         string $to,
@@ -333,21 +331,22 @@ class EmailJob extends Job {
             'attachments' => $attachments,
         ];
 
-        // 使用 \JEALER\G3\Queue，根据配置动态选择驱动器
         $queue = Queue::driver();
         return $queue->push(self::class, $data, $delay);
     }
 
     /**
+     * batch send
+     * 
      * 批量发送邮件
      * 
-     * @param array $recipients 收件人列表
-     * @param string $subject 邮件主题
-     * @param string $messages 邮件内容
-     * @param array $headers 邮件头（可选）
-     * @param array $attachments 附件（可选）
-     * @param int $delay 延迟时间（秒，可选）
-     * @return array 任务ID数组
+     * @param array $recipients
+     * @param string $subject
+     * @param string $messages
+     * @param array $headers Optional
+     * @param array $attachments Optional
+     * @param int $delay second, Optional
+     * @return array job IDs array
      */
     public static function sendBatch(
         array $recipients,
@@ -369,15 +368,17 @@ class EmailJob extends Job {
     }
 
     /**
+     * Send template email
+     * 
      * 发送模板邮件
      * 
-     * @param string $to 收件人邮箱
-     * @param string $template 模板名称
-     * @param array $variables 模板变量
-     * @param array $headers 邮件头（可选）
-     * @param array $attachments 附件（可选）
-     * @param int $delay 延迟时间（秒，可选）
-     * @return mixed 任务ID
+     * @param string $to
+     * @param string $template
+     * @param array $variables
+     * @param array $headers Optional
+     * @param array $attachments Optional
+     * @param int $delay second, Optional
+     * @return mixed job ID
      */
     public static function sendTemplate(
         string $to,
@@ -387,11 +388,11 @@ class EmailJob extends Job {
         array $attachments = [],
         int $delay = 0
     ) {
-        // 加载邮件模板
+
         $templateData = self::loadEmailTemplate($template, $variables);
 
         if (!$templateData) {
-            throw new \Exception("Email template not found: {$template}");
+            throw new Exception("[G3 EmailJob] Email template not found: {$template}");
         }
 
         return self::send(
@@ -405,35 +406,36 @@ class EmailJob extends Job {
     }
 
     /**
+     * load email template
+     * 
      * 加载邮件模板
      * 
-     * @param string $template 模板名称
-     * @param array $variables 模板变量
-     * @return array|null 模板数据
+     * @param string $template template name
+     * @param array $variables template variables
+     * @return array|null template data
      */
     private static function loadEmailTemplate(string $template, array $variables = []): ?array
     {
-        // 模板文件路径
+        // template file path
         $templatePath = dirname(__DIR__, 2) . "/templates/emails/{$template}.php";
 
         if (!file_exists($templatePath)) {
             return null;
         }
 
-        // 提取变量到当前作用域
+        // extract variables to current scope
         extract($variables);
 
-        // 开始输出缓冲
         ob_start();
         include $templatePath;
         $content = ob_get_clean();
 
-        // 解析模板内容（假设模板文件返回数组）
+        // parse template content (assuming template file returns array)
         if (is_array($content)) {
             return $content;
         }
 
-        // 如果模板只返回HTML内容
+        // if template only returns HTML content, assume subject is missing
         return [
             'subject'  => $variables['subject'] ?? 'No Subject',
             'messages' => $content,
@@ -441,6 +443,8 @@ class EmailJob extends Job {
     }
 
     /**
+     * get caller information from backtrace
+     * 
      * 获取调用者信息
      * 
      * @param array $backtrace 调用栈

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Router;
 
 use ReflectionClass;
@@ -26,6 +27,7 @@ use RecursiveDirectoryIterator;
  * @author Wang Shai
  */
 class Router {
+
     // private ContainerInterface $container;
     private Container $container;
     private string $baseDir;
@@ -66,8 +68,6 @@ class Router {
      * 
      * @param Router $router 额外的路由器实例
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function addRouter(Router $router): void
     {
@@ -80,8 +80,6 @@ class Router {
      * 递归 require 控制器目录，并反射搜集 Attributes 定义
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function discover(): void
     {
@@ -157,8 +155,6 @@ class Router {
      * 注册 REST 路由
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function registerRestRoutes(): void
     {
@@ -223,8 +219,6 @@ class Router {
      * 
      * @param string $dir Directory path 目录路径
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function requirePhpFiles(string $dir): void
     {
@@ -248,8 +242,6 @@ class Router {
      * 确保中间件相关类被加载，包括：中间件接口、注解类以及内置中间件类
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function requireMiddlewareClasses(): void
     {
@@ -287,8 +279,6 @@ class Router {
      * 确保Schema相关类被加载，包括：Schema注解类以及Schema中间件类
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function requireSchemaClasses(): void
     {
@@ -309,8 +299,6 @@ class Router {
      * 获取已发现的 REST 路由定义（用于调试）
      * 
      * @return array
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getRestDefs(): array
     {

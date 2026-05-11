@@ -1,7 +1,19 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Middleware\RateLimitMiddleware;
 use WP_REST_Request;
+
+/**
+ * Request Utilities
+ * 
+ * 请求工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Request {
 
     /**
@@ -11,8 +23,6 @@ final class Request {
      *
      * @param string $router
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function restApi(string $router = ''): string
     {
@@ -26,8 +36,6 @@ final class Request {
      *
      * @param string $action
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ajaxApi(string $action = ''): string
     {
@@ -41,15 +49,13 @@ final class Request {
      *
      * @param WP_REST_Request $request
      * @return int
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function count(WP_REST_Request $request): int
     {
         $ip       = System::ip();
-        $cacheKey = 'rate_limit_' . md5($ip . $request->get_route());
-        $count    = get_transient($cacheKey);
+        $cacheKey = md5($ip . $request->get_route());
+        // $count    = get_transient($cacheKey);
+        $count = wp_cache_get($cacheKey, RateLimitMiddleware::CACHE_GROUP);
         return $count === false ? 0 : $count;
     }
-
 }

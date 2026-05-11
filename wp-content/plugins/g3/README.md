@@ -119,11 +119,14 @@ return [
 ```
 
 组件文件结构：
+
 ```
-src/Components/Auth/
-├── Auth.php           # 主组件类
-├── AuthController.php # REST API 控制器
-└── templates/         # 模板文件
+src/Components/ComponentName/
+├── ComponentName.php           # 主组件类
+├── widgets/                    # 小工具文件
+├── views/                      # 模板文件
+├── includes/                   # 附加功能文件
+└── tests/                      # 测试文件
 ```
 
 ### 3. REST API 路由

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
@@ -14,7 +15,9 @@ use JEALER\G3\Utilities\RobustEncoder;
 use Override;
 
 class Post extends Components {
+
     public array $option = [];
+
     public string $viewsKey;
 
     #[Override]
@@ -26,9 +29,11 @@ class Post extends Components {
             'notice'       => __('All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'),
             'autoNotice'   => '0',
             'copyright'    => '0',
+            'paidReading'  => '0'
         ]);
         $this->viewsKey = PostService::getViewsKey();
     }
+
     #[Override]
     protected function form(): void
     {
@@ -45,11 +50,14 @@ class Post extends Components {
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'post-reading') return;
         $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
+
     #[Override]
     protected function system(): void
     {
-
+        add_filter('nav_menu_css_class', [$this, 'renderMenuItemClasses'], 10, 3);
+        add_filter('wp_nav_menu_objects', [$this, 'customFilterMenuItems'], 10, 2);
     }
+
     #[Override]
     protected function init(): void
     {
@@ -57,7 +65,9 @@ class Post extends Components {
         $this->removeAutoP();
         add_filter('the_content', [$this, 'mountCopyright']);
         $this->registerCover();
+        $this->menus();
     }
+
     #[Override]
     protected function admin(): void
     {
@@ -73,7 +83,11 @@ class Post extends Components {
                 exit;
             }
         }
+
+        add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
+        add_action('wp_update_nav_menu_item', [$this, 'saveMenuItemFields'], 10, 3);
     }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -96,6 +110,7 @@ class Post extends Components {
         Element::tab('Post', 'general', $args);
         echo '</div>';
     }
+
     #[Override]
     protected function settings(): void
     {
@@ -199,6 +214,22 @@ class Post extends Components {
                 'args'     => [
                     'class' => 'advanced'
                 ]
+            ],
+            [
+                'id'       => 'paidReading',
+                'title'    => __('Paid Reading', 'G3'),
+                'callback' => function () {
+                    echo Element::switch(
+                        PostService::OPTION_KEY,
+                        $this->option,
+                        'paidReading',
+                        __('Paid Reading', 'G3'),
+                        __('Launching a knowledge-based paid service.', 'G3')
+                    );
+                },
+                'args'     => [
+                    'class' => 'advanced'
+                ]
             ]
         ]);
     }
@@ -215,6 +246,7 @@ class Post extends Components {
          */
         remove_filter('term_description', 'wpautop');
     }
+
     public function mountCopyright($content)
     {
         if (isset($this->option['autoNotice']) && $this->option['autoNotice'] === '1') {
@@ -236,6 +268,7 @@ class Post extends Components {
         }
         add_action('wp_head', [$this, '_initPostViews']);
     }
+
     private function postViewsControl(): void
     {
         if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
@@ -249,6 +282,7 @@ class Post extends Components {
         add_filter('manage_edit-page_sortable_columns', [$this, 'addViewsSortableColumn']);
         add_action('pre_get_posts', [$this, 'viewsSorting']);
     }
+
     private function _setPostViews($postId): void
     {
         if ($this->loader->admin()) {
@@ -279,10 +313,12 @@ class Post extends Components {
             }
         }
     }
+
     public function _initPostViews()
     {
         return $this->_setPostViews(get_the_ID());
     }
+
     public function postboxRender($post): void
     {
         $postId = $post->ID ?? 0;
@@ -307,14 +343,17 @@ class Post extends Components {
          */
         do_action('g3_action_post_views', $post);
     }
+
     public function savePost($postId): void
     {
         $this->saveCustomData($postId);
     }
+
     public function savePostPro($postId): void
     {
         $this->copyrightProtected($postId);
     }
+
     private function copyrightProtected($postId): void
     {
         if (!isset($this->option['copyright']) || $this->option['copyright'] !== '1') {
@@ -421,6 +460,7 @@ class Post extends Components {
             error_log('' . $e->getMessage());
         }
     }
+
     private function saveCustomData($postId): void
     {
         if ((!isset($_POST['viewsCount'])) || (!isset($_POST['likeCount'])) || (!isset($_POST['dislikeCount'])) || (!isset($_POST['favoritesCount']))) {
@@ -435,6 +475,7 @@ class Post extends Components {
         update_post_meta($postId, PostService::DISLIKE_KEY, $dislikeCount);
         update_post_meta($postId, PostService::FAVORITE_KEY, $favoritesCount);
     }
+
     public function addViewsColumn(array $columns): array
     {
         $newColumns = [];
@@ -446,17 +487,20 @@ class Post extends Components {
         }
         return $newColumns;
     }
+
     public function showViewsColumn($column_name, $id): void
     {
         if ($column_name === 'views') {
             echo get_post_meta($id, $this->viewsKey, true) ?: 0;
         }
     }
+
     public function addViewsSortableColumn(array $columns): array
     {
         $columns['views'] = __('Views', 'G3');
         return $columns;
     }
+
     public function viewsSorting($query): void
     {
         if (!is_admin() || !$query->is_main_query()) {
@@ -501,6 +545,7 @@ HTML;
 </div>
 HTML;
     }
+
     public function addCoverFieldInEditForm($tag)
     {
         wp_enqueue_media();
@@ -526,6 +571,7 @@ HTML;
         </tr>
         <?php
     }
+
     public function updateCoverField($term_id)
     {
         if (isset($_POST['cover'])) {
@@ -584,6 +630,7 @@ HTML;
             'after_title'   => '</h3>',
         ]);
     }
+
     protected function widgets(): void
     {
         // remove WP widget: recent posts
@@ -623,6 +670,7 @@ HTML;
             );
         }
     }
+
     public function enhanceAdminPostSearch($where, $query)
     {
         if (!is_admin() || !$query->is_main_query()) {
@@ -648,5 +696,134 @@ HTML;
             return " AND ( ({$core_condition}) OR {$wpdb->posts}.ID = {$postId} )";
         }
         return $where;
+    }
+
+    private function menus(): void
+    {
+        register_nav_menus([
+            'desktop-header'           => __('Desktop Header Menu', 'G3'),
+            'desktop-header-secondary' => __('Desktop Header Secondary Menu', 'G3'),
+            'desktop-footer'           => __('Desktop Footer Menu', 'G3'),
+            'desktop-footer-secondary' => __('Desktop Footer Secondary Menu', 'G3'),
+            'mobile-menu'              => __('Mobile Menu', 'G3'),
+            'shop-menu'                => __('Shop Menu', 'G3'),
+        ]);
+    }
+
+    /**
+     * Init Menu Item Fields
+     * 
+     * 初始化菜单项目字段
+     * 
+     * Custom Filter: g3_filter_menu_type
+     * 
+     * Custom Filter: g3_filter_menu_display_type
+     * 
+     * @param int $item_id
+     * @param $item
+     * @param int $depth
+     * @param $args
+     * @return void
+     */
+    public function initMenuItemFields($item_id, $item, $depth, $args): void
+    {
+        // one level menu, two level menu extension
+        if ($depth === 0 || $depth === 1) {
+            // extension: menu type
+            $type = get_post_meta($item_id, '_menu_item_menu_type', true);
+            $type = !empty($type) ? $type : '';
+            $type = sanitize_html_class($type);
+
+            $type_options = [
+                ''               => __('General Menu', 'G3'),
+                'list-card-menu' => __('List Card Menu', 'G3'),
+                'card-menu'      => __('Card Menu', 'G3'),
+            ];
+
+            /**
+             * Custom Filter: g3_filter_menu_type
+             */
+            $type_options = apply_filters('g3_filter_menu_type', $type_options);
+            ?>
+            <p class="field-type description description-wide">
+                <label for="edit-menu-item-menu-type-<?php echo $item_id; ?>">
+                    <?php _e('Menu Type', 'G3'); ?><br>
+                    <select id="edit-menu-item-menu-type-<?php echo $item_id; ?>" class="widefat code edit-menu-item-menu-type"
+                        name="menu-item-menu-type[<?php echo $item_id; ?>]">
+                        <?php foreach ($type_options as $value => $label) : ?>
+                            <option value="<?php echo esc_attr($value); ?>" <?php selected($type, $value); ?>>
+                                <?php echo esc_html($label); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            </p>
+            <?php
+        }
+        // extension: display type
+        $display_type         = get_post_meta($item_id, '_menu_item_display_type', true);
+        $display_type         = !empty($display_type) ? $display_type : '';
+        $display_type         = sanitize_html_class($display_type);
+        $display_type_options = [
+            ''              => __('General'),
+            'logged-in'     => __('Visible only when logged in', 'G3'),
+            'not-logged-in' => __('Visible only when not logged in', 'G3'),
+        ];
+
+        /**
+         * Custom Filter: g3_filter_menu_display_type
+         */
+        $display_type_options = apply_filters('g3_filter_menu_display_type', $display_type_options);
+        ?>
+        <p class="field-display-type description description-wide">
+            <label for="edit-menu-item-display-type-<?php echo $item_id; ?>">
+                <?php _e('Display Type', 'G3'); ?><br>
+                <select id="edit-menu-item-display-type-<?php echo $item_id; ?>"
+                    class="widefat code edit-menu-item-display-type" name="menu-item-display-type[<?php echo $item_id; ?>]">
+                    <?php foreach ($display_type_options as $value => $label) : ?>
+                        <option value="<?php echo esc_attr($value); ?>" <?php selected($display_type, $value); ?>>
+                            <?php echo esc_html($label); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+        </p>
+        <?php
+    }
+
+    public function saveMenuItemFields($menu_id, $menu_item_db_id, $args): void
+    {
+        if (isset($_REQUEST['menu-item-menu-type'][$menu_item_db_id])) {
+            $type = sanitize_text_field($_REQUEST['menu-item-menu-type'][$menu_item_db_id]);
+            update_post_meta($menu_item_db_id, '_menu_item_menu_type', $type);
+        }
+
+        if (isset($_REQUEST['menu-item-display-type'][$menu_item_db_id])) {
+            $display_type = sanitize_text_field($_REQUEST['menu-item-display-type'][$menu_item_db_id]);
+            update_post_meta($menu_item_db_id, '_menu_item_display_type', $display_type);
+        }
+    }
+
+    public function renderMenuItemClasses(array $classes, $item, $args): array
+    {
+        if ($item->menu_item_parent == 0) {
+            $type = get_post_meta($item->ID, '_menu_item_menu_type', true);
+            if (!empty($type)) {
+                $classes[] = sanitize_html_class($type);
+            }
+        }
+        return $classes;
+    }
+
+    public function customFilterMenuItems(array $items, $args): array
+    {
+        $status = is_user_logged_in();
+        foreach ($items as $key => $item) {
+            $display_type = get_post_meta($item->ID, '_menu_item_display_type', true);
+            if (($display_type === 'logged-in' && !$status) || ($display_type === 'not-logged-in' && $status)) {
+                unset($items[$key]);
+            }
+        }
+        return $items;
     }
 }

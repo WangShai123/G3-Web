@@ -1,9 +1,12 @@
 <?php
+
 namespace JEALER\G3\Queue;
 
 use JEALER\G3\Queue\QueueInterface;
 use DateTime;
 use DateTimeZone;
+use wpdb;
+use Exception;
 
 /**
  * Database Queue Implementation
@@ -14,22 +17,17 @@ use DateTimeZone;
  * @author Wang Shai
  */
 class DatabaseQueue implements QueueInterface {
+
+    private wpdb $wpdb;
     protected string $table;
 
-    /**
-     * Constructor
-     * 
-     * 构造函数
-     * 
-     * @param array $config Configuration
-     */
     public function __construct(array $config = [])
     {
         global $wpdb;
-        $this->table = $wpdb->prefix . ($config['table'] ?? 'g3_jobs');
+        $this->wpdb  = $wpdb;
+        $this->table = $this->wpdb->prefix . ($config['table'] ?? 'g3_queue_jobs');
 
-        // 创建队列表（如果不存在）
-        $this->createTable();
+        $this->checkTable();
     }
 
     /**
@@ -39,29 +37,28 @@ class DatabaseQueue implements QueueInterface {
      * 
      * @return void
      */
-    protected function createTable(): void
+    protected function checkTable(): void
     {
-        global $wpdb;
+        $charset = $this->wpdb->get_charset_collate();
 
-        $charsetCollate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            queue varchar(255) NOT NULL DEFAULT 'default',
-            payload longtext NOT NULL,
-            attempts tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
-            reserved_at datetime NULL DEFAULT NULL,
-            available_at datetime NOT NULL,
-            created_at datetime NOT NULL,
-            updated_at datetime NULL DEFAULT NULL,
-            PRIMARY KEY (id),
-            INDEX idx_queue_available (queue, available_at),
-            INDEX idx_reserved_at (reserved_at),
-            INDEX idx_created_at (created_at)
-        ) {$charsetCollate};";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+        if ($this->wpdb->get_var("SHOW TABLES LIKE '$this->table'") !== $this->table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$this->table` (
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `queue` VARCHAR(255) NOT NULL DEFAULT 'default',
+                `payload` LONGTEXT NOT NULL,
+                `attempts` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+                `reserved_at` DATETIME NULL DEFAULT NULL,
+                `available_at` DATETIME NOT NULL,
+                `created_at` DATETIME NOT NULL,
+                `updated_at` DATETIME NULL DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY idx_queue_available (`queue`, `available_at`),
+                KEY idx_reserved_at (`reserved_at`),
+                KEY idx_created_at (`created_at`)
+            ) ENGINE=InnoDB $charset COMMENT='queue jobs';";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
     }
 
     /**
@@ -123,8 +120,8 @@ class DatabaseQueue implements QueueInterface {
         try {
             return new DateTime($dbDateTime, new DateTimeZone('UTC'));
         }
-        catch (\Exception $e) {
-            error_log("[G3] Failed to parse database datetime: {$dbDateTime}");
+        catch (Exception $e) {
+            error_log("[G3 DatabaseQueue] Failed to parse database datetime: {$dbDateTime}");
             return null;
         }
     }
@@ -134,8 +131,6 @@ class DatabaseQueue implements QueueInterface {
      */
     public function push(string $job, array $data = [], int $delay = 0, string $queue = 'default')
     {
-        global $wpdb;
-
         $now         = $this->getCurrentUtcDateTime();
         $availableAt = $this->createDelayedDateTime($delay);
 
@@ -146,7 +141,7 @@ class DatabaseQueue implements QueueInterface {
             'created_at' => $now->getTimestamp(),
         ]);
 
-        $result = $wpdb->insert(
+        $result = $this->wpdb->insert(
             $this->table,
             [
                 'queue'        => $queue,
@@ -160,7 +155,7 @@ class DatabaseQueue implements QueueInterface {
             ['%s', '%s', '%d', '%s', '%s', '%s', '%s']
         );
 
-        return $result ? $wpdb->insert_id : false;
+        return $result ? $this->wpdb->insert_id : false;
     }
 
     /**
@@ -168,14 +163,12 @@ class DatabaseQueue implements QueueInterface {
      */
     public function pop(string $queue = 'default')
     {
-        global $wpdb;
-
         $now          = $this->getCurrentUtcDateTime();
         $nowFormatted = $this->formatDateTimeForDb($now);
 
         // 查找可用的任务
-        $job = $wpdb->get_row(
-            $wpdb->prepare(
+        $job = $this->wpdb->get_row(
+            $this->wpdb->prepare(
                 "SELECT * FROM {$this->table} 
                 WHERE queue = %s 
                 AND available_at <= %s 
@@ -190,7 +183,7 @@ class DatabaseQueue implements QueueInterface {
 
         if ($job) {
             // 标记任务为已保留
-            $updated = $wpdb->update(
+            $updated = $this->wpdb->update(
                 $this->table,
                 [
                     'reserved_at' => $nowFormatted,
@@ -230,12 +223,10 @@ class DatabaseQueue implements QueueInterface {
      */
     public function size(string $queue = 'default'): int
     {
-        global $wpdb;
-
         $now = $this->formatDateTimeForDb($this->getCurrentUtcDateTime());
 
-        return (int) $wpdb->get_var(
-            $wpdb->prepare(
+        return (int) $this->wpdb->get_var(
+            $this->wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->table} 
                 WHERE queue = %s 
                 AND available_at <= %s 
@@ -256,10 +247,8 @@ class DatabaseQueue implements QueueInterface {
      */
     public function totalSize(string $queue = 'default'): int
     {
-        global $wpdb;
-
-        return (int) $wpdb->get_var(
-            $wpdb->prepare(
+        return (int) $this->wpdb->get_var(
+            $this->wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->table} WHERE queue = %s",
                 $queue
             )
@@ -276,10 +265,8 @@ class DatabaseQueue implements QueueInterface {
      */
     public function reservedSize(string $queue = 'default'): int
     {
-        global $wpdb;
-
-        return (int) $wpdb->get_var(
-            $wpdb->prepare(
+        return (int) $this->wpdb->get_var(
+            $this->wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->table} 
                 WHERE queue = %s AND reserved_at IS NOT NULL",
                 $queue
@@ -297,12 +284,10 @@ class DatabaseQueue implements QueueInterface {
      */
     public function delayedSize(string $queue = 'default'): int
     {
-        global $wpdb;
-
         $now = $this->formatDateTimeForDb($this->getCurrentUtcDateTime());
 
-        return (int) $wpdb->get_var(
-            $wpdb->prepare(
+        return (int) $this->wpdb->get_var(
+            $this->wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->table} 
                 WHERE queue = %s 
                 AND available_at > %s 
@@ -324,12 +309,10 @@ class DatabaseQueue implements QueueInterface {
      */
     public function release(int $jobId, int $delay = 0): bool
     {
-        global $wpdb;
-
         $now         = $this->getCurrentUtcDateTime();
         $availableAt = $this->createDelayedDateTime($delay);
 
-        $result = $wpdb->update(
+        $result = $this->wpdb->update(
             $this->table,
             [
                 'reserved_at'  => null,
@@ -354,9 +337,7 @@ class DatabaseQueue implements QueueInterface {
      */
     public function delete($jobId): bool
     {
-        global $wpdb;
-
-        $result = $wpdb->delete(
+        $result = $this->wpdb->delete(
             $this->table,
             ['id' => $jobId],
             ['%d']
@@ -399,12 +380,10 @@ class DatabaseQueue implements QueueInterface {
      */
     public function incrementAttempts(int $jobId): bool
     {
-        global $wpdb;
-
         $now = $this->formatDateTimeForDb($this->getCurrentUtcDateTime());
 
-        $result = $wpdb->query(
-            $wpdb->prepare(
+        $result = $this->wpdb->query(
+            $this->wpdb->prepare(
                 "UPDATE {$this->table} 
                 SET attempts = attempts + 1, updated_at = %s 
                 WHERE id = %d",
@@ -426,16 +405,14 @@ class DatabaseQueue implements QueueInterface {
      */
     public function cleanupReservedJobs(int $timeoutMinutes = 60): int
     {
-        global $wpdb;
-
         $timeoutDateTime = $this->getCurrentUtcDateTime();
         $timeoutDateTime->modify("-{$timeoutMinutes} minutes");
         $timeoutFormatted = $this->formatDateTimeForDb($timeoutDateTime);
 
         $now = $this->formatDateTimeForDb($this->getCurrentUtcDateTime());
 
-        $result = $wpdb->query(
-            $wpdb->prepare(
+        $result = $this->wpdb->query(
+            $this->wpdb->prepare(
                 "UPDATE {$this->table} 
                 SET reserved_at = NULL, updated_at = %s 
                 WHERE reserved_at IS NOT NULL 
@@ -458,14 +435,12 @@ class DatabaseQueue implements QueueInterface {
      */
     public function cleanupOldJobs(int $daysOld = 7): int
     {
-        global $wpdb;
-
         $cutoffDateTime = $this->getCurrentUtcDateTime();
         $cutoffDateTime->modify("-{$daysOld} days");
         $cutoffFormatted = $this->formatDateTimeForDb($cutoffDateTime);
 
-        $result = $wpdb->query(
-            $wpdb->prepare(
+        $result = $this->wpdb->query(
+            $this->wpdb->prepare(
                 "DELETE FROM {$this->table} 
                 WHERE created_at < %s 
                 AND reserved_at IS NULL",
@@ -486,12 +461,10 @@ class DatabaseQueue implements QueueInterface {
      */
     public function getQueueStats(string $queue = 'default'): array
     {
-        global $wpdb;
-
         $now = $this->formatDateTimeForDb($this->getCurrentUtcDateTime());
 
-        $stats = $wpdb->get_row(
-            $wpdb->prepare(
+        $stats = $this->wpdb->get_row(
+            $this->wpdb->prepare(
                 "SELECT 
                     COUNT(*) as total,
                     SUM(CASE WHEN reserved_at IS NULL AND available_at <= %s THEN 1 ELSE 0 END) as available,
@@ -529,9 +502,7 @@ class DatabaseQueue implements QueueInterface {
      */
     public function getAllQueueNames(): array
     {
-        global $wpdb;
-
-        $results = $wpdb->get_col(
+        $results = $this->wpdb->get_col(
             "SELECT DISTINCT queue FROM {$this->table} ORDER BY queue"
         );
 

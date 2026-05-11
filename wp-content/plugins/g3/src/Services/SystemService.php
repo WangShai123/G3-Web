@@ -1,10 +1,20 @@
 <?php
+
 namespace JEALER\G3\Services;
 
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Components\Components;
+use Throwable;
 
+/**
+ * System Service
+ * 
+ * 系统服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class SystemService {
 
     /**
@@ -13,10 +23,8 @@ class SystemService {
      * 配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_general';
+    const OPTION_KEY = 'g3_option_general';
 
     /**
      * ICP Link
@@ -24,10 +32,8 @@ class SystemService {
      * ICP 备案链接
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const ICP_LINK = 'https://beian.miit.gov.cn/';
+    const ICP_LINK = 'https://beian.miit.gov.cn/';
 
     /**
      * SEO Key
@@ -35,10 +41,8 @@ class SystemService {
      * SEO 配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const SEO_OPTION_KEY = 'g3_option_seo';
+    const SEO_OPTION_KEY = 'g3_option_seo';
 
     /**
      * RSS Key
@@ -46,10 +50,8 @@ class SystemService {
      * RSS 配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const RSS_OPTION_KEY = 'g3_option_rss';
+    const RSS_OPTION_KEY = 'g3_option_rss';
 
     /**
      * Form Key
@@ -57,10 +59,8 @@ class SystemService {
      * Form 配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const FORM_OPTION_KEY = 'g3_option_dev_form';
+    const FORM_OPTION_KEY = 'g3_option_dev_form';
 
     /**
      * Setting Key
@@ -68,14 +68,11 @@ class SystemService {
      * Setting 配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const SETTING_OPTION_KEY = 'g3_option_dev_setting';
+    const SETTING_OPTION_KEY = 'g3_option_dev_setting';
 
-    public const K = 'wPxK91qZ';
-
-    public const TARGET = 'g3Verify';
+    const K      = 'wPxK91qZ';
+    const TARGET = 'g3Verify';
 
     /**
      * Security Key
@@ -83,12 +80,17 @@ class SystemService {
      * 安全配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const SECURITY_OPTION_KEY = 'g3_option_securities';
+    const SECURITY_OPTION_KEY = 'g3_option_securities';
 
-    public const QUEUE_OPTION_KEY = 'g3_option_queue';
+    /**
+     * Queue Key
+     * 
+     * 队列配置项键名
+     * 
+     * @var string
+     */
+    const QUEUE_OPTION_KEY = 'g3_option_queue';
 
     /**
      * Theme Key
@@ -96,10 +98,8 @@ class SystemService {
      * 主题配置项键名
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const THEME_OPTION_KEY = 'g3_option_themes';
+    const THEME_OPTION_KEY = 'g3_option_themes';
 
     /**
      * Open Platform Wechat Official Account Key
@@ -107,21 +107,19 @@ class SystemService {
      * 开放平台微信公众号Key
      * 
      * @var string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
+    const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
 
     /**
+     * Get system service option
+     * 
      * 获取系统配置项
      * 
      * @return array
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function option(): array
     {
-        return get_option(SystemService::OPTION_KEY) ?? [];
+        return Context::get(self::OPTION_KEY, []);
     }
 
     /**
@@ -130,8 +128,6 @@ class SystemService {
      * 获取 ICP 备案号
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function icp(): string
     {
@@ -144,8 +140,6 @@ class SystemService {
      * 获取 ICP HTML
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function icpHtml(): string
     {
@@ -190,8 +184,6 @@ class SystemService {
      * 初始化对象缓存。创建 object-cache.php 文件，用于对象缓存
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function initObjectCache(): void
     {
@@ -207,8 +199,6 @@ class SystemService {
      * 初始化 CLI 命令。创建 g3.php 文件，用于 CLI 命令执行
      * 
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function initCli(): void
     {
@@ -216,7 +206,7 @@ class SystemService {
             try {
                 copy(WP_PLUGIN_DIR . '/g3/extensions/g3.php', ABSPATH . '/g3.php');
             }
-            catch (\Throwable $th) {
+            catch (Throwable $th) {
                 throw $th;
             }
         }
@@ -228,13 +218,10 @@ class SystemService {
      * 检查链接功能是否可用
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function hasLinkService(): bool
     {
-        // $data = get_option(self::OPTION_KEY, []);
-        $data = Context::get(self::OPTION_KEY, []);
+        $data = self::option();
 
         if (!isset($data['links'])) {
             return false;

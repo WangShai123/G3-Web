@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 use JEALER\G3\Container\DefinitionInterface;
@@ -21,12 +22,13 @@ use Exception;
 use InvalidArgumentException;
 
 /**
- * Simple Container
  * Service Container for managing instances that conforms to PSR-11 standard.
+ * 
  * @author Wang Shai
  * @since 1.0.0
  */
 class Container implements PsrContainerInterface {
+
     /**
      * @var array<string, object> instances cache
      */
@@ -37,7 +39,7 @@ class Container implements PsrContainerInterface {
     /**
      * @var ?self singleton facade
      */
-    private static ?self $singleton = null;
+    private static ?self $singleton;
 
     /**
      * @var array<string, DefinitionInterface> 全局服务定义注册表
@@ -81,9 +83,9 @@ class Container implements PsrContainerInterface {
     }
 
     // —————— Static Facade ———————
-    public static function run(): Container|null
+    public static function run(): Container
     {
-        if (self::$singleton === null) {
+        if (!isset(self::$singleton)) {
             self::$singleton = new self();
         }
         return self::$singleton;
@@ -98,7 +100,7 @@ class Container implements PsrContainerInterface {
     {
         // Only valid class names are allowed, to prevent arbitrary string injection
         if (!class_exists($className)) {
-            throw new InvalidArgumentException("Class '$className' does not exist.");
+            throw new InvalidArgumentException("[G3 Container] Class '$className' does not exist.");
         }
 
         $container = self::run();
@@ -188,7 +190,7 @@ class Container implements PsrContainerInterface {
         throw new class ($id) extends Exception implements NotFoundExceptionInterface {
             public function __construct(string $id)
             {
-                parent::__construct("Service or class [$id] not found.");
+                parent::__construct("[G3 Container] Service or class [$id] not found.");
             }
         };
     }
@@ -265,7 +267,7 @@ class Container implements PsrContainerInterface {
         if (isset($this->resolving[$id])) {
             $chain   = array_keys($this->resolving);
             $chain[] = $id;
-            throw new class ('Circular dependency detected: ' . implode(' -> ', $chain)) extends Exception implements ContainerExceptionInterface {
+            throw new class ('[G3 Container] Circular dependency detected: ' . implode(' -> ', $chain)) extends Exception implements ContainerExceptionInterface {
             };
         }
 
@@ -322,7 +324,7 @@ class Container implements PsrContainerInterface {
         }
 
         // 7. 不支持的定义类型
-        throw new class ("Invalid definition type for service [$id]: " . gettype($definition)) extends Exception implements ContainerExceptionInterface {
+        throw new class ("[G3 Container] Invalid definition type for service [$id]: " . gettype($definition)) extends Exception implements ContainerExceptionInterface {
         };
     }
 
@@ -346,7 +348,7 @@ class Container implements PsrContainerInterface {
         $className = $this->resolveClassName($definition);
 
         if (!class_exists($className)) {
-            throw new class ("Class [$className] not found for service [$id]") extends Exception implements NotFoundExceptionInterface {
+            throw new class ("[G3 Container] Class [$className] not found for service [$id]") extends Exception implements NotFoundExceptionInterface {
             };
         }
 
@@ -367,14 +369,14 @@ class Container implements PsrContainerInterface {
     {
         // 必须包含 class 键
         if (!isset($definition['class'])) {
-            throw new class ("Array definition for service [$id] must contain 'class' key") extends Exception implements ContainerExceptionInterface {
+            throw new class ("[G3 Container] Array definition for service [$id] must contain 'class' key") extends Exception implements ContainerExceptionInterface {
             };
         }
 
         $className = $definition['class'];
 
         if (!class_exists($className)) {
-            throw new class ("Class [$className] not found for service [$id]") extends Exception implements NotFoundExceptionInterface {
+            throw new class ("[G3 Container] Class [$className] not found for service [$id]") extends Exception implements NotFoundExceptionInterface {
             };
         }
 
@@ -494,7 +496,7 @@ class Container implements PsrContainerInterface {
     public function logServices(string $prefix = 'Container Services'): void
     {
         $ids = $this->getRegisteredServiceIds();
-        error_log("[G3 Debug][Container] $prefix: " . json_encode($ids, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        error_log("[G3 Container] $prefix: " . json_encode($ids, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     // —————— 管理器访问方法 ——————
@@ -506,7 +508,7 @@ class Container implements PsrContainerInterface {
      */
     public function getParameterManager(): ParameterManagerInterface
     {
-        if ($this->parameterManager === null) {
+        if (!isset($this->parameterManager)) {
             $this->parameterManager = new ParameterManager();
         }
         return $this->parameterManager;
@@ -519,7 +521,7 @@ class Container implements PsrContainerInterface {
      */
     public function getServiceDecorator(): ServiceDecoratorInterface
     {
-        if ($this->serviceDecorator === null) {
+        if (!isset($this->serviceDecorator)) {
             $this->serviceDecorator = new ServiceDecorator();
         }
         return $this->serviceDecorator;
@@ -532,7 +534,7 @@ class Container implements PsrContainerInterface {
      */
     public function getTagManager(): TagManagerInterface
     {
-        if ($this->tagManager === null) {
+        if (!isset($this->tagManager)) {
             $this->tagManager = new TagManager();
         }
         return $this->tagManager;
@@ -545,13 +547,13 @@ class Container implements PsrContainerInterface {
      */
     public function getExtensionManager(): ExtensionManagerInterface
     {
-        if ($this->extensionManager === null) {
+        if (!isset($this->extensionManager)) {
             $this->extensionManager = new ExtensionManager($this);
         }
         return $this->extensionManager;
     }
 
-    // —————— 便捷方法 ——————
+
 
     /**
      * 根据标签获取服务实例
@@ -629,5 +631,4 @@ class Container implements PsrContainerInterface {
     {
         $this->getExtensionManager()->register($extension);
     }
-
 }

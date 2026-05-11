@@ -1,8 +1,17 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
 use JEALER\G3\Services\SystemService;
 
+/**
+ * System Utilities
+ * 
+ * 系统工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class System {
 
     /**
@@ -13,8 +22,6 @@ final class System {
      * @param string $key Variable key
      * @param mixed $default Default value
      * @return mixed
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function env(string $key, mixed $default = null): mixed
     {
@@ -54,8 +61,6 @@ final class System {
      * 检查当前是否在后台环境或运行 WP CLI
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isAdminContext(): bool
     {
@@ -68,8 +73,6 @@ final class System {
      * 检查调试模式是否启用，依赖 WP_ENVIRONMENT_TYPE ['development' | 'local']
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     // public static function debug(): bool
     // {
@@ -84,9 +87,8 @@ final class System {
      * Check if debug mode is enabled.
      * 
      * 检查调试模式是否启用，依赖 WP_DEBUG & WP_DEBUG_LOG
+     * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function debug(): bool
     {
@@ -99,8 +101,6 @@ final class System {
      * 获取错误日志文件路径。
      *
      * @return bool|string The path to the error log file, or false if not set.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function errorLogPath(): bool|string
     {
@@ -117,8 +117,6 @@ final class System {
      * 获取客户端的IP地址。优先返回IPv4地址。如果不存在IPv4地址，则返回IPv6地址。
      *
      * @return string|bool The IP address of the client or false if unknown.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ip(): string|bool
     {
@@ -135,8 +133,6 @@ final class System {
      * 获取客户端的IPv4地址。如果不存在IPv4地址，则返回false。
      *
      * @return string|bool The IPv4 address of the client or false if unknown.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ipv4(): string|bool
     {
@@ -163,8 +159,6 @@ final class System {
      * 获取客户端的IPv6地址。如果不存在IPv6地址，则返回false。
      *
      * @return string|bool The IPv6 address of the client or false if unknown.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ipv6(): string|bool
     {
@@ -181,8 +175,6 @@ final class System {
      * 获取客户端的原始IP地址。如果不存在IP地址，则返回false。
      *
      * @return string|bool The raw IP address of the client or false if unknown.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function getClientIpRaw(): string|bool
     {
@@ -199,9 +191,9 @@ final class System {
         return false;
     }
 
-    public const APPLE  = 'aHR0cHM6Ly8=';
-    public const BANANA = 'YXBpLmplYWxlcg==';
-    public const CAR    = 'LmNvbQ==';
+    const APPLE  = 'aHR0cHM6Ly8=';
+    const BANANA = 'YXBpLmplYWxlcg==';
+    const CAR    = 'LmNvbQ==';
 
     /**
      * Get the name of the operating system based on PHP_OS_FAMILY.
@@ -209,8 +201,6 @@ final class System {
      * 获取操作系统的名称。
      *
      * @return string The name of the operating system.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function osName(): string
     {
@@ -224,6 +214,15 @@ final class System {
         };
     }
 
+    /**
+     * Get the configuration for the specified key.
+     * 
+     * 获取指定键的配置。
+     *
+     * @param string $key The key for the configuration.
+     * @param array $default The default value if the key is not found.
+     * @return array The configuration.
+     */
     public static function config(string $key, $default = []): array
     {
         $mainConfig = G3_PlUGIN_DIR . '/config/' . $key . '.php';
@@ -242,5 +241,4 @@ final class System {
 
         return array_merge($main, $user);
     }
-
 }

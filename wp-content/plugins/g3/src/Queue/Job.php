@@ -1,5 +1,8 @@
 <?php
+
 namespace JEALER\G3\Queue;
+
+use Throwable;
 
 /**
  * Base Job Class
@@ -10,6 +13,7 @@ namespace JEALER\G3\Queue;
  * @author Wang Shai
  */
 abstract class Job {
+
     /**
      * Execute the job
      * 
@@ -26,13 +30,13 @@ abstract class Job {
      * 处理任务失败
      * 
      * @param array $data Job data
-     * @param \Throwable $exception Exception
+     * @param Throwable $exception Exception
      * @return void
      */
-    public function failed(array $data, \Throwable $exception): void
+    public function failed(array $data, Throwable $exception): void
     {
         error_log(sprintf(
-            'Queue job %s failed: %s',
+            '[G3 Job] Queue job %s failed: %s',
             static::class,
             $exception->getMessage()
         ));

@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Aspects;
 
 use ReflectionClass;
@@ -7,7 +8,8 @@ use Throwable;
 use JEALER\G3\Attributes\Aspects as AopAttr;
 
 class Aspects {
-    protected static ?Aspects $instance = null;
+
+    protected static Aspects $instance;
     protected array $config = [];
 
     /**
@@ -16,20 +18,15 @@ class Aspects {
      * Aspects 框架运行器
      * 
      * @return Aspects
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function run(): Aspects
     {
-        if (!self::$instance) {
+        if (!isset(self::$instance)) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    /**
-     * 构造函数：加载配置 + 预置注解扫描缓存
-     */
     private function __construct()
     {
         $this->config = $this->initConfig();
@@ -40,9 +37,7 @@ class Aspects {
      * 
      * 初始化Aspects配置，加载插件和主题的Aspects配置文件
      * 
-     * @return array Aspects配置数组
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return array Aspects 配置数组
      */
     private function initConfig(): array
     {
@@ -60,9 +55,7 @@ class Aspects {
      * 
      * 获取Aspects配置
      * 
-     * @return array Aspects配置数组
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return array Aspects 配置数组
      */
     public function getConfig(): array
     {
@@ -77,8 +70,6 @@ class Aspects {
      * @param string $className 类名
      * @param mixed ...$args 构造函数参数
      * @return object 创建的对象
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function create(string $className, ...$args): object
     {
@@ -100,8 +91,6 @@ class Aspects {
      * 
      * @param object $target 目标对象
      * @return object 包装后的对象
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function wrap(object $target): object
     {
@@ -141,8 +130,6 @@ class Aspects {
      * @param string $method 方法名
      * @param array $args 方法参数
      * @return mixed 方法返回值
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function invoke(object $target, string $method, array $args)
     {
@@ -170,8 +157,6 @@ class Aspects {
      * @param object $target 目标对象
      * @param string $prop 属性名
      * @return mixed 属性值
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function get(object $target, string $prop)
     {
@@ -195,8 +180,6 @@ class Aspects {
      * @param string $prop 属性名
      * @param mixed $val 属性值
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function set(object $target, string $prop, $val)
     {
@@ -221,8 +204,6 @@ class Aspects {
      * @param array $args 方法参数或属性值
      * @param object|null $obj 目标对象（仅在after通知中使用）
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function trigger(string $type, string $class, string $advice, array $args, $obj = null)
     {
@@ -235,7 +216,7 @@ class Aspects {
     }
 
     /**
-     * matchAdvice
+     * match Advice
      * 
      * 匹配切点规则
      * 
@@ -243,8 +224,6 @@ class Aspects {
      * @param string $class 类名
      * @param string $name 方法名或属性名
      * @return array 匹配的通知回调数组
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function match(string $type, string $class, string $name): array
     {
@@ -258,15 +237,13 @@ class Aspects {
     }
 
     /**
-     * classMatch
+     * class Match
      * 
      * 匹配类名规则
      * 
      * @param string $pattern 类名模式（支持通配符）
      * @param string $class 类名
      * @return bool 是否匹配
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function classMatch(string $pattern, string $class): bool
     {
@@ -274,15 +251,13 @@ class Aspects {
     }
 
     /**
-     * nameMatch
+     * name Match
      * 
      * 匹配方法名或属性名规则
      * 
      * @param string $pattern 方法名或属性名模式（支持通配符）
      * @param string $name 方法名或属性名
      * @return bool 是否匹配
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function nameMatch(string $pattern, string $name): bool
     {
@@ -290,14 +265,12 @@ class Aspects {
     }
 
     /**
-     * collectAttributes
+     * collect Attributes
      * 
      * 扫描类、方法、属性上的AOP注解
      * 
      * @param object|string $target 目标对象或类名
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function collectAttributes(object|string $target): void
     {
@@ -329,15 +302,13 @@ class Aspects {
     }
 
     /**
-     * registerAdvice
+     * register Advice
      * 
      * 注册AOP通知
      * 
      * @param string $class 类名
      * @param AopAttr $aop AOP注解实例
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function registerAdvice(string $class, AopAttr $aop): void
     {

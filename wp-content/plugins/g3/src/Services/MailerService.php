@@ -1,5 +1,7 @@
 <?php
+
 namespace JEALER\G3\Services;
+
 use JEALER\G3\Queue\Jobs\EmailJob;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
@@ -22,10 +24,8 @@ class MailerService {
      * 
      * @var string
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_mail';
+    const OPTION_KEY = 'g3_option_mail';
 
     /**
      * Option key for mail template options
@@ -34,10 +34,8 @@ class MailerService {
      * 
      * @var string
      * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const TEMPLATE_OPTION_KEY = 'g3_option_mail_template';
+    const TEMPLATE_OPTION_KEY = 'g3_option_mail_template';
 
     /**
      * Send email using PHPMailer
@@ -50,8 +48,6 @@ class MailerService {
      * @param array $attachments Optional attachments
      * @param array $headers Optional headers
      * @return bool|string True on success, error message on failure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function send(string $to, string $subject, string $messages, array $attachments = [], array $headers = []): bool|string
     {
@@ -120,16 +116,6 @@ class MailerService {
         }
     }
 
-    // public static function send(string $to, string $subject, string $messages, array $attachments = [], array $headers = []): bool|string
-    // {
-    //     $queue = get_option(SystemService::QUEUE_OPTION_KEY)['email'] ?? '0';
-    //     if ($queue === '1') {
-    //         return EmailJob::send($to, $subject, $messages, $attachments, $headers);
-    //     } else {
-    //         return self::_send($to, $subject, $messages, $attachments, $headers);
-    //     }
-    // }
-
     /**
      * Configure SMTP settings
      * 
@@ -137,8 +123,6 @@ class MailerService {
      * 
      * @param PHPMailer $mail PHPMailer instance
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function configureSMTP(PHPMailer $mail, array $config): void
     {
@@ -161,8 +145,6 @@ class MailerService {
      * 获取邮件配置
      * 
      * @return array|false Mail configuration or false if not configured
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getConfig(): array|false
     {

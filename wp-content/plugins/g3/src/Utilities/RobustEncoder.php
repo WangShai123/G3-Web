@@ -1,14 +1,16 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
+use JsonException;
 
 /**
  * Robust Encoder - Optimized Version
  * 
  * 鲁棒编码器，依赖 utf8mb4 字符集数据库
- * 优化版本，提升性能并减少内存使用
  * 
- * @package G3
  * @since 1.0.0
+ * @author Wang Shai
  */
 class RobustEncoder {
 
@@ -29,6 +31,7 @@ class RobustEncoder {
 
     /**
      * Marker characters - different from encoding characters
+     * 
      * 标记字符 - 与编码字符不同
      * 
      * @var array<int, string>
@@ -94,8 +97,6 @@ class RobustEncoder {
      * 获取唯一标记，用于识别幽灵块
      * 
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function getMarker(): string
     {
@@ -115,23 +116,23 @@ class RobustEncoder {
     {
         self::initMappings();
 
-        // 使用更高效的base64编码
+        // use more efficient base64 encoding
         $base64 = base64_encode($data);
         $length = strlen($base64);
 
-        // 预分配字符串缓冲区
+        // pre-allocate string buffer
         $ghost        = '';
         $ghost_length = 0;
 
-        // 批量处理字符，减少函数调用
+        // batch process chars, reduce function calls
         for ($i = 0; $i < $length; $i++) {
             $char  = $base64[$i];
             $ascii = ord($char);
 
-            // 直接转换为8位二进制，避免str_pad
+            // convert to 8-bit binary, avoid str_pad
             $binary = sprintf('%08b', $ascii);
 
-            // 每2位转换为零宽字符
+            // convert every 2 characters to zero-width characters.
             for ($j = 0; $j < 8; $j += 2) {
                 $pair   = $binary[$j] . $binary[$j + 1];
                 $ghost .= self::$binaryToChar[$pair];
@@ -142,9 +143,9 @@ class RobustEncoder {
     }
 
     /**
-     * Get the payload from a string - Optimized Version
+     * Get the payload from a string
      * 
-     * 从字符串中提取第一个有效 payload（优化版本）
+     * 从字符串中提取第一个有效 payload
      * 
      * @param string $content
      * @return string|null
@@ -156,7 +157,7 @@ class RobustEncoder {
         $marker     = self::$marker;
         $marker_len = mb_strlen($marker, 'UTF-8');
 
-        // 使用mb_strpos进行更高效的搜索
+        // use mb_strpos for more efficient search
         $start_pos = mb_strpos($content, $marker, 0, 'UTF-8');
         if ($start_pos === false) {
             return null;
@@ -167,7 +168,7 @@ class RobustEncoder {
             return null;
         }
 
-        // 提取幽灵字符串
+        // pick up ghost string
         $ghost_start  = $start_pos + $marker_len;
         $ghost_length = $end_pos - $ghost_start;
         $ghost        = mb_substr($content, $ghost_start, $ghost_length, 'UTF-8');
@@ -176,7 +177,7 @@ class RobustEncoder {
             return null;
         }
 
-        // 转换幽灵字符为二进制 - Simple 1:1 mapping
+        // convert ghost characters to binary, Simple 1:1 mapping
         $binary      = '';
         $ghost_chars = preg_split('//u', $ghost, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -186,7 +187,7 @@ class RobustEncoder {
             }
         }
 
-        // 确保二进制长度是8的倍数
+        // make sure binary length is a multiple of 8
         $binary_length = strlen($binary);
         $padded_length = intval($binary_length / 8) * 8;
         if ($padded_length === 0) {
@@ -195,22 +196,22 @@ class RobustEncoder {
 
         $binary = substr($binary, 0, $padded_length);
 
-        // 批量转换二进制为字符
+        // batch convert binary to char
         $base64 = '';
         for ($i = 0; $i < $padded_length; $i += 8) {
             $byte    = substr($binary, $i, 8);
             $base64 .= chr(bindec($byte));
         }
 
-        // 解码base64
+        // decode base64
         $decoded = base64_decode($base64, true);
         return $decoded !== false ? $decoded : null;
     }
 
     /**
-     * Remove Ghost Blocks - Optimized Version
+     * Remove Ghost Blocks
      * 
-     * 清除所有幽灵块（优化版本）
+     * 清除所有幽灵块
      * 
      * @param string $content
      * @return string
@@ -224,7 +225,7 @@ class RobustEncoder {
         $marker     = self::getMarker();
         $marker_len = mb_strlen($marker, 'UTF-8');
 
-        // 使用循环替代正则表达式，提升性能
+        // use loop instead of regexp, improve performance
         $result = $content;
         $offset = 0;
 
@@ -232,17 +233,17 @@ class RobustEncoder {
             $end_pos = mb_strpos($result, $marker, $start_pos + $marker_len, 'UTF-8');
 
             if ($end_pos === false) {
-                // 没有找到结束标记，跳过这个开始标记
+                // skip this start marker if no end marker found
                 $offset = $start_pos + $marker_len;
                 continue;
             }
 
-            // 移除整个幽灵块（包括标记）
+            // remove the whole ghost block (including the marker)
             $block_length = $end_pos + $marker_len - $start_pos;
             $result       = mb_substr($result, 0, $start_pos, 'UTF-8') .
                 mb_substr($result, $start_pos + $block_length, null, 'UTF-8');
 
-            // 重置偏移量，因为字符串已经改变
+            // reset offset, because the string has changed
             $offset = $start_pos;
         }
 
@@ -250,13 +251,13 @@ class RobustEncoder {
     }
 
     /**
-     * Find insertion points by splitting - Enhanced Version
+     * Find insertion points by splitting
      * 
-     * 智能分割内容，返回分散的可插入位置（增强版本）
-     * 确保不会破坏HTML标签，并提供更好的分散效果
+     * 智能分割内容，返回分散的可插入位置。
+     * 确保不会破坏HTML标签。
      * 
-     * @param  string $content
-     * @param  int $max_points
+     * @param string $content
+     * @param int $max_points
      * @return array<int>
      */
     public static function findInsertionPoints(string $content, int $max_points = 5): array
@@ -270,26 +271,26 @@ class RobustEncoder {
             return [0];
         }
 
-        $positions = []; // 不再默认包含开头
+        $positions = [];
 
-        // 检查是否包含HTML内容
+        // check if content contains HTML
         if (self::containsHtml($content)) {
-            // HTML模式：查找安全的HTML插入点
+            // html mode: find safe html insertion points
             $html_positions = self::findHtmlInsertionPoints($content, $max_points);
             $positions      = array_merge($positions, $html_positions);
         } else {
-            // 纯文本模式：按段落和句子分割
+            // text mode: insert at paragraph and sentence boundaries
             $text_positions = self::findTextInsertionPoints($content, $max_points);
             $positions      = array_merge($positions, $text_positions);
         }
 
-        // 如果没有找到足够的插入点，添加基于长度的分散位置
+        // add some random positions based on content length, if there are not enough insertion points
         if (count($positions) < $max_points && $content_length > 100) {
             $additional_positions = self::findLengthBasedPositions($content, $max_points - count($positions));
             $positions            = array_merge($positions, $additional_positions);
         }
 
-        // 确保包含开头和结尾位置
+        // make sure we include the start and end
         if (!in_array(0, $positions)) {
             array_unshift($positions, 0);
         }
@@ -297,7 +298,7 @@ class RobustEncoder {
             $positions[] = $content_length;
         }
 
-        // 去重、排序并限制数量
+        // unique and sort, limit count
         $positions = array_unique($positions);
         sort($positions);
 
@@ -306,6 +307,7 @@ class RobustEncoder {
 
     /**
      * Check if content contains HTML tags
+     * 
      * 检查内容是否包含HTML标签
      * 
      * @param string $content
@@ -313,12 +315,13 @@ class RobustEncoder {
      */
     private static function containsHtml(string $content): bool
     {
-        // 检查常见的HTML标签
+        // check common HTML tags
         return preg_match('/<[a-zA-Z][^>]*>/', $content) === 1;
     }
 
     /**
      * Find safe insertion points in HTML content
+     * 
      * 在HTML内容中查找安全的插入点
      * 
      * @param string $content
@@ -329,7 +332,7 @@ class RobustEncoder {
     {
         $positions = [];
 
-        // 查找段落结束标签后的安全位置
+        // search for safe positions after paragraph end tags
         $safe_tags       = ['</p>', '</div>', '</section>', '</article>', '</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</h6>'];
         $found_positions = [];
 
@@ -338,7 +341,7 @@ class RobustEncoder {
             while (($pos = mb_strpos($content, $tag, $offset, 'UTF-8')) !== false) {
                 $safe_pos = $pos + mb_strlen($tag, 'UTF-8');
 
-                // 确保插入位置不在其他HTML标签内部
+                // make sure we are not inserting into an HTML tag
                 if (self::isSafeInsertionPoint($content, $safe_pos)) {
                     $found_positions[] = $safe_pos;
                 }
@@ -347,20 +350,21 @@ class RobustEncoder {
             }
         }
 
-        // 去重并排序
+        // unique & sort
         $found_positions = array_unique($found_positions);
         sort($found_positions);
 
-        // 选择合适的插入点
+        // select the best insertion point
         $count = count($found_positions);
         if ($count > 0) {
             if ($max_points >= 3 && $count >= 2) {
-                // 选择开头、中间和其他位置
-                $positions[] = $found_positions[0]; // 第一个安全位置
+                // first safe position
+                $positions[] = $found_positions[0];
 
                 if ($count >= 3) {
-                    $mid_index   = intval($count / 2);
-                    $positions[] = $found_positions[$mid_index]; // 中间位置
+                    $mid_index = intval($count / 2);
+                    // center position
+                    $positions[] = $found_positions[$mid_index];
 
                     if ($max_points > 3 && $count > 4) {
                         $quarter_index = intval($count / 4);
@@ -379,6 +383,7 @@ class RobustEncoder {
 
     /**
      * Find insertion points in plain text content
+     * 
      * 在纯文本内容中查找插入点
      * 
      * @param string $content
@@ -389,7 +394,7 @@ class RobustEncoder {
     {
         $positions = [];
 
-        // 按双换行分割段落
+        // split paragraphs by double newline
         $paragraphs = preg_split('/\n\s*\n/', $content);
         if (count($paragraphs) <= 1) {
             return $positions;
@@ -400,7 +405,7 @@ class RobustEncoder {
 
         // 选择段落之间的位置
         for ($i = 1; $i < $para_count && count($positions) < $max_points - 1; $i++) {
-            // 使用mb_strlen确保UTF-8安全
+
             $current_pos += mb_strlen($paragraphs[$i - 1], 'UTF-8');
 
             // 添加段落分隔符的长度（通常是\n\n）
@@ -423,6 +428,7 @@ class RobustEncoder {
 
     /**
      * Find length-based insertion positions
+     * 
      * 基于内容长度查找分散的插入位置
      * 
      * @param string $content
@@ -462,6 +468,7 @@ class RobustEncoder {
 
     /**
      * Find nearest safe position for HTML content
+     * 
      * 在HTML内容中查找最近的安全位置
      * 
      * @param string $content
@@ -493,6 +500,7 @@ class RobustEncoder {
 
     /**
      * Find nearest text boundary (sentence or paragraph end)
+     * 
      * 在纯文本中查找最近的文本边界
      * 
      * @param string $content
@@ -537,6 +545,7 @@ class RobustEncoder {
 
     /**
      * Check if a position is safe for insertion (not inside HTML tags)
+     * 
      * 检查位置是否安全插入（不在HTML标签内部）
      * 
      * @param string $content
@@ -549,33 +558,32 @@ class RobustEncoder {
             return false;
         }
 
-        // 检查前后几个字符，确保不在标签内部
-        $check_range = 10; // 检查前后10个字符
+        // check characters around the position, to ensure we're not in a tag
+        $check_range = 10;
         $start       = max(0, $position - $check_range);
         $length      = min($check_range * 2, mb_strlen($content, 'UTF-8') - $start);
 
         $surrounding  = mb_substr($content, $start, $length, 'UTF-8');
         $relative_pos = $position - $start;
 
-        // 检查是否在标签内部
+        // check if we're in a tag
         $before = mb_substr($surrounding, 0, $relative_pos, 'UTF-8');
         $after  = mb_substr($surrounding, $relative_pos, null, 'UTF-8');
 
-        // 如果前面有未闭合的<，或者后面紧跟>，说明在标签内部
         $last_open  = mb_strrpos($before, '<', 0, 'UTF-8');
         $last_close = mb_strrpos($before, '>', 0, 'UTF-8');
 
+        // if single < tag is found
         if ($last_open !== false && ($last_close === false || $last_open > $last_close)) {
-            // 前面有未闭合的<标签
             return false;
         }
 
-        // 检查后面是否紧跟>
+        // if single > tag is found
         if (mb_substr($after, 0, 1, 'UTF-8') === '>') {
             return false;
         }
 
-        // 检查是否在特殊标签内部（如script, style等）
+        // check if inside special tag, like <script> or <style>
         if (self::isInsideSpecialTag($content, $position)) {
             return false;
         }
@@ -585,6 +593,7 @@ class RobustEncoder {
 
     /**
      * Check if position is inside special tags (script, style, etc.)
+     * 
      * 检查位置是否在特殊标签内部
      * 
      * @param string $content
@@ -599,7 +608,7 @@ class RobustEncoder {
             $open_tag  = "<{$tag}";
             $close_tag = "</{$tag}>";
 
-            // 查找最近的开始和结束标签
+            // search the nearest open and close tag
             $content_before = mb_substr($content, 0, $position, 'UTF-8');
             $last_open      = mb_strrpos($content_before, $open_tag, 0, 'UTF-8');
 
@@ -607,8 +616,8 @@ class RobustEncoder {
                 $content_after_open = mb_substr($content, $last_open, null, 'UTF-8');
                 $close_pos          = mb_strpos($content_after_open, $close_tag, 0, 'UTF-8');
 
+                // inside special tag
                 if ($close_pos === false || $last_open + $close_pos > $position) {
-                    // 在特殊标签内部
                     return true;
                 }
             }
@@ -618,10 +627,9 @@ class RobustEncoder {
     }
 
     /**
-     * Insert Payload - Enhanced Version
+     * Insert Payload
      * 
-     * 将 payload 分散嵌入到内容的多个安全位置（增强版本）
-     * 真正实现分散插入，提升版权保护效果
+     * 将 payload 分散嵌入到内容的多个安全位置
      * 
      * @param string $content
      * @param string $payload
@@ -640,28 +648,30 @@ class RobustEncoder {
             return $content;
         }
 
-        // 选择多个分散的插入点（而不是只选择第一个）
+        // select multiple insertion points (not just the first)
         $selected_positions = [];
         $total_positions    = count($positions);
 
         if ($total_positions >= 3) {
-            // 选择开头、中间、结尾的位置
-            $selected_positions[] = $positions[0]; // 开头
-            $selected_positions[] = $positions[intval($total_positions / 2)]; // 中间
-            $selected_positions[] = $positions[$total_positions - 1]; // 结尾
+            // start
+            $selected_positions[] = $positions[0];
+            // middle
+            $selected_positions[] = $positions[intval($total_positions / 2)];
+            // end
+            $selected_positions[] = $positions[$total_positions - 1];
         } elseif ($total_positions >= 2) {
-            // 选择开头和结尾
+            // start & end
             $selected_positions[] = $positions[0];
             $selected_positions[] = $positions[$total_positions - 1];
         } else {
-            // 只有一个位置
+            // single position
             $selected_positions[] = $positions[0];
         }
 
         // 从后往前插入，避免位置偏移
         rsort($selected_positions);
 
-        // 使用mb_substr进行UTF-8安全的字符串操作
+        // mb_substr
         $result = $content;
         foreach ($selected_positions as $pos) {
             if ($pos >= 0 && $pos <= mb_strlen($result, 'UTF-8')) {
@@ -675,7 +685,9 @@ class RobustEncoder {
     }
 
     /**
-     * 提取信息 - Optimized Version
+     * extract info
+     * 
+     * 提取信息
      * 
      * @param string $content
      * @return array|null
@@ -693,7 +705,6 @@ class RobustEncoder {
             return null;
         }
 
-        // 使用更安全的JSON解码
         try {
             $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
 
@@ -705,8 +716,7 @@ class RobustEncoder {
                 return $json;
             }
         }
-        catch (\JsonException $e) {
-            // JSON解码失败，返回null
+        catch (JsonException $e) {
             return null;
         }
 
@@ -714,9 +724,9 @@ class RobustEncoder {
     }
 
     /**
-     * Batch process multiple contents - New Method
+     * Batch process multiple contents
      * 
-     * 批量处理多个内容，提升性能
+     * 批量处理多个内容
      * 
      * @param array<string> $contents
      * @param string $payload
@@ -768,7 +778,7 @@ class RobustEncoder {
     }
 
     /**
-     * Check if content has ghost blocks - New Method
+     * Check if content has ghost blocks
      * 
      * 检查内容是否包含幽灵块
      * 
@@ -786,7 +796,7 @@ class RobustEncoder {
     }
 
     /**
-     * Get ghost block count - New Method
+     * Get ghost block count
      * 
      * 获取幽灵块数量
      * 

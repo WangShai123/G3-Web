@@ -1,6 +1,6 @@
 <?php
 
-use JEALER\G3\Includes\SpecsListTable;
+use JEALER\G3\Components\Product\Includes\SpecsListTable;
 
 $table = new SpecsListTable();
 $table->display();
@@ -60,12 +60,12 @@ $table->display();
                     ],
                     required: true
                 },
-                {
-                    label: '<?php _e('Apply To', 'G3'); ?>',
-                    type: 'text',
-                    name: 'owner_ids',
-                    placeholder: '<?php _e('Separate IDs with commas', 'G3'); ?>',
-                }
+                // {
+                //     label: '<?php //_e('Apply To', 'G3'); ?>',
+                //     type: 'text',
+                //     name: 'owner_ids',
+                //     placeholder: '<?php //_e('Separate IDs with commas', 'G3'); ?>',
+                // }
             ],
             onSubmit: (fields) => {
                 for (const key in fields) {
@@ -106,6 +106,9 @@ $table->display();
                         return;
                     },
                 })
+            },
+            onHidden: () => {
+                editModal.reset()
             }
         })
         $(document).on('click', 'button#add-spec', (e) => {
@@ -114,13 +117,53 @@ $table->display();
         })
         $(document).on('click', 'span.edit-spec', (e) => {
             const t = $(e.currentTarget)
-            editModal.setFields({
-                name: t.attr('data-name'),
-                key: t.attr('data-key'),
-                is_global: t.attr('data-global'),
-                scope: t.attr('data-scope'),
-                owner_ids: t.attr('data-ids'),
-            })
+            editModal.setFields([
+                {
+                    label: '<?php _e('Name'); ?>',
+                    name: 'name',
+                    required: true,
+                    value: t.data('name'),
+                },
+                {
+                    label: 'Key',
+                    name: 'key',
+                    required: true,
+                    value: t.data('key'),
+                },
+                {
+                    label: '<?php _e('Global Spec', 'G3'); ?>',
+                    type: 'select',
+                    name: 'is_global',
+                    value: t.data('global'),
+                    options: [
+                        { value: '1', text: '<?php _e('Yes'); ?>' },
+                        { value: '0', text: '<?php _e('No'); ?>' },
+                    ],
+                    required: true
+                },
+                {
+                    label: '<?php _e('Scope', 'G3'); ?>',
+                    type: 'select',
+                    name: 'scope',
+                    value: t.data('scope'),
+                    options: [
+                        { value: '0', text: '<?php _e('All'); ?>' },
+                        { value: '1', text: '<?php _e('Product', 'G3'); ?>' },
+                        { value: '2', text: '<?php _e('Categories'); ?>' },
+                        { value: '3', text: '<?php _e('Tags'); ?>' },
+                        { value: '4', text: '<?php _e('Brand', 'G3'); ?>' },
+                    ],
+                    required: true
+                },
+            ]
+                // {
+                //     name: t.attr('data-name'),
+                //     key: t.attr('data-key'),
+                //     is_global: t.attr('data-global'),
+                //     scope: t.attr('data-scope'),
+                //     owner_ids: t.attr('data-ids'),
+                // }
+            )
             editModal.addFields({
                 id: t.attr('data-id'),
             })
@@ -132,7 +175,7 @@ $table->display();
                 toast.lite('<?php _e('Cannot delete this spec, it is used in some sku or options.', 'G3'); ?>')
                 return
             }
-            if (!confirm('<?php _e('Are you sure you want to delete it?'); ?>')) return
+            if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',

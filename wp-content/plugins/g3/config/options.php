@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     'g3_option_dev_form',
@@ -12,8 +13,18 @@ return [
     'g3_option_swipers_query',
     'g3_option_themes',
 
-    // 'g3_option_shop',
     // 'g3_option_specs',
+
+    /**
+     * User Options
+     */
+    'g3_option_roles',
+    'g3_option_groups',
+    'g3_option_managers',
+    'g3_option_premiums',
+
+    'g3_option_memberships',
+    'g3_option_durations',
 
     'g3_option_general',
     'g3_option_seo',

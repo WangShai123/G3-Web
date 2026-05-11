@@ -1,25 +1,32 @@
 <?php
 namespace JEALER\G3\Utilities;
 
+/**
+ * Date utilities
+ * 
+ * 日期工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Date {
+
     /**
      * Get human readable time string
      * 
      * 获取人类可读的时间字符串
      * 
-     * @param int $time timestamp
+     * @param int $timestamp timestamp
      * @return string human readable time string
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static function humanTime(int $time = 0): string
+    public static function humanTime(int $timestamp = 0): string
     {
-        if (!$time) {
+        if (!$timestamp) {
             // Default: Post publish time
-            $time = get_the_time('U');
+            $timestamp = get_the_time('U');
         }
 
-        $timeDiff = current_time('timestamp') - $time;
+        $timeDiff = current_time('timestamp') - $timestamp;
 
         return match (true) {
             $timeDiff < 60 => \sprintf(
@@ -38,7 +45,7 @@ final class Date {
                 _n('%s day ago', '%s days ago', intdiv($timeDiff, 86400), 'G3'),
                 intdiv($timeDiff, 86400)
             ),
-            default => wp_date(get_option('date_format'), $time),
+            default => wp_date(get_option('date_format'), $timestamp),
         };
     }
 
@@ -48,9 +55,7 @@ final class Date {
      * 按照 WordPress 设置的日期和时间格式返回当前时区的日期和时间字符串
      * 
      * @param int $timestamp timestamp
-     * @return string date and time string
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return string|bool date and time string or false on error
      */
     public static function dateTime(int $timestamp): bool|string
     {
@@ -63,9 +68,7 @@ final class Date {
      * 按照 WordPress 设置的日期格式返回当前时区的日期字符串
      * 
      * @param int $timestamp timestamp
-     * @return string date string
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return string|bool date string or false on error
      */
     public static function date(int $timestamp): bool|string
     {
@@ -78,9 +81,7 @@ final class Date {
      * 按照 WordPress 设置的时间格式返回当前时区的时间字符串
      * 
      * @param int $timestamp timestamp
-     * @return string time string
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return string|bool time string or false on error
      */
     public static function time(int $timestamp): bool|string
     {

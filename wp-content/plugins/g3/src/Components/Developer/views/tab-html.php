@@ -5,9 +5,18 @@ use JEALER\G3\Utilities\Image;
 
 echo Element::tip(
     __('HTML element demo in admin panel.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
+
+function _renderIconList(array $list)
+{
+    foreach ($list as $icon) {
+        $_ = Image::icon($icon);
+        echo "<icon>{$_}<div>{$icon}</div></icon>";
+    }
+}
 ?>
 <div class="mt-4">
     <h3><?php _e('Button', 'G3'); ?></h3>
@@ -41,50 +50,65 @@ echo Element::tip(
 <div>
     <h4 class="icon-title"><?php _e('System', 'G3'); ?></h4>
     <div class="flex flex-wrap icon-wrap">
-        <icon title="aaaaa">
-            <?php echo Image::icon('close'); ?>
-            <div>close</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('delete'); ?>
-            <div>delete</div>
-        </icon>
+        <?php _renderIconList([
+            'close',
+            'delete',
+            'shield-check',
+            'shield-keyhole',
+            'loader',
+            'search',
+            'menu',
+            'more'
+        ]); ?>
+    </div>
+
+    <h4 class="icon-title"><?php _e('Finance', 'G3'); ?></h4>
+    <div class="flex flex-wrap icon-wrap">
+        <?php _renderIconList([
+            'cart',
+            'vip',
+            'dollar',
+            'rmb',
+            'euro'
+        ]); ?>
+    </div>
+
+    <h4 class="icon-title"><?php _e('User'); ?></h4>
+    <div class="flex flex-wrap icon-wrap">
+        <?php _renderIconList([
+            'user',
+            'admin'
+        ]); ?>
+    </div>
+
+    <h4 class="icon-title"><?php _e('Design', 'G3'); ?></h4>
+    <div class="flex flex-wrap icon-wrap">
+        <?php _renderIconList([
+            'palette'
+        ]); ?>
     </div>
 
     <h4 class="icon-title"><?php _e('Development', 'G3'); ?></h4>
     <div class="flex flex-wrap icon-wrap">
-        <icon>
-            <?php echo Image::icon('bug'); ?>
-            <div>bug</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('code'); ?>
-            <div>code</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('terminal'); ?>
-            <div>terminal</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('command'); ?>
-            <div>command</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('php'); ?>
-            <div>php</div>
-        </icon>
-        <icon>
-            <?php echo Image::icon('javascript'); ?>
-            <div>javascript</div>
-        </icon>
+        <?php _renderIconList([
+            'bug',
+            'code',
+            'terminal',
+            'command',
+            'php',
+            'javascript'
+        ]); ?>
     </div>
 
     <h4 class="icon-title">Logo</h4>
     <div class="flex flex-wrap icon-wrap">
-        <icon>
-            <?php echo Image::icon('wordpress'); ?>
-            <div>wordpress</div>
-        </icon>
+        <?php _renderIconList([
+            'wordpress',
+            'tiktok',
+            'wechat',
+            'wechatPay',
+            'alipay',
+        ]); ?>
     </div>
 </div>
 
@@ -121,20 +145,14 @@ echo Element::tip(
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        function copy(text) {
-            const $temp = document.createElement("input");
-            document.body.appendChild($temp);
-            $temp.value = text;
-            $temp.select();
-            document.execCommand("copy");
-            $temp.remove();
-        }
-        document.querySelectorAll('.icon-wrap icon').forEach(function (item) {
+        const { copy, toast, q } = jui;
+        for (const item of document.querySelectorAll('.icon-wrap icon')) {
             item.addEventListener('click', function () {
-                let iconText = item.querySelector('div').textContent;
-                copy(iconText);
-                jui.toast.success('<?php _e('Copied'); ?> ' + iconText, 2000);
+                const iconText = q('div', item).textContent;
+                copyText = `Image::icon('${iconText}')`;
+                copy(copyText);
+                toast.success('<?php _e('Copied'); ?> ' + iconText);
             });
-        });
+        }
     });
 </script>

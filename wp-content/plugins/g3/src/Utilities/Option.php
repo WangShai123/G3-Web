@@ -1,23 +1,29 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Message;
 
+/**
+ * Option utilities class
+ *
+ * 选项工具类
+ *
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Option {
 
     /**
      * Get option value. If the option does not exist, initialize it with the default value.
      * 
-     * 获取选项值。
-     * 注意：在G3-Web不允许数据库中存在空值
+     * 获取选项值
      * 
      * @param string $key Option key
      * @param mixed $default Default option value.
      * @param bool $autoload Whether to load the option when the site is initialized.
      * @return mixed Option value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function get(string $key, mixed $default = '', bool $autoload = true): mixed
     {
@@ -45,8 +51,6 @@ final class Option {
      * @param string $optionName Option name
      * @param mixed $optionValue Option value
      * @return mixed Option Value
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function cache(string $optionName, mixed $optionValue)
     {
@@ -74,4 +78,15 @@ final class Option {
         return $optionValue;
     }
 
+    public static function update(string $key, $value)
+    {
+        Context::set($key, $value);
+        return update_option($key, $value);
+    }
+
+    public static function set(string $key, $value, $autoload = true): bool
+    {
+        Context::set($key, $value);
+        return add_option($key, $value, '', $autoload);
+    }
 }

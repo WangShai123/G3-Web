@@ -1,6 +1,7 @@
 <?php
+
 use JEALER\G3\Utilities\Request;
-use JEALER\G3\Includes\WechatOAReplyListTable;
+use JEALER\G3\Components\WechatOA\Includes\WechatOAReplyListTable;
 
 $table = new WechatOAReplyListTable();
 $table->display();
@@ -8,9 +9,9 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-
+        const { restUrl, toast, modal } = jui;
         $(document).on('click', '#add-reply', function () {
-            const modal = new jui.modal({
+            const editor = new modal({
                 title: "<?php _e('Add New', 'G3'); ?>",
                 confirmText: "<?php _e('Add New', 'G3'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
@@ -36,6 +37,7 @@ $table->display();
                         type: 'select',
                         name: 'status',
                         id: '_status',
+                        value: '0',
                         options: [
                             {
                                 value: '1',
@@ -50,7 +52,7 @@ $table->display();
                     }
                 ],
                 onSubmit: function (formData) {
-                    modal.showLoading();
+                    editor.showLoading();
                     const data = {
                         id: 0,
                         keywords: formData.keywords,
@@ -59,41 +61,41 @@ $table->display();
                         type: 'text'
                     };
                     $.ajax({
-                        url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/update'); ?>',
+                        url: restUrl + '/api/v1/admin/wechat_oa/reply/update',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            jui.toast.success(res.message);
+                            toast.success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            jui.toast.error(msg.message);
+                            toast.error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
-                                modal.hideLoading();
+                                editor.hideLoading();
                             }, 500);
                         }
                     });
-
                 }
             });
-            modal.show();
+            editor.show();
         })
 
-        $(document).on('click', '.edit-reply', function () {
-            const id = parseInt($(this).data('id'));
-            const keywords = JSON.parse($(this).data('keywords'));
-            const reply = JSON.parse($(this).data('content'));
-            const editModal = new jui.modal({
+        $(document).on('click', '.edit-reply', function (e) {
+            const t = $(e.currentTarget);
+            const id = parseInt(t.data('id'));
+            const keywords = JSON.parse(t.data('keywords'));
+            const reply = JSON.parse(t.data('content'));
+            const editModal = new modal({
                 title: "<?php _e('Edit'); ?>",
                 confirmText: "<?php _e('Update'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
-                formData: [
+                fields: [
                     {
                         label: '<?php _e('Keywords'); ?>',
                         type: 'text',
@@ -117,6 +119,7 @@ $table->display();
                         type: 'select',
                         name: 'status',
                         id: '_status',
+                        value: t.data('status'),
                         options: [
                             {
                                 value: '1',
@@ -130,29 +133,29 @@ $table->display();
                         required: true,
                     }
                 ],
-                onSubmit: function (formData) {
+                onSubmit: function (d) {
                     editModal.showLoading()
                     const data = {
                         id: id,
-                        keywords: formData.keywords,
-                        content: formData.reply,
-                        status: formData.status,
+                        keywords: d.keywords,
+                        content: d.reply,
+                        status: d.status,
                         type: 'text'
                     }
                     $.ajax({
-                        url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/update'); ?>',
+                        url: restUrl + '/api/v1/admin/wechat_oa/reply/update',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            jui.toast.success(res.message);
+                            toast.success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            jui.toast.error(msg.message);
+                            toast.error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
@@ -173,14 +176,14 @@ $table->display();
                     contentType: 'application/json',
                     data: JSON.stringify({ id: $(this).data('id') }),
                     success: function (res) {
-                        jui.toast.success(res.message);
+                        toast.success(res.message);
                         setTimeout(function () {
                             location.reload();
                         }, 500);
                     },
                     error: function (xhr, status, error) {
                         const msg = JSON.parse(xhr.responseText);
-                        jui.toast.error(msg.message);
+                        toast.error(msg.message);
                     }
                 });
             }

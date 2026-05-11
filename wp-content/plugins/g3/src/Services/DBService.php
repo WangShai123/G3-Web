@@ -2,108 +2,144 @@
 
 namespace JEALER\G3\Services;
 
+use wpdb;
+
+/**
+ * DB Service
+ * 
+ * 数据库服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class DBService {
 
-    /**
-     * Init Tables
-     * 
-     * 初始化数据库表
-     * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    public static function initTables()
+    private wpdb $wpdb;
+    private static DBService $instance;
+
+    public function __construct()
     {
         global $wpdb;
-        $charset = $wpdb->get_charset_collate();
+        $this->wpdb = $wpdb;
+    }
 
-        /**
-         * 0
-         * 
-         * Queue Jobs Table
-         * 
-         * 队列任务表
-         *  - id: 主键, 任务ID
-         *  - queue: 队列名称
-         *  - payload: 任务数据
-         *  - attempts: 尝试次数
-         *  - reserved_at: 锁定时间
-         *  - available_at: 可用时间
-         *  - created_at: 创建时间
-         *  - updated_at: 更新时间
-         * 
-         * @since 1.0.0
-         * @author Wang Shai
-         */
-        $tableName  = $wpdb->prefix . 'g3_queue_jobs';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `queue` varchar(255) NOT NULL DEFAULT 'default',
-                `payload` longtext NOT NULL,
-                `attempts` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
-                `reserved_at` DATETIME NULL DEFAULT NULL,
-                `available_at` DATETIME NOT NULL,
-                `created_at` DATETIME NOT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                PRIMARY KEY (id),
-                KEY idx_queue_available (`queue`, `available_at`),
-                KEY idx_reserved_at (`reserved_at`),
-                KEY idx_created_at (`created_at`)
-            ) ENGINE=InnoDB $charset COMMENT='queue jobs';";
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
+    public static function run(): DBService
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new self();
         }
+        return self::$instance;
+    }
 
+    public function initTables(): void
+    {
+        $charset = $this->wpdb->get_charset_collate();
+
+        $this->initUserTable($this->wpdb, $charset);
+
+        $this->initProductTable($this->wpdb, $charset);
+        $this->initOrderTable($this->wpdb, $charset);
+
+        $this->initFundTable($this->wpdb, $charset);
+
+        $this->initMarketingTable($this->wpdb, $charset);
+
+        $this->initWechatTable($this->wpdb, $charset);
+
+        $this->initUtilityTable($this->wpdb, $charset);
+    }
+
+    /**
+     * init User Table
+     *  - g3_user_extra          用户额外信息表
+     *  - g3_user_card           用户名片表
+     *  - g3_user_wallet         用户钱包表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initUserTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 1
+         * User Extra Table
          * 
-         * Log Table
-         * 
-         * 日志表
-         *  - id: 主键
-         *  - type: 日志类型
-         *  - level: 日志级别
-         *  - module: 业务模块名称
-         *  - message: 日志信息
+         * 用户额外信息表
          *  - user_id: 用户ID
-         *  - ip_address: IP地址
-         *  - meta: 日志元数据
-         *  - created_at: 创建时间
+         *  - role: 管理角色 别名
+         *  - group: 自定义分组 别名 
+         *  - premium: 认证等级 别名
+         *  - visit: 访问次数
+         *  - third_party_ids: 第三方ID
+         *      - wx_openId: 微信 openId
+         *      - wx_unionId: 微信 unionId
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_logs';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `type` varchar(64) NOT NULL,
-                `level` varchar(64) NOT NULL DEFAULT 'info',
-                `module` varchar(64) DEFAULT NULL,
-                `message` text NOT NULL,
-                `user_id` int(11) DEFAULT NULL,
-                `ip_address` varchar(64) DEFAULT NULL,
-                `meta` MEDIUMTEXT DEFAULT NULL,
-                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (`id`),
-                KEY `type` (`type`),
-                KEY `level` (`level`),
-                KEY `module` (`module`),
-                KEY `created_at` (`created_at`)
-            ) ENGINE=InnoDB $charset COMMENT='logs';";
-
+        $table = $wpdb->prefix . 'g3_user_extra';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `role` VARCHAR(32) DEFAULT NULL,
+                `group` VARCHAR(64) DEFAULT NULL,
+                `premium` VARCHAR(64) DEFAULT NULL,
+                `visit` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `third_party_ids` LONGTEXT DEFAULT NULL,
+                PRIMARY KEY (`user_id`),
+                KEY `idx_role` (`role`),
+                KEY `idx_group` (`group`),
+                KEY `idx_premium` (`premium`),
+                KEY `idx_visit` (`visit`)
+            ) ENGINE=InnoDB $charset COMMENT='user extra';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 2
+         * User Card Table
          * 
+         * 用户名片表
+         *  - user_id: 用户ID
+         *  - avatar: 头像
+         *  - description: 描述
+         *  - gender: 性别
+         *  - phone: 电话
+         *  - country: 国家
+         *  - province: 省份
+         *  - city: 城市
+         *  - district: 区域
+         *  - address: 地址
+         *  - social_account: 社交账号
+         * 
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_user_card';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `avatar` VARCHAR(255) DEFAULT NULL,
+                `description` VARCHAR(255) DEFAULT NULL,
+                `gender` TINYINT DEFAULT NULL,
+                `phone` VARCHAR(16) DEFAULT NULL,
+                `country` VARCHAR(64) DEFAULT NULL,
+                `province` VARCHAR(64) DEFAULT NULL,
+                `city` VARCHAR(64) DEFAULT NULL,
+                `district` VARCHAR(64) DEFAULT NULL,
+                `address` VARCHAR(255) DEFAULT NULL,
+                `social_account` LONGTEXT DEFAULT NULL,
+                PRIMARY KEY (`user_id`),
+                KEY `idx_gender` (`gender`),
+                KEY `idx_phone` (`phone`),
+                KEY `idx_country` (`country`),
+                KEY `idx_province` (`province`),
+                KEY `idx_city` (`city`),
+                KEY `idx_district` (`district`)
+            ) ENGINE=InnoDB $charset COMMENT='user card';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
          * User Wallet Table
          * 
          * 用户钱包表
@@ -116,74 +152,40 @@ class DBService {
          *  - updated_at: 更新时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_user_wallet';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_user_wallet';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `balance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                `frozen_amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                `total_recharge` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                `total_withdraw` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `balance` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `frozen_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `total_recharge` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `total_withdraw` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (`user_id`),
                 KEY `idx_balance` (`balance`)
             ) ENGINE=InnoDB $charset COMMENT='user wallet';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+    }
 
+    /**
+     * init Product Table
+     *  - g3_sku                 库存表
+     *  - g3_specs               规格表
+     *  - g3_specs_options       规格选项表
+     *  - g3_product_specs       产品规格关系表
+     *  - g3_sku_specs_relations 库存规格关系表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initProductTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 3
-         * 
-         * Swiper Table
-         * 
-         * 轮播图表
-         *  - id: 主键
-         *  - title: 标题
-         *  - link: 链接
-         *  - target: 打开方式, 0: self, 1: blank
-         *  - media: 媒体文件网络地址
-         *  - location: 位置
-         *  - sort: 排序
-         *  - status: 状态, 0: offline, 1: online
-         *  - user: 创建人
-         *  - created_at: 创建时间
-         *  - updated_at: 更新时间
-         * 
-         * @since 1.0.0
-         * @author Wang Shai
-         */
-        $tableName  = $wpdb->prefix . 'g3_swipers';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `title` varchar(255) NOT NULL,
-                `link` varchar(255) NOT NULL,
-                `target` tinyint(4) NOT NULL DEFAULT '0',
-                `media` varchar(255) NOT NULL,
-                `location` varchar(255) NOT NULL,
-                `sort` int(11) NOT NULL DEFAULT '1',
-                `status` tinyint(4) NOT NULL,
-                `user_id` int(11) NOT NULL,
-                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                PRIMARY KEY (`id`),
-                KEY `location` (`location`)
-            ) ENGINE=InnoDB $charset COMMENT='swipers';";
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-        }
-
-        /**
-         * 4
-         * 
          * SKU Table
          * 
          * 库存管理表
@@ -207,12 +209,10 @@ class DBService {
          *  - updated_at: 更新时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_sku';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_sku';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 -- base data
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `product_id` BIGINT UNSIGNED NOT NULL,
@@ -223,13 +223,13 @@ class DBService {
                 `regular_price` DECIMAL(12,2) DEFAULT NULL,
                 `price` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
                 `currency` VARCHAR(8) NOT NULL DEFAULT 'CNY',
-                `sold` int(11) NOT NULL DEFAULT 0,
+                `sold` INT NOT NULL DEFAULT 0,
 
-                -- stock controll
-                `type` tinyint NOT NULL DEFAULT 1,
+                -- stock control
+                `type` TINYINT NOT NULL DEFAULT 1,
                 `stock` INT NOT NULL DEFAULT 0,
                 `track` BOOLEAN NOT NULL DEFAULT TRUE,
-                `status` tinyint(1) DEFAULT 1,
+                `status` TINYINT DEFAULT 1,
 
                 -- physical attributes
                 `weight` DECIMAL(12,2) DEFAULT NULL,
@@ -237,7 +237,7 @@ class DBService {
                 `unit` VARCHAR(16) DEFAULT NULL,
 
                 -- content: 存 URL / 序列化配置
-                `content` TEXT,
+                `content` TEXT DEFAULT NULL,
 
                 -- time
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -248,14 +248,11 @@ class DBService {
                 KEY `idx_sku_code` (`sku_code`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='sku';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 5
-         * 
          * Global Product Specifications Table
          * 
          * 全局商品规格表
@@ -270,21 +267,18 @@ class DBService {
          *  - created: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_specs';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_specs';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `product_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `name` VARCHAR(100) NOT NULL,
                 `key` VARCHAR(32) NOT NULL,
-                `is_global` TINYINT(1) NOT NULL DEFAULT 1,
+                `is_global` TINYINT NOT NULL DEFAULT 1,
                 `scope` TINYINT NOT NULL DEFAULT 0,
-                `owner_ids` text NOT NULL DEFAULT '',
+                `owner_ids` TEXT NOT NULL DEFAULT '',
                 `status` TINYINT NOT NULL DEFAULT 1,
-                `sort` INT NOT NULL DEFAULT 0,
+                `sort` INT NOT NULL DEFAULT 1,
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `uniq_key` (`key`),
@@ -293,14 +287,11 @@ class DBService {
                 KEY `idx_scope` (`scope`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='global product specifications';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 6
-         * 
          * Global Specifications Options Table
          * 
          * 全局规格选项表，存储可复用的规格选项信息
@@ -313,68 +304,51 @@ class DBService {
          * - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_specs_options';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_specs_options';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `spec_id` BIGINT UNSIGNED NOT NULL,
                 `name` VARCHAR(100) NOT NULL,
                 `key` VARCHAR(100) NOT NULL,
-                `sort` INT DEFAULT 0,
-                `status` TINYINT(1) DEFAULT 1,
+                `sort` INT DEFAULT 1,
+                `status` TINYINT DEFAULT 1,
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `uniq_spec_id_name` (`spec_id`, `name`),
                 KEY `idx_spec_id` (`spec_id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='global specification options';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 7
-         * 
          * Product-Specifications Relations Table
          * 
          * 产品与规格的关联表，记录哪些规格应用于哪个产品
          * - id: 主键
          * - product_id: 商品ID
          * - spec_id: 规格ID
-         * - required: 是否为必填规格, 0: 不必填, 1: 必填
-         * - sort: 排序
-         * - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_product_specs';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_product_specs';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `product_id` BIGINT UNSIGNED NOT NULL,
                 `spec_id` BIGINT UNSIGNED NOT NULL,
-                `required` TINYINT(1) NOT NULL DEFAULT 0,
-                `sort` INT DEFAULT 0,
-                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
-                UNIQUE KEY `uniq_product_spec` (`product_id`, `spec_id`),
                 KEY `idx_product_id` (`product_id`),
                 KEY `idx_spec_id` (`spec_id`)
-            ) ENGINE=InnoDB $charset COMMENT='product-specifications relations';";
-
+            ) ENGINE=InnoDB $charset COMMENT='product-specification relations';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 8
-         * 
          * SKU Specs Options Relations Table
          * 
          * 库存规格选项关系表
@@ -384,12 +358,10 @@ class DBService {
          *  - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_sku_specs_relations';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_sku_specs_relations';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `sku_id` BIGINT UNSIGNED NOT NULL,
                 `spec_option_id` BIGINT UNSIGNED NOT NULL,
@@ -403,10 +375,21 @@ class DBService {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+    }
 
+    /**
+     * Initialize Order Table
+     *  - g3_orders: 订单表
+     *  - g3_order_items: 订单明细表
+     *  - g3_order_address: 订单地址表
+     *  - g3_order_delivery: 订单物流配送表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     */
+    private function initOrderTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 9
-         * 
          * Order Table
          * 
          * 订单表
@@ -414,23 +397,20 @@ class DBService {
          *  - order_code: 订单编号
          *  - buyer_id: 买家用户ID
          *  - seller_id: 卖家用户ID
-         *  - order_source: 订单来源, 0: 网页订单, 1: 抖音订单
-         *  - order_type: 订单类型（对应库存管理类型）, 0: general, 1: digital, 2: membership
-         *  - order_status: 订单状态, 0: pending, 1: paid, 2: processing, 3: completed, 4: cancelled, 5: refunded
+         *  - order_source: 订单来源, 1: 网页订单, 2: 手动补单, 3: 手机APP订单, 4: 抖音订单
+         *  - order_type: 订单类型（对应库存管理类型）, 1: product(商品), 2: tip(知识付费), 3: donate(赞赏), 4: membership(会员), 5: recharge(充值)
+         *  - order_status: 订单状态, 1: pending, 2: paid, 3: processing, 4: completed, 5: cancelled, 6: refunded, 0: trash
          *  - total_amount: 订单总额
          *  - discount_amount: 优惠金额
          *  - final_amount: 实际应付金额
          *  - paid_amount: 已支付金额
          *  - coupon_id: 关联 优惠券ID
          *  - referrer_id: 关联 推荐人ID
-         *  - commission_status: 佣金状态, 0: pending, 1: settled, 2: cancelled
-         *  - wallet_used: 使用钱包余额支付的金额（若为 0 则未使用）
-         *  - thirdparty_order: 第三方订单号
+         *  - commission_status: 佣金状态, 1: pending, 2: settled, 3: cancelled
+         *  - wallet_used: 使用钱包余额支付的金额
+         *  - third_party_order: 第三方订单号
          *  - address_id: 关联地址ID
-         *  - payment_status: 支付状态，
-         *  - delivery_method: 配送方式
-         *  - delivery_code: 物流编码
-         *  - delivery_company: 物流公司
+         *  - delivery_id: 关联 配送表ID
          *  - buyer_remark: 买家留言
          *  - seller_remark: 卖家留言
          *  - created_at: 创建时间
@@ -438,69 +418,62 @@ class DBService {
          *  - updated_at: 更新时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_orders';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
+        $tableName = $wpdb->prefix . 'g3_orders';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tableName'") !== $tableName) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
                 -- 核心标识
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_code` varchar(32) NOT NULL,
+                `order_code` VARCHAR(48) NOT NULL,
                 -- 用户关系
-                `buyer_id` int(11) NOT NULL,
-                `seller_id` int(11) NOT NULL DEFAULT 0,
+                `buyer_id` BIGINT UNSIGNED NOT NULL,
+                `seller_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 -- 业务分类
-                `order_source` tinyint(4) NOT NULL,
-                `order_type` tinyint(4) NOT NULL,
+                `order_source` TINYINT DEFAULT 1,
+                `order_type` TINYINT NOT NULL,
                 -- 状态机
-                `order_status` tinyint(4) NOT NULL,
-                `payment_status` tinyint(4) DEFAULT NULL,
+                `order_status` TINYINT DEFAULT 1,
                 -- 金额体系
-                `total_amount` decimal(10,2) NOT NULL,
-                `discount_amount` decimal(10,2) NOT NULL,
-                `final_amount` decimal(10,2) NOT NULL,
-                `paid_amount` decimal(10,2) NOT NULL,
+                `total_amount` DECIMAL(12,2) NOT NULL,
+                `discount_amount` DECIMAL(12,2) DEFAULT 0.00,
+                `final_amount` DECIMAL(12,2) NOT NULL,
+                `paid_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
                 -- 营销分销
                 `coupon_id` BIGINT UNSIGNED DEFAULT NULL,
                 `referrer_id` BIGINT UNSIGNED DEFAULT NULL,
-                `commission_status` tinyint(4) DEFAULT NULL,
+                `commission_status` TINYINT DEFAULT NULL,
                 -- 余额支付快照
-                `wallet_used` decimal(10,2) DEFAULT 0.00,
+                `wallet_used` DECIMAL(12,2) DEFAULT NULL,
                 -- 对账快照
-                `thirdparty_order` varchar(100) DEFAULT NULL,
+                `third_party_order` VARCHAR(100) DEFAULT NULL,
                 -- 地址快照
                 `address_id` BIGINT UNSIGNED DEFAULT NULL,
                 -- 物流信息
                 `delivery_id` BIGINT UNSIGNED DEFAULT NULL,
                 -- 交互信息
-                `buyer_remark` varchar(255) DEFAULT NULL,
-                `seller_remark` varchar(255) DEFAULT NULL,
+                `buyer_remark` VARCHAR(255) DEFAULT NULL,
+                `seller_remark` VARCHAR(255) DEFAULT NULL,
                 -- 时间轴
-                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `created_at` DATETIME NOT NULL,
                 `completed_at` DATETIME DEFAULT NULL,
                 `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `unique_order_code` (`order_code`),
-                UNIQUE KEY `uniq_thirdparty_order` (`thirdparty_order`),
+                UNIQUE KEY `uniq_third_party_order` (`third_party_order`),
                 KEY `idx_buyer_id` (`buyer_id`),
                 KEY `idx_seller_id` (`seller_id`),
+                KEY `idx_order_source` (`order_source`),
+                KEY `idx_order_type` (`order_type`),
                 KEY `idx_order_status` (`order_status`),
-                KEY `idx_payment_status` (`payment_status`),
                 KEY `idx_delivery_id` (`delivery_id`),
                 KEY `idx_created_at` (`created_at`),
-                KEY `idx_completed_at` (`completed_at`),
-                KEY `idx_buyer_status` (`buyer_id`, `order_status`),
-                KEY `idx_status_created` (`order_status`, `created_at`)
+                KEY `idx_completed_at` (`completed_at`)
             ) ENGINE=InnoDB $charset COMMENT='orders';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 10
-         * 
          * Order Items Table
          * 
          * 订单明细表
@@ -508,42 +481,41 @@ class DBService {
          *  - order_id: 订单ID
          *  - product_id: 商品ID
          *  - sku_id: 商品SKU ID
+         *  - product_title: 快照数据 商品标题
+         *  - product_image: 快照数据 商品图片
+         *  - spec_info: 快照数据 商品规格信息
          *  - quantity: 购买数量
          *  - unit_price: 单价
          *  - total_price: 总价
+         *  - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_order_items';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
+        $tableName = $wpdb->prefix . 'g3_order_items';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tableName'") !== $tableName) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_id` BIGINT NOT NULL,
-                `product_id` BIGINT NOT NULL,
-                `sku_id` BIGINT NOT NULL,
+                `order_id` VARCHAR(48) NOT NULL,
+                `product_id` BIGINT UNSIGNED NOT NULL,
+                `sku_id` BIGINT UNSIGNED NOT NULL,
                 -- 快照 对账
                 `product_title` VARCHAR(255) DEFAULT NULL,
                 `product_image` VARCHAR(255) DEFAULT NULL,
-                `sku_name` VARCHAR(255) DEFAULT NULL,
-                `unit_price` DECIMAL(10,2) NOT NULL,
+                `spec_info` TEXT DEFAULT NULL,
                 `quantity` INT NOT NULL DEFAULT 1,
-                `total_price` DECIMAL(10,2) NOT NULL,
-                `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `unit_price` DECIMAL(12,2) NOT NULL,
+                `total_price` DECIMAL(12,2) NOT NULL,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 KEY `idx_order_id` (`order_id`),
                 KEY `idx_sku_id` (`sku_id`),
                 KEY `idx_order_sku` (`order_id`, `sku_id`)
             ) ENGINE=InnoDB $charset COMMENT='order items';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 11
-         * 
          * Order Address Table
          * 
          * 订单地址表
@@ -561,15 +533,13 @@ class DBService {
          *  - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_order_address';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
+        $tableName = $wpdb->prefix . 'g3_order_address';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tableName'") !== $tableName) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_id` BIGINT DEFAULT NULL,
-                `user_id` BIGINT DEFAULT NULL,
+                `order_id` VARCHAR(48) NOT NULL,
+                `user_id` BIGINT UNSIGNED DEFAULT NULL,
                 `name` VARCHAR(100) DEFAULT NULL,
                 `phone` VARCHAR(20) DEFAULT NULL,
                 `country` VARCHAR(50) DEFAULT NULL,
@@ -578,19 +548,16 @@ class DBService {
                 `district` VARCHAR(50) DEFAULT NULL,
                 `address` VARCHAR(255) DEFAULT NULL,
                 `postcode` VARCHAR(10) DEFAULT NULL,
-                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `idx_order_id` (`order_id`),
                 KEY `idx_user_id` (`user_id`)
             ) ENGINE=InnoDB $charset COMMENT='order address';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 12
-         * 
          * Order Delivery Table
          * 
          * 订单物流配送表
@@ -599,34 +566,42 @@ class DBService {
          *  - method: 配送方式
          *  - code: 物流单号编码
          *  - company: 物流公司名称
-         *  - shipped_at: 配送状态
+         *  - status: 配送状态
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_order_delivery';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
+        $tableName = $wpdb->prefix . 'g3_order_delivery';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tableName'") !== $tableName) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_id` BIGINT UNSIGNED DEFAULT NULL,
-                `method` tinyint(4) DEFAULT NULL,
-                `code` varchar(64) DEFAULT NULL,
-                `company` varchar(64) DEFAULT NULL,
-                `shipped_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `order_id` VARCHAR(48) NOT NULL,
+                `method` TINYINT DEFAULT NULL,
+                `code` VARCHAR(64) DEFAULT NULL,
+                `company` VARCHAR(64) DEFAULT NULL,
+                `status` VARCHAR(64) DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY uniq_order_delivery (order_id, method),
                 KEY `idx_code` (`code`),
                 KEY `idx_order_id` (`order_id`)
             ) ENGINE=InnoDB $charset COMMENT='order delivery';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+    }
 
+    /**
+     * Initialize the fund tables.
+     *  - g3_fund_flow          资金流水表
+     *  - g3_payment_log        支付记录表
+     *  - g3_withdraw_apply     提现申请表
+     * 
+     * @param wpdb   $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initFundTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 13
-         * 
          * Fund Flow Table
          * 
          * 资金流水表
@@ -641,33 +616,28 @@ class DBService {
          *  - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_fund_flow';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_fund_flow';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT NOT NULL,
                 `order_id` BIGINT DEFAULT NULL,
-                `type` tinyint(4) NOT NULL,
-                `amount` decimal(10,2) NOT NULL,
-                `before_balance` decimal(10,2) NOT NULL,
-                `after_balance` decimal(10,2) NOT NULL,
-                `remark` varchar(255) DEFAULT NULL,
+                `type` TINYINT NOT NULL,
+                `amount` DECIMAL(12,2) NOT NULL,
+                `before_balance` DECIMAL(12,2) NOT NULL,
+                `after_balance` DECIMAL(12,2) NOT NULL,
+                `remark` VARCHAR(255) DEFAULT NULL,
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 KEY `idx_type` (`type`)
             ) ENGINE=InnoDB $charset COMMENT='fund flow';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 14
-         * 
          * Payment Log Table
          * 
          * 支付记录表
@@ -682,34 +652,29 @@ class DBService {
          *  - raw_response: 原始回调数据（用于对账，JSON格式存储）
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_payment_log';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_payment_log';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `order_id` BIGINT DEFAULT NULL,
                 `user_id` BIGINT NOT NULL,
-                `pay_amount` DECIMAL(10,2) NOT NULL,
-                `pay_method` tinyint(4) NOT NULL,
-                `transaction_id` varchar(255) DEFAULT NULL,
-                `status` tinyint(4) NOT NULL,
-                `paid_at` datetime DEFAULT NULL,
-                `raw_response` longtext,
+                `pay_amount` DECIMAL(12,2) NOT NULL,
+                `pay_method` TINYINT NOT NULL,
+                `transaction_id` VARCHAR(255) DEFAULT NULL,
+                `status` TINYINT NOT NULL,
+                `paid_at` DATETIME DEFAULT NULL,
+                `raw_response` LONGTEXT DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 UNIQUE KEY `idx_order_id` (`order_id`),
                 UNIQUE KEY `idx_transaction_id` (`transaction_id`)
             ) ENGINE=InnoDB $charset COMMENT='payment log';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 15
-         * 
          * Withdraw Apply Table
          * 
          * 提现申请表
@@ -726,35 +691,46 @@ class DBService {
          *  - processed_at: 处理时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_withdraw_apply';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_withdraw_apply';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT NOT NULL,
-                `amount` DECIMAL(10,2) NOT NULL,
-                `fee` DECIMAL(10,2) NOT NULL,
-                `actual_amount` DECIMAL(10,2) NOT NULL,
-                `account_type` tinyint(4) NOT NULL,
-                `account_info` longtext NOT NULL,
-                `status` tinyint(4) NOT NULL,
-                `admin_remark` varchar(255) DEFAULT NULL,
+                `amount` DECIMAL(12,2) NOT NULL,
+                `fee` DECIMAL(12,2) NOT NULL,
+                `actual_amount` DECIMAL(12,2) NOT NULL,
+                `account_type` TINYINT NOT NULL,
+                `account_info` LONGTEXT NOT NULL,
+                `status` TINYINT NOT NULL,
+                `admin_remark` VARCHAR(255) DEFAULT NULL,
                 `applied_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 `processed_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='withdraw apply';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+    }
 
+    /**
+     * Initialize marketing tables
+     *  - g3_distribution_relation  分销关系表
+     *  - g3_commission_log         佣金记录表
+     *  - g3_coupon                 优惠券表
+     *  - g3_user_coupon            用户优惠券表
+     *  - g3_ads                    广告表
+     *  - g3_invite_codes           邀请码表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initMarketingTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 16
-         * 
          * Distribution Relation Table
          * 
          * 分销与佣金表
@@ -766,29 +742,24 @@ class DBService {
          *  - created_at: 创建时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_distribution_relation';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_distribution_relation';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT NOT NULL,
                 `parent_id` BIGINT NOT NULL,
                 `root_id` BIGINT NOT NULL,
-                `level` tinyint(4) NOT NULL,
+                `level` TINYINT NOT NULL,
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`)
             ) ENGINE=InnoDB $charset COMMENT='distribution relation';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 17
-         * 
          * Commission Log Table
          * 
          * 佣金记录表
@@ -803,19 +774,17 @@ class DBService {
          *  - settled_at: 结算时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_commission_log';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_commission_log';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `order_id` BIGINT UNSIGNED NOT NULL,
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `parent_id` BIGINT UNSIGNED NOT NULL,
-                `amount` DECIMAL(10, 2) NOT NULL,
-                `type` tinyint(4) NOT NULL,
-                `status` tinyint(4) NOT NULL,
+                `amount` DECIMAL(12, 2) NOT NULL,
+                `type` TINYINT NOT NULL,
+                `status` TINYINT NOT NULL,
                 `triggered_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 `settled_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`id`),
@@ -823,14 +792,11 @@ class DBService {
                 KEY `idx_parent_id` (`parent_id`),
                 KEY `idx_order_id` (`order_id`)
             ) ENGINE=InnoDB $charset COMMENT='commission log';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 18
-         * 
          * coupon table
          * 
          * 营销与优惠券表
@@ -846,33 +812,28 @@ class DBService {
          *  - product_scope: 优惠券使用范围, 0: all 全部商品, 2: single 指定商品, 3: category 指定分类, 4: brand 指定品牌
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_coupon';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_coupon';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `title` VARCHAR(255) NOT NULL,
-                `type` tinyint(4) NOT NULL,
-                `value` decimal(10,2) NOT NULL,
-                `min_amount` decimal(10,2) NOT NULL,
-                `total_count` int(11) NOT NULL,
-                `used_count` int(11) NOT NULL,
+                `type` TINYINT NOT NULL,
+                `value` DECIMAL(12,2) NOT NULL,
+                `min_amount` DECIMAL(12,2) NOT NULL,
+                `total_count` INT NOT NULL,
+                `used_count` INT NOT NULL,
                 `start_time` DATETIME NOT NULL,
                 `end_time` DATETIME NOT NULL,
-                `product_scope` tinyint(4) NOT NULL,
+                `product_scope` TINYINT NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_type` (`type`)
             ) ENGINE=InnoDB $charset COMMENT='coupons';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 19
-         * 
          * User Coupon Table
          * 
          * 用户优惠券表
@@ -884,30 +845,119 @@ class DBService {
          *  - used_at: 使用时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_user_coupon';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_user_coupon';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `coupon_id` BIGINT UNSIGNED NOT NULL,
-                `status` TINYINT(4) NOT NULL,
+                `status` TINYINT NOT NULL,
                 `received_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 `used_at` DATETIME NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='user coupons';";
-
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 20
+         * Ad Table
          * 
+         * 广告表
+         *  - id: 主键, 广告ID
+         *  - user_id: 用户ID
+         *  - order_id: 订单ID
+         *  - status: 状态
+         *  - title: 标题
+         *  - description: 描述
+         *  - media: 媒体
+         *  - start_time: 开始时间
+         *  - end_time: 结束时间
+         *  - location: 位置
+         *  - link: 链接
+         * 
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_ads';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `order_id` BIGINT UNSIGNED DEFAULT NULL,
+                `status` TINYINT NOT NULL,
+                `title` VARCHAR(128) NOT NULL,
+                `description` VARCHAR(255) NOT NULL,
+                `media` VARCHAR(255) NOT NULL,
+                `start_time` DATETIME NOT NULL,
+                `end_time` DATETIME NOT NULL,
+                `location` VARCHAR(32) NOT NULL,
+                `link` VARCHAR(255) NOT NULL,
+                PRIMARY KEY (`id`),
+                KEY `idx_location` (`location`),
+                KEY `idx_start_time` (`start_time`),
+                KEY `idx_end_time` (`end_time`)
+            ) ENGINE=InnoDB $charset COMMENT='ads';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
+         * Invite Code Table
+         * 
+         * 邀请码表。存储邀请码信息，如邀请码、有效期、创建类型（生成/用户购买）、过期时间、状态（未使用/已使用）、创建用户id、创建时间、被邀请用户id、使用时间等
+         *  - id: 主键
+         *  - code: 邀请码
+         *  - source: 来源，1: 系统生成, 2: 用户购买
+         *  - start_time: 生效时间
+         *  - end_time: 失效时间
+         *  - status: 状态，0: 未使用, 1: 已使用
+         *  - creator_id: 创建用户id
+         *  - invitee_id: 被邀请用户id
+         *  - created_at: 创建时间
+         *  - used_at: 使用时间
+         * 
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_invite_codes';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `code` VARCHAR(64) NOT NULL,
+                `source` TINYINT NOT NULL DEFAULT 1,
+                `start_time` DATETIME NOT NULL,
+                `end_time` DATETIME NOT NULL,
+                `status` TINYINT NOT NULL DEFAULT 0,
+                `creator_id` BIGINT UNSIGNED DEFAULT NULL,
+                `invitee_id` BIGINT UNSIGNED DEFAULT NULL,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `used_at` DATETIME DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `unique_code` (`code`),
+                KEY `idx_source` (`source`),
+                KEY `idx_status` (`status`)
+            ) ENGINE=InnoDB $charset COMMENT='invite codes';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+    }
+
+    /**
+     * Initialize Wechat Table
+     *  - g3_wechat_oa_menus            微信公众号菜单表
+     *  - g3_wechat_oa_messages         微信公众号消息表
+     *  - g3_wechat_oa_reply            微信公众号应答表
+     *  - g3_wechat_oa_reply_keyword    微信公众号应答关键词表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initWechatTable(wpdb $wpdb, string $charset): void
+    {
+        /**
          * Wechat Official Account Menus Table
          * 
          * 微信公众号菜单表
@@ -920,19 +970,17 @@ class DBService {
          *  - app_id: 小程序应用ID
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_wechat_oa_menus';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_wechat_oa_menus';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `parent` int(11) NOT NULL,
-                `name` varchar(128) NOT NULL,
-                `sort` tinyint(4) NOT NULL,
-                `type` tinyint(4) NOT NULL,
-                `value` varchar(255) NOT NULL,
-                `app_id` varchar(64) NOT NULL,
+                `parent` INT NOT NULL,
+                `name` VARCHAR(128) NOT NULL,
+                `sort` TINYINT NOT NULL,
+                `type` TINYINT NOT NULL,
+                `value` VARCHAR(255) NOT NULL,
+                `app_id` VARCHAR(64) NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_parent` (`parent`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA menus';";
@@ -941,8 +989,6 @@ class DBService {
         }
 
         /**
-         * 21
-         * 
          * Wechat Official Account Messages Table
          * 
          * 微信公众号消息表
@@ -955,19 +1001,17 @@ class DBService {
          *  - created_at: 消息创建时间 UTC 时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_wechat_oa_messages';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_wechat_oa_messages';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `msgid` varchar(64) NOT NULL,
-                `openid` varchar(64) NOT NULL,
-                `nickname` varchar(128) NOT NULL,
-                `type` varchar(32) NOT NULL,
-                `content` longtext NOT NULL,
-                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `msgid` VARCHAR(64) NOT NULL,
+                `openid` VARCHAR(64) NOT NULL,
+                `nickname` VARCHAR(128) NOT NULL,
+                `type` VARCHAR(32) NOT NULL,
+                `content` LONGTEXT NOT NULL,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 KEY `idx_openid` (`openid`),
                 KEY `idx_type` (`type`),
@@ -978,8 +1022,6 @@ class DBService {
         }
 
         /**
-         * 22
-         * 
          * Wechat Official Account Reply Table
          * 
          * 微信公众号应答表
@@ -991,18 +1033,16 @@ class DBService {
          *  - updated_at: 更新时间 UTC 时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_wechat_oa_reply';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_wechat_oa_reply';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `type` varchar(32) NOT NULL,
-                `content` longtext NOT NULL,
-                `status` tinyint(4) NOT NULL DEFAULT 1,
-                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `type` VARCHAR(32) NOT NULL,
+                `content` LONGTEXT NOT NULL,
+                `status` TINYINT NOT NULL DEFAULT 1,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA reply';";
@@ -1011,8 +1051,6 @@ class DBService {
         }
 
         /**
-         * 23
-         * 
          * Wechat Official Account Reply Keyword Table
          * 
          * 微信公众号应答关键词关联表
@@ -1020,96 +1058,140 @@ class DBService {
          *  - keyword: 触发关键词
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_wechat_oa_reply_keyword';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_wechat_oa_reply_keyword';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `reply_id` BIGINT UNSIGNED NOT NULL,
-                `keyword` varchar(100) NOT NULL,
+                `keyword` VARCHAR(100) NOT NULL,
                 PRIMARY KEY (`reply_id`, `keyword`),
                 UNIQUE KEY `unique_keyword` (`keyword`)
             ) ENGINE=InnoDB $charset COMMENT='wechat OA reply keyword';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+    }
 
+    /**
+     * init Utility Table
+     *  - g3_queue_jobs     队列任务表
+     *  - g3_logs           日志表
+     *  - g3_swipers        轮播图表
+     * 
+     * @param wpdb $wpdb
+     * @param string $charset
+     * @return void
+     */
+    private function initUtilityTable(wpdb $wpdb, string $charset): void
+    {
         /**
-         * 24
+         * Queue Jobs Table
          * 
-         * Ad Table
-         * 
-         * 广告表
-         *  - id: 主键, 广告ID
+         * 队列任务表
+         *  - id: 主键, 任务ID
+         *  - queue: 队列名称
+         *  - payload: 任务数据
+         *  - attempts: 尝试次数
+         *  - reserved_at: 锁定时间
+         *  - available_at: 可用时间
+         *  - created_at: 创建时间
+         *  - updated_at: 更新时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_ads';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_queue_jobs';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT UNSIGNED NOT NULL,
-                `order_id` BIGINT UNSIGNED DEFAULT NULL,
-                `status` tinyint(4) NOT NULL,
-                `title` varchar(128) NOT NULL,
-                `description` varchar(255) NOT NULL,
-                `media` varchar(255) NOT NULL,
-                `start_time` datetime NOT NULL,
-                `end_time` datetime NOT NULL,
-                `location` varchar(32) NOT NULL,
-                `link` varchar(255) NOT NULL,
-                PRIMARY KEY (`id`),
-                KEY `idx_location` (`location`),
-                KEY `idx_start_time` (`start_time`),
-                KEY `idx_end_time` (`end_time`)
-            ) ENGINE=InnoDB $charset COMMENT='ads';";
-
+                `queue` VARCHAR(255) NOT NULL DEFAULT 'default',
+                `payload` LONGTEXT NOT NULL,
+                `attempts` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+                `reserved_at` DATETIME NULL DEFAULT NULL,
+                `available_at` DATETIME NOT NULL,
+                `created_at` DATETIME NOT NULL,
+                `updated_at` DATETIME NULL DEFAULT NULL,
+                PRIMARY KEY (id),
+                KEY idx_queue_available (`queue`, `available_at`),
+                KEY idx_reserved_at (`reserved_at`),
+                KEY idx_created_at (`created_at`)
+            ) ENGINE=InnoDB $charset COMMENT='queue jobs';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
 
         /**
-         * 25
+         * Log Table
          * 
-         * Invite Code Table
-         * 
-         * 邀请码表。存储邀请码信息，如邀请码、有效期、创建类型（生成/用户购买）、过期时间、状态（未使用/已使用）、创建用户id、创建时间、被邀请用户id、使用时间等
+         * 日志表
          *  - id: 主键
-         *  - code: 邀请码
-         *  - source: 来源，0: 系统生成, 2: 用户购买
-         *  - start_time: 生效时间
-         *  - end_time: 失效时间
-         *  - status: 状态，0: 未使用, 1: 已使用
-         *  - creator_id: 创建用户id
-         *  - invitee_id: 被邀请用户id
+         *  - type: 日志类型
+         *  - level: 日志级别
+         *  - module: 业务模块名称
+         *  - message: 日志信息
+         *  - user_id: 用户ID
+         *  - ip_address: IP地址
+         *  - meta: 日志元数据
          *  - created_at: 创建时间
-         *  - used_at: 使用时间
          * 
          * @since 1.0.0
-         * @author Wang Shai
          */
-        $tableName  = $wpdb->prefix . 'g3_invite_codes';
-        $tableExist = $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName;
-        if (!$tableExist) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
+        $table = $wpdb->prefix . 'g3_logs';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `code` varchar(64) NOT NULL,
-                `source` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0 generate 1 user buy',
-                `start_time` DATETIME NOT NULL,
-                `end_time` DATETIME NOT NULL,
-                `status` tinyint(4) NOT NULL COMMENT 'status 0 unused 1 used',
-                `creator_id` BIGINT UNSIGNED DEFAULT NULL,
-                `invitee_id` BIGINT UNSIGNED DEFAULT NULL,
+                `type` VARCHAR(64) NOT NULL,
+                `level` VARCHAR(64) NOT NULL DEFAULT 'info',
+                `module` VARCHAR(64) DEFAULT NULL,
+                `message` TEXT NOT NULL,
+                `user_id` BIGINT UNSIGNED DEFAULT NULL,
+                `ip_address` VARCHAR(64) DEFAULT NULL,
+                `meta` TEXT DEFAULT NULL,
                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                `used_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                UNIQUE KEY `unique_code` (`code`),
-                KEY `idx_source` (`source`),
-                KEY `idx_status` (`status`)
-            ) ENGINE=InnoDB $charset COMMENT='invite codes';";
+                KEY `type` (`type`),
+                KEY `level` (`level`),
+                KEY `module` (`module`),
+                KEY `created_at` (`created_at`)
+            ) ENGINE=InnoDB $charset COMMENT='logs';";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
+         * Swiper Table
+         * 
+         * 轮播图表
+         *  - id: 主键
+         *  - title: 标题
+         *  - link: 链接
+         *  - target: 打开方式, 0: self, 1: blank
+         *  - media: 媒体文件网络地址
+         *  - location: 位置
+         *  - sort: 排序
+         *  - status: 状态, 0: offline, 1: online
+         *  - user_id: 创建人
+         *  - created_at: 创建时间
+         *  - updated_at: 更新时间
+         * 
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_swipers';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `title` VARCHAR(255) NOT NULL,
+                `link` VARCHAR(255) NOT NULL,
+                `target` TINYINT NOT NULL DEFAULT 0,
+                `media` VARCHAR(255) NOT NULL,
+                `location` VARCHAR(255) NOT NULL,
+                `sort` INT NOT NULL DEFAULT 1,
+                `status` TINYINT NOT NULL,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`),
+                KEY `location` (`location`)
+            ) ENGINE=InnoDB $charset COMMENT='swipers';";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }

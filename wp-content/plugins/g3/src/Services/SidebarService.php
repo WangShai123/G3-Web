@@ -1,7 +1,19 @@
 <?php
+
 namespace JEALER\G3\Services;
+
 use WP_Error;
+
+/**
+ * Sidebar Service
+ * 
+ * 侧边栏服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class SidebarService {
+
     /**
      * Register Widget
      * 

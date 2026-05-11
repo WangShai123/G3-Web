@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Middleware;
 
 use WP_REST_Request;
@@ -7,7 +8,7 @@ use WP_Error;
 /**
  * Schema Middleware - JSON Schema Validator
  *
- * 用于 REST API 的请求体结构校验
+ * 验证 REST API 的请求体是否符合指定的 JSON Schema.
  * 支持 JSON Schema 的简化版本：
  * - type
  * - required
@@ -16,8 +17,16 @@ use WP_Error;
  * - minLength / maxLength
  * - minimum / maximum
  * - items
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
  */
 class SchemaMiddleware implements MiddlewareInterface {
+
+    /**
+     * JSON Schema 
+     * @var array
+     */
     private array $schema;
 
     public function __construct(array $schema)
@@ -25,14 +34,6 @@ class SchemaMiddleware implements MiddlewareInterface {
         $this->schema = $schema;
     }
 
-    /**
-     * Handle the middleware logic
-     * 
-     * 验证请求体是否符合指定的 JSON Schema
-     * 
-     * @param WP_REST_Request $request
-     * @return bool|WP_Error
-     */
     public function handle(WP_REST_Request $request): bool|WP_Error
     {
         $data = $request->get_json_params();

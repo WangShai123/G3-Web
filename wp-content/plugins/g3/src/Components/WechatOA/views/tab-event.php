@@ -8,6 +8,7 @@ $msg = sprintf(
 $msg = "<div>{$msg}</div>";
 echo Element::tip(
     $msg,
+    '',
     'default',
     'mt-4'
 );

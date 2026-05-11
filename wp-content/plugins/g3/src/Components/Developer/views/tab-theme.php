@@ -3,6 +3,7 @@ use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
     __('Quickly create a G3 Web theme project with complete architecture.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
@@ -121,7 +122,7 @@ echo Element::tip(
                 toast.error('<?php _e('No data supplied.'); ?>')
                 return
             }
-            postJson(restUrl + 'api/v1/theme/generate', {
+            postJson(restUrl + '/api/v1/theme/generate', {
                 name,
                 folder,
                 url,

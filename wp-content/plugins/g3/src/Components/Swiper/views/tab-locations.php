@@ -1,5 +1,6 @@
 <?php
-use JEALER\G3\Includes\SwiperLocationTable;
+
+use JEALER\G3\Components\Swiper\Includes\SwiperLocationTable;
 
 $location = new SwiperLocationTable();
 $location->prepare_items();

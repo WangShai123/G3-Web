@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Helper;
 
 use JEALER\G3\Router\Router;
@@ -16,6 +17,7 @@ use DateTime;
 use Exception;
 
 final class Helper {
+
     public ?Container $container = null;
     private ?Rewrite $rewrite = null;
 
@@ -111,8 +113,6 @@ final class Helper {
      * Register REST API Routes
      * 
      * @return Router
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function router(): Router
     {
@@ -246,7 +246,8 @@ final class Helper {
         $z  = $vD["z"] ?? false;
         if (!$e || !$t || !$z) return new WP_Error(400);
 
-        set_transient(SystemService::K, $z);
+        $test = set_transient(SystemService::K, $z);
+        error_log(print_r($test, true));
 
         $eT = $this->_d($e, $z);
         if (!$this->vt($eT) || $eT <= time()) {
@@ -302,6 +303,8 @@ final class Helper {
     /**
      * 加载原有组件系统
      * 
+     * @deprecated
+     * 
      * @return void
      */
     private static function loadLegacyComponentSystem(): void
@@ -319,8 +322,10 @@ final class Helper {
 
     /**
      * Load All Components
+     * 
+     * @deprecated 1.0.0
+     * 
      * @return 
-     * @since 1.0.0
      * @author Wang Shai
      */
     private static function loadComponents(): void
@@ -358,10 +363,10 @@ final class Helper {
      * @param array $map format as [
      *     'component_name' => true,
      * ]
+     * 
+     * @deprecated 1.0.0
      *
      * @return array Loaded component instances
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function components(array $map): array
     {

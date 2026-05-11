@@ -22,7 +22,7 @@ class TestController {
     public function __construct(
         private AuthService $service
     ) {
-        error_log('[TestController] AuthService injected: ' . get_class($this->service));
+        error_log('[G3 TestController] AuthService injected: ' . get_class($this->service));
     }
 
     /**

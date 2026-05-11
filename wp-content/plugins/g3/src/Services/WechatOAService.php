@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
@@ -10,12 +11,21 @@ use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Message as Lang;
 use WP_Error;
 use Exception;
 use Closure;
 use WP_User_Query;
 
+/**
+ * Wechat OA Service
+ * 
+ * 微信公众号服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class WechatOAService {
 
     /**
@@ -24,11 +34,8 @@ class WechatOAService {
      * 微信公众号菜单数据表名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const MENU_TABLE = 'g3_wechat_oa_menus';
+    const MENU_TABLE = 'g3_wechat_oa_menus';
 
     /**
      * Messages Table Name for Wechat Official Account
@@ -36,11 +43,8 @@ class WechatOAService {
      * 微信公众号消息数据表名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const MESSAGES_TABLE = 'g3_wechat_oa_messages';
+    const MESSAGES_TABLE = 'g3_wechat_oa_messages';
 
     /**
      * Reply Table Name for Wechat Official Account
@@ -48,11 +52,8 @@ class WechatOAService {
      * 微信公众号回复数据表名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const REPLY_TABLE = 'g3_wechat_oa_reply';
+    const REPLY_TABLE = 'g3_wechat_oa_reply';
 
     /**
      * Keyword Table Name for Wechat Official Account
@@ -60,11 +61,8 @@ class WechatOAService {
      * 微信公众号关键词数据表名
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const KEYWORD_TABLE = 'g3_wechat_oa_reply_keyword';
+    const KEYWORD_TABLE = 'g3_wechat_oa_reply_keyword';
 
     /**
      * Option Key for Wechat OA
@@ -72,11 +70,8 @@ class WechatOAService {
      * 微信公众号选项键
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const OPTION_KEY = 'g3_option_wechatOA';
+    const OPTION_KEY = 'g3_option_wechatOA';
 
     /**
      * Option Key for Wechat OA Event
@@ -84,11 +79,8 @@ class WechatOAService {
      * 微信公众号事件选项键
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const EVENT_OPTION_KEY = 'g3_option_wechatOA_event';
+    const EVENT_OPTION_KEY = 'g3_option_wechatOA_event';
 
     /**
      * Cache Group for Wechat Official Account
@@ -96,11 +88,8 @@ class WechatOAService {
      * 微信公众号缓存组
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const CACHE_GROUP = 'wechat-oa';
+    const CACHE_GROUP = 'g3_wechat-oa';
 
     /**
      * Menu Cache Key for Wechat Official Account
@@ -108,15 +97,12 @@ class WechatOAService {
      * 微信公众号菜单缓存键
      * 
      * @var string
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public const MENU_CACHE_KEY = 'menus';
+    const MENU_CACHE_KEY = 'menus';
 
-    public const SUBSCRIBE_QRCODE_PREFIX = 'g3_wechat_qrcode_';
+    const SUBSCRIBE_QRCODE_PREFIX = 'g3_wechat_qrcode_';
 
-    public const SUBSCRIBE_BIND_PREFIX = 'g3_wechat_bind_';
+    const SUBSCRIBE_BIND_PREFIX = 'g3_wechat_bind_';
 
     /**
      * Instance of WechatOAService
@@ -124,11 +110,8 @@ class WechatOAService {
      * 微信公众号服务实例
      * 
      * @var WechatOAService
-     * @access private
-     * @since 1.0.0
-     * @author Wang Shai
      */
-    public static $instance = null;
+    public static WechatOAService $instance;
 
     /**
      * EasyWeChat Application Instance
@@ -136,9 +119,6 @@ class WechatOAService {
      * EasyWeChat 应用实例
      * 
      * @var Application
-     * @access public
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public Application $app;
 
@@ -153,7 +133,9 @@ class WechatOAService {
     {
         $x = Container::run()->getServicesByTag('raven')['loader']->x();
         if ($x) return;
-        $this->option  = get_option(self::OPTION_KEY);
+
+        // $this->option = get_option(self::OPTION_KEY);
+        $this->option  = Context::get(self::OPTION_KEY);
         $serviceEnable = $this->option['service'] ?? false;
 
         if ($serviceEnable) {
@@ -178,8 +160,6 @@ class WechatOAService {
      * 微信公众号服务是否可用
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function available(): bool
     {
@@ -191,11 +171,9 @@ class WechatOAService {
      * 
      * 获取微信公众号服务的实例
      * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return WechatOAService
      */
-    public static function run(): WechatOAService|null
+    public static function run(): WechatOAService
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -205,7 +183,8 @@ class WechatOAService {
 
     private function config(): array
     {
-        $data = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        // $data = get_option(SystemService::OPEN_WECHAT_OA_KEY);
+        $data = Context::get(SystemService::OPEN_WECHAT_OA_KEY);
 
         $result = [
             'app_id' => $data['appId'] ?? '',
@@ -230,8 +209,6 @@ class WechatOAService {
      * 
      * @param array $message Message data
      * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function saveMessage(array $message): bool|int
     {
@@ -259,14 +236,12 @@ class WechatOAService {
             'nickname'   => $nickname,
             'type'       => $message['MsgType'] ?? '',
             'content'    => '',
-            'created_at' => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : current_time('mysql'),
+            'created_at' => !empty($message['CreateTime']) ? gmdate('Y-m-d H:i:s', $message['CreateTime']) : gmdate('Y-m-d H:i:s', time()),
         ];
 
-        // Handle timestamp conversion if available
-        if (!empty($message['CreateTime'])) {
-            // Convert timestamp to MySQL datetime format
-            $data['created_at'] = date('Y-m-d H:i:s', $message['CreateTime']);
-        }
+        // if (!empty($message['CreateTime'])) {
+        //     $data['created_at'] = gmdate('Y-m-d H:i:s', $message['CreateTime']);
+        // }
 
         // Handle different message types
         switch ($message['MsgType']) {
@@ -284,18 +259,18 @@ class WechatOAService {
                 $data['content'] = $message['MediaId'] ?? '';
                 break;
             case 'location':
-                $x = $message['Location_X'] ?? '';
-                $y = $message['Location_Y'] ?? '';
-                $label = $message['Label'] ?? '';
+                $x               = $message['Location_X'] ?? '';
+                $y               = $message['Location_Y'] ?? '';
+                $label           = $message['Label'] ?? '';
                 $data['content'] = $x . ', ' . $y . ', ' . $label;
                 break;
             case 'link':
-                $url = $message['Url'] ?? '';
+                $url             = $message['Url'] ?? '';
                 $data['content'] = $url;
                 break;
             case 'event':
-                $event = (string) $message['Event'] ?? '';
-                $key = (string) $message['EventKey'] ?? '';
+                $event           = (string) $message['Event'] ?? '';
+                $key             = (string) $message['EventKey'] ?? '';
                 $data['content'] = $event . ' - ' . $key;
                 break;
             default:
@@ -303,10 +278,8 @@ class WechatOAService {
                 break;
         }
 
-        // Insert message into database
         $result = $wpdb->insert($table, $data);
 
-        // Clear message cache
         wp_cache_delete('messages:count', self::CACHE_GROUP);
 
         return $result;
@@ -337,8 +310,6 @@ class WechatOAService {
      * @param int $per_page Number of items per page
      * @param array $conditions Query conditions
      * @return array Messages data
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMessages(int $page = 1, int $per_page = 20, array $conditions = []): array
     {
@@ -385,8 +356,6 @@ class WechatOAService {
      * 
      * @param array $conditions Query conditions
      * @return int Total count of messages
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMessageCount(array $conditions = []): int
     {
@@ -438,8 +407,6 @@ class WechatOAService {
      * 
      * @param int $id Message ID
      * @return array|null Message data or null if not found
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMessageById(int $id): ?array
     {
@@ -474,8 +441,6 @@ class WechatOAService {
      * 
      * @param int $id Message ID
      * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function deleteMessage(int $id): bool|int
     {
@@ -489,8 +454,6 @@ class WechatOAService {
      * 
      * @param int|array $ids Message ID or array of Message IDs
      * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function deleteMessages(int|array $ids): bool|int
     {
@@ -567,8 +530,6 @@ class WechatOAService {
      * 
      * @param mixed $message Message data from EasyWeChat
      * @return bool Whether the message was processed successfully
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function processIncomingMessage(mixed $message): bool
     {
@@ -596,7 +557,7 @@ class WechatOAService {
 
             return true;
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             error_log('Error processing WeChat message: ' . $e->getMessage());
             return false;
         }
@@ -609,8 +570,6 @@ class WechatOAService {
      * 
      * @param $message
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function handleReply($message)
     {
@@ -642,13 +601,12 @@ class WechatOAService {
      * 
      * @param string $keyword
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function searchUrl(string $keyword): string
     {
         return home_url('/') . '?s=' . urlencode($keyword);
     }
+
     /**
      * Search message reply
      * 
@@ -656,8 +614,6 @@ class WechatOAService {
      * 
      * @param string $content
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function searchReply(string $content): string
     {
@@ -682,8 +638,6 @@ class WechatOAService {
      * 
      * @param $message
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function handleTextMessage($message): string
     {
@@ -696,6 +650,7 @@ class WechatOAService {
 
         return $this->handleTextReply($content, $this->getDefaultMessage());
     }
+
     private function getDefaultMessage()
     {
         return $defaultReply = $this->option['defaultMessage'] ?? __('Message received, thanks for your advice!', 'G3');
@@ -709,8 +664,6 @@ class WechatOAService {
      * @param string $content
      * @param string $defaultReply
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function handleTextReply(string $content, string $defaultReply): string
     {
@@ -738,8 +691,6 @@ class WechatOAService {
      * 
      * @param $message
      * @return string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function handleEventMessage($message)
     {
@@ -752,6 +703,7 @@ class WechatOAService {
             default => null,
         };
     }
+
     private function handleSubscribeEvent($message)
     {
         // case 1: Regular subscribe, no EventKey
@@ -793,10 +745,12 @@ class WechatOAService {
         //     return null;
         // }
     }
+
     private function getSubscribeMessage()
     {
         return $this->option['followMessage'] ?? __('Welcome! Thanks for your attention.', 'G3');
     }
+
     private function handleScanEvent($message)
     {
         $sceneStr = $message->EventKey ?? '';
@@ -817,9 +771,12 @@ class WechatOAService {
                 return null;
         }
     }
+
     private function handleLoginEvent(string $openid, string $hash)
     {
-        // Notify AuthService: this openid user has subscribed, please login
+        /**
+         * @var AuthService
+         */
         $authService = Container::run()->get(AuthService::class);
         $authService->handlePostSubscribeLogin($openid, $hash);
         return Lang::loginSuccess();
@@ -832,14 +789,13 @@ class WechatOAService {
      * 
      * @param 
      * @return 
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function handleClickEvent($message)
     {
         $eventKey = $message->EventKey ?? '';
 
-        $event       = get_option(self::EVENT_OPTION_KEY);
+        // $event       = get_option(self::EVENT_OPTION_KEY);
+        $event       = Context::get(self::EVENT_OPTION_KEY);
         $latestPosts = $event['latestPosts'] ?? 'n';
 
         return match ($eventKey) {
@@ -939,8 +895,6 @@ class WechatOAService {
      *     @type int          $status    状态（1=启用, 0=禁用）
      * }
      * @return int|WP_Error reply_id | WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function updateReply(array $data): int|WP_Error
     {
@@ -1039,8 +993,6 @@ class WechatOAService {
      * 
      * @param mixed $input
      * @return array 去重、去空、trim 后的关键词数组（每个 ≤100 字符）
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function normalizeKeywords($input): array
     {
@@ -1067,8 +1019,6 @@ class WechatOAService {
      * 
      * @param string $keyword
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function isKeywordExists(string $keyword): bool
     {
@@ -1088,8 +1038,6 @@ class WechatOAService {
      * @param string $keyword
      * @param int $excludeReplyId
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function isKeywordExistsExcluding(string $keyword, int $excludeReplyId): bool
     {
@@ -1110,17 +1058,16 @@ class WechatOAService {
      * @param array $data
      * @param array $keywords
      * @return int|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function _insertReply(array $data, array $keywords): int|WP_Error
     {
+        $now     = gmdate('Y-m-d H:i:s', time());
         $replyId = self::insertReply([
             'type'       => sanitize_text_field($data['type'] ?? 'text'),
             'content'    => trim($data['content']),
             'status'     => (int) ($data['status'] ?? 1),
-            'created_at' => current_time('mysql', true),
-            'updated'    => current_time('mysql', true)
+            'created_at' => $now,
+            'updated_at' => $now
         ]);
 
         if (!$replyId) {
@@ -1140,8 +1087,6 @@ class WechatOAService {
      * @param array $data
      * @param array $keywords
      * @return int|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function _updateReply(int $id, array $data, array $keywords): int|WP_Error
     {
@@ -1149,10 +1094,10 @@ class WechatOAService {
         $updated = $wpdb->update(
             $wpdb->prefix . self::REPLY_TABLE,
             [
-                'type'    => sanitize_text_field($data['type'] ?? 'text'),
-                'content' => trim($data['content']),
-                'status'  => (int) ($data['status'] ?? 1),
-                'updated' => current_time('mysql', true)
+                'type'       => sanitize_text_field($data['type'] ?? 'text'),
+                'content'    => trim($data['content']),
+                'status'     => (int) ($data['status'] ?? 1),
+                'updated_at' => gmdate('Y-m-d H:i:s', time())
             ],
             ['id' => $id],
             ['%s', '%s', '%d', '%s'],
@@ -1180,8 +1125,6 @@ class WechatOAService {
      * 
      * @param array $data
      * @return int|false
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function insertReply(array $data): bool|int
     {
@@ -1199,8 +1142,6 @@ class WechatOAService {
      * @param int $replyId
      * @param array $keywords
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function batchInsertKeywords(int $replyId, array $keywords): void
     {
@@ -1236,8 +1177,6 @@ class WechatOAService {
      * @param int $replyId
      * @param array $keywords
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private static function batchUpdateKeywords(int $replyId, array $keywords): void
     {
@@ -1408,7 +1347,7 @@ class WechatOAService {
         $sql    = "UPDATE {$table} SET status = %d, updated = %s WHERE id IN ({$placeholders})";
         $result = $wpdb->query($wpdb->prepare(
             $sql,
-            array_merge([$status, current_time('mysql', true)], $ids)
+            array_merge([$status, gmdate('Y-m-d H:i:s', time())], $ids)
         ));
 
         if ($result === false) {
@@ -1431,6 +1370,7 @@ class WechatOAService {
      * Wechat OA User Handle
      * 
      ************************************************************/
+
     /**
      * Get user information by OpenID
      * 
@@ -1438,8 +1378,6 @@ class WechatOAService {
      * 
      * @param string $openid User OpenID
      * @return array|null User information or null if failed
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getUserInfo(string $openid): ?array
     {
@@ -1470,7 +1408,7 @@ class WechatOAService {
 
             return $user_info ?: null;
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             error_log('Error getting user info: ' . $e->getMessage());
             return null;
         }
@@ -1482,13 +1420,13 @@ class WechatOAService {
      * Wechat OA Menus Handle
      * 
      ************************************************************/
+
     /**
      * Create menus for Wechat OA
      * 
      * 创建微信公众号菜单
      * 
-     * @since 1.0.0
-     * @author Wang Shai
+     * @return bool
      */
     public function createMenus(): bool
     {
@@ -1507,8 +1445,6 @@ class WechatOAService {
      * 
      * @param int $menuId Menu ID
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function deleteMenus(int $menuId = 0): bool
     {
@@ -1528,8 +1464,6 @@ class WechatOAService {
      * 获取所有菜单数据
      * 
      * @return array Formatted menu data
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMenus(): array
     {
@@ -1553,8 +1487,6 @@ class WechatOAService {
      * 
      * @param array $menus Menu data
      * @return array Tree structure
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function formatMenusToTree(array $menus): array
     {
@@ -1633,8 +1565,6 @@ class WechatOAService {
      * 
      * @param int $id Menu ID
      * @return array Menu data
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function getMenuById(int $id): array
     {
@@ -1663,8 +1593,6 @@ class WechatOAService {
      * @param int $id Menu ID
      * @param array $data Menu data
      * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function updateMenu(int $id, array $data): bool|int
     {
@@ -1690,8 +1618,6 @@ class WechatOAService {
      * 
      * @param int $id Menu ID
      * @return bool|int Number of rows affected, or false on error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function deleteMenu(int $id): bool|int
     {
@@ -1715,8 +1641,6 @@ class WechatOAService {
      * @param array $menus Raw menu data
      * @param string $sign Indentation sign
      * @return array Formatted menu data with hierarchy indentation
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function formatMenus(array $menus, string $sign): array
     {
@@ -1768,8 +1692,6 @@ class WechatOAService {
      * 
      * @param string $type Menu type
      * @return string Formatted menu type
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function renderMenuType(string $type): string
     {
@@ -1818,8 +1740,6 @@ class WechatOAService {
      * 
      * @param string $keyword Keyword
      * @return bool|string True if valid, or error message
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function checkKeywordLength(string $keyword): bool|string
     {
@@ -1839,8 +1759,6 @@ class WechatOAService {
      * 获取最新文章列表作为图文消息
      * 
      * @return array Formatted news message for WeChat
-     * @since 1.0.0
-     * @author Wang Shai
      */
     private function getLatestPosts(): array
     {
@@ -1852,8 +1770,9 @@ class WechatOAService {
             'order'       => 'DESC'
         ]);
 
-        $articles     = [];
-        $defaultCover = get_option(SystemService::OPTION_KEY)['cover'] ?? '';
+        $articles = [];
+        // $defaultCover = get_option(SystemService::OPTION_KEY)['cover'] ?? '';
+        $defaultCover = Context::get(SystemService::OPTION_KEY)['cover'] ?? '';
 
         foreach ($posts as $post) {
             $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
@@ -1884,6 +1803,7 @@ class WechatOAService {
      * Wechat OA QRCode Handle
      * 
      ************************************************************/
+
     /**
      * Get temporary QR Code for Subscribe Login
      * 
@@ -1893,8 +1813,6 @@ class WechatOAService {
      * @param int $seconds
      * @return array|WP_Error
      * @throws Exception
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getSubscribeLoginQrCode(string $hash, int $seconds)
     {

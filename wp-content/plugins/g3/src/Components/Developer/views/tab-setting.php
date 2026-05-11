@@ -12,6 +12,7 @@ HTML;
 echo '<form action="" method="post">';
 echo Element::tip(
     $message,
+    '',
     'default',
     'mt-4'
 );

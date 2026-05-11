@@ -3,11 +3,12 @@ use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
     __('This tab is for Nginx FastCGI Cache configuration advice.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
 ?>
-<div class="j-content">
+<div class="g3-content">
     <h2>
         <?php _e('For Traditional Wordpress Theme', 'G3'); ?>
     </h2>
@@ -105,13 +106,3 @@ location ~ \.php$ {
     add_header X-Cache "$upstream_cache_status From $host";
 }</pre>
 </div>
-<style>
-    .tip-content ul {
-        list-style: disc;
-        margin-left: 16px;
-    }
-
-    .j-content pre {
-        font-size: 12px;
-    }
-</style>

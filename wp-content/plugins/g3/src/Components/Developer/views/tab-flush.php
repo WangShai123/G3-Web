@@ -8,6 +8,7 @@ settings_errors('flush');
     <?php
     echo Element::tip(
         __('The actions below will flush the Rewrite / Options / Cache data, please make sure you have a backup before performing the action.', 'G3'),
+        '',
         'default',
         'mt-4'
     );

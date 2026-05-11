@@ -1,6 +1,16 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
+/**
+ * Validator Utilities
+ * 
+ * 验证工具类
+ * 
+ * @package G3
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Validator {
 
     /**
@@ -11,8 +21,6 @@ final class Validator {
      * @param string $data The data to sanitize.
      * @param string $context The context of the data. Options: html, attr, post.
      * @return string The sanitized data.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function output($data, $context = 'html'): string
     {
@@ -31,8 +39,6 @@ final class Validator {
      *
      * @param string $input The input to sanitize.
      * @return string The sanitized input.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function input($input): string
     {
@@ -46,8 +52,6 @@ final class Validator {
      *
      * @param string $input The input to sanitize.
      * @return string The sanitized input.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function textarea($input): string
     {
@@ -60,8 +64,6 @@ final class Validator {
      * 检测语言基于环境变量 LANG。
      *
      * @return string 'zh' or 'en'
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function detectLang(): string
     {
@@ -80,8 +82,6 @@ final class Validator {
      *
      * @param string $pathOrUrl The path or URL to the file.
      * @return bool True if the file is an image, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isImage(string $pathOrUrl): bool
     {
@@ -90,12 +90,18 @@ final class Validator {
             $headers = @get_headers($pathOrUrl, 1);
 
             // check if URL is valid
-            if (!$headers || strpos($headers[0], '200') === false) {
+            // if (!$headers || strpos($headers[0], '200') === false) {
+            //     return false;
+            // }
+            if (!self::isURL($pathOrUrl)) {
+                error_log('11111');
                 return false;
             }
 
             // check if Content-Type is image
             if (!isset($headers['Content-Type']) || strpos($headers['Content-Type'], 'image') !== 0) {
+                error_log('22222');
+                error_log(print_r($headers, true));
                 return false;
             }
 
@@ -103,6 +109,7 @@ final class Validator {
             $imgData = @file_get_contents($pathOrUrl, false, stream_context_create([
                 "http" => ["method" => "GET", "timeout" => 3]
             ]));
+
             return $imgData !== false && @getimagesizefromstring($imgData) !== false;
         }
 
@@ -110,7 +117,23 @@ final class Validator {
         if (!file_exists($pathOrUrl) || !is_file($pathOrUrl)) {
             return false;
         }
+
         return @getimagesize($pathOrUrl) !== false;
+    }
+
+    /**
+     * Check if the given data is a WebP image by examining its file signature.
+     * 
+     * 通过检查文件签名判断是否为 WebP 图像。
+     *
+     * @param string $data The binary data of the file.
+     * @return bool True if the data is a WebP image, false otherwise.
+     */
+    public static function isWebP(string $data): bool
+    {
+        // WebP 文件头前 12 字节：
+        // RIFF (4 bytes) + 文件大小 (4 bytes) + WEBP (4 bytes)
+        return substr($data, 0, 4) === 'RIFF' && substr($data, 8, 4) === 'WEBP';
     }
 
     /**
@@ -120,8 +143,6 @@ final class Validator {
      *
      * @param string $url The URL to check.
      * @return bool True if the string is a valid URL, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isURL(string $url): bool
     {
@@ -136,8 +157,6 @@ final class Validator {
      *
      * @param string $uuid The UUID to check.
      * @return bool True if the string is a valid UUIDv4, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function isUUIDv4(string $uuid)
     {
@@ -151,22 +170,9 @@ final class Validator {
      *
      * @param string $url The URL to check.
      * @return bool True if the string is a valid redirect URL, false otherwise.
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function safeRedirectUrl(string $url): bool
     {
-        // must be a valid URL
-        // if (!filter_var($url, FILTER_VALIDATE_URL)) {
-        //     return false;
-        // }
-
-        // // parse url
-        // $parsed = parse_url($url);
-        // if (!$parsed || !isset($parsed['scheme'])) {
-        //     return false;
-        // }
-
         $parsed = wp_parse_url($url);
         if (!$parsed || !isset($parsed['host'], $parsed['scheme'])) {
             return false;
@@ -207,6 +213,14 @@ final class Validator {
         return true;
     }
 
+    /**
+     * Check if the current screen matches the given screen ID.
+     * 
+     * 检查当前屏幕是否匹配给定的屏幕 ID。
+     *
+     * @param string $id The screen ID to check.
+     * @return bool True if the current screen matches the given ID, false otherwise.
+     */
     public static function screen(string $id): bool
     {
         $screen = get_current_screen();

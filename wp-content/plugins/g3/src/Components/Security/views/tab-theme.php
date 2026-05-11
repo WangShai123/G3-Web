@@ -3,11 +3,12 @@ use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
     __('This tab is for hybrid theme development advice.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
 ?>
-<div class="j-content">
+<div class="g3-content">
     <h2>
         <?php _e('For Hybrid Theme', 'G3'); ?>
     </h2>
@@ -54,17 +55,9 @@ echo Element::tip(
             </ol>
             <div>
                 <?php
-                _e('The No Theme Mode, will greatly improve your application performance and server load capacity.');
+                _e('The No Theme Mode, will greatly improve your application performance and server load capacity.', 'G3');
                 ?>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .tip-content ol,
-    .tip-content ul {
-        margin-top: .5em;
-        margin-bottom: .5em;
-    }
-</style>

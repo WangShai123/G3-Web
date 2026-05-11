@@ -1,15 +1,11 @@
 <?php
 
-use JEALER\G3\Services\AuthService;
-use JEALER\G3\Services\SystemService;
-
 /**
  * Default component config file
+ *
  * 默认组件配置文件
- * 
+ *
  * @return array
- * @since 1.0.0
- * @author Wang Shai
  */
 return [
     'enabled'    => true,
@@ -24,20 +20,18 @@ return [
         'WechatOA'     => true, // 15
 
         'Comment'      => true,
-        'Jui'          => true,
         'Activity'     => true,
         'Announcement' => true,
         'Orders'       => true,
         'Swiper'       => true,
-        'Stock'        => true,
         'Themes'       => true,
         'Ad'           => true,
 
         'Security'     => true,
 
         'Mail'         => true,
-        'Menu'         => true,
         'User'         => true,
+        'Sms'          => true,
         'Developer'    => true,
     ]
 ];

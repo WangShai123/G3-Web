@@ -1,9 +1,10 @@
 <?php
+
 use JEALER\G3\Components\Components;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Element;
-use JEALER\G3\Includes\WechatOAMessageListTable;
+use JEALER\G3\Components\WechatOA\Includes\WechatOAMessageListTable;
 
 $table = new WechatOAMessageListTable();
 
@@ -13,6 +14,7 @@ $enable = $option['storeMessages'] ?? false;
 if (!$enable) :
     echo Element::tip(
         __('Message is unavailable. Because the WechatOA message storage function has been disabled.', 'G3'),
+        '',
         'danger',
         'mt-4'
     );

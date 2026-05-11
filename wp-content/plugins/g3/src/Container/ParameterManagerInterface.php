@@ -1,16 +1,17 @@
 <?php
+
 namespace JEALER\G3\Container;
 
 /**
  * Parameter Manager Interface
- * 参数管理器接口
  * 
- * 负责管理容器参数，支持参数解析和环境变量
+ * 参数管理器接口。负责管理容器参数，支持参数解析和环境变量
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface ParameterManagerInterface {
+
     /**
      * 设置参数
      * 

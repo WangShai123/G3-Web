@@ -1,9 +1,19 @@
 <?php
+
 namespace JEALER\G3\Utilities;
 
+use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
 
+/**
+ * Common utilities
+ * 
+ * 通用工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Common {
 
     /**
@@ -25,8 +35,6 @@ final class Common {
      *   ];
      * 
      * @return string translated string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function t(string $key, string $lang, array $messages): string
     {
@@ -74,8 +82,6 @@ final class Common {
      * 
      * @param string $extensionPath 扩展文件路径（包含文件名）
      * @return bool 是否成功加载扩展
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function loadExtension(string $extensionPath): bool
     {
@@ -101,8 +107,6 @@ final class Common {
      * 
      * @param int $length string length
      * @return string random string
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function hash(int $length = 8): string
     {
@@ -121,8 +125,6 @@ final class Common {
      * @param int $length Maximum length of the string
      * @param string $ellipsis Ellipsis string, defaults to '...'
      * @return string Truncated string with ellipsis
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function truncate($string, $length = 50, $ellipsis = '...'): string
     {
@@ -141,8 +143,6 @@ final class Common {
      * @param int $length Maximum length of the string
      * @param string $more Ellipsis string, defaults to '…'
      * @return string Truncated HTML string with ellipsis
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function truncateHtml(string $html, int $length = 80, string $more = '…'): string
     {
@@ -165,12 +165,105 @@ final class Common {
      * 检查主题模式是否可用
      * 
      * @return bool
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function themeModeAvailable(): bool
     {
         return !(defined('WP_USE_THEMES') && WP_USE_THEMES === false);
     }
 
+    /**
+     * Get Cache Key
+     * 
+     * 获取缓存键名
+     * 
+     * @param string $id
+     * @param string $subFolder
+     * @param string $prefix
+     * @return string
+     */
+    public static function getCacheKey($id, $subFolder = '', $prefix = ''): string
+    {
+        return ($subFolder ? "{$subFolder}:" : '') . ($prefix ? "{$prefix}_" : '') . "{$id}";
+    }
+
+    /**
+     * Convert to seconds
+     * 
+     * 转换为秒
+     * 
+     * @param string $unit
+     * @param int $time
+     * @return int|Exception
+     */
+    public static function toSeconds(int $time, string $unit): int|Exception
+    {
+        return match ($unit) {
+            'second' => $time,
+            'minute' => $time * 60,
+            'hour' => $time * 60 * 60,
+            'day' => $time * 60 * 60 * 24,
+            'week' => $time * 60 * 60 * 24 * 7,
+            'month' => $time * 60 * 60 * 24 * 30,
+            'year' => $time * 60 * 60 * 24 * 365,
+            default => throw new Exception('Invalid unit'),
+        };
+    }
+
+    /**
+     * Format seconds into human-readable time string.
+     * 
+     * 将秒数格式化为人类可读的时间字符串。
+     * 
+     * @param int $seconds The number of seconds to format.
+     * @return string Formatted time string (e.g., "1分30秒", "2天3小时").
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    public static function formatSeconds(int $seconds): string
+    {
+        if ($seconds < 0) {
+            return '0' . __('Second');
+        }
+
+        if ($seconds === 0) {
+            return '0' . __('Second');
+        }
+
+        $units = [
+            'year'   => 365 * 24 * 60 * 60,
+            'month'  => 30 * 24 * 60 * 60,
+            'week'   => 7 * 24 * 60 * 60,
+            'day'    => 24 * 60 * 60,
+            'hour'   => 60 * 60,
+            'minute' => 60,
+            'second' => 1,
+        ];
+
+        $parts = [];
+
+        foreach ($units as $unitName => $unitValue) {
+            if ($seconds >= $unitValue) {
+                $count    = intdiv($seconds, $unitValue);
+                $seconds %= $unitValue;
+
+                // Map unit name to Chinese label
+                $label   = match ($unitName) {
+                    'year' => __('Year'),
+                    'month' => __('Month'),
+                    'week' => __('Week', 'G3'),
+                    'day' => __('Day'),
+                    'hour' => __('Hour'),
+                    'minute' => __('Minute'),
+                    'second' => __('Second'),
+                    default => '',
+                };
+                $parts[] = "{$count}{$label}";
+            }
+        }
+
+        // Optional: Limit to top 2 units for brevity if needed, e.g., array_slice($parts, 0, 2)
+        // Currently returning all significant units for precision.
+
+        return implode('', $parts);
+    }
 }

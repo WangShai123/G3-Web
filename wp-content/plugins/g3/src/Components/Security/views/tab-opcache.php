@@ -3,11 +3,12 @@ use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
     __('This tab is for PHP OPCache configuration advice.', 'G3'),
+    '',
     'default',
     'mt-4'
 );
 ?>
-<div class="j-content">
+<div class="g3-content">
     <h2>
         <?php _e('For PHP OPCache', 'G3'); ?>
     </h2>
@@ -81,13 +82,3 @@ opcache.revalidate_freq = 180
 opcache.fast_shutdown = 1
 opcache.save_comments = 1</pre>
 </div>
-<style>
-    .tip-content ul {
-        list-style: disc;
-        margin-left: 16px;
-    }
-
-    .j-content pre {
-        font-size: 12px;
-    }
-</style>

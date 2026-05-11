@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
@@ -10,8 +11,11 @@ use JEALER\G3\Services\SystemService;
 use Override;
 
 class Security extends Components {
+
     public array $option = [];
+
     public array $queue = [];
+
     private string $section = 'securitySection';
 
     #[Override]
@@ -90,7 +94,7 @@ class Security extends Components {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . __('Security', 'G3') . '</h1>';
         $args = [
-            'general' => __('General', 'G3'),
+            'general' => __('General'),
             'nginx'   => 'Nginx',
             'caddy'   => 'Caddy',
         ];
@@ -261,6 +265,7 @@ class Security extends Components {
             return;
         }
         $this->disableWPLogin();
+        $this->disableAdminVisit();
     }
     public function customAdminLogin(): bool
     {
@@ -276,6 +281,16 @@ class Security extends Components {
     private function disableWPLogin(): void
     {
         if (str_contains($_SERVER['REQUEST_URI'], 'wp-login.php') && !str_contains($_SERVER['REQUEST_URI'], 'action=logout')) {
+            wp_safe_redirect(home_url(), 302, get_bloginfo('name'));
+            exit;
+        }
+    }
+    private function disableAdminVisit(): void
+    {
+        if (
+            str_contains($_SERVER['REQUEST_URI'], 'wp-admin')
+            && !current_user_can('manage_options')
+        ) {
             wp_safe_redirect(home_url(), 302, get_bloginfo('name'));
             exit;
         }

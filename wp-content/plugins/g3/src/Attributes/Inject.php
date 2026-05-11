@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Attributes;
 
 use Attribute;

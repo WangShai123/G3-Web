@@ -1,7 +1,19 @@
 <?php
+
 namespace JEALER\G3\Utilities;
+
 use JEALER\G3\Utilities\System;
 use WP_REST_Request;
+
+
+/**
+ * Response Utilities
+ * 
+ * 响应工具类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 final class Response {
 
     /**
@@ -11,8 +23,6 @@ final class Response {
      *
      * @param string $message
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ajaxSuccess(string $message): void
     {
@@ -28,8 +38,6 @@ final class Response {
      * 
      * @param string $message
      * @return void
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public static function ajaxError(string $message): void
     {
@@ -39,13 +47,7 @@ final class Response {
     }
 
     /**
-     * Send AJAX success response: Updated
-     * 
-     * 发送AJAX成功响应: 更新成功
-     * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
+     * Updated
      */
     public static function ajaxUpdated(): void
     {
@@ -55,13 +57,7 @@ final class Response {
     }
 
     /**
-     * Send AJAX success response: Deleted
-     * 
-     * 发送AJAX成功响应: 删除成功
-     * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
+     * Deleted
      */
     public static function ajaxDeleted(): void
     {
@@ -71,13 +67,7 @@ final class Response {
     }
 
     /**
-     * Send AJAX error response: Forbidden
-     * 
-     * 发送AJAX错误响应: 禁止访问
-     * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
+     * Forbidden
      */
     public static function ajaxForbidden(): void
     {
@@ -86,6 +76,9 @@ final class Response {
         ]);
     }
 
+    /**
+     * Illegal request
+     */
     public static function ajaxIllegal(): void
     {
         wp_send_json_error([
@@ -94,18 +87,22 @@ final class Response {
     }
 
     /**
-     * Send AJAX error response: Failed
-     * 
-     * 发送AJAX错误响应: 失败
-     * 
-     * @return void
-     * @since 1.0.0
-     * @author Wang Shai
+     * Failed
      */
     public static function ajaxFailed(): void
     {
         wp_send_json_error([
             'message' => __('Failed', 'G3')
+        ]);
+    }
+
+    /**
+     * Param Missing
+     */
+    public static function ajaxParamMissing(): void
+    {
+        wp_send_json_error([
+            'message' => __('Param missing', 'G3')
         ]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 use JEALER\G3\Utilities\Element;
 
 $title = __('Multi-theme Mode', 'G3');
@@ -8,11 +9,12 @@ $p2  = __('The theme you configure on the Appearance-Theme page is the main them
 $msg = "<div>{$p1}</div><div>{$p2}</div>";
 echo Element::tip(
     $msg,
+    '',
     'default',
     'mt-4'
 );
 echo '<form action="" method="post">';
-settings_fields('section_themes');
+settings_fields('themesSection');
 do_settings_sections('multiple-themes');
 submit_button();
 echo '</form></div>';

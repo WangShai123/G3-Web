@@ -1,10 +1,11 @@
 <?php
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
+use Override;
 
 class Ad extends Components {
 
+    #[Override]
     protected function adminMenu(): void
     {
         add_menu_page(

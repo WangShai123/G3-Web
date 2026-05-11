@@ -1,4 +1,5 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
@@ -10,7 +11,9 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class Swiper extends Components {
+
     public array $option;
+
     #[Override]
     protected function options(): void
     {
@@ -18,6 +21,7 @@ class Swiper extends Components {
             'home' => __('Home')
         ]);
     }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -42,6 +46,7 @@ class Swiper extends Components {
             remove_submenu_page('themes.php', 'swiper');
         });
     }
+
     public function render(): void
     {
         echo '<div class="wrap">';
@@ -53,6 +58,7 @@ class Swiper extends Components {
         Element::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
+
     public function editSwiper(): void
     {
         @require_once __DIR__ . '/views/page-edit.php';
@@ -87,33 +93,34 @@ class Swiper extends Components {
                 Response::ajaxError(__('Invalid Link', 'G3'));
             }
 
-            $dateTime = date('Y-m-d H:i:s');
-            $user     = wp_get_current_user()->ID;
+            $userId = wp_get_current_user()->ID;
 
             global $wpdb;
             $table = $wpdb->prefix . SwiperService::TABLE;
 
             $data = [
-                'title'    => $title,
-                'media'    => $media,
-                'link'     => $link,
-                'target'   => (int) $target,
-                'location' => $location,
-                'sort'     => (int) $sort,
-                'status'   => (int) $status,
-                'user'     => $user,
-                'updated'  => $dateTime,
+                'title'      => $title,
+                'media'      => $media,
+                'link'       => $link,
+                'target'     => (int) $target,
+                'location'   => $location,
+                'sort'       => (int) $sort,
+                'status'     => (int) $status,
+                'user_id'    => $userId,
+                'updated_at' => gmdate('Y-m-d H:i:s'),
             ];
 
             if (!$id) {
-                $data['created'] = $dateTime;
+                $data['created_at'] = gmdate('Y-m-d H:i:s');
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
                 Response::ajaxUpdated();
+                wp_cache_delete($location, SwiperService::QUERY_CACHE_GROUP);
             } else {
                 $result = $wpdb->update($table, $data, ['id' => $id]);
                 if ($result) {
                     wp_cache_delete($id, SwiperService::CACHE_GROUP);
+                    wp_cache_delete($location, SwiperService::QUERY_CACHE_GROUP);
                     Response::ajaxUpdated();
                 } else {
                     Response::ajaxFailed();

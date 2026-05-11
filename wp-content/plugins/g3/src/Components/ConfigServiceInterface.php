@@ -1,14 +1,17 @@
 <?php
-namespace JEALER\G3\Contracts;
+
+namespace JEALER\G3\Components;
 
 /**
  * Configuration Service Interface
+ * 
  * 配置服务接口
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
 interface ConfigServiceInterface {
+
     /**
      * 注册组件配置
      * 

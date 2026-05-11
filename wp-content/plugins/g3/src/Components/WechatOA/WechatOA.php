@@ -76,7 +76,7 @@ class WechatOA extends Components {
         echo '<div class="wrap">';
         echo '<h1>' . __('Wechat Official Account', 'G3') . '</h1>';
         $tabs = [
-            'general' => __('General', 'G3'),
+            'general' => __('General'),
             'menus'   => __('Menus'),
             'message' => __('Messages', 'G3'),
             'reply'   => __('Custom Reply', 'G3'),
@@ -405,7 +405,7 @@ class WechatOA extends Components {
             $days   = $days < 1 ? 7 : $days;
             $result = WechatOAService::flushOldMessages($days);
             if ($result === 0) {
-                Response::ajaxError(__('No data found.', 'G3'));
+                Response::ajaxError(__('No items found.'));
             } elseif ($result === false) {
                 Response::ajaxFailed();
             } else {

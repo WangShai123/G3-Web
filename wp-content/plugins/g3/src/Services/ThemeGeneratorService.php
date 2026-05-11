@@ -1,13 +1,27 @@
 <?php
+
 namespace JEALER\G3\Services;
+
 use JEALER\G3\Services\SystemService;
+
+
+/**
+ * Theme Generator Service
+ * 
+ * 主题生成服务
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class ThemeGeneratorService {
-    public static $instance = null;
+
+    public static ThemeGeneratorService $instance;
+
     public function __construct()
     {
     }
 
-    public static function run()
+    public static function run(): ThemeGeneratorService
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -22,7 +36,7 @@ class ThemeGeneratorService {
 
         // define project structure
         $structure = [
-            'public'    => [
+            'assets'    => [
                 'css'        => ['main.css'],
                 'fonts'      => [],
                 'images'     => [],
@@ -40,38 +54,56 @@ class ThemeGeneratorService {
                 'audios'     => [],
                 'videos'     => [],
             ],
+            'public'    => [
+                'css'        => ['main.css'],
+                'fonts'      => [],
+                'images'     => [],
+                'javascript' => ['main.js'],
+                'languages'  => [],
+                'audios'     => [],
+                'videos'     => [],
+            ],
             'config'    => [
-                'aop.php',
+                'aspects.php',
                 'components.php',
                 'define.php',
                 'encrypt.php',
-                'rewriteRouter.php',
+                'queue.php',
+                'rewriteRouter.php'
             ],
             'src'       => [
                 'Aspects'     => [],
+                'Attributes'  => [],
+                'Cache'       => [],
                 'Components'  => [],
                 'Controllers' => [],
+                'Examples'    => [],
+                'Includes'    => [],
                 'Middleware'  => [],
+                'Queue'       => [],
+                'Services'    => [],
+                'Utilities'   => [],
             ],
-            'archive'   => ['default.php'],
-            'category'  => ['default.php'],
-            'editor'    => ['default.php'],
-            'my'        => ['default.php'],
+            'archive'   => ['index.php'],
+            'category'  => ['index.php'],
+            'editor'    => ['index.php'],
+            'my'        => ['index.php'],
             'parts'     => [],
-            'single'    => ['default.php'],
-            'tag'       => ['default.php'],
-            'taxonomy'  => ['default.php'],
+            'single'    => ['index.php'],
+            'tag'       => ['index.php'],
+            'taxonomy'  => ['index.php'],
             'templates' => [],
-            'user'      => ['default.php'],
+            'user'      => ['index.php'],
             '404.php',
             'footer.php',
             'functions.php',
             'header.php',
             'index.php',
             'page.php',
-            'readme.txt',
+            'README.md',
             'style.css',
             'screenshot.png',
+            'license.txt'
         ];
 
         // create project structure
@@ -103,9 +135,12 @@ use JEALER\G3\Services\PostService;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="G3-Web">
     <meta name="author" content="{$params['author']}">
     <meta name="robots" content="index,follow">
     <title><?php echo PostService::getTitle(); ?></title>
+    <meta name="description" content="<?php echo PostService::getDescription(); ?>">
+    <meta name="keywords" content="<?php echo PostService::getKeywords(); ?>">
     <?php wp_head(); ?>
 </head>
 
@@ -115,7 +150,11 @@ EOT;
 
         // write footer.php
         $footerPhp = <<<EOT
-<?php wp_footer(); ?>
+<?php
+
+get_template_part('parts/footer/general');
+wp_footer();
+?>
 </body>
 
 </html>
@@ -149,6 +188,24 @@ return [
 EOT;
         file_put_contents($themePath . '/config/components.php', $returnArray);
         file_put_contents($themePath . '/config/rewriteRouter.php', $returnArray);
+
+        // write /parts/footer/general.php
+        $footerGeneralPhp = <<<EOT
+<?php
+
+use JEALER\G3\Services\SystemService;
+
+?>
+
+<div class="flex justify-end items-center px-4">
+    <p style="color:gray;font-size:.75em">
+        <?php echo SystemService::icpHtml(); ?>
+        &copy;
+        <?php echo date('Y'); ?>
+    </p>
+</div>
+EOT;
+        file_put_contents($themePath . '/parts/footer/general.php', $footerGeneralPhp);
 
     }
 

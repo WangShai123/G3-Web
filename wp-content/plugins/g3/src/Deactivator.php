@@ -1,9 +1,18 @@
 <?php
+
 namespace JEALER\G3;
 
 use JEALER\G3\Queue\Queue;
 use WP_Error;
 
+/**
+ * Deactivator
+ * 
+ * 卸载类
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
 class Deactivator {
     public static function deactivate(): void
     {

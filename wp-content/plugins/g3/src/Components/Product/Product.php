@@ -1,9 +1,9 @@
 <?php
+
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
 use JEALER\G3\Container\Container;
-use JEALER\G3\Includes\SkuListTable;
 use JEALER\G3\Services\ProductService;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Utilities\Element;
@@ -19,13 +19,21 @@ use Exception;
 class Product extends Components {
     public array $option;
 
+    /**
+     * @var ProductService $service
+     */
+    public ProductService $service;
+
     #[Override]
     protected function options(): void
     {
         $this->option = Option::get(ProductService::OPTION_KEY, [
+            'cart'       => '1',
             'download'   => '1',
             'membership' => '1'
         ]);
+
+        $this->service = Container::run()->get(ProductService::class);
     }
     #[Override]
     protected function form(): void
@@ -38,6 +46,7 @@ class Product extends Components {
     protected function admin(): void
     {
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
+        add_action('deleted_post', [$this, 'deletedProduct']);
     }
     #[Override]
     protected function adminMenu(): void
@@ -57,7 +66,9 @@ class Product extends Components {
             'SKU',
             'manage_options',
             'product_sku',
-            [$this, 'renderSku'],
+            function () {
+                require_once 'views/sku.php';
+            },
             2
         );
         add_submenu_page(
@@ -66,7 +77,7 @@ class Product extends Components {
             __('Specifications', 'G3'),
             'manage_options',
             'product_specifications',
-            [$this, 'renderSpecifications'],
+            [$this, 'renderSpecs'],
             3
         );
     }
@@ -74,18 +85,12 @@ class Product extends Components {
     {
         echo '<div class="wrap"><h1>' . __('Shop', 'G3') . '</h1>';
         $args = [
-            'general' => __('General', 'G3')
+            'general' => __('General')
         ];
         Element::tab('Product', 'general', $args);
         echo '</div>';
     }
-    public function renderSku()
-    {
-        echo '<div class="wrap"><h1>SKU</h1>';
-        $table = new SkuListTable();
-        $table->display();
-    }
-    public function renderSpecifications(): void
+    public function renderSpecs(): void
     {
         echo '<div class="wrap">';
         $args = [
@@ -109,6 +114,20 @@ class Product extends Components {
             ProductService::OPTION_KEY,
         );
         Element::settingFields('shop-settings', 'general', [
+            [
+                'id'       => 'cart',
+                'title'    => __('Cart', 'G3'),
+                'callback' => function () {
+                    echo Element::switch(
+                        ProductService::OPTION_KEY,
+                        $this->option,
+                        'cart',
+                        __('Cart', 'G3'),
+                        __('Whether to enable cart feature.', 'G3')
+                    );
+                },
+                'args'     => ['className' => 'advanced']
+            ],
             [
                 'id'       => 'download',
                 'title'    => __('Download'),
@@ -353,7 +372,7 @@ class Product extends Components {
 
         wp_register_script(
             'g3-admin-product',
-            G3_DIST_URL . '/javascript/g3.admin.product.min.js',
+            G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
             array('jquery'),
             '1.0.0',
             true
@@ -365,19 +384,18 @@ class Product extends Components {
 
     private function localizeData(): void
     {
-        $service = Container::run()->get(ProductService::class);
-        $postId  = get_the_ID();
-        $props   = get_post_meta($postId, ProductService::PROP_KEY, true) ?: [];
+        $postId = get_the_ID();
+        $props  = get_post_meta($postId, ProductService::PROP_KEY, true) ?: [];
 
-        $specs       = $service->getSpecs();
+        $specs       = $this->service->getSpecs();
         $specOptions = [];
-        $skus        = $service->getSkusByProductId($postId);
+        $skus        = $this->service->getSkusByProductId($postId);
         if (!$skus) {
             $type = 1;
         } else {
             $type = $skus[0]['type'];
             foreach ($specs as $spec) {
-                $specOptions[$spec['id']] = $service->getSpecOptionsBySpecId($spec['id']);
+                $specOptions[$spec['id']] = $this->service->getSpecOptionsBySpecId($spec['id']);
             }
         }
 
@@ -412,9 +430,10 @@ class Product extends Components {
         wp_nonce_field(ProductService::GALLERY_KEY . '_save', ProductService::GALLERY_KEY . '_nonce');
         echo '<div id="gallery-app"></div>';
     }
-    private function escapeJsString($str)
+
+    public function deletedProduct($postId)
     {
-        return str_replace(['\\', '"', "'", "\r", "\n"], ['\\\\', '\\"', "\\'", '\\r', '\\n'], $str);
+        $this->service->clearProductData($postId);
     }
 
     public function renderSkuMetabox(WP_POST $post): void
@@ -425,7 +444,6 @@ class Product extends Components {
     {
         wp_nonce_field(ProductService::PROP_KEY . '_save', ProductService::PROP_KEY . '_nonce');
         echo '<div id="prop-app"></div>';
-        wp_enqueue_style('table', 'https://cdn.jsdelivr.net/npm/handsontable/styles/handsontable.min.css', [], '16.2.0');
     }
     public function saveProduct($postId)
     {
@@ -467,15 +485,14 @@ class Product extends Components {
             return;
         }
 
-        $service  = Container::run()->get(ProductService::class);
         $skusData = $_POST['g3_sku'];
 
-        // 处理每个SKU
         foreach ($skusData as $skuKey => $skuInfo) {
-            // 检查是否是有效的SKU ID还是临时键
+
+            // check if it's a valid SKU ID or a temporary key
             $isExistingSku = is_numeric($skuKey);
 
-            // 准备SKU基础数据
+            // build SKU base data
             $skuBaseData = [
                 'product_id'    => $postId,
                 'regular_price' => floatval($skuInfo['regular_price'] ?? 0),
@@ -488,35 +505,35 @@ class Product extends Components {
             ];
 
             if ($isExistingSku) {
-                // 更新现有SKU
+                // update existing sku
                 $skuBaseData['id'] = $skuKey;
-                $skuId             = $service->updateSku($skuBaseData);
+                $skuId             = $this->service->updateSku($skuBaseData);
             } else {
-                // 创建新SKU
-                $skuId = $service->createSku($skuBaseData);
+                // create new sku
+                $skuId = $this->service->createSku($skuBaseData);
             }
 
-            // 如果SKU创建/更新失败，跳过规格处理
+            // skip specs if sku creation/update failed
             if (!$skuId || $skuId === false) {
                 continue;
             }
 
-            // 处理规格数据
             if (isset($skuInfo['specs']) && is_array($skuInfo['specs'])) {
-                // 删除现有的规格关系
-                $service->deleteSkuSpecRelations($skuId);
+                // delete existing spec relations
+                $this->service->deleteSkuSpecRelations($skuId);
+                $this->service->deleteProductSpecRelation($postId);
 
-                // 添加新的规格关系
+                // add new spec relations
                 foreach ($skuInfo['specs'] as $specId => $specOptionData) {
                     if (is_numeric($specId) && isset($specOptionData['option_id']) && is_numeric($specOptionData['option_id'])) {
-                        $service->addSkuSpecRelation($skuId, $specId, $specOptionData['option_id']);
+                        $this->service->addSkuSpecRelation($skuId, $specId, $specOptionData['option_id']);
+                        $this->service->addProductSpecRelations($postId, $specId);
                     }
                 }
             }
         }
 
-        // 清除缓存
-        $service->clearProductCache($postId);
+        $this->service->clearProductCache($postId);
     }
 
     #[Override]
@@ -537,18 +554,17 @@ class Product extends Components {
             $owner_id = maybe_serialize(array_values(array_unique(array_filter(array_map('intval', array_filter(array_map('trim', explode(',', (string) ($fields['owner_ids'] ?? ''))), fn($v) => $v !== '' && ctype_digit($v))), fn($n) => $n > 0))));
 
             $data = [
-                'id'         => $fields['id'] ?? 0,
-                'product_id' => $fields['product_id'] ?? 0,
-                'name'       => $name,
-                'key'        => $key,
-                'is_global'  => (int) $fields['is_global'] ?? 1,
-                'scope'      => (int) $fields['scope'] ?? 0,
-                'owner_ids'  => $owner_id,
-                'status'     => $fields['status'] ?? 1,
-                'sort'       => $fields['sort'] ?? 0,
+                'id'        => $fields['id'] ?? 0,
+                'name'      => $name,
+                'key'       => $key,
+                'is_global' => (int) $fields['is_global'] ?? 1,
+                'scope'     => (int) $fields['scope'] ?? 0,
+                'owner_ids' => $owner_id,
+                'status'    => $fields['status'] ?? 1,
+                'sort'      => $fields['sort'] ?? 0,
             ];
             error_log('id: ' . print_r($data['id'], true));
-            $result = Container::run()->get(ProductService::class)->updateSpec($data);
+            $result = $this->service->updateSpec($data);
 
             if ($result === -1) {
                 Response::ajaxError(__('Name or Key already exists.', 'G3'));
@@ -570,11 +586,11 @@ class Product extends Components {
             ) {
                 Response::ajaxIllegal();
             }
-            $options = Container::run()->get(ProductService::class)->getSpecOptionsBySpecId($id);
+            $options = $this->service->getSpecOptionsBySpecId($id);
             if (count($options) !== 0) {
                 Response::ajaxError(__('Cannot delete this spec, it is used in some sku or options.', 'G3'));
             }
-            $result = Container::run()->get(ProductService::class)->deleteSpec($id);
+            $result = $this->service->deleteSpec($id);
             if ($result) {
                 Response::ajaxDeleted();
             } else {
@@ -604,7 +620,11 @@ class Product extends Components {
                 'status'  => $fields['status'] ?? 1,
             ];
 
-            $result = Container::run()->get(ProductService::class)->updateSpecOption($data);
+            $result = $this->service->updateSpecOption($data);
+
+            if (is_wp_error($result)) {
+                Response::ajaxError($result->get_error_message());
+            }
 
             if ($result) {
                 Response::ajaxUpdated();
@@ -623,7 +643,7 @@ class Product extends Components {
                 Response::ajaxIllegal();
             }
 
-            // 检查是否有 SKU 使用此规格选项
+            // check if there is any SKU using this spec option
             global $wpdb;
             $relations_table = $wpdb->prefix . ProductService::SPECS_RELATIONS_TABLE;
             $relation_count  = $wpdb->get_var(
@@ -637,9 +657,7 @@ class Product extends Components {
                 Response::ajaxError(__('Cannot delete this spec option, it is used in some SKUs.', 'G3'));
             }
 
-            $service = Container::run()->get(ProductService::class);
-
-            // 获取规格ID用于清除缓存
+            // get spec id for clear cache
             $table       = $wpdb->prefix . ProductService::SPECS_OPTIONS_TABLE;
             $spec_option = $wpdb->get_row(
                 $wpdb->prepare(
@@ -659,8 +677,8 @@ class Product extends Components {
             );
 
             if ($result !== false) {
-                // 清除相关缓存
-                $cache_key = "spec_options_{$spec_option->spec_id}";
+                // clear cache
+                $cache_key = "option:spec_{$spec_option->spec_id}";
                 wp_cache_delete($cache_key, ProductService::CACHE_GROUP);
 
                 Response::ajaxDeleted();
@@ -681,8 +699,7 @@ class Product extends Components {
             }
 
             try {
-                $service = Container::run()->get(ProductService::class);
-                $options = $service->getSpecOptionsBySpecId($specId);
+                $options = $this->service->getSpecOptionsBySpecId($specId);
 
                 wp_send_json_success([
                     'options' => $options
@@ -690,8 +707,31 @@ class Product extends Components {
             }
             catch (Exception $e) {
                 error_log('Error getting spec options: ' . $e->getMessage());
-                Response::ajaxError(__('Failed to get spec options.', 'G3'));
+                Response::ajaxError('Failed to get spec options.');
+            }
+        });
+
+        add_action('wp_ajax_g3_delete_sku', function () {
+            $id = (int) ($_POST['id'] ?? 0);
+
+            if (!$id || !is_admin() || !current_user_can('manage_options')) {
+                Response::ajaxIllegal();
+            }
+
+            try {
+                $result = $this->service->deleteSku($id);
+                if ($result) {
+                    Response::ajaxDeleted();
+                } else {
+                    Response::ajaxFailed();
+                }
+            }
+            catch (Exception $e) {
+                error_log('Error delete sku: ' . $e->getMessage());
+                Response::ajaxError('Failed to delete sku.');
             }
         });
     }
+
+
 }
