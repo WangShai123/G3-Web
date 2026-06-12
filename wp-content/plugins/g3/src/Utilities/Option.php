@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Utilities;
-
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Message;
 

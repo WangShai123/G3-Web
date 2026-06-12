@@ -1,5 +1,4 @@
 <?php
-
 namespace JEALER\G3\Components;
 
 /**

@@ -29,6 +29,7 @@ return [
     'g3_option_general',
     'g3_option_seo',
     'g3_option_rss',
+    'g3_option_llm',
     'g3_option_reading',
     'g3_option_general_login',
     'g3_option_follow_login',

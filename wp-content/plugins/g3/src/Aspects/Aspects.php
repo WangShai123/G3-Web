@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Aspects;
-
 use ReflectionClass;
 use ReflectionObject;
 use Throwable;

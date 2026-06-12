@@ -7,18 +7,10 @@ use OrderService;
 use WP_Error;
 use WP_List_Table;
 
-/**
- * Orders List Table
- * 
- * 订单列表表格
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class OrdersListTable extends WP_List_Table {
-    private string $table;
-    private int $perPage;
-    private $wpdb;
+    private string        $table;
+    private int           $perPage;
+    private               $wpdb;
     private OrdersService $service;
     public function __construct()
     {
@@ -80,13 +72,13 @@ class OrdersListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'created_at' => Date::dateTime(strtotime($item['created_at'])),
-            'buyer_id' => get_userdata($item['buyer_id']) ? get_userdata($item['buyer_id'])->display_name : __('Unknown'),
+            'created_at'   => Date::dateTime(strtotime($item['created_at'])),
+            'buyer_id'     => get_userdata($item['buyer_id']) ? get_userdata($item['buyer_id'])->display_name : __('Unknown'),
             'order_source' => OrdersService::renderSource($item['order_source']),
-            'order_type' => OrdersService::renderType($item['order_type']),
+            'order_type'   => OrdersService::renderType($item['order_type']),
             'order_status' => OrdersService::renderStatus($item['order_status']),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? ''
+            'action'       => $this->renderAction($item),
+            default        => $item[$column_name] ?? ''
         };
     }
 
@@ -94,7 +86,8 @@ class OrdersListTable extends WP_List_Table {
     {
         return sprintf(
             '<input type="checkbox" name="order_ids[]" value="%s" />',
-            $item['order_code']
+            // $item['order_code']
+            $item['id']
         );
     }
 
@@ -172,7 +165,8 @@ class OrdersListTable extends WP_List_Table {
     private function deleteOrders(array $ids)
     {
         foreach ($ids as $id) {
-            $result = $this->service->deleteOrderByCode($id);
+            $id     = (int) $id;
+            $result = $this->service->deleteOrderById($id);
             if ($result === false) {
                 return new WP_Error(
                     500,
@@ -250,21 +244,23 @@ class OrdersListTable extends WP_List_Table {
 
         return sprintf(
             '<span class="view-order color-link cursor-pointer" data-id="%s">%s</span> %s',
-            $item['order_code'],
+            // $item['order_code'],
+            $item['id'],
             __('View'),
             $action
         );
     }
     private function _actions($item)
     {
-        $id = $item['order_code'];
+        // $id = $item['order_code'];
+        $id = $item['id'];
         // @todo get delivery code
         $deliveryId = $item['delivery_id'];
         $code       = '11231';
         return match ($item['order_status']) {
-            '1' => '<span class="close-order cursor-pointer" data-id="' . $id . '">' . __('Close') . '</span>',
-            '2' => '<span class="ship-order color-purple cursor-pointer" data-id="' . $id . '">' . __('Deliver', 'G3') . '</span>',
-            '3' => '<a class="track-order color-success cursor-pointer" href="' . $this->oneTrack($code) . '" target="_blank">' . __('Track', 'G3') . '</a>',
+            '1'     => '<span class="close-order cursor-pointer" data-id="' . $id . '">' . __('Close') . '</span>',
+            '2'     => '<span class="ship-order color-purple cursor-pointer" data-id="' . $id . '">' . __('Deliver', 'G3') . '</span>',
+            '3'     => '<a class="track-order color-success cursor-pointer" href="' . $this->oneTrack($code) . '" target="_blank">' . __('Track', 'G3') . '</a>',
             default => '<span class="delete-order color-error cursor-pointer" data-id="' . $id . '">' . __('Delete') . '</span>',
         };
     }

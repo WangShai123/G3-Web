@@ -19,7 +19,7 @@ use Exception;
 final class Helper {
 
     public ?Container $container = null;
-    private ?Rewrite $rewrite = null;
+    private ?Rewrite  $rewrite   = null;
 
     public function __construct()
     {

@@ -88,7 +88,20 @@ return [
     'redirect/go/([^/]+)/?$'      => [
         'var'        => 'redirect_url',
         'path'       => 'developer/redirect.php',
-        'dependency' => [\JEALER\G3\Components\Setting::class, 'redirectAvailable']
+        'dependency' => [\JEALER\G3\Components\Setting::class, 'onRedirect']
+    ],
+
+    // LLM Endpoint
+    'llm/([^/]+)/?$'              => [
+        'var'        => 'g3_var_llm',
+        'path'       => 'llm/endpoint1.php',
+        'priority'   => [
+            [
+                'value' => 'endpoint',
+                'path'  => 'llm/endpoint.php'
+            ]
+        ],
+        'dependency' => [\JEALER\G3\Components\Setting::class, 'onLLM']
     ],
 
 

@@ -4,6 +4,7 @@ namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Session;
@@ -45,7 +46,7 @@ class Security extends Components {
         }
     }
     #[Override]
-    protected function front(): void
+    protected function ready(): void
     {
         $this->userSiteMapHandle();
     }
@@ -303,17 +304,11 @@ class Security extends Components {
         $file['name'] = time() . '_' . $file['name'];
         return $file;
     }
-    public function userSiteMapHandle(): void
+    public function userSiteMapHandle()
     {
         add_filter('wp_sitemaps_add_provider', function ($provider, $name) {
-            $v = get_option(SystemService::SECURITY_OPTION_KEY);
-            if (!isset($v['userSiteMap']) || $v['userSiteMap'] !== '1') {
-                return $provider;
-            }
-            if ('users' === $name) {
-                return false;
-            }
-            return $provider;
+            $v = Context::get(SystemService::SECURITY_OPTION_KEY)['userSiteMap'] ?? '1';
+            return $v === '1' && 'users' === $name ? false : $provider;
         }, 10, 2);
     }
     public function destroyExtraSessions(): void

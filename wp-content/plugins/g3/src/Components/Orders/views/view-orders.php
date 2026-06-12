@@ -38,28 +38,28 @@ $table->display();
             }
         });
         $(document).on('click', '.ship-order', (e) => {
-          const editor = new modal({
-            title: '<?php _e('Deliver', 'G3'); ?>',
-            cancelText: '<?php _e('Cancel'); ?>',
-            confirmText: '<?php _e('Submit'); ?>',
-            fields: [
-              {
-                label: '<?php _e('Deliver Tracking Number', 'G3'); ?>',
-                type: 'text',
-                name: 'number',
-              }
-            ],
-            onSubmit: (data) => {
-              $.post(ajaxurl, {
-                action: 'g3_ship_order',
-                code: $(e.currentTarget).data('id'),
-                number: data.number,
-              }, (res) => {
-                resAction(res)
-              })
-            }
-          });
-          editor.show();
+            const editor = new modal({
+                title: '<?php _e('Deliver', 'G3'); ?>',
+                cancelText: '<?php _e('Cancel'); ?>',
+                confirmText: '<?php _e('Submit'); ?>',
+                fields: [
+                    {
+                        label: '<?php _e('Deliver Tracking Number', 'G3'); ?>',
+                        type: 'text',
+                        name: 'number',
+                    }
+                ],
+                onSubmit: (data) => {
+                    $.post(ajaxurl, {
+                        action: 'g3_ship_order',
+                        order_id: $(e.currentTarget).data('id'),
+                        number: data.number,
+                    }, (res) => {
+                        resAction(res)
+                    })
+                }
+            });
+            editor.show();
         })
     })
 </script>

@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Utilities;
-
 use JEALER\G3\Services\SystemService;
 
 /**
@@ -205,12 +203,12 @@ final class System {
     public static function osName(): string
     {
         return match (PHP_OS_FAMILY) {
-            'Linux' => 'linux',
+            'Linux'   => 'linux',
             'Windows' => 'windows',
-            'Darwin' => 'mac',
-            'BSD' => 'bsd',
+            'Darwin'  => 'mac',
+            'BSD'     => 'bsd',
             'Solaris' => 'solaris',
-            default => 'unknown',
+            default   => 'unknown',
         };
     }
 
@@ -232,7 +230,7 @@ final class System {
             $main = $default;
         }
 
-        $userConfig = get_template_directory() . '/config/' . $key . '.php';
+        $userConfig = get_stylesheet_directory() . '/config/' . $key . '.php';
         if (file_exists($userConfig)) {
             $user = require $userConfig;
         } else {

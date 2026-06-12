@@ -59,6 +59,10 @@ class OrdersService {
      */
     const CACHE_GROUP = 'g3_orders';
 
+    const ORDER_CODE_CACHE_GROUP    = 'code';
+    const ORDER_ITEMS_CACHE_GROUP   = 'items';
+    const ORDER_ADDRESS_CACHE_GROUP = 'address';
+
     /**
      * Redis lock key prefix for order code generation
      * 
@@ -98,8 +102,6 @@ class OrdersService {
     /**
      * WordPress database object
      * 
-     * WordPress 数据库对象
-     * 
      * @var wpdb
      */
     private wpdb $wpdb;
@@ -113,49 +115,41 @@ class OrdersService {
     public static function renderSource(int $id)
     {
         return match ($id) {
-            1 => __('Web Order', 'G3'),
-            2 => __('Manual Orders', 'G3'),
-            3 => __('MobileApp Order', 'G3'),
-            4 => __('Tiktok Order', 'G3'),
+            1       => __('Web Order', 'G3'),
+            2       => __('Manual Orders', 'G3'),
+            3       => __('MobileApp Order', 'G3'),
+            4       => __('Tiktok Order', 'G3'),
             default => __('Unknown')
         };
     }
     public static function renderType(int $id)
     {
         return match ($id) {
-            1 => __('Product Order', 'G3'),
-            2 => __('Tip Order', 'G3'),
-            3 => __('Donate Order', 'G3'),
-            4 => __('Membership Order', 'G3'),
-            5 => __('Recharge Order', 'G3'),
+            1       => __('Product Order', 'G3'),
+            2       => __('Tip Order', 'G3'),
+            3       => __('Donate Order', 'G3'),
+            4       => __('Membership Order', 'G3'),
+            5       => __('Recharge Order', 'G3'),
             default => __('Unknown')
         };
     }
     public static function renderStatus(int $id)
     {
         return match ($id) {
-            0 => __('Deleted', 'G3'),
-            1 => __('Pending Payment', 'G3'),
-            2 => __('Paid', 'G3'),
-            3 => __('Shipped', 'G3'),
-            4 => __('Completed', 'G3'),
-            5 => __('Cancelled', 'G3'),
-            6 => __('Refunded', 'G3'),
+            0       => __('Deleted', 'G3'),
+            1       => __('Pending Payment', 'G3'),
+            2       => __('Paid', 'G3'),
+            3       => __('Shipped', 'G3'),
+            4       => __('Completed', 'G3'),
+            5       => __('Cancelled', 'G3'),
+            6       => __('Refunded', 'G3'),
             default => __('Unknown')
         };
     }
 
-    public function deleteOrder(string $by, string $value): int|bool
-    {
-        $result = $this->wpdb->delete($this->wpdb->prefix . self::TABLE, [$by => $value]);
-        if ($result !== false) {
-            $this->clearOrderCache($value);
-        }
-        return $result;
-    }
     public function deleteOrderById(int $id): int|bool
     {
-        $result = $this->deleteOrder('id', $id);
+        $result = $this->wpdb->delete($this->wpdb->prefix . self::TABLE, ['id' => $id]);
         if ($result !== false) {
             $this->clearOrderCache($id);
         }
@@ -163,14 +157,14 @@ class OrdersService {
     }
     public function deleteOrderByCode(string $code): int|bool
     {
-        $result = $this->deleteOrder('order_code', $code);
+        $result = $this->wpdb->delete($this->wpdb->prefix . self::TABLE, ['order_code' => $code]);
         if ($result !== false) {
             $this->clearOrderCache($code);
         }
         return $result;
     }
 
-    public function deleteOrderItems(string $orderId): bool|WP_Error
+    public function deleteOrderItems(int $orderId): bool|WP_Error
     {
         $this->wpdb->query('START TRANSACTION');
 
@@ -210,40 +204,40 @@ class OrdersService {
         }
     }
 
-    public function deleteOrderAddress(int $orderId)
+    public function deleteOrderAddress(int $orderId): int|false
     {
         return $this->wpdb->delete($this->wpdb->prefix . self::ADDRESS_TABLE, ['order_id' => $orderId]);
     }
 
-    public function deleteOrderDelivery(int $orderId)
+    public function deleteOrderDelivery(int $orderId): int|false
     {
         return $this->wpdb->delete($this->wpdb->prefix . self::DELIVERY_TABLE, ['order_id' => $orderId]);
     }
 
-    public function trashOrder(string $orderId)
+    public function trashOrder(int $orderId)
     {
         return $this->updateOrderStatus($orderId, 0);
     }
 
-    public function closeOrder(string $orderId)
+    public function closeOrder(int $orderId)
     {
         return $this->updateOrderStatus($orderId, 5);
     }
 
     /**
-     * Create order code with Redis distributed lock.
+     * Create order code with Redis distributed lock
      * 
-     * 创建订单号（使用 Redis 分布式锁）。
+     * 创建订单号（使用 Redis 分布式锁）
      * 
      * Order code format: DateCode(14) + SourceCode + TypeCode + SequenceCode
      * 
      * Example: 202601011212121200000002
      * 
-     * @param int $source The order source code. 订单来源码。
-     * @param int $type The order type code. 订单类型码。
-     * @param int $start The starting value for the sequence number. 流水码起始值。
-     * @param int $baseLength The base length of the sequence number. 流水码基础长度。
-     * @return string|WP_Error The generated order code or WP_Error on failure. 生成的订单号或失败时返回 WP_Error。
+     * @param int $source The order source code
+     * @param int $type The order type code
+     * @param int $start The starting value for the sequence number
+     * @param int $baseLength The base length of the sequence number
+     * @return string|WP_Error The generated order code or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -269,15 +263,15 @@ class OrdersService {
                 break;
             }
 
-            // Exponential backoff: 10ms, 20ms, 40ms
-            // 指数退避：10ms, 20ms, 40ms
+            // Exponential backoff: 10ms, 20ms, 40ms 指数退避
             usleep(10000 * pow(2, $attempt));
         }
 
         if (!$acquired) {
             return new WP_Error(
                 'order_lock_failed',
-                __('Failed to acquire order code lock after multiple attempts. 多次尝试后仍无法获取订单号锁。', 'g3'),
+                // 多次尝试后仍无法获取订单号锁。
+                __('Failed to acquire order code lock after multiple attempts.', 'G3'),
                 ['status' => 503, 'attempts' => self::MAX_RETRY]
             );
         }
@@ -300,7 +294,6 @@ class OrdersService {
             $sequenceCode = str_pad((string) $finalSequence, $baseLength, '0', STR_PAD_LEFT);
 
             // Concatenate order code
-            // 拼接订单号
             $orderCode = $dateCode . $source . $type . $sequenceCode;
 
             return $orderCode;
@@ -317,11 +310,11 @@ class OrdersService {
     }
 
     /**
-     * Generate unique lock token.
+     * Generate unique lock token
      * 
-     * 生成唯一锁令牌。
+     * 生成唯一锁令牌
      * 
-     * @return string Unique lock token. 唯一锁令牌。
+     * @return string Unique lock token
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -331,14 +324,14 @@ class OrdersService {
     }
 
     /**
-     * Create order with database transaction support.
+     * Create order with database transaction support
      * 
-     * 创建订单（支持数据库事务）。
+     * 创建订单（支持数据库事务）
      * 
-     * @param array $data Order data including buyer_id, order_source, order_type, total_amount, final_amount, etc. 订单数据，包含 buyer_id、order_source、order_type、total_amount、final_amount 等。
-     * @param array $items Order items array. 订单明细数组。
-     * @param array $address Order address data. 订单地址数据。
-     * @return int|WP_Error Order ID on success, WP_Error on failure. 成功返回订单 ID，失败返回 WP_Error。
+     * @param array $data Order data including buyer_id, order_source, order_type, total_amount, final_amount, etc.
+     * @param array $items Order items array
+     * @param array $address Order address data
+     * @return int|WP_Error Order ID or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -350,8 +343,7 @@ class OrdersService {
             return $validationResult;
         }
 
-        // Generate order code with distributed lock
-        // 使用分布式锁生成订单号
+        // Generate order code with distributed lock 分布式锁
         $orderCode = $this->createOrderCode(
             (int) $data['order_source'],
             (int) $data['order_type'],
@@ -375,7 +367,6 @@ class OrdersService {
             }
 
             // Insert order items if provided
-            // 插入订单明细（如有）
             if (!empty($items)) {
                 $itemsResult = $this->insertOrderItems($orderId, $items);
                 if (is_wp_error($itemsResult)) {
@@ -384,15 +375,13 @@ class OrdersService {
             }
 
             // Insert order address if provided
-            // 插入订单地址（如有）
             if (!empty($address)) {
                 $addressId = $this->insertOrderAddress($orderId, $address);
                 if (is_wp_error($addressId)) {
-                    throw new \Exception($addressId->get_error_message());
+                    throw new Exception($addressId->get_error_message());
                 }
 
                 // Update order with address_id
-                // 更新订单关联地址 ID
                 $this->wpdb->update(
                     $this->wpdb->prefix . self::TABLE,
                     ['address_id' => $addressId],
@@ -409,13 +398,11 @@ class OrdersService {
             return $orderId;
 
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             // Rollback transaction on error
-            // 出错时回滚事务
             $this->wpdb->query('ROLLBACK');
 
             // Log error for debugging
-            // 记录错误日志用于调试
             error_log(sprintf(
                 '[G3 Orders] Create order failed: %s. Order code: %s. Data: %s',
                 $e->getMessage(),
@@ -425,61 +412,62 @@ class OrdersService {
 
             return new WP_Error(
                 'order_create_failed',
-                sprintf(__('Failed to create order: %s. 创建订单失败：%s。', 'g3'), $e->getMessage()),
+                sprintf(__('Failed to create order: %s.', 'G3'), $e->getMessage()),
                 ['status' => 500]
             );
         }
     }
 
     /**
-     * Validate order data.
+     * Validate order data
      * 
-     * 验证订单数据。
+     * 验证订单数据
      * 
-     * @param array $data Order data. 订单数据。
-     * @return true|WP_Error True on success, WP_Error on validation failure. 成功返回 true，验证失败返回 WP_Error。
+     * @param array $data Order data
+     * @return true|WP_Error True or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
     private function validateOrderData(array $data): bool|WP_Error
     {
         $requiredFields = [
-            'buyer_id'     => __('Buyer ID', 'g3'),
-            'order_source' => __('Order Source', 'g3'),
-            'order_type'   => __('Order Type', 'g3'),
-            'total_amount' => __('Total Amount', 'g3'),
-            'final_amount' => __('Final Amount', 'g3'),
+            'buyer_id'     => __('Buyer ID', 'G3'),
+            'order_source' => __('Order Source', 'G3'),
+            'order_type'   => __('Order Type', 'G3'),
+            'total_amount' => __('Total Amount', 'G3'),
+            'final_amount' => __('Final Amount', 'G3'),
         ];
 
         foreach ($requiredFields as $field => $label) {
             if (!isset($data[$field]) || $data[$field] === '') {
                 return new WP_Error(
                     'order_missing_field',
-                    sprintf(__('Missing required field: %s (%s). 缺少必填字段：%s（%s）。', 'g3'), $field, $label, $field, $label),
+                    // 缺少必填字段：%s（%s）。
+                    sprintf(__('Missing required field: %s (%s).', 'G3'), $field, $label),
                     ['status' => 400, 'field' => $field]
                 );
             }
         }
 
         // Validate numeric fields
-        // 验证数值字段
         $numericFields = ['buyer_id', 'order_source', 'order_type', 'total_amount', 'final_amount'];
         foreach ($numericFields as $field) {
             if (!is_numeric($data[$field])) {
                 return new WP_Error(
                     'order_invalid_field',
-                    sprintf(__('Invalid field value: %s must be numeric. 字段值无效：%s 必须为数值。', 'g3'), $field, $field),
+                    // 字段值无效：%s 必须为数值。
+                    sprintf(__('Invalid field value: %s must be numeric.', 'G3'), $field),
                     ['status' => 400, 'field' => $field]
                 );
             }
         }
 
         // Validate amount consistency
-        // 验证金额一致性
         if ((float) $data['final_amount'] > (float) $data['total_amount']) {
             return new WP_Error(
                 'order_invalid_amount',
-                __('Final amount cannot exceed total amount. 实际应付金额不能大于订单总额。', 'g3'),
+                // 实际应付金额不能大于订单总额。
+                __('Final amount cannot exceed total amount.', 'G3'),
                 ['status' => 400]
             );
         }
@@ -488,13 +476,13 @@ class OrdersService {
     }
 
     /**
-     * Insert order record.
+     * Insert order record
      * 
-     * 插入订单记录。
+     * 插入订单记录
      * 
-     * @param string $orderCode Order code. 订单号。
-     * @param array $data Order data. 订单数据。
-     * @return int|WP_Error Order ID on success, WP_Error on failure. 成功返回订单 ID，失败返回 WP_Error。
+     * @param string $orderCode
+     * @param array $data Order data
+     * @return int|WP_Error Order ID or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -537,13 +525,13 @@ class OrdersService {
     }
 
     /**
-     * Insert order items.
+     * Insert order items
      * 
-     * 插入订单明细。
+     * 插入订单明细
      * 
-     * @param int $orderId Order ID. 订单 ID。
-     * @param array $items Order items data. 订单明细数据。
-     * @return true|WP_Error True on success, WP_Error on failure. 成功返回 true，失败返回 WP_Error。
+     * @param int $orderId Order ID
+     * @param array $items Order items data
+     * @return true|WP_Error True or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -553,11 +541,11 @@ class OrdersService {
 
         foreach ($items as $index => $item) {
             // Validate item data
-            // 验证明细数据
             if (empty($item['product_id']) || empty($item['sku_id']) || !isset($item['unit_price'])) {
                 return new WP_Error(
                     'order_item_invalid',
-                    sprintf(__('Invalid item data at index %d. 第 %d 项明细数据无效。', 'g3'), $index, $index),
+                    // 第 %d 项明细数据无效。
+                    sprintf(__('Invalid item data at index %d.', 'G3'), $index),
                     ['status' => 400, 'index' => $index]
                 );
             }
@@ -579,7 +567,8 @@ class OrdersService {
             if ($result === false) {
                 return new WP_Error(
                     'order_item_insert_failed',
-                    sprintf(__('Failed to insert order item: %s. 插入订单明细失败：%s。', 'g3'), $this->wpdb->last_error),
+                    // 插入订单明细失败：%s。
+                    sprintf(__('Failed to insert order item: %s.', 'G3'), $this->wpdb->last_error),
                     ['status' => 500, 'index' => $index]
                 );
             }
@@ -589,13 +578,13 @@ class OrdersService {
     }
 
     /**
-     * Insert order address.
+     * Insert order address
      * 
-     * 插入订单地址。
+     * 插入订单地址
      * 
-     * @param int $orderId Order ID. 订单 ID。
-     * @param array $address Address data. 地址数据。
-     * @return int|WP_Error Address ID on success, WP_Error on failure. 成功返回地址 ID，失败返回 WP_Error。
+     * @param int $orderId Order ID
+     * @param array $address Address data
+     * @return int|WP_Error Address ID or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -621,7 +610,8 @@ class OrdersService {
         if ($result === false) {
             return new WP_Error(
                 'order_address_insert_failed',
-                sprintf(__('Failed to insert order address: %s. 插入订单地址失败：%s。', 'g3'), $this->wpdb->last_error),
+                // 插入订单地址失败：%s。
+                sprintf(__('Failed to insert order address: %s.', 'G3'), $this->wpdb->last_error),
                 ['status' => 500]
             );
         }
@@ -630,11 +620,11 @@ class OrdersService {
     }
 
     /**
-     * Clear order cache.
+     * Clear order cache
      * 
-     * 清除订单缓存。
+     * 清除订单缓存
      * 
-     * @param string $orderCode Order Code
+     * @param string $orderCode
      * @return void
      * @since 1.0.0
      * @author Wang Shai
@@ -645,13 +635,13 @@ class OrdersService {
     }
 
     /**
-     * Get order by ID.
+     * Get order by ID
      * 
-     * 根据 ID 获取订单。
+     * 根据 ID 获取订单
      * 
-     * @param int $orderId Order ID. 订单 ID。
-     * @param bool $useCache Whether to use cache. 是否使用缓存。
-     * @return array|WP_Error Order data on success, WP_Error on failure. 成功返回订单数据，失败返回 WP_Error。
+     * @param int $orderId
+     * @param bool $useCache Whether to use cache
+     * @return array|WP_Error Order data or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -674,67 +664,81 @@ class OrdersService {
         if (!$order) {
             return new WP_Error(
                 'order_not_found',
-                __('Order not found. 订单不存在。', 'g3'),
+                __('Order not found.', 'G3'),
                 ['status' => 404]
             );
         }
 
-        // Cache the result
-        // 缓存结果
-        wp_cache_set($orderId, $order, self::CACHE_GROUP, 3600);
+        wp_cache_set($orderId, $order, self::CACHE_GROUP, HOUR_IN_SECONDS);
 
         return $order;
     }
 
     /**
-     * Get order by order code.
+     * Get order data by order code
      * 
-     * 根据订单号获取订单。
+     * 根据订单号获取订单
      * 
-     * @param string $orderCode Order code. 订单号。
-     * @return array|WP_Error Order data on success, WP_Error on failure. 成功返回订单数据，失败返回 WP_Error。
+     * @param string $orderCode Order code
+     * @return array|WP_Error Order data or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
     public function getOrderByCode(string $orderCode): array|WP_Error
     {
+        $orderId = $this->getOrderIdByCode($orderCode);
+        if (is_wp_error($orderId)) {
+            return $orderId;
+        }
+        return $this->getOrderById($orderId, false);
+    }
+
+    public function getOrderIdByCode(string $orderCode): int|WP_Error
+    {
+        $group  = self::CACHE_GROUP . ':' . self::ORDER_CODE_CACHE_GROUP;
+        $cached = wp_cache_get($orderCode, $group);
+        if ($cached !== false) {
+            return $cached;
+        }
+
         $tableName = $this->wpdb->prefix . self::TABLE;
 
-        $order = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM {$tableName} WHERE order_code = %s", $orderCode),
-            ARRAY_A
+        $orderId = $this->wpdb->get_var(
+            $this->wpdb->prepare("SELECT id FROM {$tableName} WHERE order_code = %s", $orderCode)
         );
 
-        if (!$order) {
+        if (!$orderId) {
             return new WP_Error(
                 'order_not_found',
-                __('Order not found. 订单不存在。', 'g3'),
+                __('Order not found.', 'G3'),
                 ['status' => 404]
             );
         }
 
-        return $order;
+        wp_cache_set($orderCode, $orderId, $group, HOUR_IN_SECONDS);
+
+        return (int) $orderId;
     }
 
     /**
-     * Update order status.
+     * Update order status
      * 
-     * 更新订单状态。
+     * 更新订单状态
      * 
-     * @param string $orderId
+     * @param int $orderId
      * @param int $status
-     * @return bool|int
+     * @return int|false
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function updateOrderStatus(string $orderId, int $status): bool|int
+    public function updateOrderStatus(int $orderId, int $status): int|false
     {
         $tableName = $this->wpdb->prefix . self::TABLE;
 
         $result = $this->wpdb->update(
             $tableName,
             ['order_status' => $status],
-            ['order_code' => $orderId]
+            ['id' => $orderId]
         );
 
         if ($result !== false) {
@@ -745,12 +749,12 @@ class OrdersService {
     }
 
     /**
-     * Get order items by order ID.
+     * Get order items by order ID
      * 
-     * 根据订单 ID 获取订单明细。
+     * 根据订单 ID 获取订单明细
      * 
-     * @param int $orderId Order ID. 订单 ID。
-     * @return array|WP_Error Order items array on success, WP_Error on failure. 成功返回订单明细数组，失败返回 WP_Error。
+     * @param int $orderId Order ID
+     * @return array|WP_Error Order items array or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -766,7 +770,8 @@ class OrdersService {
         if ($items === null) {
             return new WP_Error(
                 'order_items_query_failed',
-                sprintf(__('Failed to query order items: %s. 查询订单明细失败：%s。', 'g3'), $this->wpdb->last_error),
+                // 查询订单明细失败：%s。
+                sprintf(__('Failed to query order items: %s.', 'G3'), $this->wpdb->last_error),
                 ['status' => 500]
             );
         }
@@ -775,12 +780,12 @@ class OrdersService {
     }
 
     /**
-     * Get order address by order ID.
+     * Get order address by order ID
      * 
-     * 根据订单 ID 获取订单地址。
+     * 根据订单 ID 获取订单地址
      * 
-     * @param int $orderId Order ID. 订单 ID。
-     * @return array|WP_Error Order address data on success, WP_Error on failure. 成功返回订单地址数据，失败返回 WP_Error。
+     * @param int $orderId Order ID
+     * @return array|WP_Error Order address data or WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
@@ -796,7 +801,8 @@ class OrdersService {
         if (!$address) {
             return new WP_Error(
                 'order_address_not_found',
-                __('Order address not found. 订单地址不存在。', 'g3'),
+                // 订单地址不存在。
+                __('Order address not found.', 'G3'),
                 ['status' => 404]
             );
         }

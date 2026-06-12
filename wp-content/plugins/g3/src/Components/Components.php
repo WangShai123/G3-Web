@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Helper\Helper;
 use JEALER\G3\Container\Container;
 use JEALER\G3\Queue\Queue;
@@ -11,6 +9,7 @@ use JEALER\G3\Utilities\System;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Context;
 use Exception;
+use ReflectionClass;
 
 /**
  * Base Components Class
@@ -23,12 +22,12 @@ use Exception;
 abstract class Components {
 
     /**
-     * @var Container|null 容器实例
+     * @var Container|null Container instance, used for dependency injection and service management
      */
     protected ?Container $container = null;
 
     /**
-     * @var string 组件名称（自动推断）
+     * @var string component name (automatically inferred)
      */
     protected string $componentName;
 
@@ -61,21 +60,20 @@ abstract class Components {
 
     public function __construct()
     {
-        // 自动推断组件名称
         $this->componentName = $this->getComponentName();
-
-        // 内部初始化
         $this->internalInit();
     }
 
     /**
-     * 获取组件名称（自动推断）
+     * Automatically infer component name based on class name
+     * 
+     * 根据类名自动推断组件名称
      * 
      * @return string
      */
     private function getComponentName(): string
     {
-        $className = (new \ReflectionClass($this))->getShortName();
+        $className = (new ReflectionClass($this))->getShortName();
         return strtolower($className);
     }
 
@@ -85,7 +83,7 @@ abstract class Components {
             $this->container = Container::run();
         }
 
-        // 自动注册到容器
+        // Component registration in the container
         $serviceId = 'component.' . $this->componentName;
         if (!$this->container->has($serviceId)) {
             $this->container->setRawDefinition($serviceId, $this);
@@ -121,7 +119,9 @@ abstract class Components {
     }
 
     /**
-     * 获取服务
+     * Get service instance from the container
+     * 
+     * 从容器中获取服务实例
      * 
      * @param string $serviceClass 服务类名
      * @return object|null
@@ -137,6 +137,8 @@ abstract class Components {
     }
 
     /**
+     * Check if service exists
+     * 
      * 检查服务是否存在
      * 
      * @param string $serviceClass 服务类名
@@ -148,7 +150,9 @@ abstract class Components {
     }
 
     /**
-     * 调试日志
+     * Debug component log output, only effective when WP_DEBUG is true
+     * 
+     * 调试组件日志输出，仅在 WP_DEBUG 为 true 时有效
      * 
      * @param string $message 日志信息
      * @return void
@@ -156,11 +160,13 @@ abstract class Components {
     protected function debug(string $message): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("[G3 Debug][{$this->componentName}] {$message}");
+            error_log("[G3 {$this->componentName}] {$message}");
         }
     }
 
     /**
+     * Get component name
+     * 
      * 获取组件名称
      * 
      * @return string
@@ -171,6 +177,8 @@ abstract class Components {
     }
 
     /**
+     * Get container instance
+     * 
      * 获取容器实例
      * 
      * @return Container|null
@@ -182,6 +190,9 @@ abstract class Components {
 
     /**
      * Register query variables
+     * 
+     * 注册查询变量
+     * 
      * @param array $vars
      * @return array
      * @since 1.0.0
@@ -196,7 +207,7 @@ abstract class Components {
      * 
      * 创建组件实例
      * 
-     * @deprecated 1.0.0
+     * @deprecated @since 1.0.0
      * 
      * @param string $componentName
      * @return mixed

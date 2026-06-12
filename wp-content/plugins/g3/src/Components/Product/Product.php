@@ -370,14 +370,22 @@ class Product extends Components {
     {
         if (!Validator::screen('product')) return;
 
+        Frontend::loadScript('signal');
         wp_register_script(
             'g3-admin-product',
-            G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
-            array('jquery'),
+            // G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
+            G3_ASSETS_URL . '/javascript/g3.admin.product.js',
+            // array('jquery'),
+            [],
             '1.0.0',
             true
         );
         wp_enqueue_script('g3-admin-product');
+
+        // Frontend::loadModule('jui');
+        // Frontend::loadModule('signal');
+        // Frontend::loadModule('g3.admin.localize');
+        // Frontend::loadModule('g3.admin.product');
 
         $this->localizeData();
     }

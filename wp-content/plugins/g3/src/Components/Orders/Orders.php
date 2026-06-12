@@ -67,7 +67,7 @@ class Orders extends Components {
         });
         add_action('wp_ajax_g3_delete_order', function () {
             $orderId = $_POST['order_id'];
-            $result  = $this->service->deleteOrderByCode($orderId);
+            $result  = $this->service->deleteOrderById($orderId);
             if ($result !== false) {
                 Response::ajaxDeleted();
             } else {

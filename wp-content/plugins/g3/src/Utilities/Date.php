@@ -3,19 +3,16 @@ namespace JEALER\G3\Utilities;
 
 /**
  * Date utilities
- * 
+ *
  * 日期工具类
- * 
- * @since 1.0.0
- * @author Wang Shai
  */
 final class Date {
 
     /**
      * Get human readable time string
-     * 
+     *
      * 获取人类可读的时间字符串
-     * 
+     *
      * @param int $timestamp timestamp
      * @return string human readable time string
      */
@@ -29,15 +26,15 @@ final class Date {
         $timeDiff = current_time('timestamp') - $timestamp;
 
         return match (true) {
-            $timeDiff < 60 => \sprintf(
+            $timeDiff < 60      => \sprintf(
                 _n('%s second ago', '%s seconds ago', $timeDiff, 'G3'),
                 $timeDiff
             ),
-            $timeDiff < 3600 => \sprintf(
+            $timeDiff < 3600    => \sprintf(
                 _n('%s minute ago', '%s minutes ago', intdiv($timeDiff, 60), 'G3'),
                 intdiv($timeDiff, 60)
             ),
-            $timeDiff < 86400 => \sprintf(
+            $timeDiff < 86400   => \sprintf(
                 _n('%s hour ago', '%s hours ago', intdiv($timeDiff, 3600), 'G3'),
                 intdiv($timeDiff, 3600)
             ),
@@ -45,15 +42,15 @@ final class Date {
                 _n('%s day ago', '%s days ago', intdiv($timeDiff, 86400), 'G3'),
                 intdiv($timeDiff, 86400)
             ),
-            default => wp_date(get_option('date_format'), $timestamp),
+            default             => wp_date(get_option('date_format'), $timestamp),
         };
     }
 
     /**
      * Get Localized Date and Time based on WordPress settings
-     * 
+     *
      * 按照 WordPress 设置的日期和时间格式返回当前时区的日期和时间字符串
-     * 
+     *
      * @param int $timestamp timestamp
      * @return string|bool date and time string or false on error
      */
@@ -64,9 +61,9 @@ final class Date {
 
     /**
      * Get Localized Date based on WordPress settings
-     * 
+     *
      * 按照 WordPress 设置的日期格式返回当前时区的日期字符串
-     * 
+     *
      * @param int $timestamp timestamp
      * @return string|bool date string or false on error
      */
@@ -77,9 +74,9 @@ final class Date {
 
     /**
      * Get Localized Time based on WordPress settings
-     * 
+     *
      * 按照 WordPress 设置的时间格式返回当前时区的时间字符串
-     * 
+     *
      * @param int $timestamp timestamp
      * @return string|bool time string or false on error
      */

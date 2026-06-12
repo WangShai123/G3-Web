@@ -1,26 +1,16 @@
 <?php
-
 namespace JEALER\G3\Utilities;
-
 use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
 
-/**
- * Common utilities
- * 
- * 通用工具类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 final class Common {
 
     /**
      * Easy inside translate
-     * 
+     *
      * 简单翻译
-     * 
+     *
      * @param string $key translation key
      * @param string $lang language code 'zh' or 'en'
      * @param array $messages translation messages array
@@ -33,7 +23,7 @@ final class Common {
      *       'hello' => '你好',
      *     ]
      *   ];
-     * 
+     *
      * @return string translated string
      */
     public static function t(string $key, string $lang, array $messages): string
@@ -43,7 +33,7 @@ final class Common {
 
     /**
      * Common singleton factory (support reset)
-     * 
+     *
      * 通用单例工厂 (支持重置)
      *
      * @param string $className 类名（包含命名空间）
@@ -77,9 +67,9 @@ final class Common {
 
     /**
      * Load an extension manually, support .dll and .so files
-     * 
+     *
      * 手动加载扩展，兼容 .dll 和 .so 文件
-     * 
+     *
      * @param string $extensionPath 扩展文件路径（包含文件名）
      * @return bool 是否成功加载扩展
      */
@@ -102,9 +92,9 @@ final class Common {
 
     /**
      * Generate a random string, support max length 32 bits
-     * 
+     *
      * 生成随机字符串，支持最大长度 32 位
-     * 
+     *
      * @param int $length string length
      * @return string random string
      */
@@ -118,9 +108,9 @@ final class Common {
 
     /**
      * Truncate string with ellipsis
-     * 
+     *
      * 截断字符串并添加省略号
-     * 
+     *
      * @param string $string The string to truncate
      * @param int $length Maximum length of the string
      * @param string $ellipsis Ellipsis string, defaults to '...'
@@ -136,9 +126,9 @@ final class Common {
 
     /**
      * Truncate HTML string with ellipsis
-     * 
+     *
      * 截断 HTML 字符串并添加省略号
-     * 
+     *
      * @param string $html The HTML string to truncate
      * @param int $length Maximum length of the string
      * @param string $more Ellipsis string, defaults to '…'
@@ -149,10 +139,8 @@ final class Common {
         if (mb_strlen(strip_tags($html)) <= $length) {
             return $html;
         }
-
         // Use wp_html_excerpt to safely truncate (will not cut off in the middle of a tag)
         $truncated = wp_html_excerpt($html, $length, '');
-
         // Auto close unclosed tags
         $truncated = force_balance_tags($truncated);
 
@@ -161,9 +149,9 @@ final class Common {
 
     /**
      * Check if theme mode is available
-     * 
+     *
      * 检查主题模式是否可用
-     * 
+     *
      * @return bool
      */
     public static function themeModeAvailable(): bool
@@ -173,9 +161,9 @@ final class Common {
 
     /**
      * Get Cache Key
-     * 
+     *
      * 获取缓存键名
-     * 
+     *
      * @param string $id
      * @param string $subFolder
      * @param string $prefix
@@ -188,9 +176,9 @@ final class Common {
 
     /**
      * Convert to seconds
-     * 
+     *
      * 转换为秒
-     * 
+     *
      * @param string $unit
      * @param int $time
      * @return int|Exception
@@ -200,20 +188,20 @@ final class Common {
         return match ($unit) {
             'second' => $time,
             'minute' => $time * 60,
-            'hour' => $time * 60 * 60,
-            'day' => $time * 60 * 60 * 24,
-            'week' => $time * 60 * 60 * 24 * 7,
-            'month' => $time * 60 * 60 * 24 * 30,
-            'year' => $time * 60 * 60 * 24 * 365,
-            default => throw new Exception('Invalid unit'),
+            'hour'   => $time * 60 * 60,
+            'day'    => $time * 60 * 60 * 24,
+            'week'   => $time * 60 * 60 * 24 * 7,
+            'month'  => $time * 60 * 60 * 24 * 30,
+            'year'   => $time * 60 * 60 * 24 * 365,
+            default  => throw new Exception('Invalid unit'),
         };
     }
 
     /**
      * Format seconds into human-readable time string.
-     * 
+     *
      * 将秒数格式化为人类可读的时间字符串。
-     * 
+     *
      * @param int $seconds The number of seconds to format.
      * @return string Formatted time string (e.g., "1分30秒", "2天3小时").
      * @since 1.0.0
@@ -224,11 +212,9 @@ final class Common {
         if ($seconds < 0) {
             return '0' . __('Second');
         }
-
         if ($seconds === 0) {
             return '0' . __('Second');
         }
-
         $units = [
             'year'   => 365 * 24 * 60 * 60,
             'month'  => 30 * 24 * 60 * 60,
@@ -238,9 +224,7 @@ final class Common {
             'minute' => 60,
             'second' => 1,
         ];
-
         $parts = [];
-
         foreach ($units as $unitName => $unitValue) {
             if ($seconds >= $unitValue) {
                 $count    = intdiv($seconds, $unitValue);
@@ -248,14 +232,14 @@ final class Common {
 
                 // Map unit name to Chinese label
                 $label   = match ($unitName) {
-                    'year' => __('Year'),
-                    'month' => __('Month'),
-                    'week' => __('Week', 'G3'),
-                    'day' => __('Day'),
-                    'hour' => __('Hour'),
+                    'year'   => __('Year'),
+                    'month'  => __('Month'),
+                    'week'   => __('Week', 'G3'),
+                    'day'    => __('Day'),
+                    'hour'   => __('Hour'),
                     'minute' => __('Minute'),
                     'second' => __('Second'),
-                    default => '',
+                    default  => '',
                 };
                 $parts[] = "{$count}{$label}";
             }

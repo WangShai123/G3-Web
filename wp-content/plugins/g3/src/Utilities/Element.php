@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Utilities;
-
 use JEALER\G3\Utilities\Frontend;
 
 /**
@@ -82,7 +80,8 @@ final class Element {
         array $options = [],
         bool $isArray = true
         // bool $needNone = false
-    ): string {
+    ): string
+    {
         $html = '<fieldset>';
 
         if ($legend) {
@@ -168,7 +167,8 @@ final class Element {
         string $inputType = 'text',
         string $class = '',
         bool $isArray = true
-    ): string {
+    ): string
+    {
         $html = '<fieldset>';
 
         if ($legend) {
@@ -213,7 +213,8 @@ final class Element {
         string $description = '',
         string $class = '',
         bool $isArray = true
-    ): string {
+    ): string
+    {
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
@@ -269,7 +270,8 @@ final class Element {
         string $class = '',
         bool $isArray = true,
         string $default = ''
-    ): string {
+    ): string
+    {
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
@@ -333,7 +335,8 @@ final class Element {
             'step' => 1,
         ],
         bool $isArray = true
-    ): string {
+    ): string
+    {
         $html = '<fieldset>';
 
         if ($legend) {
@@ -385,7 +388,8 @@ final class Element {
         int $rows = 5,
         int $cols = 50,
         bool $isArray = true
-    ): string {
+    ): string
+    {
         $html = "<fieldset>";
 
         if ($legend) {
@@ -434,7 +438,8 @@ final class Element {
         array $options = [],
         bool $horizontal = true,
         bool $isArray = true
-    ): string {
+    ): string
+    {
         $id = $isArray ? $keyName : $optionName;
 
         $html = "<fieldset id='$id'>";
@@ -501,7 +506,8 @@ final class Element {
         array $options = [],
         bool $horizontal = true,
         bool $isArray = true
-    ): string {
+    ): string
+    {
         $id = $isArray ? $keyName : $optionName;
 
         $html = "<fieldset id='$id'>";
@@ -568,7 +574,8 @@ final class Element {
         string $class = '',
         string $size = 'md',
         bool $isArray = true,
-    ): string {
+    ): string
+    {
         $id = $isArray ? $keyName : $optionName;
 
         $html = "<fieldset id='$id'>";
@@ -669,8 +676,8 @@ final class Element {
         $type = match ($type) {
             'success' => 'success',
             'warning' => 'warning',
-            'danger' => 'danger',
-            default => 'default',
+            'danger'  => 'danger',
+            default   => 'default',
         };
 
         $titleString = '';

@@ -53,6 +53,8 @@ class SystemService {
      */
     const RSS_OPTION_KEY = 'g3_option_rss';
 
+    const LLM_OPTION_KEY = 'g3_option_llm';
+
     /**
      * Form Key
      * 

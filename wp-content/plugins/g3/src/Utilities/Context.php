@@ -1,5 +1,4 @@
 <?php
-
 namespace JEALER\G3\Utilities;
 
 /**
@@ -161,7 +160,6 @@ class Context {
         if (!isset(self::$cache[$key])) {
             return false;
         }
-
         // Check if cache has expired
         if (time() > self::$cache[$key]['expires_at']) {
             unset(self::$cache[$key]);
@@ -282,7 +280,6 @@ class Context {
             'compute'      => $compute,
             'dependencies' => $dependencies
         ];
-
         // Listen for dependency changes
         foreach ($dependencies as $dep) {
             self::addListener($dep, function () use ($key) {

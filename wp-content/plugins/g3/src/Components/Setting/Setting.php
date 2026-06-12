@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
@@ -18,6 +16,8 @@ class Setting extends Components {
     public array $seo = [];
 
     public array $rss = [];
+
+    public array $llm = [];
 
     private array $config = [];
 
@@ -45,7 +45,11 @@ class Setting extends Components {
             'rss1' => get_bloginfo('rss_url'),
             'rss2' => get_bloginfo('rss2_url'),
             'atom' => get_bloginfo('atom_url'),
-        ]);
+        ], false);
+        $this->llm    = Option::get(SystemService::LLM_OPTION_KEY, [
+            'llm'          => '1',
+            'postsPerType' => 2000,
+        ], false);
     }
 
     #[Override]
@@ -88,6 +92,7 @@ class Setting extends Components {
         $this->option = Option::cache(SystemService::OPTION_KEY, $this->option);
         $this->seo    = Option::cache(SystemService::SEO_OPTION_KEY, $this->seo);
         $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
+        $this->llm    = Option::cache(SystemService::LLM_OPTION_KEY, $this->llm);
     }
 
     #[Override]
@@ -132,6 +137,7 @@ class Setting extends Components {
             'general' => __('General'),
             'seo'     => 'SEO',
             'rss'     => 'RSS',
+            'llm'     => 'LLM',
             'sitemap' => __('SiteMap', 'G3'),
         ];
         echo '<div class="wrap"><h1>' . __('General') . '</h1>';
@@ -385,6 +391,52 @@ class Setting extends Components {
             ]
         ]);
 
+        // llm
+        add_settings_section(
+            'llm',
+            null,
+            '__return_false',
+            'g3-settings&tab=llm'
+        );
+        register_setting('llm', SystemService::LLM_OPTION_KEY);
+        Element::settingFields('g3-settings&tab=llm', 'llm', [
+            [
+                'id'       => 'llm',
+                'title'    => 'LLM',
+                'callback' => function () {
+                    echo Element::switch(
+                        SystemService::LLM_OPTION_KEY,
+                        $this->llm,
+                        'llm',
+                        'LLM',
+                        sprintf(
+                            '%s: <a href="%s" target="_blank">%s</a><br>%s: <a href="%s" target="_blank">%s</a>',
+                            __('Real-time data', 'G3'),
+                            site_url('/llm/endpoint'),
+                            site_url('/llm/endpoint'),
+                            __('Cache data', 'G3'),
+                            site_url('/llms.txt'),
+                            site_url('/llms.txt')
+                        )
+                    );
+                }
+            ],
+            [
+                'id'       => 'postsPerType',
+                'title'    => __('Posts Per Type', 'G3'),
+                'callback' => function () {
+                    echo Element::input(
+                        SystemService::LLM_OPTION_KEY,
+                        $this->llm,
+                        'postsPerType',
+                        __('Posts Per Type', 'G3'),
+                        __('The number of posts to be generated for each post type.<br>Default: <code>2000</code>.', 'G3'),
+                        'number',
+                    );
+                }
+            ]
+        ]);
+
         // sitemap
         add_settings_section(
             'sitemap',
@@ -489,7 +541,7 @@ class Setting extends Components {
             ], true);
         }
     }
-    public static function redirectAvailable(): bool
+    public static function onRedirect(): bool
     {
         $v = Context::get(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
         return $v === '1';
@@ -660,6 +712,12 @@ class Setting extends Components {
             $classes[] = $this->getConfigString();
         }
         return $classes;
+    }
+
+    public static function onLLM(): bool
+    {
+        $v = Context::get(SystemService::LLM_OPTION_KEY)['llm'] ?? '1';
+        return $v === '1';
     }
 
     private function getConfigString(): string
