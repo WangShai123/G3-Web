@@ -47,31 +47,19 @@ final class Frontend {
     public static function loadStyle(string $handle, bool $cdn = false, string $media = 'all')
     {
         $styles = [
-            'jui'          => [G3_CSS_URL . '/jui.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.min.css'],
-            'jui.core'     => [G3_CSS_URL . '/jui.core.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.pure.min.css'],
+            'jui'         => [G3_CSS_URL . '/jui.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.min.css'],
 
             /**
              * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
              * @link https://github.com/highlightjs/highlight.js
              */
-            'highlight'    => [G3_CSS_URL . '/highlight.atom-one-dark.min.css', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css'],
-            /**
-             * Quill: a modern WYSIWYG editor built for compatibility and extensibility
-             * @link https://github.com/slab/quill
-             */
-            'quill'        => [G3_CSS_URL . '/quill.snow.min.css', [], '2.0.3', 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css'],
-            'quill.custom' => [G3_CSS_URL . '/quill.snow.custom.min.css', [], '1.3.6'],
+            'highlight'   => [G3_CSS_URL . '/highlight.atom-one-dark.min.css', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css'],
             /**
              * Swiper: The most modern mobile touch slider with hardware accelerated transitions
              * @link https://github.com/nolimits4web/Swiper
              */
-            'swiper'       => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'],
-            'tiny.swiper'  => [G3_CSS_URL . '/tiny.swiper.min.css', [], '1.0.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.css'],
-            /**
-             * katex: Fast math typesetting for the web
-             * @see https://github.com/KaTeX/KaTeX
-             */
-            'katex'        => [G3_CSS_URL . '/katex.min.css', [], '0.16.25', 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css'],
+            'swiper'      => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'],
+            'tiny.swiper' => [G3_CSS_URL . '/tiny.swiper.min.css', [], '1.0.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.css'],
         ];
         /**
          * Custom Filter: g3_filter_style
@@ -142,11 +130,6 @@ final class Frontend {
              * @link https://github.com/arthurfiorette/axios-cache-interceptor
              */
             'axios.cache'        => [G3_JS_URL . '/axios-cache-interceptor.min.js', ['axios'], '1.11.4', 'https://unpkg.com/axios-cache-interceptor@1.11.4/dist/index.bundle.js'],
-            /**
-             * katex: Fast math typesetting for the web
-             * @link https://github.com/KaTeX/KaTeX
-             */
-            'katex'              => [G3_JS_URL . '/katex.min.js', [], '0.16.32', 'https://unpkg.com/katex@0.16.32/dist/katex.min.js'],
             /**
              * Decimal: An arbitrary-precision Decimal type for JavaScript
              * @link https://github.com/MikeMcl/decimal.js
