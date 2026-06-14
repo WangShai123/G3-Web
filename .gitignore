@@ -4,70 +4,66 @@
 #
 # Note: if you want to stage/commit WP core files
 # you can delete this whole section/until Configuration.
-/wp-admin/
-/wp-includes/
-/wp-content/index.php
-/wp-content/languages
-/wp-content/plugins/index.php
-/wp-content/themes/index.php
-/wp-content/upgrade/
-/index.php
-/license.txt
-/readme.html
-/wp-*.php
-/xmlrpc.php
+wp-admin/
+wp-includes/
+wp-content/index.php
+wp-content/languages
+wp-content/plugins/index.php
+wp-content/themes/index.php
+wp-content/upgrade/
+index.php
+license.txt
+readme.html
+wp-*.php
+xmlrpc.php
 
 # Configuration
-/wp-config.php
-/.user.ini
-/biome.json
+wp-config.php
+.user.ini
 
 # Uploads
-/wp-content/uploads/
+wp-content/uploads/
 
 # Default themes
-/wp-content/themes
-/wp-content/themes/twenty*/
+wp-content/themes
+wp-content/themes/twenty*/
 
 # Local files in plugin g3
-/g3.php
-/wp-content/plugins/*
-!/wp-content/plugins/g3/
-!/wp-content/plugins/g3/**/*
-/wp-content/plugins/g3/backup/
-/wp-content/plugins/g3/documents/
-/wp-content/plugins/g3/extensions/linux/
-/wp-content/plugins/g3/extensions/mac/
-/wp-content/plugins/g3/extensions/windows/
-/wp-content/plugins/g3/extensions/jl.php
+favicon.ico
+g3.php
+wp-content/plugins/*
+!wp-content/plugins/g3/
+!wp-content/plugins/g3/**/*
+wp-content/plugins/g3/backup/
+wp-content/plugins/g3/documents/
+wp-content/plugins/g3/extensions/linux/
+wp-content/plugins/g3/extensions/mac/
+wp-content/plugins/g3/extensions/windows/
+wp-content/plugins/g3/extensions/jl.php
 
-/wp-content/plugins/g3/node_modules/
-#/wp-content/plugins/g3/.eslintignore
-#/wp-content/plugins/g3/.prettierignore
-#/wp-content/plugins/g3/eslint.config.js
-#/wp-content/plugins/g3/prettier.config.js
-/wp-content/plugins/g3/package-lock.json
-/wp-content/plugins/g3/package.json
-/wp-content/plugins/g3/pnpm-lock.yaml
-/wp-content/plugins/g3/vite.config.ts
+wp-content/plugins/g3/node_modules/
+wp-content/plugins/g3/package-lock.json
+wp-content/plugins/g3/package.json
+wp-content/plugins/g3/pnpm-lock.yaml
+wp-content/plugins/g3/vite.config.ts
 
 # Static assets
-/wp-content/plugins/g3/assets/css/*.css
-!/wp-content/plugins/g3/assets/css/*.min.css
-/wp-content/plugins/g3/assets/javascript/**/*.js
-!/wp-content/plugins/g3/assets/javascript/**/*.min.js
+wp-content/plugins/g3/assets/css/*.css
+!wp-content/plugins/g3/assets/css/*.min.css
+wp-content/plugins/g3/assets/javascript/**/*.js
+!wp-content/plugins/g3/assets/javascript/**/*.min.js
 
-/wp-content/plugins/g3/public/css/*
-!/wp-content/plugins/g3/public/css/*.min.css
+wp-content/plugins/g3/public/css/*
+!wp-content/plugins/g3/public/css/*.min.css
 
-/wp-content/plugins/g3/public/javascript/**
-!/wp-content/plugins/g3/public/javascript/*.min.js
-!/wp-content/plugins/g3/public/javascript/*.umd.js
+wp-content/plugins/g3/public/javascript/**
+!wp-content/plugins/g3/public/javascript/*.min.js
+!wp-content/plugins/g3/public/javascript/*.umd.js
 
-!/wp-content/plugins/g3/public/javascript/es/
-!/wp-content/plugins/g3/public/javascript/es/*.min.js
-!/wp-content/plugins/g3/public/javascript/es/*.js
-!/wp-content/plugins/g3/public/javascript/es/*.mjs
+!wp-content/plugins/g3/public/javascript/es/
+!wp-content/plugins/g3/public/javascript/es/*.min.js
+!wp-content/plugins/g3/public/javascript/es/*.js
+!wp-content/plugins/g3/public/javascript/es/*.mjs
 
 # Tests
 wp-content/plugins/g3/tests/
@@ -84,14 +80,14 @@ wp-content/plugins/g3/src/Examples/
 wp-content/plugins/g3/src/Core/*/examples/
 
 # Languages backup files
-/wp-content/plugins/g3/public/languages/*.pot~
-/wp-content/plugins/g3/public/languages/*.po~
+wp-content/plugins/g3/public/languages/*.pot~
+wp-content/plugins/g3/public/languages/*.po~
 
 # Tools
-/wp-content/backup-*.php
-/wp-content/object-cache.php
-/wp-content/object-cache.php.bak
-/wp-content/db.php
+wp-content/backup-*.php
+wp-content/object-cache.php
+wp-content/object-cache.php.bak
+wp-content/db.php
 document.md
 
 # composer vendor markdown
