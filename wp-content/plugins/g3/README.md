@@ -42,7 +42,7 @@ G3 Web 是一个现代化的 WordPress 插件框架，旨在帮助开发者快�
 ### 1. 插件安装
 
 ```bash
-# 在 WordPress 后台搜索 "G3 Web" 插件并安装
+# 在 WordPress 后台搜索 "G3-Web" 插件并安装
 
 # 在 WordPress 后台激活插件
 ```
@@ -104,71 +104,75 @@ G3-Web
 │   ├── audios
 │   └── videos
 ├── src                         // 核心功能源码
-│   ├── Aspects                 // 切面
-│   │   └── Aspects.php
-│   ├── Attributes              // 注解
-│   │   ├── Aspects.php
-│   │   ├── Inject.php
-│   │   ├── Middleware.php
-│   │   ├── RestRouter.php
-│   │   └── Schema.php
+│   ├── Core                    // 核心功能
+│   │   ├── Aspects                 // 切面
+│   │   │   └── Aspects.php
+│   │   ├── Attributes              // 注解
+│   │   │   ├── Aspects.php
+│   │   │   ├── Inject.php
+│   │   │   ├── Middleware.php
+│   │   │   ├── RestRouter.php
+│   │   │   └── Schema.php
+│   │   ├── Container               // 容器
+│   │   │   ├── ConfigLoader.php
+│   │   │   ├── Container.php
+│   │   │   ├── ContainerBuilder.php
+│   │   │   ├── ContainerExtensionInterface.php
+│   │   │   ├── DefinitionInterface.php
+│   │   │   ├── ExtensionManager.php
+│   │   │   ├── ExtensionManagerInterface.php
+│   │   │   ├── FactoryDefinition.php
+│   │   │   ├── ParameterManager.php
+│   │   │   ├── ParameterManagerInterface.php
+│   │   │   ├── Reference.php
+│   │   │   ├── ServiceDecorator.php
+│   │   │   ├── ServiceDecoratorInterface.php
+│   │   │   ├── TagManager.php
+│   │   │   ├── TagManagerInterface.php
+│   │   │   └── ValueDefinition.php
+│   │   ├── Helper
+│   │   │   └── Helper.php
+│   │   ├── Queue                               // 队列
+│   │   │   ├── CronSchedules.php
+│   │   │   ├── DatabaseQueue.php
+│   │   │   ├── Job.php
+│   │   │   ├── Queue.php
+│   │   │   ├── QueueCronProcessor.php
+│   │   │   ├── QueueInterface.php
+│   │   │   └── RedisQueue.php
+│   │   ├── Rewrite
+│   │   │   └── RewriteRouter.php
+│   │   ├── Router
+│   │   │   └── Router.php
+│   │   ├── Activator.php       // 激活类
+│   │   ├── ComponentLoader.php
+│   │   ├── Deactivator.php     // 停用类
+│   │   └── Loader.php          // 插件加载类
+│   ├── Jobs
+│   │   └── EmailJob.php
 │   ├── Cache                   // 缓存
 │   │   ├── EasyWechat.php
 │   ├── Commands                // 命令行
 │   │   ├── CreateCommand.php
 │   │   └── TestCommand.php
 │   ├── Components              // 业务组件
-│   │   ├── ComponentLoader.php
+│   │   ├── ComponentManager.php
 │   │   ├── Components.php
-│   │   ├── ConfigServiceInterface.php
-│   │   └── {Component Folder}
-│   │   │   ├── tests           // 组件测试目录
-│   │   │   ├── views           // 组件模板目录
-│   │   │   ├── widgets         // 组件widget目录
-│   │   │   ├── includes        // 组件功能类
-│   │   └── └── Component.php   // 当前组件类
-│   ├── Container               // 容器
-│   │   ├── ConfigLoader.php
-│   │   ├── Container.php
-│   │   ├── ContainerBuilder.php
-│   │   ├── ContainerExtensionInterface.php
-│   │   ├── DefinitionInterface.php
-│   │   ├── ExtensionManager.php
-│   │   ├── ExtensionManagerInterface.php
-│   │   ├── FactoryDefinition.php
-│   │   ├── ParameterManager.php
-│   │   ├── ParameterManagerInterface.php
-│   │   ├── Reference.php
-│   │   ├── ServiceDecorator.php
-│   │   ├── ServiceDecoratorInterface.php
-│   │   ├── TagManager.php
-│   │   ├── TagManagerInterface.php
-│   │   └── ValueDefinition.php
-│   ├── Controllers                         // 控制器
+│   │   └── {Component Name}
+│   │   │   ├── tests                   // 组件测试目录
+│   │   │   ├── views                   // 组件模板目录
+│   │   │   ├── widgets                 // 组件widget目录
+│   │   │   ├── includes                // 组件功能类
+│   │   └── └── {Component Name}.php    // 当前组件类
+│   ├── Controllers                     // 控制器
 │   │   └── {Controller Folder}
-│   ├── Helper
-│   │   └── Helper.php
-│   ├── Middleware                          // 中间件
+│   ├── Middleware                      // 中间件
 │   │   ├── MiddlewareInterface.php
 │   │   ├── RateLimitMiddleware.php
 │   │   ├── RestAuthMiddleware.php
 │   │   ├── RoleMiddleware.php
 │   │   ├── SchemaMiddleware.php
 │   │   └── WhitelistMiddleware.php
-│   ├── Queue                               // 队列
-│   │   ├── Jobs
-│   │   │   └── EmailJob.php
-│   │   ├── CronSchedules.php
-│   │   ├── DatabaseQueue.php
-│   │   ├── Job.php
-│   │   ├── Queue.php
-│   │   ├── QueueCronProcessor.php
-│   │   ├── QueueInterface.php
-│   │   └── RedisQueue.php
-│   ├── Rewrite
-│   │   └── Rewrite.php
-│   ├── Router
-│   │   └── Router.php
 │   ├── Services            // 服务类
 │   │   ├── AuthService.php
 │   │   ├── DBService.php
@@ -206,9 +210,6 @@ G3-Web
 │   │   ├── Session.php     // 会话处理
 │   │   ├── System.php      // 系统处理
 │   │   └── Validator.php   // 验证工具
-│   ├── Activator.php       // 激活类
-│   ├── Deactivator.php     // 停用类
-│   └── Loader.php          // 插件加载类
 ├── templates               // 模板目录
 ├── tests                   // 测试目录
 ├── vendor                  // composer依赖包目录

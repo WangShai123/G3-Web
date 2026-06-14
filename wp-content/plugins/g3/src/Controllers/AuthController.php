@@ -2,11 +2,11 @@
 
 namespace JEALER\G3\Controllers;
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Service;
-use JEALER\G3\Attributes\RestRouter;
-use JEALER\G3\Attributes\Middleware;
-use JEALER\G3\Attributes\Schema;
+use JEALER\G3\Core\Attributes\RestRouter;
+use JEALER\G3\Core\Attributes\Middleware;
+use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;

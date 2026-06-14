@@ -2,8 +2,8 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
-use JEALER\G3\Queue\Queue;
-use JEALER\G3\Queue\Jobs\EmailJob;
+use JEALER\G3\Core\Queue\Queue;
+use JEALER\G3\Jobs\EmailJob;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Element;
@@ -13,8 +13,8 @@ use Override;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mail extends Components {
-    public array $option = [];
-    public array $template = [];
+    public array  $option   = [];
+    public array  $template = [];
     public string $setGroup = 'set';
     protected function ready(): void
     {
@@ -391,17 +391,6 @@ class Mail extends Components {
         add_filter('site_admin_email_change_email', '__return_false');
         add_filter('send_site_admin_email_change_email', '__return_false');
     }
-
-    // #[Override]
-    // protected function debug(): void
-    // {
-    //     add_action('wp_mail_failed', function ($wp_error) {
-    //         error_log('[G3 Mail] Mail failed: ' . print_r($wp_error, true));
-    //     });
-    //     add_action('wp_mail_succeeded', function ($mail_data) {
-    //         error_log('[G3 Mail] Mail succeeded: ' . print_r($mail_data, true));
-    //     });
-    // }
 
     public function wpMailFrom($original_email)
     {

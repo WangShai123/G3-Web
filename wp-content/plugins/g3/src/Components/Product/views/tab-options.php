@@ -1,6 +1,6 @@
 <?php
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Components\Product\Includes\SpecOptionsListTable;
 use JEALER\G3\Services\ProductService;
 

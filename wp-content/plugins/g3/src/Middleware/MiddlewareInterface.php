@@ -1,12 +1,8 @@
 <?php
-
 namespace JEALER\G3\Middleware;
-
 use WP_REST_Request;
 use WP_Error;
-
 interface MiddlewareInterface {
-
     /**
      * Handle the middleware logic
      * 

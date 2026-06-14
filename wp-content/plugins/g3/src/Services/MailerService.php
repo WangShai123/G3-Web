@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Services;
 
-use JEALER\G3\Queue\Jobs\EmailJob;
+use JEALER\G3\Jobs\EmailJob;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Exception;

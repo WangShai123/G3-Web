@@ -69,10 +69,19 @@
 !/wp-content/plugins/g3/public/javascript/es/*.js
 !/wp-content/plugins/g3/public/javascript/es/*.mjs
 
-# Global tests
-/wp-content/plugins/g3/tests/
-# Component tests
-/wp-content/plugins/g3/src/Components/*/tests/
+# Tests
+wp-content/plugins/g3/tests/
+wp-content/plugins/g3/src/Core/*/tests/
+wp-content/plugins/g3/src/Commands/TestCommand.php
+wp-content/plugins/g3/src/Components/*/tests/
+wp-content/plugins/g3/src/Controllers/TestController.php
+# Documentation markdown
+wp-content/plugins/g3/src/*/*.md
+wp-content/plugins/g3/src/Core/*/*.md
+wp-content/plugins/g3/src/Core/*/*/*.md
+# Examples
+wp-content/plugins/g3/src/Examples/
+wp-content/plugins/g3/src/Core/*/examples/
 
 # Languages backup files
 /wp-content/plugins/g3/public/languages/*.pot~
@@ -85,6 +94,10 @@
 /wp-content/db.php
 document.md
 
+# composer vendor markdown
+wp-content/plugins/g3/vendor/**/*.md
+wp-content/plugins/g3/vendor/**/LICENSE
+
 # Tools
 .github/
 .idea/
@@ -95,7 +108,6 @@ document.md
 .lingmaignore
 .trae/
 *.txt
-
 
 # Log files
 *.log

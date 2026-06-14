@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Components\Components;
-use JEALER\G3\Rewrite\Rewrite;
+use JEALER\G3\Core\Rewrite\RewriteRouter;
 use JEALER\G3\Services\TemplateService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Context;
@@ -15,11 +15,11 @@ use WP_Error;
 use WP_Query;
 
 class Developer extends Components {
-    public array $formOption;
-    public array $settingOption;
-    public array $opMPOption;
-    public $v;
-    public static $z;
+    public array            $formOption;
+    public array            $settingOption;
+    public array            $opMPOption;
+    public                  $v;
+    public static           $z;
     private TemplateService $template;
 
     #[Override]
@@ -27,6 +27,24 @@ class Developer extends Components {
     {
         /** @var TemplateService */
         $this->template = $this->container->get(TemplateService::class);
+    }
+
+    protected function hooks(): void
+    {
+        $this->filter([
+            'single_template'  => [$this->template, 'singleTemplate'],
+            'map_meta_cap'     => [[$this, 'themeCustomizeHandle'], 20, 4],
+            'translations_api' => [[$this, 'translationsApiHandle'], 10, 3],
+            'show_admin_bar'   => [$this, 'adminBarHandle'],
+            'login_headerurl'  => [$this, 'handleLoginHeaderUrl'],
+            'login_headertext' => [$this, 'handleLoginHeaderText'],
+        ]);
+
+        $this->action([
+            'login_head'     => [$this, 'handleLoginHead'],
+            'admin_head'     => [$this, 'helpLinkHandle'],
+            'admin_bar_menu' => [[$this, 'adminBarMenuHandle'], 999, 1],
+        ]);
     }
     #[Override]
     protected function options(): void
@@ -100,10 +118,6 @@ class Developer extends Components {
     #[Override]
     protected function init(): void
     {
-        add_filter('single_template', [$this->template, 'singleTemplate'], 99);
-
-        add_filter('map_meta_cap', [$this, 'themeCustomizeHandle'], 20, 4);
-        add_filter('translations_api', [$this, 'translationsApiHandle'], 10, 3);
         $this->wpAutoUpdateHandle();
         $this->emojiHandle();
         $this->wpHeadHandle();
@@ -114,29 +128,28 @@ class Developer extends Components {
     {
         $this->onActivate();
 
-        add_action('admin_head', [$this, 'helpLinkHandle']);
-        add_action('admin_bar_menu', [$this, 'adminBarMenuHandle'], 999);
         $this->thanksHandle();
         $this->upgradeHandle();
         $this->themeInstallHandle();
         $this->adminTitleHandle();
         $this->gutenbergInAdmin();
 
+        $this->cleanerSetting();
+
         // If defined constant G3_HIDE_DEVELOPER_MODE and it's true, then hide developer mode menu
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
-        } else {
-            // Add admin pages & actions in developer mode
-            $this->advancedSetting();
-            $this->flushSetting();
-            $this->formSetting();
-            add_action('wp_ajax_g3_admin_flush_options', [$this, '_ajaxFlushOptions']);
-            $this->flushRewriteRulesHandle();
-            $this->flushCacheHandle();
-            $this->generateObjectCacheFile();
-            $this->opMpSetting();
         }
-        $this->cleanerSetting();
+
+        // Add admin pages & actions in developer mode
+        $this->advancedSetting();
+        $this->flushSetting();
+        $this->formSetting();
+        add_action('wp_ajax_g3_admin_flush_options', [$this, '_ajaxFlushOptions']);
+        $this->flushRewriteRulesHandle();
+        $this->flushCacheHandle();
+        $this->generateObjectCacheFile();
+        $this->opMpSetting();
     }
 
     #[Override]
@@ -189,33 +202,49 @@ class Developer extends Components {
     {
         // Auto define environment
         // $this->autoDefineEnvironment();
+    }
 
-        // Reset login page logo
-        if (basename($_SERVER['PHP_SELF']) === 'wp-login.php') {
-            if (isset($this->settingOption['adminLogo']) && $this->settingOption['adminLogo'] === '0') {
-                add_filter('login_headerurl', fn() => home_url('/'));
-                add_filter('login_headertext', fn() => get_bloginfo('name'));
-                add_action("login_head", function () {
-                    $themeLogo   = G3_THEME_IMG_URL . '/logo.png';
-                    $defaultLogo = G3_IMG_URL . '/logo.png';
-                    $logo        = Validator::isImage($themeLogo) ? $themeLogo : $defaultLogo;
-                    echo '<style type="text/css">
-                        #login h1 a {
-                            background-image: url("' . $logo . '") !important;
-                            background-position: bottom center !important;
-                            background-size: 100% auto !important;
-                            width: auto !important;
-                        }
-                    </style>';
-                });
-            }
+    public function handleLoginHeaderUrl(string $url): string
+    {
+        if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '0') {
+            return $url;
         }
+
+        return home_url('/');
+    }
+
+    public function handleLoginHeaderText(string $text): string
+    {
+        if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '0') {
+            return $text;
+        }
+
+        return get_bloginfo('name');
+    }
+
+    public function handleLoginHead(): void
+    {
+        if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '0') {
+            return;
+        }
+
+        $themeLogo   = G3_THEME_IMG_URL . '/logo.png';
+        $defaultLogo = G3_IMG_URL . '/logo.png';
+        $logo        = Validator::isImage($themeLogo) ? $themeLogo : $defaultLogo;
+        echo '<style type="text/css">
+            #login h1 a {
+                background-image: url("' . $logo . '") !important;
+                background-position: bottom center !important;
+                background-size: 100% auto !important;
+                width: auto !important;
+            }
+        </style>';
     }
 
     #[Override]
     protected function front(): void
     {
-        add_filter('show_admin_bar', [$this, 'adminBarHandle']);
+        // show_admin_bar subscription is registered in start()
     }
 
     private function onActivate(): void
@@ -790,7 +819,7 @@ class Developer extends Components {
     public function flushRewriteRulesHandle(): void
     {
         if (isset($_POST['jl_flush_rewrite_rules']) && current_user_can('manage_options')) {
-            Rewrite::flushRewriteRules();
+            RewriteRouter::flushRewriteRules();
             add_settings_error('flush', 'rewrite_flushed', __('Rewrite rules flushed successfully!', 'G3'), 'updated');
         }
     }

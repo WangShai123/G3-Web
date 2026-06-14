@@ -2,7 +2,7 @@
 namespace JEALER\G3\Components;
 
 use JEALER\G3\Components\Components;
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Element;
@@ -11,7 +11,7 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class WechatOA extends Components {
-    public array $option = [];
+    public array $option      = [];
     public array $eventOption = [];
 
     #[Override]

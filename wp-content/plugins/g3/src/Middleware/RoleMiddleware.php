@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Middleware;
-
 use JEALER\G3\Middleware\RestAuthMiddleware;
 use WP_REST_Request;
 use WP_Error;

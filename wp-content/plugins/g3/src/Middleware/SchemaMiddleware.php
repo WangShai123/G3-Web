@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Middleware;
-
 use WP_REST_Request;
 use WP_Error;
 
@@ -99,13 +97,13 @@ class SchemaMiddleware implements MiddlewareInterface {
                 if (!empty($rule['type'])) {
                     $type  = $rule['type'];
                     $valid = match ($type) {
-                        'string' => \is_string($value),
-                        'number' => \is_numeric($value),
+                        'string'  => \is_string($value),
+                        'number'  => \is_numeric($value),
                         'integer' => \is_int($value),
                         'boolean' => \is_bool($value),
-                        'array' => \is_array($value),
-                        'object' => \is_array($value),  // JSON object → PHP array
-                        default => true
+                        'array'   => \is_array($value),
+                        'object'  => \is_array($value),  // JSON object → PHP array
+                        default   => true
                     };
 
                     if (!$valid) {
@@ -155,13 +153,13 @@ class SchemaMiddleware implements MiddlewareInterface {
 
                         if (!empty($itemRule['type'])) {
                             $ok = match ($itemRule['type']) {
-                                'string' => \is_string($item),
-                                'number' => \is_numeric($item),
+                                'string'  => \is_string($item),
+                                'number'  => \is_numeric($item),
                                 'integer' => \is_int($item),
                                 'boolean' => \is_bool($item),
-                                'array' => \is_array($item),
-                                'object' => \is_array($item),
-                                default => true
+                                'array'   => \is_array($item),
+                                'object'  => \is_array($item),
+                                default   => true
                             };
                             if (!$ok) {
                                 // $errors[] = "Array '$key'[$idx] must be type {$itemRule['type']}.";

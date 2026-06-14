@@ -53,10 +53,10 @@ class G3QueueWorker {
         'verbose'         => false,
     ];
 
-    private $queue;
-    private bool $shouldQuit = false;
-    private int $processedJobs = 0;
-    private int $cleanupCounter = 0; // 清理计数器
+    private      $queue;
+    private bool $shouldQuit     = false;
+    private int  $processedJobs  = 0;
+    private int  $cleanupCounter = 0; // 清理计数器
 
     public function __construct()
     {
@@ -152,19 +152,19 @@ class G3QueueWorker {
         }
 
         // 直接加载队列相关的类
-        require_once dirname(__DIR__) . '/src/Queue/QueueInterface.php';
-        require_once dirname(__DIR__) . '/src/Queue/Job.php';
-        require_once dirname(__DIR__) . '/src/Queue/DatabaseQueue.php';
-        require_once dirname(__DIR__) . '/src/Queue/RedisQueue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/QueueInterface.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/Job.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/DatabaseQueue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/RedisQueue.php';
         require_once dirname(__DIR__) . '/src/Utilities/System.php';
-        require_once dirname(__DIR__) . '/src/Queue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/Queue.php';
 
         // 加载队列配置
         $configFile = dirname(__DIR__) . '/config/queue.php';
         $config     = file_exists($configFile) ? include $configFile : [];
 
         // 创建队列实例，使用配置中的驱动
-        $this->queue = new \JEALER\G3\Queue($config);
+        $this->queue = new \JEALER\G3\Core\Queue\Queue($config);
 
         // 获取驱动信息并记录
         $driverType = $config['driver'] ?? 'database';
@@ -453,7 +453,7 @@ class G3QueueWorker {
             $driver = $this->queue->getDriver();
 
             // 如果是数据库驱动，并且有任务ID，则删除任务
-            if ($driver instanceof \JEALER\G3\Queue\DatabaseQueue) {
+            if ($driver instanceof \JEALER\G3\Core\Queue\DatabaseQueue) {
                 $jobId = $job['database_info']['id'] ?? null;
                 if ($jobId) {
                     $deleted = $driver->delete($jobId);

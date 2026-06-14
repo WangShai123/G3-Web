@@ -15,7 +15,6 @@ use WP_Error;
  * @author Wang Shai
  */
 class WhitelistMiddleware implements MiddlewareInterface {
-
     /**
      * Allowed IPs
      * 
@@ -33,7 +32,6 @@ class WhitelistMiddleware implements MiddlewareInterface {
     public function handle(WP_REST_Request $request): bool|WP_Error
     {
         $clientIp = $this->getClientIp();
-
         // 检查IP是否在白名单中
         if (!$this->isIpAllowed($clientIp)) {
             return new WP_Error(
@@ -42,7 +40,6 @@ class WhitelistMiddleware implements MiddlewareInterface {
                 ['status' => 403]
             );
         }
-
         return true;
     }
 
@@ -83,9 +80,7 @@ class WhitelistMiddleware implements MiddlewareInterface {
             if (!isset($_SERVER[$key])) {
                 continue;
             }
-
             $ip = $_SERVER[$key];
-
             // 处理 X-Forwarded-For 可能包含多个IP的情况
             if ($key === 'HTTP_X_FORWARDED_FOR') {
                 $ips = explode(',', $ip);
@@ -93,13 +88,11 @@ class WhitelistMiddleware implements MiddlewareInterface {
             } else {
                 $ip = trim($ip);
             }
-
             // 验证IP地址格式
             if ($this->isValidIpAddress($ip)) {
                 return $ip;
             }
         }
-
         // 默认返回 REMOTE_ADDR
         return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     }
@@ -118,19 +111,16 @@ class WhitelistMiddleware implements MiddlewareInterface {
         if ($ip === '127.0.0.1' || $ip === '::1') {
             return true;
         }
-
         // 检查精确匹配
         if (in_array($ip, $this->allowedIps)) {
             return true;
         }
-
         // 检查CIDR范围
         foreach ($this->allowedIps as $allowedIp) {
             if ($this->ipInRange($ip, $allowedIp)) {
                 return true;
             }
         }
-
         return false;
     }
 

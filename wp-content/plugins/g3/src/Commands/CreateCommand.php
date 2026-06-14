@@ -1,13 +1,11 @@
 <?php
 namespace JEALER\G3\Commands;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Helper\QuestionHelper;
-
 use JEALER\G3\Service;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Common;
@@ -15,9 +13,8 @@ use JEALER\G3\Services\ThemeGeneratorService;
 
 class CreateCommand extends Command {
     protected static $defaultName = 'G3:create';
-
-    private string $lang = 'en';
-    private array $messages = [
+    private string   $lang        = 'en';
+    private array    $messages    = [
         'en' => [
             'description'         => 'Create a new theme project',
             'welcome'             => 'Welcome. You are creating a new theme project with G3 Web...',
@@ -47,7 +44,6 @@ class CreateCommand extends Command {
             'msg_redirect_tip'    => '如需切换到新项目目录，请在终端执行以下命令:',
         ]
     ];
-
     protected function configure()
     {
         $this
@@ -62,12 +58,10 @@ class CreateCommand extends Command {
             ->addOption('description', null, InputOption::VALUE_OPTIONAL, Common::t('input_description', $this->lang, $this->messages))
             ->addOption('theme_version', null, InputOption::VALUE_OPTIONAL, Common::t('input_theme_version', $this->lang, $this->messages));
     }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->lang = Validator::detectLang();
         $this->start($output);
-
         /**
          * @var QuestionHelper $helper
          */
@@ -146,7 +140,6 @@ class CreateCommand extends Command {
 
         return Command::SUCCESS;
     }
-
     private function start(OutputInterface $output): void
     {
         // Clear terminal
@@ -178,13 +171,11 @@ class CreateCommand extends Command {
         echo PHP_EOL;
         $output->writeln('');
     }
-
     private function fsleep(float|int $seconds)
     {
         $microseconds = (int) ($seconds * 1000000);
         usleep($microseconds);
     }
-
     private function redirectTip(string $themePath, OutputInterface $output): void
     {
         $output->writeln('');

@@ -4,8 +4,8 @@ namespace JEALER\G3\Services;
 
 use EasyWeChat\OfficialAccount\Application;
 use EasyWeChat\Kernel\Message;
-use JEALER\G3\Container\Container;
-use JEALER\G3\Container\TagManager;
+use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Container\TagManager;
 use JEALER\G3\Service;
 use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
@@ -581,15 +581,15 @@ class WechatOAService {
         $reply = null;
 
         $reply = match ($message->MsgType) {
-            'text' => $this->handleTextMessage($message),
-            'event' => $this->handleEventMessage($message),
-            'image' => null,
-            'voice' => null,
-            'video' => null,
+            'text'       => $this->handleTextMessage($message),
+            'event'      => $this->handleEventMessage($message),
+            'image'      => null,
+            'voice'      => null,
+            'video'      => null,
             'shortvideo' => null,
-            'location' => null,
-            'link' => null,
-            default => 'Hello, thanks for your message!',
+            'location'   => null,
+            'link'       => null,
+            default      => 'Hello, thanks for your message!',
         };
         return $reply;
     }
@@ -698,9 +698,9 @@ class WechatOAService {
 
         return match ($event) {
             'SUBSCRIBE' => $this->handleSubscribeEvent($message),
-            'CLICK' => $this->handleClickEvent($message),
-            'SCAN' => $this->handleScanEvent($message),
-            default => null,
+            'CLICK'     => $this->handleClickEvent($message),
+            'SCAN'      => $this->handleScanEvent($message),
+            default     => null,
         };
     }
 
@@ -800,7 +800,7 @@ class WechatOAService {
 
         return match ($eventKey) {
             $latestPosts => $this->getLatestPosts(),
-            default => $this->getDefaultMessage()
+            default      => $this->getDefaultMessage()
         };
 
         //     // case 'h': // 获取热门文章
@@ -1536,19 +1536,19 @@ class WechatOAService {
 
                 // Set corresponding fields according to type
                 match ($node['type']) {
-                    'view' => $node['url'] = $item['value'],
-                    'click' => $node['key'] = $item['value'],
-                    'scancode_push' => $node['key'] = $item['value'],
-                    'scancode_waitmsg' => $node['key'] = $item['value'],
-                    'pic_sysphoto' => $node['key'] = $item['value'],
-                    'pic_photo_or_album' => $node['key'] = $item['value'],
-                    'pic_weixin' => $node['key'] = $item['value'],
-                    'location_select' => $node['key'] = $item['value'],
-                    'media_id' => $node['media_id'] = $item['value'],
-                    'view_limited' => $node['media_id'] = $item['value'],
-                    'article_id' => $node['article_id'] = $item['value'],
+                    'view'                 => $node['url'] = $item['value'],
+                    'click'                => $node['key'] = $item['value'],
+                    'scancode_push'        => $node['key'] = $item['value'],
+                    'scancode_waitmsg'     => $node['key'] = $item['value'],
+                    'pic_sysphoto'         => $node['key'] = $item['value'],
+                    'pic_photo_or_album'   => $node['key'] = $item['value'],
+                    'pic_weixin'           => $node['key'] = $item['value'],
+                    'location_select'      => $node['key'] = $item['value'],
+                    'media_id'             => $node['media_id'] = $item['value'],
+                    'view_limited'         => $node['media_id'] = $item['value'],
+                    'article_id'           => $node['article_id'] = $item['value'],
                     'article_view_limited' => $node['article_id'] = $item['value'],
-                    default => $node['key'] = $item['value'],
+                    default                => $node['key'] = $item['value'],
                 };
             }
 
@@ -1696,19 +1696,19 @@ class WechatOAService {
     public static function renderMenuType(string $type): string
     {
         return match ($type) {
-            '1' => __('View URL', 'G3'),                // view
-            '2' => __('Click Event', 'G3'),             // click
-            '3' => __('Scan Code', 'G3'),               // scancode_push
-            '4' => __('Scan & Alert', 'G3'),            // scancode_waitmsg
-            '5' => __('System Camera', 'G3'),           // pic_sysphoto
-            '6' => __('Photo or Album', 'G3'),          // pic_photo_or_album
-            '7' => __('WeChat Album', 'G3'),            // pic_weixin
-            '8' => __('Location Selector', 'G3'),       // location_select
-            '9' => __('Mini Program', 'G3'),            // view_miniprogram
-            '10' => __('Media Library', 'G3'),          // media_id
-            '11' => __('Article URL', 'G3'),            // view_limited
-            '12' => __('Article ID', 'G3'),             // article_id
-            '13' => __('Limited Article URL', 'G3'),    // article_view_limited
+            '1'     => __('View URL', 'G3'),                // view
+            '2'     => __('Click Event', 'G3'),             // click
+            '3'     => __('Scan Code', 'G3'),               // scancode_push
+            '4'     => __('Scan & Alert', 'G3'),            // scancode_waitmsg
+            '5'     => __('System Camera', 'G3'),           // pic_sysphoto
+            '6'     => __('Photo or Album', 'G3'),          // pic_photo_or_album
+            '7'     => __('WeChat Album', 'G3'),            // pic_weixin
+            '8'     => __('Location Selector', 'G3'),       // location_select
+            '9'     => __('Mini Program', 'G3'),            // view_miniprogram
+            '10'    => __('Media Library', 'G3'),          // media_id
+            '11'    => __('Article URL', 'G3'),            // view_limited
+            '12'    => __('Article ID', 'G3'),             // article_id
+            '13'    => __('Limited Article URL', 'G3'),    // article_view_limited
             default => '-'
         };
     }
@@ -1716,19 +1716,19 @@ class WechatOAService {
     public static function getMenuType(string $type): string
     {
         return match ($type) {
-            '1' => 'view',
-            '2' => 'click',
-            '3' => 'scancode_push',
-            '4' => 'scancode_waitmsg',
-            '5' => 'pic_sysphoto',
-            '6' => 'pic_photo_or_album',
-            '7' => 'pic_weixin',
-            '8' => 'location_select',
-            '9' => 'view_miniprogram',
-            '10' => 'media_id',
-            '11' => 'view_limited',
-            '12' => 'article_id',
-            '13' => 'article_view_limited',
+            '1'     => 'view',
+            '2'     => 'click',
+            '3'     => 'scancode_push',
+            '4'     => 'scancode_waitmsg',
+            '5'     => 'pic_sysphoto',
+            '6'     => 'pic_photo_or_album',
+            '7'     => 'pic_weixin',
+            '8'     => 'location_select',
+            '9'     => 'view_miniprogram',
+            '10'    => 'media_id',
+            '11'    => 'view_limited',
+            '12'    => 'article_id',
+            '13'    => 'article_view_limited',
             default => '-'
         };
     }

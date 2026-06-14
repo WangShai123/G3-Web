@@ -1,24 +1,27 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Session;
 use JEALER\G3\Services\SystemService;
 use Override;
+use WP_Error;
 
 class Security extends Components {
-
-    public array $option = [];
-
-    public array $queue = [];
-
+    public array   $option  = [];
+    public array   $queue   = [];
     private string $section = 'securitySection';
-
+    #[Override]
+    protected function hooks(): void
+    {
+        $this->filter([
+            'rest_authentication_errors' => [[$this, 'restrictNativeRestApi'], 10, 1]
+        ]);
+    }
     #[Override]
     protected function options(): void
     {
@@ -27,6 +30,7 @@ class Security extends Components {
             'url'         => Common::hash(8),
             'upload'      => '1',
             'userSiteMap' => '1',
+            'restApi'     => '1',
             'session'     => '0',
             'xmlrpc'      => '1',
             'csp'         => '0',
@@ -174,6 +178,19 @@ class Security extends Components {
                             __('Remove the default users site map to avoid exposing user ID and login name security risks.', 'G3'),
                         );
                     }
+                ],
+                [
+                    'id'       => 'restApi',
+                    'title'    => 'REST API',
+                    'callback' => function () {
+                        echo Element::switch(
+                            SystemService::SECURITY_OPTION_KEY,
+                            $this->option,
+                            'restApi',
+                            'REST API',
+                            __('Disable the WordPress built-in REST API to avoid exposing sensitive information. Only admin can visit the build-in REST API.', 'G3'),
+                        );
+                    },
                 ],
                 [
                     'id'       => 'session',
@@ -356,5 +373,49 @@ class Security extends Components {
             return;
         }
         header('Content-Security-Policy: default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\'; font-src \'self\'; object-src \'none\';');
+    }
+    /**
+     * 间接禁用 WordPress 默认的 REST API。
+     * 方式：限制对应 namespace（wp）为管理员访问。
+     */
+    public function restrictNativeRestApi($result)
+    {
+        if (!isset($this->option['restApi']) || $this->option['restApi'] !== '1') {
+            return $result;
+        }
+
+        // return error immidiately
+        if (!empty($result)) {
+            return $result;
+        }
+        // get route from $wp object
+        global $wp;
+        $route = isset($wp->query_vars['rest_route']) ? $wp->query_vars['rest_route'] : '';
+        // if route is empty
+        if (empty($route)) {
+            return $result;
+        }
+        // if route is not WordPress native API
+        if (strpos($route, '/wp/') !== 0) {
+            return $result;
+        }
+        $currentUser = wp_get_current_user();
+        // denied: unauthorized
+        if (!$currentUser || $currentUser->ID === 0) {
+            return new WP_Error(
+                'unauthorized',
+                Message::unauthorized(),
+                ['status' => 401]
+            );
+        }
+        // denied: not admin
+        if (!current_user_can('manage_options')) {
+            return new WP_Error(
+                'forbidden',
+                Message::forbidden(),
+                ['status' => 403]
+            );
+        }
+        return $result;
     }
 }

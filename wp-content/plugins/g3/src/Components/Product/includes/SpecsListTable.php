@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Components\Product\Includes;
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ProductService;
 use WP_List_Table;
 
@@ -90,14 +90,14 @@ class SpecsListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'name' => $item['name'],
-            'key' => $item['key'],
-            'count' => $this->renderCount($item),
+            'name'      => $item['name'],
+            'key'       => $item['key'],
+            'count'     => $this->renderCount($item),
             'is_global' => $item['is_global'] ? __('Yes') : __('No'),
-            'scope' => ProductService::renderScope($item['scope']),
+            'scope'     => ProductService::renderScope($item['scope']),
             'owner_ids' => $this->renderOwner($item),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? '',
+            'action'    => $this->renderAction($item),
+            default     => $item[$column_name] ?? '',
         };
     }
 

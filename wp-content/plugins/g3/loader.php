@@ -57,18 +57,18 @@ if (file_exists(get_stylesheet_directory() . '/config/define.php')) {
 /**
  * @description Activate Plugin
  */
-register_activation_hook(__FILE__, [JEALER\G3\Activator::class, 'activate']);
+register_activation_hook(__FILE__, [JEALER\G3\Core\Activator::class, 'activate']);
 
 /**
  * @description Deactivate Plugin
  */
-register_deactivation_hook(__FILE__, [JEALER\G3\Deactivator::class, 'deactivate']);
+register_deactivation_hook(__FILE__, [JEALER\G3\Core\Deactivator::class, 'deactivate']);
 
 /**
  * @description Load Plugin
  */
-$container = JEALER\G3\Container\Container::run();
+$container = JEALER\G3\Core\Container\Container::run();
 if (!$container->has('app')) {
-    $container->setRawDefinition('app', JEALER\G3\Loader::class);
+    $container->setRawDefinition('app', JEALER\G3\Core\Loader::class);
     $container->get('app');
 }

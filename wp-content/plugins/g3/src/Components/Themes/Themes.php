@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Components\Themes\Includes\Themes as ThemesClass;
 use JEALER\G3\Utilities\Option;

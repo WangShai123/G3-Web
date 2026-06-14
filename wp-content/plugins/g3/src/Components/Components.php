@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Helper\Helper;
-use JEALER\G3\Container\Container;
-use JEALER\G3\Queue\Queue;
+use JEALER\G3\Core\Helper\Helper;
+use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Queue\Queue;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\System;
@@ -11,14 +11,6 @@ use JEALER\G3\Utilities\Context;
 use Exception;
 use ReflectionClass;
 
-/**
- * Base Components Class
- * 
- * 简易版 G3 组件系统
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 abstract class Components {
 
     /**
@@ -58,6 +50,16 @@ abstract class Components {
 
     protected ?Helper $loader;
 
+    /**
+     * @var array<string, array<int,array>> action subscriptions
+     */
+    protected array $actionSubscriptions = [];
+
+    /**
+     * @var array<string, array<int,array>> filter subscriptions
+     */
+    protected array $filterSubscriptions = [];
+
     public function __construct()
     {
         $this->componentName = $this->getComponentName();
@@ -92,29 +94,7 @@ abstract class Components {
         $this->loader = $this->container->get('loader');
 
         $this->start();
-
-        /**
-         * Compatible with traditional theme mode and front-end separation mode
-         */
-        if (Common::themeModeAvailable()) {
-            add_action('after_setup_theme', [$this, 'prepareDataActions']);
-        } else {
-            if (!$this->loader) return;
-            add_action('plugins_loaded', [$this, 'prepareDataActions']);
-        }
-
-        add_action('init', [$this, 'initActions']);
-        add_action('admin_init', [$this, 'adminInitActions']);
-        add_action('admin_menu', [$this, 'adminMenuActions']);
-        add_action('widgets_init', [$this, 'widgetsInitActions']);
-
-        add_filter('query_vars', [$this, 'queryVars']);
-
-        add_action('wp_dashboard_setup', [$this, 'dashboardSetupActions']);
-        add_action('add_meta_boxes', [$this, 'metaBoxActions']);
-        add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScriptsActions']);
-        add_action('wp_enqueue_scripts', [$this, 'wpEnqueueScriptsActions'], 20);
-
+        $this->hooks();
         $this->end();
     }
 
@@ -189,17 +169,120 @@ abstract class Components {
     }
 
     /**
-     * Register query variables
+     * Get action hook subscriptions
      * 
-     * 注册查询变量
-     * 
-     * @param array $vars
      * @return array
-     * @since 1.0.0
      */
-    public function queryVars(array $vars): array
+    public function getSubscribedActions(): array
     {
-        return $vars;
+        return $this->actionSubscriptions;
+    }
+
+    /**
+     * Get filter hook subscriptions
+     * 
+     * @return array
+     */
+    public function getSubscribedFilters(): array
+    {
+        return $this->filterSubscriptions;
+    }
+
+    /**
+     * Register batch action subscriptions.
+     *
+     * @param array<string, mixed> $actions
+     * @return void
+     */
+    protected function action(array $actions): void
+    {
+        foreach ($actions as $hook => $params) {
+            $normalized = $this->normalizeHookParams($params, 0);
+            if ($normalized === null) {
+                continue;
+            }
+            $this->actionSubscriptions[$hook][] = $normalized;
+        }
+    }
+
+    /**
+     * Register batch filter subscriptions.
+     *
+     * @param array<string, mixed> $filters
+     * @return void
+     */
+    protected function filter(array $filters): void
+    {
+        foreach ($filters as $hook => $params) {
+            $normalized = $this->normalizeHookParams($params, 1);
+            if ($normalized === null) {
+                continue;
+            }
+            $this->filterSubscriptions[$hook][] = $normalized;
+        }
+    }
+
+    private function normalizeHookParams(mixed $params, int $defaultAcceptedArgs): ?array
+    {
+        $defaults = [
+            'callback'      => null,
+            'priority'      => 10,
+            'accepted_args' => $defaultAcceptedArgs,
+            'extra_args'    => [],
+        ];
+
+        if (is_callable($params)) {
+            $normalized             = $defaults;
+            $normalized['callback'] = $params;
+            return $normalized;
+        }
+
+        if (is_array($params)) {
+            if (isset($params['callback'])) {
+                $normalized = array_merge($defaults, $params);
+                return [
+                    'callback'      => $normalized['callback'],
+                    'priority'      => (int) $normalized['priority'],
+                    'accepted_args' => (int) $normalized['accepted_args'],
+                    'extra_args'    => is_array($normalized['extra_args']) ? $normalized['extra_args'] : [],
+                ];
+            }
+
+            if (isset($params[0]) && is_callable($params[0])) {
+                $callback     = $params[0];
+                $priority     = isset($params[1]) ? (int) $params[1] : $defaults['priority'];
+                $acceptedArgs = isset($params[2]) ? (int) $params[2] : $defaults['accepted_args'];
+                $extraArgs    = isset($params[3]) && is_array($params[3]) ? $params[3] : $defaults['extra_args'];
+                return [
+                    'callback'      => $callback,
+                    'priority'      => $priority,
+                    'accepted_args' => $acceptedArgs,
+                    'extra_args'    => $extraArgs,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Backward compatibility alias for subscribeAction.
+     */
+    protected function subscribeAction(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 0, array $extraArgs = []): void
+    {
+        $this->action([
+            $hook => [$callback, $priority, $acceptedArgs, $extraArgs],
+        ]);
+    }
+
+    /**
+     * Backward compatibility alias for subscribeFilter.
+     */
+    protected function subscribeFilter(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 1, array $extraArgs = []): void
+    {
+        $this->filter([
+            $hook => [$callback, $priority, $acceptedArgs, $extraArgs],
+        ]);
     }
 
     /**
@@ -312,6 +395,10 @@ abstract class Components {
     {
         $this->scripts();
     }
+    public function queryVars(array $var)
+    {
+        return $var;
+    }
 
     protected function ready(): void
     {
@@ -356,6 +443,9 @@ abstract class Components {
     {
     }
     protected function sidebar(): void
+    {
+    }
+    protected function hooks(): void
     {
     }
     protected function widgets(): void

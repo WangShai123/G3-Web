@@ -414,7 +414,7 @@ class Setting extends Components {
                             __('Real-time data', 'G3'),
                             site_url('/llm/endpoint'),
                             site_url('/llm/endpoint'),
-                            __('Cache data', 'G3'),
+                            __('Cache Data', 'G3'),
                             site_url('/llms.txt'),
                             site_url('/llms.txt')
                         )

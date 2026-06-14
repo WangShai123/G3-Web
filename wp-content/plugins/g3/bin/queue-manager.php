@@ -120,19 +120,19 @@ class G3QueueManager {
         }
 
         // 直接加载队列相关的类
-        require_once dirname(__DIR__) . '/src/Queue/QueueInterface.php';
-        require_once dirname(__DIR__) . '/src/Queue/Job.php';
-        require_once dirname(__DIR__) . '/src/Queue/DatabaseQueue.php';
-        require_once dirname(__DIR__) . '/src/Queue/RedisQueue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/QueueInterface.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/Job.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/DatabaseQueue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue/RedisQueue.php';
         require_once dirname(__DIR__) . '/src/Utilities/System.php';
-        require_once dirname(__DIR__) . '/src/Queue.php';
+        require_once dirname(__DIR__) . '/src/Core/Queue.php';
 
         // 加载队列配置
         $configFile = dirname(__DIR__) . '/config/queue.php';
         $config     = file_exists($configFile) ? include $configFile : [];
 
         // 创建队列实例，使用配置中的驱动
-        $this->queue = new \JEALER\G3\Queue($config);
+        $this->queue = new \JEALER\G3\Core\Queue\Queue($config);
     }
 
     private function findWordPressRoot(): ?string
@@ -395,7 +395,7 @@ class G3QueueManager {
             echo "Cleaned up {$cleanedUp} expired/old jobs." . PHP_EOL;
 
             // 显示清理后的统计信息
-            if ($driver instanceof \JEALER\G3\Queue\DatabaseQueue) {
+            if ($driver instanceof \JEALER\G3\Core\Queue\DatabaseQueue) {
                 $stats = $driver->getQueueStats($this->options['queue']);
                 echo "Queue statistics after cleanup:" . PHP_EOL;
                 echo "  Total jobs: {$stats['total']}" . PHP_EOL;

@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Components\Product\Includes;
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ProductService;
 use WP_List_Table;
 
@@ -94,16 +94,16 @@ class SkuListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'product_id' => $this->renderProductInfo($item['product_id']),
-            'sku_code' => $item['sku_code'],
+            'product_id'    => $this->renderProductInfo($item['product_id']),
+            'sku_code'      => $item['sku_code'],
             'regular_price' => $item['regular_price'],
-            'price' => $item['price'],
-            'type' => ProductService::renderSkuType($item['type']),
-            'stock' => $item['stock'],
-            'sold' => $item['sold'],
-            'status' => $item['status'] ? __('Enable') : __('Disable'),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? '',
+            'price'         => $item['price'],
+            'type'          => ProductService::renderSkuType($item['type']),
+            'stock'         => $item['stock'],
+            'sold'          => $item['sold'],
+            'status'        => $item['status'] ? __('Enable') : __('Disable'),
+            'action'        => $this->renderAction($item),
+            default         => $item[$column_name] ?? '',
         };
     }
 

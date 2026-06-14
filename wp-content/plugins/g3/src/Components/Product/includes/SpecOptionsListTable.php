@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Components\Product\Includes;
 
-use JEALER\G3\Container\Container;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ProductService;
 use WP_List_Table;
 
@@ -98,13 +98,13 @@ class SpecOptionsListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'name' => $item['name'],
-            'key' => $item['key'],
+            'name'    => $item['name'],
+            'key'     => $item['key'],
             'spec_id' => $this->renderSpec($item['spec_id']),
-            'status' => $item['status'] ? __('Enabled') : __('Disabled'),
-            'count' => $this->renderCount($item),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? '',
+            'status'  => $item['status'] ? __('Enabled') : __('Disabled'),
+            'count'   => $this->renderCount($item),
+            'action'  => $this->renderAction($item),
+            default   => $item[$column_name] ?? '',
         };
     }
 
