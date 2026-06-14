@@ -11,6 +11,7 @@ wp-content/languages
 wp-content/plugins/index.php
 wp-content/themes/index.php
 wp-content/upgrade/
+wp-content/uploads/
 index.php
 license.txt
 readme.html
@@ -18,14 +19,7 @@ wp-*.php
 xmlrpc.php
 
 # Configuration
-wp-config.php
 .user.ini
-
-# Uploads
-wp-content/uploads/
-wp-content/plugins/g3/public/images/unsplash/**
-wp-content/plugins/g3/public/images/svg/**
-
 
 # Default themes
 wp-content/themes
@@ -34,16 +28,14 @@ wp-content/themes/twenty*/
 # Local files in plugin g3
 favicon.ico
 g3.php
-wp-content/plugins/*
+wp-content/plugins/
 !wp-content/plugins/g3/
-!wp-content/plugins/g3/**/*
 wp-content/plugins/g3/backup/
 wp-content/plugins/g3/documents/
 wp-content/plugins/g3/extensions/linux/
 wp-content/plugins/g3/extensions/mac/
 wp-content/plugins/g3/extensions/windows/
 wp-content/plugins/g3/extensions/jl.php
-
 wp-content/plugins/g3/node_modules/
 wp-content/plugins/g3/package-lock.json
 wp-content/plugins/g3/package.json
@@ -85,6 +77,10 @@ wp-content/plugins/g3/src/Core/*/examples/
 # Languages backup files
 wp-content/plugins/g3/public/languages/*.pot~
 wp-content/plugins/g3/public/languages/*.po~
+
+# Uploads
+wp-content/plugins/g3/public/images/svg/
+wp-content/plugins/g3/public/images/unsplash/
 
 # Tools
 wp-content/backup-*.php
