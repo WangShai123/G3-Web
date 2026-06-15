@@ -23,7 +23,7 @@ wp-content/themes/twenty*/
 # Local files in plugin g3
 favicon.ico
 g3.php
-wp-content/plugins/
+wp-content/plugins/*/
 !wp-content/plugins/g3/
 wp-content/plugins/g3/backup/
 wp-content/plugins/g3/documents/
@@ -37,26 +37,11 @@ wp-content/plugins/g3/package.json
 wp-content/plugins/g3/pnpm-lock.yaml
 wp-content/plugins/g3/vite.config.ts
 
-# G3 Core
-!wp-content/plugins/g3/src/Core/Router/*.php
-
-# Static assets
-wp-content/plugins/g3/assets/css/*.css
+# g3 assets
+wp-content/plugins/g3/assets/css/*
 !wp-content/plugins/g3/assets/css/*.min.css
-wp-content/plugins/g3/assets/javascript/**/*.js
+wp-content/plugins/g3/assets/javascript/**/*
 !wp-content/plugins/g3/assets/javascript/**/*.min.js
-
-wp-content/plugins/g3/public/css/*
-!wp-content/plugins/g3/public/css/*.min.css
-
-wp-content/plugins/g3/public/javascript/**
-!wp-content/plugins/g3/public/javascript/*.min.js
-!wp-content/plugins/g3/public/javascript/*.umd.js
-
-!wp-content/plugins/g3/public/javascript/es/
-!wp-content/plugins/g3/public/javascript/es/*.min.js
-!wp-content/plugins/g3/public/javascript/es/*.js
-!wp-content/plugins/g3/public/javascript/es/*.mjs
 
 # Tests
 wp-content/plugins/g3/tests/
@@ -64,7 +49,7 @@ wp-content/plugins/g3/src/Core/*/tests/
 wp-content/plugins/g3/src/Commands/TestCommand.php
 wp-content/plugins/g3/src/Components/*/tests/
 wp-content/plugins/g3/src/Controllers/TestController.php
-wp-content/plugins/g3/templates/test/
+wp-content/plugins/g3/templates/tests/
 # Documentation markdown
 wp-content/plugins/g3/bin/*.md
 wp-content/plugins/g3/bin/**/*.md
@@ -103,9 +88,6 @@ wp-content/plugins/g3/vendor/**/LICENSE
 .vscode/
 .claude/
 .codex/
-.lingma/
-.lingmaignore
-.trae/
 *.txt
 
 # Log files

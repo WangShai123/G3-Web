@@ -113,12 +113,12 @@ return [
     // 单个 query var 示例
     'test/one/([^/]+)/?$'         => [
         'var'  => 'test_id',
-        'path' => 'test/single.php',
+        'path' => 'tests/single.php',
     ],
 
     // 多个 query vars 示例
     'test/two/([^/]+)/([^/]+)/?$' => [
         'var'  => ['multiple_id', 'multiple_name'],
-        'path' => 'test/multiple.php',
+        'path' => 'tests/multiple.php',
     ],
 ];
