@@ -47,7 +47,7 @@ final class Frontend {
     public static function loadStyle(string $handle, bool $cdn = false, string $media = 'all')
     {
         $styles = [
-            'jui'         => [G3_CSS_URL . '/jui.min.css', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.min.css'],
+            'jui'         => [G3_CSS_URL . '/jui.css', [], '1.0.0', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
 
             /**
              * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
@@ -102,13 +102,15 @@ final class Frontend {
         $scripts = [
             // jQuery
             'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://unpkg.com/jquery@latest/dist/jquery.min.js'],
-            // vanilla signal
-            'signal'             => [G3_JS_URL . '/vanilla-signal.umd.js', [], '0.2.6', 'https://unpkg.com/vanilla-signal@latest/dist/index.umd.js'],
+            // vanilla signal & library
+            'vanilla-signal'     => [G3_JS_URL . '/vanilla-signal.umd.js', [], '0.2.9', 'https://unpkg.com/vanilla-signal@latest/dist/index.umd.js'],
+            'vanilla-simple-lru' => [G3_JS_URL . '/vanilla-simple-lru.umd.js', [], '0.2.5', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.umd.js'],
+            'vanilla-query'      => [G3_JS_URL . '/vanilla-query.umd.js', ['vanilla-signal', 'vanilla-simple-lru'], '0.2.5', 'https://unpkg.com/vanilla-query@latest/dist/index.umd.js'],
+            'vanilla-storage'    => [G3_JS_URL . '/vanilla-storage.umd.js', [], '0.2.3', 'https://unpkg.com/vanilla-storage@latest/dist/index.umd.js'],
+            'vanilla-i18n'       => [G3_JS_URL . '/vanilla-i18n.umd.js', ['vanilla-signal'], '0.2.0', 'https://unpkg.com/vanilla-i18n@latest/dist/index.umd.js'],
             // JUI
             'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.umd.js'],
-            'jui.form.validator' => [G3_JS_URL . '/jui.form.validator.min.js', [], '1.0.0'],
             'jui.pca'            => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
-            'jui.cascading'      => [G3_JS_URL . '/jui.cascading.min.js', [], '1.0.0'],
             // G3
             'g3.redirect.link'   => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.redirect.link.min.js', [], '1.0.0'],
             'g3.admin'           => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
@@ -121,16 +123,6 @@ final class Frontend {
              */
             'htm'                => [G3_JS_URL . '/htm.umd.js', [], '3.1.1', 'https://unpkg.com/htm@3.1.1/dist/htm.umd.js'],
             /**
-             * Axios:
-             * @link https://github.com/axios/axios
-             */
-            'axios'              => [G3_JS_URL . '/axios.min.js', [], '1.13.5', 'https://unpkg.com/axios@1.13.5/dist/axios.min.js'],
-            /**
-             * Axios Cache Interceptor
-             * @link https://github.com/arthurfiorette/axios-cache-interceptor
-             */
-            'axios.cache'        => [G3_JS_URL . '/axios-cache-interceptor.min.js', ['axios'], '1.11.4', 'https://unpkg.com/axios-cache-interceptor@1.11.4/dist/index.bundle.js'],
-            /**
              * Decimal: An arbitrary-precision Decimal type for JavaScript
              * @link https://github.com/MikeMcl/decimal.js
              */
@@ -140,11 +132,6 @@ final class Frontend {
              * @link https://github.com/CodeByZach/pace/
              */
             'pace'               => [G3_JS_URL . '/pace.min.js', [], '1.2.4', 'https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js'],
-            /**
-             * tiny.swiper: Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience.
-             * @link https://github.com/joe223/tiny-swiper
-             */
-            'tiny.swiper'        => [G3_JS_URL . '/tiny-swiper.full@2.2.0.min.js', [], '2.2.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.full.js'],
             /**
              * Swiper: The most modern mobile touch slider with hardware accelerated transitions
              * @link https://github.com/nolimits4web/Swiper
@@ -206,10 +193,13 @@ final class Frontend {
     {
         $modules = [
             // vanilla signal
-            'signal'             => [G3_JS_URL . '/es/vanilla-signal.js', [], '0.2.6', 'https://unpkg.com/vanilla-signal@latest/dist/index.mjs'],
+            'vanilla-signal'     => [G3_JS_URL . '/es/vanilla-signal.js', [], '0.2.9', 'https://unpkg.com/vanilla-signal@latest/dist/index.js'],
+            'vanilla-simple-lru' => [G3_JS_URL . '/es/vanilla-simple-lru.js', [], '0.2.5', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.js'],
+            'vanilla-storage'    => [G3_JS_URL . '/es/vanilla-storage.js', [], '0.2.3', 'https://unpkg.com/vanilla-storage@latest/dist/index.js'],
+            'vanilla-query'      => [G3_JS_URL . '/es/vanilla-query.js', ['vanilla-signal', 'vanilla-simple-lru'], '0.2.5', 'https://unpkg.com/vanilla-query@latest/dist/index.js'],
+            'vanilla-i18n'       => [G3_JS_URL . '/es/vanilla-i18n.js', ['vanilla-signal'], '0.2.0', 'https://unpkg.com/vanilla-i18n@latest/dist/index.js'],
             // jui
-            'jui'                => [G3_JS_URL . '/es/jui.esm.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.esm.js'],
-            'jui.module'         => [G3_JS_URL . '/es/jui.module.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.module.js'],
+            'jui'                => [G3_JS_URL . '/es/jui.js', ['vanilla-signal'], '1.0.0', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
 
             // build-in g3 modules
             'g3.login.modal'     => [G3_ASSETS_URL . '/javascript/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
@@ -222,6 +212,7 @@ final class Frontend {
             /**
              * qrcodeJS: Cross-browser QRCode generator for javascript
              * @link: https://github.com/davidshimjs/qrcodejs
+             * @todo: add file
              */
             'qrcode'             => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm'],
         ];

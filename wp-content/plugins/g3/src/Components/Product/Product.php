@@ -370,7 +370,7 @@ class Product extends Components {
     {
         if (!Validator::screen('product')) return;
 
-        Frontend::loadScript('signal');
+        Frontend::loadScript('vanilla-signal');
         wp_register_script(
             'g3-admin-product',
             // G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
@@ -383,7 +383,7 @@ class Product extends Components {
         wp_enqueue_script('g3-admin-product');
 
         // Frontend::loadModule('jui');
-        // Frontend::loadModule('signal');
+        // Frontend::loadModule('vanilla-signal');
         // Frontend::loadModule('g3.admin.localize');
         // Frontend::loadModule('g3.admin.product');
 
