@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Core;
+use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Components\ComponentManager;
 use JEALER\G3\Utilities\Context;
@@ -119,6 +120,8 @@ class ComponentLoader {
 
             // 存储组件实例
             $this->loadedComponents[$componentName] = $component;
+            Components::$components[$componentName] = $component;
+            Components::$components[ucfirst($componentName)] = $component;
 
             // 注册组件生命周期钩子
             ComponentManager::run()->registerComponent($component);

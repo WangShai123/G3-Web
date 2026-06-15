@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
+use JEALER\G3\Core\Router\Router;
 use JEALER\G3\Services\TemplateService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Context;
@@ -147,6 +148,7 @@ class Developer extends Components {
         $this->formSetting();
         add_action('wp_ajax_g3_admin_flush_options', [$this, '_ajaxFlushOptions']);
         $this->flushRewriteRulesHandle();
+        $this->flushRestRoutesHandle();
         $this->flushCacheHandle();
         $this->generateObjectCacheFile();
         $this->opMpSetting();
@@ -307,6 +309,11 @@ class Developer extends Components {
                 'callback' => [$this, '_flushRewriteButton']
             ],
             [
+                'id'       => 'g3_flush_rest_routes',
+                'title'    => __('REST Routes', 'G3'),
+                'callback' => [$this, '_flushRestRoutesButton']
+            ],
+            [
                 'id'       => 'jl_flush_options',
                 'title'    => __('Setting Options', 'G3'),
                 'callback' => [$this, '_flushOptionButton']
@@ -325,7 +332,7 @@ class Developer extends Components {
                 'id'       => 'auto_backup',
                 'title'    => __('Auto Backup', 'G3'),
                 'callback' => function () {
-                    echo __('When the G3-Web plugin is uninstalled, the system will automatically backup related option configuration data, and clear the relevant option data in the database to avoid data pollution.<br>The backup file directory: ', 'G3') . '<code>/wp-plugins/g3/backup/options.php</code>.';
+                    echo __('When the G3-Web plugin is uninstalled, the system will automatically backup related option configuration data, and clear the relevant option data in the database to avoid data pollution.<br>The backup file directory: ', 'G3') . '<code>/plugins/g3/backup/options.php</code>.';
                 }
             ]
         ]);
@@ -798,10 +805,16 @@ class Developer extends Components {
         echo '<p class="description">' . __('Flush and fix the rewrite rules.', 'G3') . '</p>';
     }
 
+    public function _flushRestRoutesButton(): void
+    {
+        echo '<button class="button" name="g3_flush_rest_routes" type="submit">' . __('刷新 REST 路由缓存', 'G3') . '</button>';
+        echo '<p class="description">' . __('Rebuild the REST route cache file.', 'G3') . '</p>';
+    }
+
     public function _flushOptionButton(): void
     {
         echo '<button class="button" id="g3-action__flush-options" type="button">' . __('Flush Setting Options', 'G3') . '</button>';
-        echo '<p class="description">' . __('Flush and restore setting options from the last auto-generated backup data. File:', 'G3') . '<code>/wp-plugins/g3/backup/options.php</code></p>';
+        echo '<p class="description">' . __('Flush and restore setting options from the last auto-generated backup data. File:', 'G3') . '<code>/plugins/g3/backup/options.php</code></p>';
     }
 
     public function _flushCacheButton(): void
@@ -819,9 +832,32 @@ class Developer extends Components {
     public function flushRewriteRulesHandle(): void
     {
         if (isset($_POST['jl_flush_rewrite_rules']) && current_user_can('manage_options')) {
-            RewriteRouter::flushRewriteRules();
+            $result = RewriteRouter::flushRewriteRules();
+            if (is_wp_error($result)) {
+                add_settings_error('flush', 'rewrite_flush_failed', $result->get_error_message(), 'error');
+                return;
+            }
+
             add_settings_error('flush', 'rewrite_flushed', __('Rewrite rules flushed successfully!', 'G3'), 'updated');
         }
+    }
+
+    public function flushRestRoutesHandle(): void
+    {
+        if (!isset($_POST['g3_flush_rest_routes']) || !current_user_can('manage_options')) {
+            return;
+        }
+
+        /** @var Router $router */
+        $router = $this->container->get('router');
+        $result = $router->rebuildCache();
+
+        if (is_wp_error($result)) {
+            add_settings_error('flush', 'rest_routes_failed', $result->get_error_message(), 'error');
+            return;
+        }
+
+        add_settings_error('flush', 'rest_routes_flushed', __('REST route cache refreshed successfully.', 'G3'), 'updated');
     }
 
     public function _ajaxFlushOptions(): void

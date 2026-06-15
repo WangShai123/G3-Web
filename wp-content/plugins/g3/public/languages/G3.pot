@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 19:24+0000\n"
+"POT-Creation-Date: 2026-06-15 09:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -121,7 +121,7 @@ msgstr ""
 msgid "6 Hours"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:763
+#: src/Components/Developer/Developer.php:770
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
@@ -159,17 +159,17 @@ msgstr ""
 msgid "About G3 Web"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:529
+#: src/Components/Developer/Developer.php:536
 msgid "Active & Remove <code>WordPress</code> in the admin page title."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:542
+#: src/Components/Developer/Developer.php:549
 msgid ""
 "Active & Remove the WordPress Logo & menu in the admin bar & admin login "
 "page."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:581
+#: src/Components/Developer/Developer.php:588
 msgid "Active & Remove Theme Install button in admin page themes.php."
 msgstr ""
 
@@ -256,8 +256,8 @@ msgstr ""
 msgid "Add Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:470
-#: src/Components/Developer/Developer.php:476
+#: src/Components/Developer/Developer.php:477
+#: src/Components/Developer/Developer.php:483
 msgid "Admin Bar"
 msgstr ""
 
@@ -266,13 +266,13 @@ msgstr ""
 msgid "Admin Login URL"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:535
-#: src/Components/Developer/Developer.php:541
+#: src/Components/Developer/Developer.php:542
+#: src/Components/Developer/Developer.php:548
 msgid "Admin Logo"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:522
-#: src/Components/Developer/Developer.php:528
+#: src/Components/Developer/Developer.php:529
+#: src/Components/Developer/Developer.php:535
 msgid "Admin Page Title"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgstr ""
 msgid "Are you sure you want to reset the current role name?"
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:168
+#: src/Middleware/SchemaMiddleware.php:166
 #, php-format
 msgid "Array %s[%s] must be type %s."
 msgstr ""
@@ -529,7 +529,7 @@ msgid ""
 "the live broadcast."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:326
+#: src/Components/Developer/Developer.php:333
 msgid "Auto Backup"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgid ""
 "test=robustEncoder\" target=\"_blank\">Test Performance</a>"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:620
+#: src/Components/Developer/Developer.php:627
 msgid "Back-end Form Fields Demonstration"
 msgstr ""
 
@@ -607,8 +607,8 @@ msgstr ""
 msgid "Block access to XML-RPC"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:431
-#: src/Components/Developer/Developer.php:437
+#: src/Components/Developer/Developer.php:438
+#: src/Components/Developer/Developer.php:444
 msgid "Block Patterns"
 msgstr ""
 
@@ -627,7 +627,7 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:282
+#: src/Components/Developer/Developer.php:284
 msgid "Build Theme"
 msgstr ""
 
@@ -661,12 +661,12 @@ msgstr ""
 msgid "Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:316
+#: src/Components/Developer/Developer.php:323
 #: src/Components/Setting/Setting.php:417
 msgid "Cache Data"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:847
+#: src/Components/Developer/Developer.php:878
 msgid "Cache flushed successfully!"
 msgstr ""
 
@@ -707,21 +707,21 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:737
-#: src/Components/Developer/Developer.php:739
+#: src/Components/Developer/Developer.php:744
+#: src/Components/Developer/Developer.php:746
 msgid "Change the direction"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:589
+#: src/Components/Developer/Developer.php:596
 msgid "Check & Remove the default dashboard widgets."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:748
-#: src/Components/Developer/Developer.php:750
+#: src/Components/Developer/Developer.php:755
+#: src/Components/Developer/Developer.php:757
 msgid "Checkbox field"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:503
+#: src/Components/Developer/Developer.php:510
 msgid "Clean the data wp head."
 msgstr ""
 
@@ -815,8 +815,8 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:672
-#: src/Components/Developer/Developer.php:674
+#: src/Components/Developer/Developer.php:679
+#: src/Components/Developer/Developer.php:681
 msgid "Counter input"
 msgstr ""
 
@@ -907,7 +907,7 @@ msgstr ""
 msgid "Custom Reply"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:674
+#: src/Components/Developer/Developer.php:681
 msgid "Custom Texts"
 msgstr ""
 
@@ -1036,9 +1036,9 @@ msgstr ""
 msgid "Desktop Header Secondary Menu"
 msgstr ""
 
-#: templates/developer/w.php:154 src/Components/Developer/Developer.php:190
-#: src/Components/Developer/Developer.php:191
-#: src/Components/Developer/Developer.php:276
+#: templates/developer/w.php:154 src/Components/Developer/Developer.php:192
+#: src/Components/Developer/Developer.php:193
+#: src/Components/Developer/Developer.php:278
 msgid "Developer Mode"
 msgstr ""
 
@@ -1181,7 +1181,7 @@ msgstr ""
 msgid "Email Test"
 msgstr ""
 
-#: src/Utilities/Element.php:101 src/Components/Developer/Developer.php:763
+#: src/Utilities/Element.php:101 src/Components/Developer/Developer.php:770
 #: src/Components/Mail/Mail.php:102
 msgid "Enable"
 msgstr ""
@@ -1190,8 +1190,8 @@ msgstr ""
 msgid "Enable Recharge, if you want users can recharge wallet."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:716
-#: src/Components/Developer/Developer.php:718
+#: src/Components/Developer/Developer.php:723
+#: src/Components/Developer/Developer.php:725
 msgid "Enable Select"
 msgstr ""
 
@@ -1288,7 +1288,7 @@ msgstr ""
 msgid "Failed to delete reply(s)."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:864
+#: src/Components/Developer/Developer.php:895
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
@@ -1351,32 +1351,32 @@ msgstr ""
 msgid "Feed Disabled"
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:147
+#: src/Middleware/SchemaMiddleware.php:145
 #, php-format
 msgid "Field %s must be <= %s."
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:143
+#: src/Middleware/SchemaMiddleware.php:141
 #, php-format
 msgid "Field %s must be >= %s."
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:131
+#: src/Middleware/SchemaMiddleware.php:129
 #, php-format
 msgid "Field %s must be at least %s characters."
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:135
+#: src/Middleware/SchemaMiddleware.php:133
 #, php-format
 msgid "Field %s must be no more than %s characters."
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:113
+#: src/Middleware/SchemaMiddleware.php:111
 #, php-format
 msgid "Field %s must be of type %s."
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:123
+#: src/Middleware/SchemaMiddleware.php:121
 #, php-format
 msgid "Field %s must be one of: %s."
 msgstr ""
@@ -1385,8 +1385,8 @@ msgstr ""
 msgid "File Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:650
-#: src/Components/Developer/Developer.php:652
+#: src/Components/Developer/Developer.php:657
+#: src/Components/Developer/Developer.php:659
 msgid "File upload"
 msgstr ""
 
@@ -1420,25 +1420,25 @@ msgstr ""
 msgid "Flexible Payment Terms"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:810
+#: src/Components/Developer/Developer.php:823
 msgid "Flush all the cache data."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:798
+#: src/Components/Developer/Developer.php:805
 msgid "Flush and fix the rewrite rules."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:804
+#: src/Components/Developer/Developer.php:817
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:809
+#: src/Components/Developer/Developer.php:822
 msgid "Flush Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:281
+#: src/Components/Developer/Developer.php:283
 msgid "Flush Data"
 msgstr ""
 
@@ -1446,11 +1446,15 @@ msgstr ""
 msgid "Flush Menus Online"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:797
+#: src/Components/Developer/Developer.php:810
+msgid "Flush REST Route Cache"
+msgstr ""
+
+#: src/Components/Developer/Developer.php:804
 msgid "Flush Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:803
+#: src/Components/Developer/Developer.php:816
 msgid "Flush Setting Options"
 msgstr ""
 
@@ -1518,16 +1522,16 @@ msgstr ""
 msgid "For Traditional Wordpress Theme"
 msgstr ""
 
-#: src/Middleware/RoleMiddleware.php:57 src/Utilities/Response.php:75
-#: src/Utilities/Message.php:31 src/Components/Developer/Developer.php:838
+#: src/Middleware/RoleMiddleware.php:55 src/Utilities/Response.php:75
+#: src/Utilities/Message.php:31 src/Components/Developer/Developer.php:869
 msgid "Forbidden"
 msgstr ""
 
-#: src/Middleware/RateLimitMiddleware.php:58
+#: src/Middleware/RateLimitMiddleware.php:56
 msgid "Forbidden: Rate limit exceeded"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:283
+#: src/Components/Developer/Developer.php:285
 msgid "Form Demo"
 msgstr ""
 
@@ -1557,7 +1561,7 @@ msgstr ""
 msgid "Frontend Editor"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1178
+#: src/Components/Developer/Developer.php:1209
 msgid "G3 License Code"
 msgstr ""
 
@@ -1615,11 +1619,11 @@ msgstr ""
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:815
+#: src/Components/Developer/Developer.php:828
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:816
+#: src/Components/Developer/Developer.php:829
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1636,8 +1640,8 @@ msgstr ""
 msgid "Header Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:457
-#: src/Components/Developer/Developer.php:463
+#: src/Components/Developer/Developer.php:464
+#: src/Components/Developer/Developer.php:470
 msgid "Help Link"
 msgstr ""
 
@@ -1659,7 +1663,7 @@ msgid ""
 "How to estimate the actual number of PHP files in your WordPress project?"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:284
+#: src/Components/Developer/Developer.php:286
 msgid "HTML Demo"
 msgstr ""
 
@@ -1705,8 +1709,8 @@ msgstr ""
 msgid "Illegal request"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:661
-#: src/Components/Developer/Developer.php:663
+#: src/Components/Developer/Developer.php:668
+#: src/Components/Developer/Developer.php:670
 msgid "Image upload & preview"
 msgstr ""
 
@@ -1735,8 +1739,8 @@ msgid ""
 "subscribe the official account and visit."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:628
-#: src/Components/Developer/Developer.php:630
+#: src/Components/Developer/Developer.php:635
+#: src/Components/Developer/Developer.php:637
 msgid "Input field"
 msgstr ""
 
@@ -1819,8 +1823,8 @@ msgstr ""
 msgid "JEALER"
 msgstr ""
 
-#: templates/developer/w.php:153 src/Components/Developer/Developer.php:176
-#: src/Components/Developer/Developer.php:177
+#: templates/developer/w.php:153 src/Components/Developer/Developer.php:178
+#: src/Components/Developer/Developer.php:179
 #: src/Components/Developer/views/tab-junk-cleaner.php:4
 msgid "Junk Cleaner"
 msgstr ""
@@ -1878,8 +1882,8 @@ msgstr ""
 msgid "Level Group"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1076
-#: src/Components/Developer/Developer.php:1079
+#: src/Components/Developer/Developer.php:1107
+#: src/Components/Developer/Developer.php:1110
 msgid "License Expired"
 msgstr ""
 
@@ -1943,8 +1947,8 @@ msgstr ""
 msgid "Logout Successful"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:639
-#: src/Components/Developer/Developer.php:641
+#: src/Components/Developer/Developer.php:646
+#: src/Components/Developer/Developer.php:648
 msgid "Longer input"
 msgstr ""
 
@@ -2042,16 +2046,16 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:630
-#: src/Components/Developer/Developer.php:652
-#: src/Components/Developer/Developer.php:663
-#: src/Components/Developer/Developer.php:674
-#: src/Components/Developer/Developer.php:685
-#: src/Components/Developer/Developer.php:701
-#: src/Components/Developer/Developer.php:718
-#: src/Components/Developer/Developer.php:726
-#: src/Components/Developer/Developer.php:750
-#: src/Components/Developer/Developer.php:775
+#: src/Components/Developer/Developer.php:637
+#: src/Components/Developer/Developer.php:659
+#: src/Components/Developer/Developer.php:670
+#: src/Components/Developer/Developer.php:681
+#: src/Components/Developer/Developer.php:692
+#: src/Components/Developer/Developer.php:708
+#: src/Components/Developer/Developer.php:725
+#: src/Components/Developer/Developer.php:733
+#: src/Components/Developer/Developer.php:757
+#: src/Components/Developer/Developer.php:782
 msgid "Method"
 msgstr ""
 
@@ -2222,15 +2226,15 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: templates/developer/w.php:148 src/Components/Developer/Developer.php:321
+#: templates/developer/w.php:148 src/Components/Developer/Developer.php:328
 msgid "Object Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:858
+#: src/Components/Developer/Developer.php:889
 msgid "object-cache.php file generated successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:871
+#: src/Components/Developer/Developer.php:902
 msgid "object_cache.php file already exists."
 msgstr ""
 
@@ -2240,8 +2244,8 @@ msgid ""
 "no-theme mode to build Web applications using pure front-end skills."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1324
-#: src/Components/Developer/Developer.php:1330
+#: src/Components/Developer/Developer.php:1355
+#: src/Components/Developer/Developer.php:1361
 msgid "Official Account Type"
 msgstr ""
 
@@ -2249,8 +2253,8 @@ msgstr ""
 msgid "Online Courses"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:761
-#: src/Components/Developer/Developer.php:763
+#: src/Components/Developer/Developer.php:768
+#: src/Components/Developer/Developer.php:770
 msgid "Only one option"
 msgstr ""
 
@@ -2265,9 +2269,9 @@ msgstr ""
 msgid "Open Method"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:166
-#: src/Components/Developer/Developer.php:167
-#: src/Components/Developer/Developer.php:1304
+#: src/Components/Developer/Developer.php:168
+#: src/Components/Developer/Developer.php:169
+#: src/Components/Developer/Developer.php:1335
 msgid "Open Platform"
 msgstr ""
 
@@ -2430,7 +2434,7 @@ msgstr ""
 msgid "Performance"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:450
+#: src/Components/Developer/Developer.php:457
 msgid "Permalinks"
 msgstr ""
 
@@ -2461,7 +2465,7 @@ msgstr ""
 msgid "Please config the membership duration first."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1132
+#: src/Components/Developer/Developer.php:1163
 msgid "Please enter a valid license code."
 msgstr ""
 
@@ -2475,7 +2479,7 @@ msgstr ""
 msgid "Please enter the email address to receive the test email."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1188
+#: src/Components/Developer/Developer.php:1219
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2511,7 +2515,7 @@ msgstr ""
 msgid "Please Input the Field"
 msgstr ""
 
-#: src/Utilities/Element.php:94 src/Components/Developer/Developer.php:1334
+#: src/Utilities/Element.php:94 src/Components/Developer/Developer.php:1365
 msgid "Please Select"
 msgstr ""
 
@@ -2525,13 +2529,13 @@ msgstr ""
 msgid "Please set status data again"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:392
-#: src/Components/Developer/Developer.php:398
+#: src/Components/Developer/Developer.php:399
+#: src/Components/Developer/Developer.php:405
 msgid "Plugin Editor"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:561
-#: src/Components/Developer/Developer.php:567
+#: src/Components/Developer/Developer.php:568
+#: src/Components/Developer/Developer.php:574
 msgid "Plugins Page"
 msgstr ""
 
@@ -2744,13 +2748,17 @@ msgstr ""
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:724
-#: src/Components/Developer/Developer.php:726
+#: src/Components/Developer/Developer.php:731
+#: src/Components/Developer/Developer.php:733
 msgid "Radio field"
 msgstr ""
 
 #: src/Components/Setting/Setting.php:414
 msgid "Real-time data"
+msgstr ""
+
+#: src/Components/Developer/Developer.php:811
+msgid "Rebuild the REST route cache file."
 msgstr ""
 
 #: src/Components/Wallet/Wallet.php:101 src/Components/Wallet/Wallet.php:107
@@ -2781,7 +2789,7 @@ msgstr ""
 msgid "Referral Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:833
+#: src/Components/Developer/Developer.php:864
 msgid "Refreshed"
 msgstr ""
 
@@ -2837,7 +2845,7 @@ msgstr ""
 msgid "Reply not found"
 msgstr ""
 
-#: src/Middleware/SchemaMiddleware.php:45
+#: src/Middleware/SchemaMiddleware.php:43
 msgid "Request body should be valid JSON."
 msgstr ""
 
@@ -2852,6 +2860,14 @@ msgstr ""
 #: src/Components/Security/Security.php:158
 #: src/Components/Security/Security.php:164
 msgid "Reset Upload File Names"
+msgstr ""
+
+#: src/Components/Developer/Developer.php:855
+msgid "REST route cache refreshed successfully."
+msgstr ""
+
+#: src/Components/Developer/Developer.php:313
+msgid "REST Routes"
 msgstr ""
 
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:21
@@ -2878,13 +2894,13 @@ msgstr ""
 msgid "Rewrite Rule"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:279
-#: src/Components/Developer/Developer.php:306
+#: src/Components/Developer/Developer.php:281
+#: src/Components/Developer/Developer.php:308
 #: src/Components/Developer/includes/RewriteRulesTable.php:22
 msgid "Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:823
+#: src/Components/Developer/Developer.php:836
 msgid "Rewrite rules flushed successfully!"
 msgstr ""
 
@@ -3002,7 +3018,7 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1125
+#: src/Components/Developer/Developer.php:1156
 msgid "Security check failed. Please try again."
 msgstr ""
 
@@ -3010,8 +3026,8 @@ msgstr ""
 msgid "Security Extension"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:694
-#: src/Components/Developer/Developer.php:700
+#: src/Components/Developer/Developer.php:701
+#: src/Components/Developer/Developer.php:707
 msgid "Select field"
 msgstr ""
 
@@ -3045,7 +3061,7 @@ msgstr ""
 msgid "Server"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1335
+#: src/Components/Developer/Developer.php:1366
 msgid "Service Account"
 msgstr ""
 
@@ -3058,15 +3074,15 @@ msgstr ""
 msgid "Set cover image"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:641
+#: src/Components/Developer/Developer.php:648
 msgid "Set the class parameter to <code>regular-text</code>"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:603
+#: src/Components/Developer/Developer.php:610
 msgid "Set the data which will be displayed in the left footer area."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:610
+#: src/Components/Developer/Developer.php:617
 msgid "Set the data which will be displayed in the right footer area."
 msgstr ""
 
@@ -3074,7 +3090,7 @@ msgstr ""
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:311
+#: src/Components/Developer/Developer.php:318
 msgid "Setting Options"
 msgstr ""
 
@@ -3120,8 +3136,8 @@ msgstr ""
 msgid "Sina WeiBo"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:405
-#: src/Components/Developer/Developer.php:411
+#: src/Components/Developer/Developer.php:412
+#: src/Components/Developer/Developer.php:418
 msgid "Site Health"
 msgstr ""
 
@@ -3239,7 +3255,7 @@ msgstr ""
 msgid "Subscribe Message"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1336
+#: src/Components/Developer/Developer.php:1367
 msgid "Subscription Account"
 msgstr ""
 
@@ -3255,12 +3271,12 @@ msgstr[1] ""
 msgid "Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:768
-#: src/Components/Developer/Developer.php:774
+#: src/Components/Developer/Developer.php:775
+#: src/Components/Developer/Developer.php:781
 msgid "Switch"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:278
+#: src/Components/Developer/Developer.php:280
 #: src/Components/Developer/views/tab-html.php:51
 #: src/Components/Developer/views/tab-system.php:14
 msgid "System"
@@ -3305,12 +3321,12 @@ msgstr ""
 msgid "Test email sent successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:683
-#: src/Components/Developer/Developer.php:685
+#: src/Components/Developer/Developer.php:690
+#: src/Components/Developer/Developer.php:692
 msgid "Textarea"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:750
+#: src/Components/Developer/Developer.php:757
 msgid "the <code>value</code> is an array."
 msgstr ""
 
@@ -3460,8 +3476,8 @@ msgstr ""
 msgid "Theme Created Successfully"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:418
-#: src/Components/Developer/Developer.php:424
+#: src/Components/Developer/Developer.php:425
+#: src/Components/Developer/Developer.php:431
 msgid "Theme Customize"
 msgstr ""
 
@@ -3469,8 +3485,8 @@ msgstr ""
 msgid "Theme Description"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:379
-#: src/Components/Developer/Developer.php:385
+#: src/Components/Developer/Developer.php:386
+#: src/Components/Developer/Developer.php:392
 msgid "Theme Editor"
 msgstr ""
 
@@ -3486,7 +3502,7 @@ msgstr ""
 msgid "Theme generated successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:574
+#: src/Components/Developer/Developer.php:581
 msgid "Theme Install"
 msgstr ""
 
@@ -3540,8 +3556,8 @@ msgid "Time Unit"
 msgstr ""
 
 #: templates/developer/w.php:17 src/Utilities/Element.php:690
-#: src/Components/Developer/Developer.php:750
-#: src/Components/Developer/Developer.php:763
+#: src/Components/Developer/Developer.php:757
+#: src/Components/Developer/Developer.php:770
 #: src/Components/Setting/Setting.php:689
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
@@ -3570,12 +3586,12 @@ msgstr ""
 msgid "To add view statistics function to each post & page."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:548
-#: src/Components/Developer/Developer.php:554
+#: src/Components/Developer/Developer.php:555
+#: src/Components/Developer/Developer.php:561
 msgid "Tools Page"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1504
+#: src/Components/Developer/Developer.php:1535
 msgid "Total"
 msgstr ""
 
@@ -3595,12 +3611,12 @@ msgstr ""
 msgid "Transaction System"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:366
-#: src/Components/Developer/Developer.php:372
+#: src/Components/Developer/Developer.php:373
+#: src/Components/Developer/Developer.php:379
 msgid "Translations API"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1479
+#: src/Components/Developer/Developer.php:1510
 msgid "Trash"
 msgstr ""
 
@@ -3609,7 +3625,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Middleware/RestAuthMiddleware.php:35 src/Utilities/Message.php:36
+#: src/Middleware/RestAuthMiddleware.php:33 src/Utilities/Message.php:36
 #: src/Components/Share/views/metabox-share.php:13
 msgid "Unauthorized"
 msgstr ""
@@ -3837,20 +3853,20 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1337
+#: src/Components/Developer/Developer.php:1368
 msgid "Verified Service Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1338
+#: src/Components/Developer/Developer.php:1369
 msgid "Verified Subscription Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1143
+#: src/Components/Developer/Developer.php:1174
 msgid "Verified successfully! Redirecting..."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1157
-#: src/Components/Developer/Developer.php:1196
+#: src/Components/Developer/Developer.php:1188
+#: src/Components/Developer/Developer.php:1227
 msgid "Verify License"
 msgstr ""
 
@@ -3930,12 +3946,12 @@ msgstr ""
 msgid "WeChat Album"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1345
-#: src/Components/Developer/Developer.php:1351
+#: src/Components/Developer/Developer.php:1376
+#: src/Components/Developer/Developer.php:1382
 msgid "Wechat ID"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1306
+#: src/Components/Developer/Developer.php:1337
 #: src/Components/WechatOA/WechatOA.php:54
 msgid "Wechat OA"
 msgstr ""
@@ -3991,8 +4007,8 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1206
-#: src/Components/Developer/Developer.php:1207
+#: src/Components/Developer/Developer.php:1237
+#: src/Components/Developer/Developer.php:1238
 msgid "Welcome"
 msgstr ""
 
@@ -4000,7 +4016,7 @@ msgstr ""
 msgid "Welcome back, my friend."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:590
+#: src/Components/Developer/Developer.php:597
 msgid "Welcome Panel"
 msgstr ""
 
@@ -4024,7 +4040,7 @@ msgid ""
 "WeChat official account media library."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:328
+#: src/Components/Developer/Developer.php:335
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
@@ -4080,8 +4096,8 @@ msgstr ""
 msgid "Withdrawal"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:353
-#: src/Components/Developer/Developer.php:359
+#: src/Components/Developer/Developer.php:360
+#: src/Components/Developer/Developer.php:366
 msgid "WordPress Auto Update"
 msgstr ""
 

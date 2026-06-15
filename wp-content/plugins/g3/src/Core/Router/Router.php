@@ -1,296 +1,175 @@
 <?php
 namespace JEALER\G3\Core\Router;
-use ReflectionClass;
-use JEALER\G3\Core\Attributes\RestRouter;
-use JEALER\G3\Core\Attributes\Middleware;
-use JEALER\G3\Core\Attributes\Schema;
-use JEALER\G3\Core\Attributes\Inject;
-use Psr\Container\ContainerInterface;
 use JEALER\G3\Core\Container\Container;
-use JEALER\G3\Core\Container\ContainerBuilder;
 use JEALER\G3\Core\Container\FactoryDefinition;
-use JEALER\G3\Middleware\SchemaMiddleware;
+use WP_Error;
 use WP_REST_Request;
-use Exception;
-use RuntimeException;
-use SplFileInfo;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 
-/**
- * REST API Router, Easy to build RESTful API by Controller Class
- */
 class Router {
     private Container $container;
-    private string    $baseDir;
-    private string    $baseNamespace;
 
     /**
-     * Each REST definition
-     * 
+     * @var RouteSource[]
+     */
+    private array $sources = [];
+
+    /**
      * @var array<int,array>
      */
     private array $restDefs = [];
 
-    /**
-     * Additional router instances
-     * 
-     * @var Router[]
-     */
-    private array $additionalRouters = [];
+    private ?WP_Error      $lastError = null;
+    private ?RouteManifest $manifest  = null;
 
+    /**
+     * @param RouteSource[]|string $sources
+     */
     public function __construct(
-        string $baseDir,
-        string $baseNamespace,
-        #[Inject] Container $container // 自动注入 JEALER\G3\Container
+        array|string $sources,
+        ?string $baseNamespace = null,
+        mixed $container = null
     )
     {
-        $this->baseDir       = rtrim($baseDir, '/');
-        $this->baseNamespace = trim($baseNamespace, '\\');
-        $this->container     = $container;
+        $this->container = $container instanceof Container ? $container : Container::run();
+
+        if (is_string($sources)) {
+            $this->sources[] = new RouteSource('main', rtrim($sources, '/'), (string) $baseNamespace);
+        } else {
+            $this->sources = $sources;
+        }
+    }
+
+    public function addSource(RouteSource $source): void
+    {
+        $this->sources[] = $source;
+        $this->manifest  = null;
     }
 
     /**
-     * Add additional router instance
-     * 
-     * 添加额外的路由器实例
-     * 
-     * @param Router $router 额外的路由器实例
-     * @return void
+     * Backward-compatible adapter for old additional router usage.
      */
     public function addRouter(Router $router): void
     {
-        $this->additionalRouters[] = $router;
+        foreach ($router->getSources() as $source) {
+            $this->addSource($source);
+        }
     }
 
     /**
-     * Recursively require PHP files in the controller directory and reflect to collect Attributes definitions
-     * 
-     * 递归 require 控制器目录，并反射搜集 Attributes 定义
-     * 
-     * @return void
+     * @return RouteSource[]
      */
-    public function discover(): void
+    public function getSources(): array
     {
-        // ensure middleware related classes are loaded
-        $this->requireMiddlewareClasses();
-        // ensure schema related classes are loaded
-        $this->requireSchemaClasses();
-
-        $this->requirePhpFiles($this->baseDir);
-
-        // iterate over all declared classes to find those belonging to our namespace
-        foreach (get_declared_classes() as $class) {
-            if (!str_starts_with($class, $this->baseNamespace . '\\')) continue;
-            $ref = new ReflectionClass($class);
-            if ($ref->isAbstract()) continue;
-            foreach ($ref->getMethods() as $m) {
-                // REST
-                foreach ($m->getAttributes(RestRouter::class) as $attr) {
-                    /** @var RestRouter $cfg */
-                    $cfg     = $attr->newInstance();
-                    $methods = \is_array($cfg->methods) ? $cfg->methods : [$cfg->methods];
-
-                    // get schema
-                    $schemaAttr = $m->getAttributes(Schema::class);
-                    $schema     = null;
-                    if ($schemaAttr) {
-                        $schema = $schemaAttr[0]->newInstance()->schema;
-                    }
-
-                    // get middlewares
-                    $middlewares = [];
-                    foreach ($m->getAttributes(Middleware::class) as $middlewareAttr) {
-                        /** @var Middleware $middlewareCfg */
-                        $middlewareCfg = $middlewareAttr->newInstance();
-                        $middlewares[] = [
-                            'class'  => $middlewareCfg->middleware,
-                            'params' => $middlewareCfg->params
-                        ];
-                    }
-
-                    // if method defined Schema, attach SchemaMiddleware automatically
-                    if ($schema) {
-                        $middlewares[] = [
-                            'class'  => SchemaMiddleware::class,
-                            'params' => [$schema]
-                        ];
-                    }
-
-                    $this->restDefs[] = [
-                        'class'       => $class,
-                        'method'      => $m->getName(),
-                        'namespace'   => $cfg->namespace,
-                        'route'       => $cfg->route,
-                        'methods'     => $methods,
-                        // 'name'        => $cfg->name ?: ($class . '@' . $m->getName()),
-                        'middlewares' => $middlewares,
-                        'schema'      => $schema,
-                    ];
-                }
-            }
-        }
-
-        // 对额外的路由器也执行discover
-        foreach ($this->additionalRouters as $router) {
-            $router->discover();
-        }
-
+        return $this->sources;
     }
 
-    /**
-     * Register REST routes
-     * 
-     * 注册 REST 路由
-     * 
-     * @return void
-     */
+    public function discover(bool $force = false): bool|WP_Error
+    {
+        $manifest = $this->manifest()->load($force);
+        if (is_wp_error($manifest)) {
+            $this->lastError = $manifest;
+            $this->restDefs  = [];
+            return $manifest;
+        }
+
+        $this->lastError = null;
+        $this->restDefs  = $manifest['routes'] ?? [];
+        return true;
+    }
+
+    public function rebuildCache(): bool|WP_Error
+    {
+        $manifest = $this->manifest()->rebuild();
+        if (is_wp_error($manifest)) {
+            $this->lastError = $manifest;
+            return $manifest;
+        }
+
+        $this->lastError = null;
+        $this->restDefs  = $manifest['routes'] ?? [];
+        return true;
+    }
+
+    public function clearCache(): bool
+    {
+        return $this->manifest()->clear();
+    }
+
     public function registerRestRoutes(): void
     {
+        if (!$this->restDefs && !$this->lastError) {
+            $this->discover();
+        }
+
+        if ($this->lastError) {
+            $this->registerErrorRoute($this->lastError);
+            return;
+        }
+
         foreach ($this->restDefs as $def) {
             register_rest_route($def['namespace'], $def['route'], [
                 'methods'             => $def['methods'],
                 'callback'            => function (WP_REST_Request $req) use ($def) {
-                    // execute middlewares
                     foreach ($def['middlewares'] as $middlewareDef) {
                         $middlewareClass = $middlewareDef['class'];
                         $params          = $middlewareDef['params'] ?? [];
 
-                        try {
-                            if (!class_exists($middlewareClass)) {
-                                continue;
-                            }
-
-                            $middleware = !empty($params)
-                                ? new $middlewareClass(...$params)
-                                : new $middlewareClass();
-
-                            if (method_exists($middleware, 'handle')) {
-                                $result = $middleware->handle($req);
-                                if ($result !== true) {
-                                    return $result;
-                                }
-                            }
-                        }
-                        catch (Exception $e) {
+                        if (!class_exists($middlewareClass)) {
                             continue;
                         }
+
+                        $middleware = !empty($params)
+                            ? new $middlewareClass(...$params)
+                            : new $middlewareClass();
+
+                        if (method_exists($middleware, 'handle')) {
+                            $result = $middleware->handle($req);
+                            if ($result !== true) {
+                                return $result;
+                            }
+                        }
                     }
-                    // $obj = new ($def['class'])();
-    
-                    // —————— 使用容器创建控制器 ——————
+
                     $controllerClass = $def['class'];
+                    $factory         = new FactoryDefinition($controllerClass);
+                    $factory->singleton(false);
+                    $this->container->setRawDefinition($controllerClass, $factory);
+                    $controller = $this->container->get($controllerClass);
 
-                    if (!$this->container->has($controllerClass)) {
-                        $factory = new FactoryDefinition($controllerClass);
-                        // 控制器每次请求新建, true
-                        $factory->singleton(true);
-                        $this->container->setRawDefinition($controllerClass, $factory);
-                    }
-                    $obj = $this->container->get($controllerClass);
-
-                    return $obj->{$def['method']}($req);
+                    return $controller->{$def['method']}($req);
                 },
-                'permission_callback' => '__return_true'
+                'permission_callback' => '__return_true',
             ]);
         }
-
-        // register REST routes for additional routers
-        foreach ($this->additionalRouters as $router) {
-            $router->registerRestRoutes();
-        }
     }
 
     /**
-     * Recursively require PHP files in the specified directory
-     * 
-     * 递归 require 指定目录下的 PHP 文件
-     * 
-     * @param string $dir Directory path 目录路径
-     * @return void
-     */
-    private function requirePhpFiles(string $dir): void
-    {
-        if (!is_dir($dir)) return;
-
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-
-        /**
-         * @var SplFileInfo $f
-         */
-        foreach ($it as $f) {
-            if ($f->isFile() && $f->getExtension() === 'php') {
-                require_once $f->getPathname();
-            }
-        }
-    }
-
-    /**
-     * Ensure middleware related classes are loaded
-     * 
-     * 确保中间件相关类被加载，包括：中间件接口、注解类以及内置中间件类
-     * 
-     * @return void
-     */
-    private function requireMiddlewareClasses(): void
-    {
-        // Load middleware interface
-        $middlewareInterface = __DIR__ . '/Middleware/MiddlewareInterface.php';
-        if (file_exists($middlewareInterface)) {
-            require_once $middlewareInterface;
-        }
-
-        // Load middleware attribute
-        $middlewareAttribute = __DIR__ . '/Attributes/Middleware.php';
-        if (file_exists($middlewareAttribute)) {
-            require_once $middlewareAttribute;
-        }
-
-        // Load built-in middleware
-        $middlewareDir = __DIR__ . '/Middleware';
-        if (is_dir($middlewareDir)) {
-            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($middlewareDir));
-
-            /**
-             * @var SplFileInfo $f
-             */
-            foreach ($it as $f) {
-                if ($f->isFile() && $f->getExtension() === 'php') {
-                    require_once $f->getPathname();
-                }
-            }
-        }
-    }
-
-    /**
-     * Ensure schema related classes are loaded
-     * 
-     * 确保Schema相关类被加载，包括：Schema注解类以及Schema中间件类
-     * 
-     * @return void
-     */
-    private function requireSchemaClasses(): void
-    {
-        $schemaAttr = __DIR__ . '/Attributes/Schema.php';
-        if (file_exists($schemaAttr)) {
-            require_once $schemaAttr;
-        }
-
-        $schemaMiddleware = __DIR__ . '/Middleware/SchemaMiddleware.php';
-        if (file_exists($schemaMiddleware)) {
-            require_once $schemaMiddleware;
-        }
-    }
-
-    /**
-     * Get discovered REST route definitions (for debugging)
-     * 
-     * 获取已发现的 REST 路由定义（用于调试）
-     * 
-     * @return array
+     * @return array<int,array>
      */
     public function getRestDefs(): array
     {
         return $this->restDefs;
+    }
+
+    public function getLastError(): ?WP_Error
+    {
+        return $this->lastError;
+    }
+
+    private function manifest(): RouteManifest
+    {
+        if (!$this->manifest) {
+            $this->manifest = new RouteManifest($this->sources);
+        }
+        return $this->manifest;
+    }
+
+    private function registerErrorRoute(WP_Error $error): void
+    {
+        register_rest_route('api/v1', '(?P<g3_router_failed_route>.*)', [
+            'methods'             => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+            'callback'            => fn() => $error,
+            'permission_callback' => '__return_true',
+        ]);
     }
 }

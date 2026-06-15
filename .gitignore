@@ -37,6 +37,9 @@ wp-content/plugins/g3/package.json
 wp-content/plugins/g3/pnpm-lock.yaml
 wp-content/plugins/g3/vite.config.ts
 
+# G3 Core
+!wp-content/plugins/g3/src/Core/Router/*.php
+
 # Static assets
 wp-content/plugins/g3/assets/css/*.css
 !wp-content/plugins/g3/assets/css/*.min.css
@@ -79,6 +82,9 @@ wp-content/plugins/g3/public/languages/*.po~
 # Uploads
 wp-content/plugins/g3/public/images/svg/
 wp-content/plugins/g3/public/images/unsplash/
+
+# Cache
+wp-content/plugins/g3/cache/routes.php
 
 # Tools
 wp-content/backup-*.php

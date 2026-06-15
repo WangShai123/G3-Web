@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Core\Helper;
 use JEALER\G3\Core\Router\Router;
+use JEALER\G3\Core\Router\RouteSource;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\ComponentLoader;
@@ -36,10 +37,7 @@ final class Helper {
         }
         if (!$this->container->has('router')) {
             $factory = new FactoryDefinition(Router::class);
-            $factory->constructor(
-                WP_PLUGIN_DIR . '/g3/src/Controllers',
-                'JEALER\\G3\\Controllers'
-            )->singleton();
+            $factory->constructor($this->routeSources())->singleton();
             $this->container->setRawDefinition('router', $factory);
         }
         if (!$this->container->has('componentsLoader')) {
@@ -50,7 +48,7 @@ final class Helper {
     }
     public function loader(): void
     {
-        add_action('init', [$this, 'initRewriteRouter']);
+        add_action('init', [$this, 'initRewriteRouter'], 20);
         add_action('rest_api_init', [$this, 'initRestRouter']);
         Container::use(ComponentLoader::class)->load();
     }
@@ -84,12 +82,8 @@ final class Helper {
                     new ValueDefinition($this->container)
                 );
             }
-            $router = $this->getRouter('main');
+            $router = $this->getRouter();
             $router->discover();
-            $router = $this->getRouter('user');
-            if ($router !== null) {
-                $router->discover();
-            }
         }
         return $router;
     }
@@ -298,27 +292,32 @@ final class Helper {
     }
     public function getRouter(string $type = 'main'): ?Router
     {
-        $userPath = get_stylesheet_directory() . '/src/Controllers';
-        if (!file_exists($userPath) && $type === 'user') {
-            return null;
-        }
-        $routerId = match ($type) {
-            'main' => 'router.main',
-            'user' => 'router.user',
-        };
-        $path     = match ($type) {
-            'main' => WP_PLUGIN_DIR . '/g3/src/Controllers',
-            'user' => $userPath
-        };
+        $routerId = 'router';
         if (!$this->container->has($routerId)) {
             $factory = new FactoryDefinition(Router::class);
-            $factory->constructor(
-                $path,
-                'JEALER\\G3\\Controllers'
-            )->singleton();
+            $factory->constructor($this->routeSources())->singleton();
             $this->container->setRawDefinition($routerId, $factory);
         }
         return $this->container->get($routerId);
+    }
+
+    /**
+     * @return RouteSource[]
+     */
+    public function routeSources(): array
+    {
+        return [
+            new RouteSource(
+                'plugin',
+                WP_PLUGIN_DIR . '/g3/src/Controllers',
+                'JEALER\\G3\\Controllers'
+            ),
+            new RouteSource(
+                'theme',
+                get_stylesheet_directory() . '/src/Controllers',
+                'JEALER\\G3\\Controllers'
+            ),
+        ];
     }
     public function getComponentsLoader(): ?ComponentLoader
     {
