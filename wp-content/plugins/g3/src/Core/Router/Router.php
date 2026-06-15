@@ -11,6 +11,7 @@ use JEALER\G3\Core\Container\ContainerBuilder;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Middleware\SchemaMiddleware;
 use WP_REST_Request;
+use Exception;
 use RuntimeException;
 use SplFileInfo;
 use RecursiveIteratorIterator;
@@ -171,7 +172,7 @@ class Router {
                                 }
                             }
                         }
-                        catch (\Exception $e) {
+                        catch (Exception $e) {
                             continue;
                         }
                     }
@@ -215,7 +216,7 @@ class Router {
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
 
         /**
-         * @var \SplFileInfo $f
+         * @var SplFileInfo $f
          */
         foreach ($it as $f) {
             if ($f->isFile() && $f->getExtension() === 'php') {
@@ -251,7 +252,7 @@ class Router {
             $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($middlewareDir));
 
             /**
-             * @var \SplFileInfo $f
+             * @var SplFileInfo $f
              */
             foreach ($it as $f) {
                 if ($f->isFile() && $f->getExtension() === 'php') {

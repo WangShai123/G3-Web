@@ -447,16 +447,11 @@ return [
 namespace JEALER\G3\Components;
 
 class CustomComponent extends Components {
-    protected function init(): void {
-        // 初始化逻辑
+    protected function hooks(): void {
+        // 钩子逻辑
     }
-
-    protected function admin(): void {
-        // 后台管理逻辑
-    }
-
-    protected function adminMenu(): void {
-        // 添加管理菜单
+    protected function setting(): void {
+        // 后台设置逻辑
     }
 }
 ```
@@ -478,19 +473,6 @@ class CustomController {
 }
 ```
 
-### 3. 创建服务类
-
-```php
-namespace JEALER\G3\Services;
-
-class CustomService {
-    public function processData($data) {
-        // 业务逻辑
-        return $processedData;
-    }
-}
-```
-
 ## 🛡️ 安全特性
 
 - **输入验证** - 自动参数验证和清理
@@ -507,67 +489,3 @@ class CustomService {
 - **静态资源** - 资源压缩和合并
 - **延迟加载** - 组件按需加载
 - **队列处理** - 异步任务处理
-
-## 🔧 CLI 命令
-
-G3 提供了丰富的 CLI 命令：
-
-```bash
-# 创建组件
-php g3.php create:component ComponentName
-
-# 队列处理
-php g3.php queue:work
-
-# 测试命令
-php g3.php test:performance
-```
-
-## 📝 配置选项
-
-### 主要配置文件
-
-1. **config/define.php** - 常量定义
-2. **config/components.php** - 组件配置
-3. **composer.json** - 依赖管理
-
-### 环境变量
-
-```php
-// 调试模式
-define('WP_DEBUG', true);
-
-// Redis 配置
-define('WP_REDIS_HOST', 'localhost');
-define('WP_REDIS_PORT', 6379);
-```
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建功能分支
-3. 提交更改
-4. 推送到分支
-5. 创建 Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](license.txt) 文件了解详情。
-
-## 🆘 支持
-
-- **官方网站**: https://www.jealer.com/g3-system/
-- **文档**: https://www.jealer.com/g3-system/docs/
-- **赞助**: https://www.jealer.com/sponsor/
-
-## 🏷️ 版本信息
-
-- **当前版本**: 1.0.0
-- **最低 PHP 版本**: 8.3
-- **最低 WordPress 版本**: 6.5
-- **作者**: Wang Shai (JEALER)
-- **邮箱**: biz@jealer.com
-
----
-
-**G3 Web** - 让 WordPress 主题开发更简单、更强大！

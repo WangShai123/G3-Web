@@ -43,18 +43,12 @@ class RewriteRouter {
      */
     private function checkIfFlushNeeded(): void
     {
-        // get stored config hash (using transient, 24-hour expiration)
-        $storedHash = get_transient('g3_rewrite_config_hash');
-
-        // calculate current config hash
+        $storedHash  = get_transient('g3_rewrite_config_hash');
         $currentHash = md5(serialize($this->config));
 
-        // if hash not match, config changed, need flush
         if ($storedHash !== $currentHash) {
-            // save new hash (using transient, 24-hour expiration)
+            // 24-hour expiration for new hash
             set_transient('g3_rewrite_config_hash', $currentHash, 24 * HOUR_IN_SECONDS);
-
-            // immediately flush rewrite rules
             self::flushRewriteRules();
         }
     }
