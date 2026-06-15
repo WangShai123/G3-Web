@@ -2,6 +2,7 @@
 namespace JEALER\G3\Core\Rewrite;
 
 use JEALER\G3\Components\Components;
+use JEALER\G3\Core\ComponentRegistry;
 use JEALER\G3\Core\Container\Container;
 use ReflectionMethod;
 use Throwable;
@@ -13,8 +14,10 @@ class RewriteRouter {
 
     private array     $config    = [];
     private array     $routes    = [];
+    private ?array    $activeRoutesCache = null;
     private ?WP_Error $lastError = null;
     private Container $container;
+    private ComponentRegistry $componentRegistry;
 
     public function __construct()
     {
@@ -22,14 +25,16 @@ class RewriteRouter {
             $this->container = Container::run();
         }
 
+        $this->componentRegistry = ComponentRegistry::run();
         $this->reload();
     }
 
     public function reload(): void
     {
-        $this->config    = [];
-        $this->routes    = [];
-        $this->lastError = null;
+        $this->config            = [];
+        $this->routes            = [];
+        $this->activeRoutesCache = null;
+        $this->lastError         = null;
 
         $this->loadConfig();
     }
@@ -434,11 +439,12 @@ class RewriteRouter {
     private function matchedRoute(array $queryVars): ?array
     {
         $routeId = $queryVars[self::ROUTE_QUERY_VAR] ?? null;
-        if (is_string($routeId) && isset($this->routes[$routeId]) && $this->isDependencySatisfied($this->routes[$routeId]['dependency'])) {
-            return $this->routes[$routeId];
+        $activeRoutes = $this->activeRoutes();
+        if (is_string($routeId) && isset($activeRoutes[$routeId])) {
+            return $activeRoutes[$routeId];
         }
 
-        foreach ($this->activeRoutes() as $route) {
+        foreach ($activeRoutes as $route) {
             if ($this->routeMatchesQueryVars($route, $queryVars)) {
                 return $route;
             }
@@ -582,6 +588,10 @@ class RewriteRouter {
 
     private function activeRoutes(): array
     {
+        if ($this->activeRoutesCache !== null) {
+            return $this->activeRoutesCache;
+        }
+
         $routes = [];
         foreach ($this->routes as $routeId => $route) {
             if ($this->isDependencySatisfied($route['dependency'])) {
@@ -589,7 +599,8 @@ class RewriteRouter {
             }
         }
 
-        return $routes;
+        $this->activeRoutesCache = $routes;
+        return $this->activeRoutesCache;
     }
 
     private function isDependencySatisfied(mixed $dependency): bool
@@ -603,13 +614,23 @@ class RewriteRouter {
         }
 
         if (is_string($dependency)) {
-            $componentName = ucfirst($dependency);
-            return isset(Components::$components[$componentName]);
+            return $this->componentRegistry->has($dependency);
+        }
+
+        if (is_array($dependency) && $this->isComponentDependencyList($dependency)) {
+            foreach ($dependency as $componentName) {
+                if (!$this->componentRegistry->has($componentName)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         $callback = $this->resolveConfigCallback($dependency, false);
         if ($callback === null) {
-            return !$this->isCallbackReference($dependency);
+            $this->logMessage('[G3 Rewrite] Invalid dependency definition rejected.');
+            return false;
         }
 
         try {
@@ -707,7 +728,7 @@ class RewriteRouter {
         }
 
         $componentName = (new \ReflectionClass($className))->getShortName();
-        return Components::$components[$componentName] ?? null;
+        return $this->componentRegistry->get($componentName);
     }
 
     private function callWithContext(callable $callable, array $arguments): mixed
@@ -763,9 +784,28 @@ class RewriteRouter {
             && array_key_exists(1, $value)
             && is_string($value[1])
             && (
-                is_object($value[0])
-                || (is_string($value[0]) && class_exists($value[0]))
+                (is_object($value[0]) && method_exists($value[0], $value[1]))
+                || (is_string($value[0]) && str_contains($value[0], '\\'))
             );
+    }
+
+    private function isComponentDependencyList(array $value): bool
+    {
+        if ($value === []) {
+            return true;
+        }
+
+        if ($this->isCallbackReference($value)) {
+            return false;
+        }
+
+        foreach ($value as $componentName) {
+            if (!is_string($componentName) || $componentName === '') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function pluginDir(): string

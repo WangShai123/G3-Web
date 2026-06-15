@@ -1,13 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
+use JEALER\G3\Core\ComponentRegistry;
 use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Core\Container\Container;
-use JEALER\G3\Core\Queue\Queue;
-use JEALER\G3\Utilities\Message;
-use JEALER\G3\Utilities\Option;
-use JEALER\G3\Utilities\System;
-use JEALER\G3\Utilities\Common;
-use JEALER\G3\Utilities\Context;
 use Exception;
 use ReflectionClass;
 
@@ -286,37 +281,6 @@ abstract class Components {
     }
 
     /**
-     * make a component instance
-     * 
-     * 创建组件实例
-     * 
-     * @deprecated @since 1.0.0
-     * 
-     * @param string $componentName
-     * @return mixed
-     */
-    public static function make(string $componentName)
-    {
-        /**
-         * @var Components $component instance cache
-         */
-        if (isset(self::$components[$componentName])) {
-            return self::$components[$componentName];
-        }
-
-        // check component namespace
-        $fullClassName = (strpos($componentName, 'JEALER\\G3\\Components\\') === 0)
-            ? $componentName
-            : 'JEALER\\G3\\Components\\' . $componentName;
-
-        $component = Container::use($fullClassName);
-        if (!empty($component)) {
-            self::$components[$componentName] = $component;
-        }
-        return $component;
-    }
-
-    /**
      * Get component property value
      * 
      * 获取组件属性值
@@ -328,7 +292,8 @@ abstract class Components {
      */
     public static function getProperty(string $componentName, string $propertyName)
     {
-        return self::$components[$componentName]->$propertyName;
+        $component = ComponentRegistry::run()->get($componentName);
+        return $component ? $component->$propertyName : null;
     }
 
     /**
@@ -342,7 +307,7 @@ abstract class Components {
      */
     public static function hasComponent(string $componentName): bool
     {
-        return isset(self::$components[$componentName]);
+        return ComponentRegistry::run()->has($componentName);
     }
 
     public function prepareDataActions(): void

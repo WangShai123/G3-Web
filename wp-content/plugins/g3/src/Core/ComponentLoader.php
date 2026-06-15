@@ -1,147 +1,263 @@
 <?php
 namespace JEALER\G3\Core;
+
+use JEALER\G3\Components\ComponentManager;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
-use JEALER\G3\Components\ComponentManager;
-use JEALER\G3\Utilities\Context;
-use JEALER\G3\Utilities\System;
-use Exception;
+use JEALER\G3\Core\Container\FactoryDefinition;
+use ReflectionFunction;
+use ReflectionMethod;
+use Throwable;
 
 /**
  * Component Loader
- * 
- * 组件加载器
- * 
- * 简易版G3组件系统
- * 
- * @since 1.0.0
- * @author Wang Shai
+ *
+ * 负责读取组件配置、解析依赖、实例化组件，并注册组件生命周期。
  */
 class ComponentLoader {
-    private array      $loadedComponents = [];
-    private bool       $initialized      = false;
-    private ?Container $container;
+
+    /** @var array<int, array{code: string, message: string}> */
+    private array $errors = [];
+
+    private bool $initialized = false;
+
+    private Container $container;
+
+    private ComponentRegistry $registry;
+
     public function __construct()
     {
-        if (!isset($this->container)) {
-            $this->container = Container::run();
-        }
+        $this->container = Container::run();
+        $this->registry  = ComponentRegistry::run();
     }
 
-    /**
-     * 加载组件系统
-     * 
-     * @return void
-     */
     public function load(): void
     {
         if ($this->initialized) {
             return;
         }
 
-        /**
-         * 读取配置文件（兼容模式）
-         */
         $config = $this->getConfig();
-
-        if (isset($config['enabled']) && $config['enabled'] === false) {
+        if (($config['enabled'] ?? true) === false) {
+            $this->initialized = true;
             return;
         }
 
-        /**
-         * 预加载所有配置到Parameter系统
-         * @deprecated 简化组件系统，降低用户心智负担。使用 Context 替代 Parameter
-         */
-        // $configs = $config['configs'];
-        // $this->preloadConfigs($configs);
+        $components = $config['components'] ?? [];
+        if (!is_array($components)) {
+            $this->addError('g3_components_config_invalid', '[G3 ComponentLoader] components config must be an array.');
+            $this->initialized = true;
+            return;
+        }
 
-        // 按需加载
-        $components = $config['components'];
-        foreach ($components as $componentName => $enabled) {
-            if ($enabled === true || $enabled === '1') {
-                $this->loadComponent($componentName);
-            }
+        $specs = $this->normalizeComponentSpecs($components);
+        $order = $this->resolveLoadOrder($specs);
+
+        foreach ($order as $componentName) {
+            $this->loadComponent($specs[$componentName]);
         }
 
         $this->initialized = true;
     }
 
-    /**
-     * 获取配置（支持主题覆盖，与原系统完全相同）
-     * 
-     * @return array
-     */
     private function getConfig(): array
     {
-        $config = require G3_PlUGIN_DIR . '/config/components.php';
+        $config = $this->loadConfigFile(G3_PlUGIN_DIR . '/config/components.php');
 
         $themeConfig = get_stylesheet_directory() . '/config/components.php';
         if (file_exists($themeConfig)) {
-            $themeData = require $themeConfig;
-
-            if (isset($themeData['enabled']) && $themeData['enabled'] === false) {
-                $themeData = [];
-            }
-
-            $config = array_merge($config, $themeData);
+            $themeData = $this->loadConfigFile($themeConfig);
+            $config = array_replace($config, $themeData);
         }
 
         return $config;
     }
 
-    /**
-     * 加载单个组件（自动处理文件路径和类名）
-     * 
-     * @param string $componentName 组件名称
-     * @return void
-     */
-    private function loadComponent(string $componentName): void
+    private function loadConfigFile(string $file): array
     {
         try {
-            // 解析组件文件路径（支持主题覆盖）
-            $componentInfo = $this->resolveComponentFile($componentName);
+            $config = require $file;
+        }
+        catch (Throwable $e) {
+            $this->addError('g3_components_config_load_failed', "[G3 ComponentLoader] Failed to load config file {$file}: " . $e->getMessage());
+            return [];
+        }
 
+        if (!is_array($config)) {
+            $this->addError('g3_components_config_invalid', "[G3 ComponentLoader] Config file must return an array: {$file}");
+            return [];
+        }
+
+        return $config;
+    }
+
+    private function normalizeComponentSpecs(array $components): array
+    {
+        $specs = [];
+        $index = 0;
+
+        foreach ($components as $componentName => $definition) {
+            if (!is_string($componentName) || !$this->isValidComponentName($componentName)) {
+                $this->addError('g3_component_name_invalid', '[G3 ComponentLoader] Invalid component name: ' . (string) $componentName);
+                continue;
+            }
+
+            $spec = $this->normalizeComponentSpec($componentName, $definition, $index++);
+            if ($spec === null) {
+                continue;
+            }
+
+            $key = $this->registry->normalizeName($componentName);
+            if (isset($specs[$key])) {
+                $this->addError('g3_component_duplicate', "[G3 ComponentLoader] Duplicate component config: {$componentName}");
+                continue;
+            }
+
+            $specs[$key] = $spec;
+        }
+
+        return $specs;
+    }
+
+    private function normalizeComponentSpec(string $componentName, mixed $definition, int $index): ?array
+    {
+        $enabled    = false;
+        $dependency = true;
+
+        if (is_bool($definition) || $definition === '1' || $definition === '0') {
+            $enabled = $definition === true || $definition === '1';
+        } elseif (is_array($definition)) {
+            if (array_key_exists('enabled', $definition)) {
+                $enabled = $definition['enabled'] === true || $definition['enabled'] === '1';
+            } elseif (array_key_exists(0, $definition)) {
+                $enabled = $definition[0] === true || $definition[0] === '1';
+            }
+
+            if (array_key_exists('dependency', $definition)) {
+                $dependency = $definition['dependency'];
+            } elseif (array_key_exists(1, $definition)) {
+                $dependency = $definition[1];
+            }
+        } else {
+            $this->addError('g3_component_definition_invalid', "[G3 ComponentLoader] Invalid component definition for {$componentName}.");
+            return null;
+        }
+
+        if (!$enabled) {
+            return null;
+        }
+
+        return [
+            'name'       => $componentName,
+            'key'        => $this->registry->normalizeName($componentName),
+            'class_name' => ucfirst($componentName),
+            'dependency' => $dependency,
+            'index'      => $index,
+            'raw'        => $definition,
+        ];
+    }
+
+    private function resolveLoadOrder(array $specs): array
+    {
+        $order     = [];
+        $visiting  = [];
+        $visited   = [];
+        $available = array_fill_keys(array_keys($specs), true);
+
+        uasort($specs, static fn(array $a, array $b): int => $a['index'] <=> $b['index']);
+
+        foreach ($specs as $key => $spec) {
+            $this->visitComponent($key, $specs, $available, $visiting, $visited, $order);
+        }
+
+        return $order;
+    }
+
+    private function visitComponent(string $key, array $specs, array $available, array &$visiting, array &$visited, array &$order): bool
+    {
+        if (isset($visited[$key])) {
+            return $visited[$key];
+        }
+
+        if (isset($visiting[$key])) {
+            $this->addError('g3_component_dependency_cycle', "[G3 ComponentLoader] Circular component dependency detected at {$specs[$key]['name']}.");
+            $visited[$key] = false;
+            return false;
+        }
+
+        $spec            = $specs[$key];
+        $visiting[$key]  = true;
+        $canLoad         = true;
+        $dependencies    = $this->componentDependencyNames($spec['dependency']);
+
+        if ($dependencies !== null) {
+            foreach ($dependencies as $dependencyName) {
+                $dependencyKey = $this->registry->normalizeName($dependencyName);
+                if (!isset($available[$dependencyKey])) {
+                    $this->addError('g3_component_dependency_missing', "[G3 ComponentLoader] Component {$spec['name']} depends on missing or disabled component {$dependencyName}.");
+                    $canLoad = false;
+                    continue;
+                }
+
+                if (!$this->visitComponent($dependencyKey, $specs, $available, $visiting, $visited, $order)) {
+                    $canLoad = false;
+                }
+            }
+        }
+
+        unset($visiting[$key]);
+
+        if ($canLoad) {
+            $order[] = $key;
+        }
+
+        $visited[$key] = $canLoad;
+        return $canLoad;
+    }
+
+    private function loadComponent(array $spec): void
+    {
+        $componentName = $spec['name'];
+
+        try {
+            if (!$this->isDependencySatisfied($spec['dependency'])) {
+                return;
+            }
+
+            $componentInfo = $this->resolveComponentFile($componentName);
             if (!$componentInfo) {
-                error_log("[G3 ComponentLoader] Component file not found: {$componentName}");
+                $this->addError('g3_component_file_missing', "[G3 ComponentLoader] Component file not found: {$componentName}");
                 return;
             }
 
             require_once $componentInfo['file_path'];
 
             if (!class_exists($componentInfo['class_name'])) {
-                error_log("[G3 ComponentLoader] Component class not found: {$componentInfo['class_name']}");
+                $this->addError('g3_component_class_missing', "[G3 ComponentLoader] Component class not found: {$componentInfo['class_name']}");
                 return;
             }
 
             if (!$this->container->has($componentInfo['class_name'])) {
-                $this->container->setRawDefinition($componentInfo['class_name'], $componentInfo['class_name']::class);
+                $factory = new FactoryDefinition($componentInfo['class_name']);
+                $factory->singleton();
+                $this->container->setRawDefinition($componentInfo['class_name'], $factory);
             }
+
             $component = $this->container->get($componentInfo['class_name']);
+            if (!$component instanceof Components) {
+                $this->addError('g3_component_type_invalid', "[G3 ComponentLoader] Component must extend Components: {$componentInfo['class_name']}");
+                return;
+            }
 
-            // 存储组件实例
-            $this->loadedComponents[$componentName] = $component;
-            Components::$components[$componentName] = $component;
-            Components::$components[ucfirst($componentName)] = $component;
+            $this->registry->register($componentName, $component);
 
-            // 注册组件生命周期钩子
             ComponentManager::run()->registerComponent($component);
-
-            // $source = $componentInfo['is_theme_override'] ? 'theme' : 'plugin';
-            // if (defined('WP_DEBUG') && WP_DEBUG) {
-            //     error_log("[G3 Debug][ComponentLoader] Component loaded from {$source}: {$componentName}");
-            // }
         }
-        catch (Exception $e) {
-            error_log("[G3 ComponentLoader] Failed to load component {$componentName}: " . $e->getMessage());
+        catch (Throwable $e) {
+            $this->addError('g3_component_load_failed', "[G3 ComponentLoader] Failed to load component {$componentName}: " . $e->getMessage());
         }
     }
 
-    /**
-     * 解析组件文件路径，用户主题组件，优先级最高，覆盖系统组件
-     * 
-     * @param string $componentName 组件名称
-     * @return array|null
-     */
     private function resolveComponentFile(string $componentName): ?array
     {
         $className = ucfirst($componentName);
@@ -151,7 +267,7 @@ class ComponentLoader {
             return [
                 'file_path'         => $themeComponentFile,
                 'class_name'        => "JEALER\\G3\\Components\\{$className}",
-                'is_theme_override' => true
+                'is_theme_override' => true,
             ];
         }
 
@@ -160,132 +276,163 @@ class ComponentLoader {
             return [
                 'file_path'         => $pluginComponentFile,
                 'class_name'        => "JEALER\\G3\\Components\\{$className}",
-                'is_theme_override' => false
+                'is_theme_override' => false,
             ];
         }
 
         return null;
     }
 
-    /**
-     * 获取已加载的组件
-     * 
-     * @return array
-     */
+    private function isDependencySatisfied(mixed $dependency): bool
+    {
+        if ($dependency === null || $dependency === true) {
+            return true;
+        }
+
+        if ($dependency === false) {
+            return false;
+        }
+
+        $dependencies = $this->componentDependencyNames($dependency);
+        if ($dependencies !== null) {
+            foreach ($dependencies as $dependencyName) {
+                if (!$this->registry->has($dependencyName)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (!is_callable($dependency)) {
+            $this->addError('g3_component_dependency_invalid', '[G3 ComponentLoader] Invalid component dependency definition.');
+            return false;
+        }
+
+        try {
+            return (bool) $this->callDependencyCallback($dependency, [$this->registry, $this]);
+        }
+        catch (Throwable $e) {
+            $this->addError('g3_component_dependency_failed', '[G3 ComponentLoader] Component dependency callback failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function componentDependencyNames(mixed $dependency): ?array
+    {
+        if (is_string($dependency) && $dependency !== '') {
+            return [$dependency];
+        }
+
+        if ($dependency === []) {
+            return [];
+        }
+
+        if (!is_array($dependency)) {
+            return null;
+        }
+
+        if ($this->isCallableArray($dependency)) {
+            return null;
+        }
+
+        $names = [];
+        foreach ($dependency as $name) {
+            if (!is_string($name) || $name === '') {
+                return null;
+            }
+            $names[] = $name;
+        }
+
+        return $names;
+    }
+
+    private function isCallableArray(array $value): bool
+    {
+        if (
+            count($value) !== 2
+            || !array_key_exists(0, $value)
+            || !array_key_exists(1, $value)
+            || !is_string($value[1])
+        ) {
+            return false;
+        }
+
+        [$target, $method] = $value;
+
+        if (is_object($target)) {
+            return method_exists($target, $method) || is_callable($value);
+        }
+
+        return is_string($target) && str_contains($target, '\\');
+    }
+
+    private function callDependencyCallback(callable $callback, array $arguments): mixed
+    {
+        $reflection = $this->dependencyCallbackReflection($callback);
+        if ($reflection === null || $reflection->isVariadic()) {
+            return $callback(...$arguments);
+        }
+
+        return $callback(...array_slice($arguments, 0, $reflection->getNumberOfParameters()));
+    }
+
+    private function dependencyCallbackReflection(callable $callback): ReflectionFunction|ReflectionMethod|null
+    {
+        try {
+            if (is_array($callback)) {
+                return new ReflectionMethod($callback[0], $callback[1]);
+            }
+
+            if (is_object($callback) && !$callback instanceof \Closure) {
+                return new ReflectionMethod($callback, '__invoke');
+            }
+
+            return new ReflectionFunction($callback);
+        }
+        catch (Throwable) {
+            return null;
+        }
+    }
+
+    private function isValidComponentName(string $componentName): bool
+    {
+        return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $componentName) === 1;
+    }
+
+    private function addError(string $code, string $message): void
+    {
+        $this->errors[] = [
+            'code'    => $code,
+            'message' => $message,
+        ];
+
+        $this->registry->addError($code, $message);
+        error_log($message);
+    }
+
     public function getLoadedComponents(): array
     {
-        return $this->loadedComponents;
+        return $this->registry->all();
     }
 
-    /**
-     * 获取单个组件实例
-     * 
-     * @param string $componentName 组件名称
-     * @return object|null
-     */
     public function getComponent(string $componentName): ?object
     {
-        return $this->loadedComponents[$componentName] ?? null;
+        return $this->registry->get($componentName);
     }
 
-    /**
-     * 检查组件是否已加载
-     * 
-     * @param string $componentName 组件名称
-     * @return bool
-     */
     public function isComponentLoaded(string $componentName): bool
     {
-        return isset($this->loadedComponents[$componentName]);
+        return $this->registry->has($componentName);
     }
 
-    private function _preloadConfigs(array $componentConfig): void
+    public function getRegistry(): ComponentRegistry
     {
-        foreach ($componentConfig as $key => $config) {
-            foreach ($config as $k => $v) {
-                Context::set($v['key'], $v['default']);
-            }
-        }
+        return $this->registry;
     }
 
-    /**
-     * @deprecated 1.0.0
-     * 删除 Parameter 相关方案
-     */
-    private function preloadConfigs(array $componentConfig): void
+    public function getErrors(): array
     {
-        $container = Container::run();
-
-        // 1. 加载插件默认配置
-        $pluginConfig = G3_PlUGIN_DIR . '/config/components.php';
-        $configData   = require $pluginConfig;
-
-        // 2. 主题配置覆盖
-        $themeConfig = get_stylesheet_directory() . '/config/components.php';
-        if (file_exists($themeConfig)) {
-            $themeData = require $themeConfig;
-            if (is_array($themeData)) {
-                $configData = array_merge($configData, $themeData);
-            }
-        }
-
-        // 3. 处理 configs 配置
-        if (!isset($configData['configs'])) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[G3 Debug][ComponentLoader] No configs section found in components.php');
-            }
-            return;
-        }
-
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[G3 Debug][ComponentLoader] Processing configs: ' . print_r($configData['configs'], true));
-        }
-
-        foreach ($configData['configs'] as $componentName => $configGroups) {
-            $componentKey = strtolower($componentName);
-
-            foreach ($configGroups as $groupName => $groupConfig) {
-                $optionKey    = $groupConfig['key'] ?? '';
-                $defaultValue = $groupConfig['default'] ?? [];
-
-                if (empty($optionKey)) {
-                    if (defined('WP_DEBUG') && WP_DEBUG) {
-                        error_log("[G3 Debug][ComponentLoader] Empty option key for {$componentName}.{$groupName}");
-                    }
-                    continue;
-                }
-
-                $optionData = get_option($optionKey, $defaultValue);
-
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log("[G3 Debug][ComponentLoader] Loading config {$componentName}.{$groupName} from {$optionKey}: " . print_r($optionData, true));
-                }
-
-                // 自动映射到Parameter系统
-                // $parameterPrefix = ($groupName === 'main')
-                //     ? "config.{$componentKey}"
-                //     : "config.{$componentKey}.{$groupName}";
-                $parameterPrefix = "config.{$componentKey}.{$groupName}";
-
-                // 将配置数据注入到Parameter管理器
-                if (is_array($optionData)) {
-                    foreach ($optionData as $key => $value) {
-                        $parameterKey = "{$parameterPrefix}.{$key}";
-                        $container->setParameter($parameterKey, $value);
-
-                        if (defined('WP_DEBUG') && WP_DEBUG) {
-                            error_log("[G3 Debug][ComponentLoader] Set parameter: {$parameterKey} = " . print_r($value, true));
-                        }
-                    }
-
-                    // 同时设置整个配置组
-                    $container->setParameter($parameterPrefix, $optionData);
-
-                    if (defined('WP_DEBUG') && WP_DEBUG) {
-                        error_log("[G3 Debug][ComponentLoader] Set parameter group: {$parameterPrefix} = " . print_r($optionData, true));
-                    }
-                }
-            }
-        }
+        return $this->errors;
     }
 }

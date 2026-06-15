@@ -3,7 +3,6 @@ namespace JEALER\G3\Core\Helper;
 use JEALER\G3\Core\Router\Router;
 use JEALER\G3\Core\Router\RouteSource;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
-use JEALER\G3\Components\Components;
 use JEALER\G3\Core\ComponentLoader;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\ValueDefinition;
@@ -50,7 +49,7 @@ final class Helper {
     {
         add_action('init', [$this, 'initRewriteRouter'], 20);
         add_action('rest_api_init', [$this, 'initRestRouter']);
-        Container::use(ComponentLoader::class)->load();
+        $this->container->get('componentsLoader')->load();
     }
     public function initRestRouter(): void
     {
@@ -229,56 +228,6 @@ final class Helper {
     public function y(): bool
     {
         return $this->i();
-    }
-    private static function loadLegacyComponentSystem(): void
-    {
-        // initialize Components system (原有逻辑)
-        // Container::use(Components::class);
-        // load all components (原有逻辑)
-        self::loadComponents();
-    }
-    private static function loadComponents(): void
-    {
-        $mainConfig = G3_PlUGIN_DIR . "/config/components.php";
-        $mainMap    = require_once $mainConfig;
-        if (!is_array($mainMap)) {
-            new WP_Error(
-                "Invalid G3",
-                "Invalid component mapping configuration."
-            );
-        }
-        $userMap    = [];
-        $userConfig = get_stylesheet_directory() . "/config/components.php";
-        if (file_exists($userConfig)) {
-            $tempMap = require_once $userConfig;
-            $userMap = is_array($tempMap) ? $tempMap : [];
-        }
-        $componentsMap = array_merge($mainMap, $userMap);
-        self::components($componentsMap);
-    }
-    private static function components(array $map): array
-    {
-        $loaded = [];
-        foreach ($map as $name => $shouldLoad) {
-            if ($shouldLoad !== true) {
-                continue;
-            }
-            $className           = ucfirst($name);
-            $pluginComponentFile = G3_PlUGIN_DIR . "/src/Components/{$className}/{$className}.php";
-            $userComponentFile   = get_stylesheet_directory() . "/src/components/{$className}/{$className}.php";
-            $fullClassName       = "JEALER\G3\Components\\{$className}";
-            $componentFile       = file_exists($userComponentFile) ? $userComponentFile : $pluginComponentFile;
-            require_once $componentFile;
-            if (!class_exists($fullClassName)) {
-                wp_die(
-                    "[G3 Error] Class of '{$fullClassName}' does not exist.",
-                    "G3 Error",
-                    ['back_link' => true]
-                );
-            }
-            $loaded[$name] = Components::make($className);
-        }
-        return $loaded;
     }
     public function getRewrite(): ?RewriteRouter
     {
