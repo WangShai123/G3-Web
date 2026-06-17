@@ -51,6 +51,8 @@ defined('G3_PlUGIN_URL') or define('G3_PlUGIN_URL', WP_PLUGIN_URL . '/g3');
  */
 defined('G3_BIN_DIR') or define('G3_BIN_DIR', G3_PlUGIN_DIR . '/bin');
 
+defined('G3_CONFIG_DIR') or define('G3_CONFIG_DIR', G3_PlUGIN_DIR . '/config');
+
 /**
  * G3组件目录
  * Define G3 Component Directory

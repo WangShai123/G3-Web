@@ -218,7 +218,7 @@ final class Element {
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('g3.media.upload');
+        Frontend::umd('g3.media.upload');
 
         $html = '<fieldset>';
 
@@ -275,7 +275,7 @@ final class Element {
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('g3.media.image');
+        Frontend::umd('g3.media.image');
 
         $html = "<fieldset>";
         if ($legend) {

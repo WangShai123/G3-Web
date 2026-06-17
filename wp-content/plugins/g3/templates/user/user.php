@@ -6,7 +6,7 @@ if (!is_user_logged_in()) {
     return;
 }
 
-Frontend::loadStyle('jui');
+Frontend::css('jui');
 
 $user = wp_get_current_user();
 get_header();

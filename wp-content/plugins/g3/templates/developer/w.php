@@ -2,7 +2,7 @@
 use JEALER\G3\Components\Developer;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
-Frontend::loadStyle('jui');
+Frontend::css('jui');
 $time = Developer::time();
 ?>
 

@@ -1,10 +1,10 @@
 <?php
 use JEALER\G3\Utilities\Frontend;
 
-Frontend::loadStyle('jui');
-Frontend::loadScript('jui');
-Frontend::loadScript('axios');
-Frontend::loadScript('axios.cache');
+Frontend::css('jui');
+Frontend::umd('jui');
+Frontend::umd('axios');
+Frontend::umd('axios.cache');
 
 get_header();
 echo 'register';

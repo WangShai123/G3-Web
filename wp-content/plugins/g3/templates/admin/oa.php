@@ -14,9 +14,9 @@ if (is_user_logged_in()) {
         return;
     }
 }
-Frontend::loadStyle('jui');
-Frontend::loadModule('jui');
-Frontend::loadModule('g3.login.oa');
+Frontend::css('jui');
+Frontend::esm('jui');
+Frontend::esm('g3.login.oa');
 get_header();
 ?>
 

@@ -2,7 +2,7 @@
 use JEALER\G3\Services\AuthService;
 use JEALER\G3\Utilities\Frontend;
 
-Frontend::loadStyle('jui');
+Frontend::css('jui');
 get_header();
 
 echo AuthService::loginElement(

@@ -534,7 +534,7 @@ HTML;
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('g3.media.image');
+        Frontend::umd('g3.media.image');
         $cover  = __('Cover', 'G3');
         $upload = __('Select Image');
         echo <<<HTML
@@ -551,7 +551,7 @@ HTML;
         wp_enqueue_media();
         wp_enqueue_script('media-grid');
         wp_enqueue_script('media');
-        Frontend::loadScript('g3.media.image');
+        Frontend::umd('g3.media.image');
         $cover = get_term_meta($tag->term_id, PostService::COVER_KEY, true);
         ?>
         <tr class="form-field">

@@ -44,31 +44,18 @@ final class Frontend {
      * @param string $media The media type for the style (default: 'all').
      * @return
      */
-    public static function loadStyle(string $handle, bool $cdn = false, string $media = 'all')
+    public static function css(string $handle, bool $cdn = false, string $media = 'all')
     {
-        $styles = [
-            'jui'         => [G3_CSS_URL . '/jui.css', [], '1.0.0', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
+        $styles = require_once G3_CONFIG_DIR . '/css.php';
 
-            /**
-             * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
-             * @link https://github.com/highlightjs/highlight.js
-             */
-            'highlight'   => [G3_CSS_URL . '/highlight.atom-one-dark.min.css', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css'],
-            /**
-             * Swiper: The most modern mobile touch slider with hardware accelerated transitions
-             * @link https://github.com/nolimits4web/Swiper
-             */
-            'swiper'      => [G3_CSS_URL . '/swiper-bundle.min.css', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'],
-            'tiny.swiper' => [G3_CSS_URL . '/tiny.swiper.min.css', [], '1.0.0', 'https://unpkg.com/tiny-swiper@latest/lib/index.css'],
-        ];
         /**
-         * Custom Filter: g3_filter_style
+         * Custom Filter: g3_filter_css
          * @param array $styles The array of style handles.
          * @return array The filtered array of style handles.
          * @since 1.0.0
          * @author Wang Shai
          */
-        $styles = apply_filters('g3_filter_style', $styles);
+        $styles = apply_filters('g3_filter_css', $styles);
 
         if (isset($styles[$handle])) {
             $style = $styles[$handle];
@@ -78,10 +65,9 @@ final class Frontend {
             }
 
             wp_enqueue_style($handle, $style[0], $style[1], $style[2], $media);
-
-            // return true;
+            return true;
         }
-        // return false;
+        return false;
     }
 
     /**
@@ -96,63 +82,9 @@ final class Frontend {
      * @param bool $in_footer Whether to load the script in the footer (default: true).
      * @return bool Whether the script is successfully loaded.
      */
-    public static function loadScript(string $handle, bool $cdn = false, bool $in_footer = true): bool
+    public static function umd(string $handle, bool $cdn = false, bool $in_footer = true): bool
     {
-        // static $scripts;
-        $scripts = [
-            // jQuery
-            'jquery'             => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://unpkg.com/jquery@latest/dist/jquery.min.js'],
-            // vanilla signal & library
-            'vanilla-signal'     => [G3_JS_URL . '/vanilla-signal.umd.js', [], '0.2.9', 'https://unpkg.com/vanilla-signal@latest/dist/index.umd.js'],
-            'vanilla-simple-lru' => [G3_JS_URL . '/vanilla-simple-lru.umd.js', [], '0.2.5', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.umd.js'],
-            'vanilla-query'      => [G3_JS_URL . '/vanilla-query.umd.js', ['vanilla-signal', 'vanilla-simple-lru'], '0.2.5', 'https://unpkg.com/vanilla-query@latest/dist/index.umd.js'],
-            'vanilla-storage'    => [G3_JS_URL . '/vanilla-storage.umd.js', [], '0.2.3', 'https://unpkg.com/vanilla-storage@latest/dist/index.umd.js'],
-            'vanilla-i18n'       => [G3_JS_URL . '/vanilla-i18n.umd.js', ['vanilla-signal'], '0.2.0', 'https://unpkg.com/vanilla-i18n@latest/dist/index.umd.js'],
-            // JUI
-            'jui'                => [G3_JS_URL . '/jui.umd.js', [], '1.0.0', 'https://unpkg.com/jealer-jui@latest/dist/jui.umd.js'],
-            'jui.pca'            => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
-            // G3
-            'g3.redirect.link'   => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.redirect.link.min.js', [], '1.0.0'],
-            'g3.admin'           => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
-            // Template Scripts
-            'g3.media.upload'    => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.upload.min.js', ['jquery'], '1.0.0'],
-            'g3.media.image'     => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
-            /**
-             * Htm:
-             * @link https://github.com/developit/htm
-             */
-            'htm'                => [G3_JS_URL . '/htm.umd.js', [], '3.1.1', 'https://unpkg.com/htm@3.1.1/dist/htm.umd.js'],
-            /**
-             * Decimal: An arbitrary-precision Decimal type for JavaScript
-             * @link https://github.com/MikeMcl/decimal.js
-             */
-            'decimal'            => [G3_JS_URL . '/decimal.min.js', [], '10.6.0', 'https://cdn.jsdelivr.net/npm/decimal.js@10.6.0/decimal.min.js'],
-            /**
-             * pace: Automatically add a progress bar to your site
-             * @link https://github.com/CodeByZach/pace/
-             */
-            'pace'               => [G3_JS_URL . '/pace.min.js', [], '1.2.4', 'https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js'],
-            /**
-             * Swiper: The most modern mobile touch slider with hardware accelerated transitions
-             * @link https://github.com/nolimits4web/Swiper
-             */
-            'swiper'             => [G3_JS_URL . '/swiper-bundle.min.js', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js'],
-            /**
-             * vanilla-lazyload: it leverages IntersectionObserver to lazy load images, backgrounds, videos, iframes and scripts.
-             * @link https://github.com/verlok/vanilla-lazyload
-             */
-            'lazyload'           => [G3_JS_URL . '/lazyload.min.js', [], '19.1.3', 'https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js'],
-            /**
-             * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
-             * @link https://github.com/highlightjs/highlight.js
-             */
-            'highlight'          => [G3_JS_URL . '/highlight.min.js', [], '11.11.1', 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/common.min.js'],
-            /**
-             * qrcodeJS: Cross-browser QRCode generator for javascript.
-             * @link https://github.com/davidshimjs/qrcodejs
-             */
-            'qrcode'             => [G3_JS_URL . '/qrcode.min.js', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'],
-        ];
+        $scripts = require_once G3_CONFIG_DIR . '/umd.php';
 
         /**
          * Custom Filter: g3_filter_scripts
@@ -173,8 +105,8 @@ final class Frontend {
         if ($cdn && isset($script[3])) {
             $script[0] = $script[3];
         }
-        wp_enqueue_script($handle, $script[0], $script[1], $script[2], $in_footer);
 
+        wp_enqueue_script($handle, $script[0], $script[1], $script[2], $in_footer);
         return true;
     }
 
@@ -189,33 +121,9 @@ final class Frontend {
      * @param  bool   $cdn    Whether to load the module from a CDN (default: false).
      * @return bool True if the module is loaded successfully, false otherwise.
      */
-    public static function loadModule(string $handle, bool $cdn = false): bool
+    public static function esm(string $handle, bool $cdn = false): bool
     {
-        $modules = [
-            // vanilla signal
-            'vanilla-signal'     => [G3_JS_URL . '/es/vanilla-signal.js', [], '0.2.9', 'https://unpkg.com/vanilla-signal@latest/dist/index.js'],
-            'vanilla-simple-lru' => [G3_JS_URL . '/es/vanilla-simple-lru.js', [], '0.2.5', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.js'],
-            'vanilla-storage'    => [G3_JS_URL . '/es/vanilla-storage.js', [], '0.2.3', 'https://unpkg.com/vanilla-storage@latest/dist/index.js'],
-            'vanilla-query'      => [G3_JS_URL . '/es/vanilla-query.js', ['vanilla-signal', 'vanilla-simple-lru'], '0.2.5', 'https://unpkg.com/vanilla-query@latest/dist/index.js'],
-            'vanilla-i18n'       => [G3_JS_URL . '/es/vanilla-i18n.js', ['vanilla-signal'], '0.2.0', 'https://unpkg.com/vanilla-i18n@latest/dist/index.js'],
-            // jui
-            'jui'                => [G3_JS_URL . '/es/jui.js', ['vanilla-signal'], '1.0.0', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
-
-            // build-in g3 modules
-            'g3.login.modal'     => [G3_ASSETS_URL . '/javascript/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
-            'g3.subscribe.modal' => [G3_ASSETS_URL . '/javascript/es/g3.subscribe.modal.min.js', ['jui'], '1.0.0'],
-            'g3.login.oa'        => [G3_ASSETS_URL . '/javascript/es/g3.login.oa.min.js', ['jui'], '1.0.0'],
-
-            // htm
-            'htm'                => [G3_JS_URL . '/es/htm.module.js', [], '3.1.1', 'https://unpkg.com/htm@3.1.1/dist/htm.module.js'],
-
-            /**
-             * qrcodeJS: Cross-browser QRCode generator for javascript
-             * @link: https://github.com/davidshimjs/qrcodejs
-             * @todo: add file
-             */
-            'qrcode'             => ['', [], '1.0.0', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/+esm'],
-        ];
+        $modules = require_once G3_CONFIG_DIR . '/esm.php';
 
         /**
          * Custom Filter: g3_filter_modules

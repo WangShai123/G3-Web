@@ -45,7 +45,7 @@ $swipers        = SwiperService::queryByLocation($args['location']);
 
     echo '</div>';
 
-    Frontend::loadStyle('swiper');
-    Frontend::loadScript('swiper');
+    Frontend::css('swiper');
+    Frontend::umd('swiper');
 
     wp_add_inline_script('swiper', 'new Swiper(".swiper", ' . json_encode($args) . ')');

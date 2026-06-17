@@ -10,17 +10,24 @@ use JEALER\G3\Services\SystemService;
 use Override;
 
 class Setting extends Components {
-
-    public array $option = [];
-
-    public array $seo = [];
-
-    public array $rss = [];
-
-    public array $llm = [];
-
+    public array  $option = [];
+    public array  $seo    = [];
+    public array  $rss    = [];
+    public array  $llm    = [];
     private array $config = [];
 
+    #[Override]
+    protected function hooks(): void
+    {
+        $this->filter([
+            'g3_filter_html_class' => [[$this, 'initHtmlClass'], 10, 1],
+        ]);
+        $this->action([
+            'wp_enqueue_scripts'    => [[$this, 'registerScripts']],
+            'admin_enqueue_scripts' => [[$this, 'registerScripts']],
+            'body_class'            => [[$this, 'initBodyClass'], 10, 1],
+        ]);
+    }
     #[Override]
     protected function options(): void
     {
@@ -55,9 +62,6 @@ class Setting extends Components {
     #[Override]
     protected function system(): void
     {
-        add_filter('g3_filter_html_class', [$this, 'initHtmlClass']);
-        add_action('body_class', [$this, 'initBodyClass']);
-
         $this->redirectLinkHandle();
         $this->rssHandle();
     }
@@ -65,9 +69,9 @@ class Setting extends Components {
     #[Override]
     protected function form(): void
     {
-        Frontend::loadStyle('jui');
-        Frontend::loadScript('jui');
-        Frontend::loadScript('g3.admin');
+        Frontend::css('jui');
+        Frontend::umd('jui');
+        Frontend::umd('g3.admin');
 
         $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
@@ -495,7 +499,7 @@ class Setting extends Components {
             return;
         }
         add_action('wp_footer', function () {
-            Frontend::loadScript('g3.redirect.link');
+            Frontend::umd('g3.redirect.link');
         });
         // Modify content url while saving
         add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);
@@ -738,5 +742,34 @@ class Setting extends Components {
     {
         $cookie = $_COOKIE['jui-theme'] ?? '{}';
         return json_decode(stripslashes($cookie), true);
+    }
+
+    public function registerScripts()
+    {
+        $scripts = require(G3_CONFIG_DIR . '/umd.php');
+        $scripts = apply_filters('g3_filter_umd', $scripts);
+        foreach ($scripts as $handle => $script) {
+            wp_register_script(
+                $handle,
+                $script[0] ?? '',
+                $script[1] ?? [],
+                $script[2] ?? false,
+                true
+            );
+        }
+
+        $modules = require(G3_CONFIG_DIR . '/esm.php');
+        $modules = apply_filters('g3_filter_esm', $modules);
+        foreach ($modules as $handle => $module) {
+            wp_register_script_module(
+                $handle,
+                $module[0] ?? '',
+                $module[1] ?? [],
+                $module[2] ?? false,
+                [
+                    'in_footer' => true,
+                ]
+            );
+        }
     }
 }
