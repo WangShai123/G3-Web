@@ -10,7 +10,8 @@ echo '</div>';
 
 <script>
     jQuery(document).ready(function ($) {
-        const { toast } = jui
+        const { Toast } = jui
+        const { success } = Toast
 
         $('.delete-sku').click(function (e) {
             e.preventDefault();
@@ -24,7 +25,7 @@ echo '</div>';
 
             $.post(ajaxurl, data, function (res) {
                 if (res.success) {
-                    toast.success(res.data.message);
+                    success(res.data.message);
                     setTimeout(function () {
                         window.location.reload();
                     }, 1000);

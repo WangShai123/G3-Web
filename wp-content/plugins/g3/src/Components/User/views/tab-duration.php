@@ -8,8 +8,9 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { toast, modal } = jui;
-        const editor = new modal({
+        const { Toast, Modal } = jui;
+        const { success, error } = Toast;
+        const editor = new Modal({
             title: '<?php _e('Edit'); ?>',
             cancelText: '<?php _e('Cancel'); ?>',
             confirmText: '<?php _e('Submit'); ?>',
@@ -67,21 +68,21 @@ $table->display();
                 }
             ],
             onSubmit: (data) => {
-                editor.showLoading();
+                editor.state.loading = true;
                 $.post(ajaxurl, {
                     action: 'g3_edit_membership_duration',
                     data
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 }).done(() => {
-                    editor.hideLoading()
+                    editor.state.loading = false
                 });
             },
             onHidden: () => {
@@ -162,12 +163,12 @@ $table->display();
                     }
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 })
             }

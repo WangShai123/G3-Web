@@ -340,6 +340,8 @@ $options = [
 <script>
     const $ = jQuery
     $(document).ready(function () {
+        const { Toast } = jui
+        const { success, error } = Toast
         const submit = $('#submit')
         const oldText = submit.text()
         submit.on('click', function () {
@@ -358,12 +360,12 @@ $options = [
             }
             $.post(ajaxurl, data, function (res) {
                 if (res.success) {
-                    jui.toast.success(res.data.message, 1000)
+                    success(res.data.message, 1000)
                     setTimeout(() => {
                         window.location.href = '<?php echo admin_url("admin.php?page=wechat-oa&tab=menus"); ?>'
                     }, 1000)
                 } else {
-                    jui.toast.error(res.data.message, 2000)
+                    error(res.data.message, 2000)
                 }
                 setTimeout(() => {
                     submit.removeAttr('disabled')

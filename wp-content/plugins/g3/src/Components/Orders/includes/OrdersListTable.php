@@ -158,7 +158,7 @@ class OrdersListTable extends WP_List_Table {
         }
         if (!is_wp_error($result)) {
             $msg = __('Deleted', 'G3');
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '");setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '");setTimeout(()=>{location.reload()},800)');
         }
     }
 

@@ -176,35 +176,48 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
 
 <script>
     jQuery(document).ready(function ($) {
+        const { Toast } = jui
+        const { success, error } = Toast
+        function collectAndValidate() {
+            const fields = {
+                title: $('#title'),
+                media: $('#media'),
+                link: $('#link'),
+                target: $('#target'),
+                location: $('#location'),
+                sort: $('#sort'),
+                status: $('#status')
+            };
+
+            // const required = ['title', 'media', 'link', 'sort'];
+            const required = ['title', 'media', 'link', 'sort', 'target', 'location', 'status'];
+            for (let i = 0; i < required.length; i++) {
+                const key = required[i];
+                const el = fields[key];
+                const val = el.val();
+                if (!val) {
+                    el.focus();
+                    error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
+                    return null;
+                }
+                fields[key] = val;
+            }
+
+            // fields.target = fields.target.val();
+            // fields.location = fields.location.val();
+            // fields.status = fields.status.val();
+
+            return fields;
+        }
+
         $('#submit').on('click', function (e) {
             e.preventDefault();
-            const title = $('#title').val();
-            if (!title) {
-                $('#title').focus();
-                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
-                return false;
-            }
-            const media = $('#media').val();
-            if (!media) {
-                $('#media').focus();
-                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
-                return false;
-            }
-            const link = $('#link').val();
-            if (!link) {
-                $('#link').focus();
-                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
-                return false;
-            }
-            const target = $('#target').val();
-            const location = $('#location').val();
-            const sort = $('#sort').val();
-            if (!sort) {
-                $('#sort').focus();
-                jui.toast.error('<?php _e('The field cannot be empty', 'G3'); ?>', 1500);
-                return false;
-            }
-            const status = $('#status').val();
+
+            const data = collectAndValidate();
+            if (!data) return false;
+
+            const { title, media, link, target, location, sort, status } = data;
+
             $.post(ajaxurl, {
                 action: 'edit_swiper',
                 id: '<?php echo $id; ?>',
@@ -217,12 +230,12 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 status: status
             }, function (res) {
                 if (res.success) {
-                    jui.toast.success(res.data.message, 1000);
+                    success(res.data.message, 1000);
                     setTimeout(function () {
                         window.location.href = '<?php echo admin_url('themes.php?page=swipers'); ?>';
-                    }, 1000);
+                    }, 800);
                 } else {
-                    jui.toast.error(res.data.message, 2000);
+                    error(res.data.message, 2000);
                 }
             }).catch(function (error) {
                 console.error(error)

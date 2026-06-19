@@ -185,7 +185,7 @@ class SwiperListTable extends WP_List_Table {
                 SwiperService::updateStatus($ids, 1);
                 break;
         }
-        wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+        wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
     }
 
     private function renderMedia($item, $columnName): string

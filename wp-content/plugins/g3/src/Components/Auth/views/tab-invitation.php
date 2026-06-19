@@ -8,10 +8,11 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { modal, toast, copy } = jui;
+        const { Modal, Toast, copy } = jui;
+        const { success, error } = Toast
         $(document).on('click', '.generate-code', (e) => {
             e.preventDefault();
-            const editor = new modal({
+            const editor = new Modal({
                 title: '<?php _e('Generate Invitation Code', 'G3'); ?>',
                 confirmText: '<?php _e('Generate Invitation Code', 'G3'); ?>',
                 cancelText: '<?php _e('Cancel'); ?>',
@@ -22,21 +23,21 @@ $table->display();
                     value: 1
                 }],
                 onSubmit: (data) => {
-                    editor.showLoading();
+                    editor.state.loading = true;
                     $.post(ajaxurl, {
                         action: 'g3_generate_invite_code',
                         data: data
                     }, (res) => {
                         if (res.success) {
-                            toast.success(res.data.message);
+                            success(res.data.message);
                             setTimeout(() => {
                                 location.reload();
                             }, 800);
                         } else {
-                            toast.error(res.data.message);
+                            error(res.data.message);
                         }
                     }).done(() => {
-                        editor.hideLoading();
+                        editor.state.loading = false;
                     })
                 },
             });
@@ -51,12 +52,12 @@ $table->display();
                     }
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 800);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 })
             }
@@ -65,9 +66,9 @@ $table->display();
             const code = $(e.currentTarget).data('code');
             const result = copy(code);
             if (result) {
-                toast.success('<?php _e('Copied'); ?>');
+                success('<?php _e('Copied'); ?>');
             } else {
-                toast.error('<?php _e('Failed'); ?>');
+                error('<?php _e('Failed'); ?>');
             }
         })
     });

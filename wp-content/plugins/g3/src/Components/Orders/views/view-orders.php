@@ -6,12 +6,12 @@ $table->display();
 
 <script>
     jQuery(document).ready(($) => {
-        const { toast, modal } = jui
+        const { Toast, Modal } = jui
         const resAction = (res, time = 800) => {
             if (res.success) {
-                toast.success(res.data.message)
+                Toast.success(res.data.message)
             } else {
-                toast.error(res.data.message)
+                Toast.error(res.data.message)
             }
             setTimeout(() => {
                 location.reload()
@@ -38,7 +38,7 @@ $table->display();
             }
         });
         $(document).on('click', '.ship-order', (e) => {
-            const editor = new modal({
+            const editor = new Modal({
                 title: '<?php _e('Deliver', 'G3'); ?>',
                 cancelText: '<?php _e('Cancel'); ?>',
                 confirmText: '<?php _e('Submit'); ?>',

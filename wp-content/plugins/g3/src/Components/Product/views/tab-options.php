@@ -14,7 +14,9 @@ $specs = json_encode($specs);
 ?>
 <script>
     jQuery(document).ready(function ($) {
-        const { modal, toast, t, getLang } = jui
+        const { Modal, Toast } = jui
+        const { t, getLang } = vanillaSignalI18n
+        const { lite, success, error } = Toast
         const langs = {
             en: {
                 keyExists: 'The key & sku_id relation is duplicated, please change it.',
@@ -24,7 +26,7 @@ $specs = json_encode($specs);
             }
         }
         const ts = (k) => t(k, langs)
-        const editModal = new modal({
+        const editModal = new Modal({
             header: false,
             confirmText: '<?php _e('Add'); ?>',
             cancelText: '<?php _e('Cancel'); ?>',
@@ -66,7 +68,7 @@ $specs = json_encode($specs);
                         if (key === 'sku_id') {
                             continue;
                         }
-                        toast.error('<?php _e('<strong>Error:</strong> Please fill the required fields.'); ?>')
+                        error('<?php _e('<strong>Error:</strong> Please fill the required fields.'); ?>')
                         return false;
                     }
                 }
@@ -78,25 +80,24 @@ $specs = json_encode($specs);
                         action: 'g3_update_spec_option',
                     },
                     beforeSend: function () {
-                        editModal.showLoading();
+                        editModal.state.loading = true;
                     },
                     success: function (res) {
                         if (res.success) {
-                            toast.success(res.data.message);
+                            success(res.data.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 800);
                         } else {
-                            toast.error(res.data.message);
-                            editModal.hideLoading();
+                            error(res.data.message);
+                            editModal.state.loading = false;
                         }
                     },
                     error: function (res) {
-                        toast.error(ts('keyExists'))
+                        error(ts('keyExists'))
                         setTimeout(function () {
-                            editModal.hideLoading()
+                            editModal.state.loading = false
                         }, 800);
-                        return;
                     },
                 })
             },
@@ -146,7 +147,7 @@ $specs = json_encode($specs);
         $(document).on('click', 'span.delete-spec-option', (e) => {
             const t = $(e.currentTarget)
             if (t.attr('data-count') > 0 || t.attr('disabled')) {
-                toast.lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
+                lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
                 return
             }
             if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
@@ -159,18 +160,18 @@ $specs = json_encode($specs);
                 },
                 success: function (res) {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(function () {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
-                    editModal.hideLoading();
+                    editModal.state.loading = false;
                 },
                 error: function (res) {
-                    editModal.hideLoading();
-                    toast.error(res.responseText);
+                    editModal.state.loading = false;
+                    error(res.responseText);
                     setTimeout(function () {
                         location.reload();
                     }, 1000);

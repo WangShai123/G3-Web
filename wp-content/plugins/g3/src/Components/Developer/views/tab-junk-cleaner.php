@@ -14,7 +14,7 @@ $confirm = __('Are you sure you want to delete it?', 'G3');
 
 <script>
     jQuery(document).ready(function ($) {
-        const { toast } = jui;
+        const { Toast } = jui;
 
         $('.junk-action-button').each(function () {
             if ($(this).data('count') === 0) {
@@ -30,12 +30,12 @@ $confirm = __('Are you sure you want to delete it?', 'G3');
                     action: action,
                 }, (response) => {
                     if (response.success) {
-                        toast.success(response.data.message);
+                        Toast.success(response.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(response.data.message);
+                        Toast.error(response.data.message);
                     }
                 })
             })

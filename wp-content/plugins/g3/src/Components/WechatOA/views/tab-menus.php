@@ -32,6 +32,8 @@ echo Element::tip(
 
 <script>
     jQuery(document).ready(function ($) {
+        const { Toast } = jui
+        const { success, error } = Toast;
         $('.action-delete').on('click', function (e) {
             e.preventDefault()
             let id = $(this).attr('data-id')
@@ -41,12 +43,12 @@ echo Element::tip(
                     id
                 }, function (res) {
                     if (res.success) {
-                        jui.toast.success(res.data.message, 1000)
+                        success(res.data.message, 1000)
                         setTimeout(() => {
                             window.location.reload()
                         }, 1000)
                     } else {
-                        jui.toast.error(res.data.message, 2000)
+                        error(res.data.message, 2000)
                     }
                 })
             }
@@ -62,9 +64,9 @@ echo Element::tip(
                     nonce: '<?php echo wp_create_nonce('g3_create_wechatOA_menus'); ?>'
                 }, function (res) {
                     if (res.success) {
-                        jui.toast.success(res.data.message, 2000)
+                        success(res.data.message, 2000)
                     } else {
-                        jui.toast.error(res.data.message, 2000)
+                        error(res.data.message, 2000)
                     }
                     setTimeout(function () {
                         $('#create-wechat-oa-menu').removeAttr('disabled')
@@ -84,9 +86,9 @@ echo Element::tip(
                     nonce: '<?php echo wp_create_nonce('g3_flush_wechatOA_menus'); ?>'
                 }, function (res) {
                     if (res.success) {
-                        jui.toast.success(res.data.message, 2000)
+                        success(res.data.message, 2000)
                     } else {
-                        jui.toast.error(res.data.message, 2000)
+                        error(res.data.message, 2000)
                     }
                     setTimeout(function () {
                         $('#flush-wechat-oa-menu').removeAttr('disabled')

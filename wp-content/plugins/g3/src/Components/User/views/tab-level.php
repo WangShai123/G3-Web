@@ -8,7 +8,7 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { toast, modal } = jui;
+        const { Toast, Modal } = jui;
         $(document).on('click', '.reset-role', (e) => {
             let slug = $(e.currentTarget).data('slug');
             if (slug === 'abandon' || slug === 'beginner') {
@@ -18,18 +18,18 @@ $table->display();
                         slug
                     }, (res) => {
                         if (res.success) {
-                            toast.success(res.data.message);
+                            Toast.success(res.data.message);
                             setTimeout(() => {
                                 location.reload();
                             }, 1000);
                         } else {
-                            toast.error(res.data.message);
+                            Toast.error(res.data.message);
                         }
                     });
                 }
             }
         })
-        const editor = new modal({
+        const editor = new Modal({
             title: '<?php _e('Edit'); ?>',
             cancelText: '<?php _e('Cancel'); ?>',
             confirmText: '<?php _e('Submit'); ?>',
@@ -60,21 +60,21 @@ $table->display();
                 }
             ],
             onSubmit: (data) => {
-                editor.showLoading();
+                editor.state.loading = true;
                 $.post(ajaxurl, {
                     action: 'g3_edit_role',
                     data: data
                 }, (res) => {
                     setTimeout(() => {
                         if (res.success) {
-                            toast.success(res.data.message);
+                            Toast.success(res.data.message);
                             setTimeout(() => {
                                 location.reload();
                             }, 1000);
                         } else {
-                            toast.error(res.data.message);
+                            Toast.error(res.data.message);
                         }
-                        editor.hideLoading();
+                        editor.state.loading = false;
                     }, 300);
                 })
             },
@@ -94,12 +94,12 @@ $table->display();
                     slug
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message)
+                        Toast.success(res.data.message)
                         setTimeout(() => {
                             location.reload();
                         }, 800)
                     } else {
-                        toast.error(res.data.message);
+                        Toast.error(res.data.message);
                     }
                 })
             }

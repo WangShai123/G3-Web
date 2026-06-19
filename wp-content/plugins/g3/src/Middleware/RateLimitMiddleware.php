@@ -26,16 +26,19 @@ class RateLimitMiddleware implements MiddlewareInterface {
      */
     private int $window;
 
+    private string $message;
+
     /**
      * cache group
      * @var string
      */
     const CACHE_GROUP = 'g3_rate-limit';
 
-    public function __construct(int $limit = 60, int $window = 60)
+    public function __construct(int $limit = 60, int $window = 60, string $message = '')
     {
-        $this->limit  = $limit;
-        $this->window = $window;
+        $this->limit   = $limit;
+        $this->window  = $window;
+        $this->message = $message;
     }
 
     public function handle(WP_REST_Request $request): bool|WP_Error
@@ -51,9 +54,12 @@ class RateLimitMiddleware implements MiddlewareInterface {
         wp_cache_set($cacheKey, $count, self::CACHE_GROUP, $this->window);
 
         if ($count > $this->limit) {
+
+            $message = trim($this->message) === '' ? sprintf(__('Forbidden: Rate limit exceeded. Please try later after %s seconds.', 'G3'), $this->window) : $this->message;
+
             return new WP_Error(
                 '429',
-                __('Forbidden: Rate limit exceeded', 'G3'),
+                $message,
                 [
                     'status' => 429,
                     'expire' => $this->window

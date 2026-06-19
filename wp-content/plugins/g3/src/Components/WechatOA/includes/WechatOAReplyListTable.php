@@ -70,13 +70,13 @@ class WechatOAReplyListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'content' => Common::truncateHtml($item['content'], 80),
+            'content'  => Common::truncateHtml($item['content'], 80),
             'keywords' => $item['keywords'] ?: '-',
-            'type' => $this->renderType($item),
-            'status' => $item['status'] ? __('Enabled') : __('Disabled'),
+            'type'     => $this->renderType($item),
+            'status'   => $item['status'] ? __('Enabled') : __('Disabled'),
             'modified' => Date::dateTime(strtotime($item['updated_at'])),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? '',
+            'action'   => $this->renderAction($item),
+            default    => $item[$column_name] ?? '',
         };
     }
 
@@ -218,8 +218,8 @@ class WechatOAReplyListTable extends WP_List_Table {
     private function renderType($item)
     {
         return match ($item['type']) {
-            'text' => __('Text'),
-            'news' => __('News'),
+            'text'  => __('Text'),
+            'news'  => __('News'),
             default => __(ucfirst($item['type'])),
         };
     }
@@ -321,7 +321,7 @@ class WechatOAReplyListTable extends WP_List_Table {
         echo <<<HTML
 <script>
 jQuery(document).ready(function () {
-    jui.toast.error('$message');
+    jui.Toast.error('$message');
     setTimeout(function () {
         window.location.reload();
     }, 1000);
@@ -335,7 +335,7 @@ HTML;
         echo <<<HTML
 <script>
 jQuery(document).ready(function () {
-    jui.toast.success('$message');
+    jui.Toast.success('$message');
     setTimeout(function () {
         window.location.reload();
     }, 1000);

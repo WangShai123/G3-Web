@@ -63,11 +63,11 @@ class ProjectListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'name' => $this->renderName($item),
+            'name'     => $this->renderName($item),
             'duration' => $this->renderDuration($item),
-            'copy' => $this->renderCopy($item),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? ''
+            'copy'     => $this->renderCopy($item),
+            'action'   => $this->renderAction($item),
+            default    => $item[$column_name] ?? ''
         };
     }
 
@@ -131,7 +131,7 @@ class ProjectListTable extends WP_List_Table {
         $result = Option::update(UserService::MEMBERSHIP_OPTION_KEY, $array);
         if ($result) {
             $msg = __('Deleted', 'G3');
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
         }
     }
 

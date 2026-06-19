@@ -13,8 +13,11 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
+        const { Modal, Toast } = jui;
+        const { success, warning, error } = Toast;
         $('.addLocation').on('click', function () {
-            const modal = new jui.modal({
+            console.log('add location modal open')
+            const m = new Modal({
                 title: '<?php _e('Add New', 'G3'); ?>',
                 fields: [
                     {
@@ -32,37 +35,37 @@ echo '</form>';
                 ],
                 confirmText: '<?php _e('Submit'); ?>',
                 cancelText: '<?php _e('Cancel'); ?>',
-                escClose: true,
-                onSubmit: function (data) {
+                onSubmit: async (data) => {
+                    console.log(data);
                     $.post(ajaxurl, {
                         action: 'edit_swiper_location',
                         key: data.key,
                         name: data.name
                     }, function (res) {
-                        modal.showLoading();
+                        m.setState('loading', true)
                         setTimeout(function () {
                             if (res.success) {
-                                modal.hideLoading();
-                                modal.hide();
-                                jui.toast.success(res.data.message, 800)
+                                success(res.data.message, 800)
                                 setTimeout(function () {
                                     window.location.reload();
                                 }, 800)
+                                m.hide();
                             } else {
-                                modal.hideLoading();
-                                jui.toast.error(res.data.message, 2000)
+                                error(res.data.message, 2000)
                             }
+                            m.setState('loading', false)
                         }, 300);
                     })
-                }
+                },
             });
-            modal.show();
+            m.show();
+            console.log(m)
         });
 
         $('.editLocation').on('click', function () {
             const key = $(this).data('key');
             const name = $(this).data('name');
-            const modal = new jui.modal({
+            const m = new Modal({
                 title: '<?php _e('Edit'); ?>',
                 fields: [
                     {
@@ -85,7 +88,7 @@ echo '</form>';
                     const newKey = (data.key || '').trim();
                     const newName = (data.name || '').trim();
                     if (String(key) === newKey && String(name) === newName) {
-                        jui.toast.warning('<?php _e('No data changed', 'G3'); ?>', 1500);
+                        warning('<?php _e('No data changed', 'G3'); ?>', 1500);
                         return;
                     }
                     $.post(ajaxurl, {
@@ -93,22 +96,23 @@ echo '</form>';
                         key: newKey,
                         name: newName
                     }, function (res) {
-                        modal.showLoading();
-                        if (res.success) {
-                            modal.hideLoading();
-                            modal.hide();
-                            jui.toast.success(res.data.message, 800)
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 800)
-                        } else {
-                            modal.hideLoading();
-                            jui.toast.error(res.data.message, 2000)
-                        }
+                        m.setState('loading', true)
+                        setTimeout(() => {
+                            if (res.success) {
+                                success(res.data.message, 800)
+                                setTimeout(function () {
+                                    m.hide();
+                                    window.location.reload();
+                                }, 800)
+                            } else {
+                                error(res.data.message, 2000)
+                            }
+                            m.setState('loading', false)
+                        }, 300)
                     })
                 }
             });
-            modal.show();
+            m.show();
         });
 
         $('.deleteLocation').on('click', function () {
@@ -119,12 +123,12 @@ echo '</form>';
                     key: key
                 }, function (res) {
                     if (res.success) {
-                        jui.toast.success(res.data.message, 800)
+                        success(res.data.message, 800)
                         setTimeout(function () {
                             window.location.reload();
                         }, 800)
                     } else {
-                        jui.toast.error(res.data.message, 2000)
+                        error(res.data.message, 2000)
                     }
                 })
             }

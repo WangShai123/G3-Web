@@ -120,7 +120,7 @@ class SkuListTable extends WP_List_Table {
         if ($which == "top") {
             echo
                 '<div class="alignleft actions mb-2">
-            <button type="button" id="import-sku" class="button button-primary" onClick="jui.toast.error(`@todo feature.`)">' . __('Import') . '</button>
+            <button type="button" id="import-sku" class="button button-primary" onClick="jui.Toast.error(`@todo feature.`)">' . __('Import') . '</button>
             </div>';
         }
     }

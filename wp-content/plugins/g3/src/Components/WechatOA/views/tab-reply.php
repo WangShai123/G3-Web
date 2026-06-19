@@ -9,9 +9,10 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { restUrl, toast, modal } = jui;
+        const { restUrl, Toast, Modal } = jui;
+        const { success, error } = Toast
         $(document).on('click', '#add-reply', function () {
-            const editor = new modal({
+            const editor = new Modal({
                 title: "<?php _e('Add New', 'G3'); ?>",
                 confirmText: "<?php _e('Add New', 'G3'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
@@ -52,7 +53,7 @@ $table->display();
                     }
                 ],
                 onSubmit: function (formData) {
-                    editor.showLoading();
+                    editor.state.loading = true;
                     const data = {
                         id: 0,
                         keywords: formData.keywords,
@@ -66,18 +67,18 @@ $table->display();
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            toast.success(res.message);
+                            success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            toast.error(msg.message);
+                            error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
-                                editor.hideLoading();
+                                editor.state.loading = false;
                             }, 500);
                         }
                     });
@@ -91,7 +92,7 @@ $table->display();
             const id = parseInt(t.data('id'));
             const keywords = JSON.parse(t.data('keywords'));
             const reply = JSON.parse(t.data('content'));
-            const editModal = new modal({
+            const editModal = new Modal({
                 title: "<?php _e('Edit'); ?>",
                 confirmText: "<?php _e('Update'); ?>",
                 cancelText: "<?php _e('Cancel'); ?>",
@@ -134,7 +135,7 @@ $table->display();
                     }
                 ],
                 onSubmit: function (d) {
-                    editModal.showLoading()
+                    editModal.state.loading = true
                     const data = {
                         id: id,
                         keywords: d.keywords,
@@ -148,18 +149,18 @@ $table->display();
                         contentType: 'application/json',
                         data: JSON.stringify(data),
                         success: function (res) {
-                            toast.success(res.message);
+                            success(res.message);
                             setTimeout(function () {
                                 location.reload();
                             }, 500);
                         },
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
-                            toast.error(msg.message);
+                            error(msg.message);
                         },
                         complete: function () {
                             setTimeout(function () {
-                                editModal.hideLoading();
+                                editModal.state.loading = false;
                             }, 500);
                         }
                     });
@@ -176,14 +177,14 @@ $table->display();
                     contentType: 'application/json',
                     data: JSON.stringify({ id: $(this).data('id') }),
                     success: function (res) {
-                        toast.success(res.message);
+                        success(res.message);
                         setTimeout(function () {
                             location.reload();
                         }, 500);
                     },
                     error: function (xhr, status, error) {
                         const msg = JSON.parse(xhr.responseText);
-                        toast.error(msg.message);
+                        error(msg.message);
                     }
                 });
             }

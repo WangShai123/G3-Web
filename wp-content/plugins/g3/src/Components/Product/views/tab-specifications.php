@@ -9,7 +9,8 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { modal, toast, t, getLang } = jui
+        const { Modal, Toast, t, getLang } = jui
+        const { lite, success, error } = Toast
         const langs = {
             en: {
                 keyExists: 'The key is duplicated, please change it.',
@@ -19,7 +20,7 @@ $table->display();
             }
         }
         const ts = (k) => t(k, langs)
-        const editModal = new modal({
+        const editModal = new Modal({
             header: false,
             confirmText: '<?php _e('Add'); ?>',
             cancelText: '<?php _e('Cancel'); ?>',
@@ -73,7 +74,7 @@ $table->display();
                         if (key === 'owner_ids') {
                             continue;
                         }
-                        toast.error('<?php _e('<strong>Error:</strong> Please fill the required fields.'); ?>')
+                        error('<?php _e('<strong>Error:</strong> Please fill the required fields.'); ?>')
                         return false;
                     }
                 }
@@ -85,23 +86,23 @@ $table->display();
                         action: 'g3_update_spec',
                     },
                     beforeSend: function () {
-                        editModal.showLoading();
+                        editModal.state.loading = true;
                     },
                     success: function (res) {
                         if (res.success) {
-                            toast.success(res.data.message);
+                            success(res.data.message);
                             setTimeout(function () {
-                                editModal.hideLoading()
+                                editModal.state.loading = false
                                 location.reload();
                             }, 1000);
                             return;
                         }
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     },
                     error: function (res) {
-                        toast.error(ts('keyExists'))
+                        error(ts('keyExists'))
                         setTimeout(function () {
-                            editModal.hideLoading()
+                            editModal.state.loading = false
                         }, 1000);
                         return;
                     },
@@ -172,7 +173,7 @@ $table->display();
         $(document).on('click', 'span.delete-spec', function (e) {
             const t = $(e.currentTarget)
             if (t.attr('data-count') > 0 || t.attr('disabled')) {
-                toast.lite('<?php _e('Cannot delete this spec, it is used in some sku or options.', 'G3'); ?>')
+                lite('<?php _e('Cannot delete this spec, it is used in some sku or options.', 'G3'); ?>')
                 return
             }
             if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
@@ -185,13 +186,13 @@ $table->display();
                 },
                 success: function (res) {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(function () {
                             location.reload();
                         }, 1000);
                         return;
                     }
-                    toast.error(res.data.message);
+                    error(res.data.message);
                 }
             })
         })

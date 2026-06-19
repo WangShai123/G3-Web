@@ -13,10 +13,8 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
-        const preview = new jui.modal({
-            // title: '<?php //_e("Preview"); ?>',
-            // confirmText: '<?php //_e("Close"); ?>',
-            // fullscreen: true,
+        const { Modal } = jui;
+        const preview = new Modal({
             escClose: true,
             bgClose: true,
             showCancel: false,

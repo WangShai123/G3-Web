@@ -55,7 +55,7 @@ if ($weiBo) : ?>
 wp_add_inline_script("jui", "
 const tooltipElements = document.querySelectorAll('[data-tooltip]');
     for( const element of tooltipElements ) {
-        let tooltip = new jui.tooltip(element, {
+        let tooltip = new jui.Tooltip(element, {
             message: element.dataset.tooltip,
         });
     }

@@ -61,8 +61,8 @@ class DurationListTable extends WP_List_Table {
     {
         return match ($column_name) {
             'duration' => $item['duration'] . _n(' second', ' seconds', $item['duration'], 'G3'),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? ''
+            'action'   => $this->renderAction($item),
+            default    => $item[$column_name] ?? ''
         };
     }
 
@@ -118,7 +118,7 @@ class DurationListTable extends WP_List_Table {
         $result = Option::update(UserService::DURATION_OPTION_KEY, $array);
         if ($result) {
             $msg = __('Deleted', 'G3');
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
         }
     }
 

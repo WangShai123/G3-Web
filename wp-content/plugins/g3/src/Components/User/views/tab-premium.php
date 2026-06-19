@@ -8,8 +8,9 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { modal, toast } = jui;
-        const editor = new modal({
+        const { Modal, Toast } = jui;
+        const { success, error } = Toast;
+        const editor = new Modal({
             title: '<?php _e('Edit'); ?>',
             cancelText: '<?php _e('Cancel'); ?>',
             confirmText: '<?php _e('Submit'); ?>',
@@ -33,12 +34,12 @@ $table->display();
                     data: data
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 });
             },
@@ -79,12 +80,12 @@ $table->display();
                     slug: slug
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 800);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 })
             }

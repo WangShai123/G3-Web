@@ -25,14 +25,14 @@ $openId = AuthService::OPENID_META_KEY;
 </div>
 <?php get_footer(); ?>
 <script type="module">
-    import JUI from '<?php echo G3_JS_URL . '/es/jui.esm.js'; ?>';
+    import { Modal } from '<?php echo G3_JS_URL . '/es/jui.js'; ?>';
     document.addEventListener('DOMContentLoaded', function () {
         const btn = document.querySelector('#bind');
         if (!btn) return;
 
         btn.addEventListener('click', async function () {
             let content = '';
-            const modal = new jui.modal({
+            const modal = new Modal({
                 header: false,
                 footer: false,
                 bgClose: true,
@@ -41,7 +41,7 @@ $openId = AuthService::OPENID_META_KEY;
                 style: 'height: 300px'
             });
             modal.show();
-            modal.showLoading();
+            modal.state.loading = true;
 
             try {
                 const res = await fetch('/wp-json/api/v1/auth/wechat/bind/qrcode', {
@@ -57,9 +57,9 @@ $openId = AuthService::OPENID_META_KEY;
                     `;
 
                 modal.setContent(content);
-                modal.hideLoading();
+                modal.state.loading = false;
             } catch (error) {
-                modal.hideLoading();
+                modal.state.loading = false;
                 modal.setContent(error.message);
                 setTimeout(() => modal.hide(), 3000);
             }

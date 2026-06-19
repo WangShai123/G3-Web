@@ -17,11 +17,11 @@ submit_button();
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { copy, on, toast } = jui
+        const { copy, on, Toast } = jui
         on(document, 'click', (e) => {
             if (['rss1', 'rss2', 'atom'].includes(e.target.id)) {
                 copy(e.target.value)
-                toast.lite('<?php _e('Copied'); ?>')
+                Toast.lite('<?php _e('Copied'); ?>')
             }
         })
     })

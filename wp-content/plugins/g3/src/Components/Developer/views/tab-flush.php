@@ -19,6 +19,8 @@ settings_errors('flush');
 
 <script>
     jQuery('#g3-action__flush-options').on('click', function () {
+        const { Toast } = jui
+        const { success, error } = Toast
         jQuery.ajax({
             url: ajaxurl,
             type: 'post',
@@ -30,16 +32,16 @@ settings_errors('flush');
             },
             success: function (res) {
                 if (res.code === 200) {
-                    jui.toast.success(res.message, 2000);
+                    success(res.message, 2000);
                     setTimeout(function () {
                         window.location.reload();
                     }, 2000);
                 } else {
-                    jui.toast.error(res.message, 2000);
+                    error(res.message, 2000);
                 }
             },
             error: function (err) {
-                jui.toast.error(err.responseJSON.data.message, 2000);
+                error(err.responseJSON.data.message, 2000);
             },
             complete: function () {
                 setTimeout(function () {

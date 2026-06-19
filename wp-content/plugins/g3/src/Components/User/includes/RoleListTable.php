@@ -64,10 +64,10 @@ class RoleListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'name' => sprintf('%s', __($item['name'], 'G3')),
+            'name'    => sprintf('%s', __($item['name'], 'G3')),
             'credits' => sprintf('(%s, %s]', $item['credits'][0], $item['credits'][1]),
-            'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? ''
+            'action'  => $this->renderAction($item),
+            default   => $item[$column_name] ?? ''
         };
     }
 
@@ -115,7 +115,7 @@ class RoleListTable extends WP_List_Table {
         $result = Option::update(UserService::ROLE_OPTION_KEY, $roles);
         if ($result) {
             $msg = __('Deleted', 'G3');
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
         }
     }
 

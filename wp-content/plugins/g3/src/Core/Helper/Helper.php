@@ -9,6 +9,7 @@ use JEALER\G3\Core\Container\ValueDefinition;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\System;
 use WP_Error;
 use DateTime;
@@ -47,6 +48,9 @@ final class Helper {
     }
     public function loader(): void
     {
+        add_action('init', [Frontend::class, 'registerAssets'], 1);
+        add_action('wp_enqueue_scripts', [Frontend::class, 'registerAssets'], 1);
+        add_action('admin_enqueue_scripts', [Frontend::class, 'registerAssets'], 1);
         add_action('init', [$this, 'initRewriteRouter'], 20);
         add_action('rest_api_init', [$this, 'initRestRouter']);
         $this->container->get('componentsLoader')->load();

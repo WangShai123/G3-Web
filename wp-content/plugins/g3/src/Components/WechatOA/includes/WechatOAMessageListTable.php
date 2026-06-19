@@ -75,13 +75,13 @@ class WechatOAMessageListTable extends WP_List_Table {
     public function column_default($item, $column_name): mixed
     {
         return match ($column_name) {
-            'openid' => Common::truncate($item->openid, 20),
-            'nickname' => !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-',
-            'type' => $item->type,
+            'openid'     => Common::truncate($item->openid, 20),
+            'nickname'   => !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-',
+            'type'       => $item->type,
             // 'content' => $this->renderContent($item->content),
-            'content' => Common::truncateHtml($item->content, 50),
+            'content'    => Common::truncateHtml($item->content, 50),
             'created_at' => wp_date('Y-m-d H:i:s', strtotime($item->created_at)),
-            default => isset($item->$column_name) ? $item->$column_name : '-',
+            default      => isset($item->$column_name) ? $item->$column_name : '-',
         };
     }
 
@@ -132,7 +132,7 @@ class WechatOAMessageListTable extends WP_List_Table {
                 $deleted = WechatOAService::deleteMessages($messages);
                 if ($deleted !== false) {
                     echo '<script>jQuery(document).ready(function () {
-                        jui.toast.success("' . __('Deleted', 'G3') . '");
+                        jui.Toast.success("' . __('Deleted', 'G3') . '");
                         setTimeout(function() {
                             window.location.href="' . admin_url('admin.php?page=wechat-oa&tab=message') . '";
                         }, 1000);

@@ -30,7 +30,8 @@ endif;
     jQuery('#flush-messages').prop('disabled', disabled);
 
     jQuery(document).ready(function ($) {
-
+        const { Toast, Modal } = jui
+        const { success, error } = Toast
         if ($('.view-message').length) {
             $(document).on('click', '.view-message', function () {
                 const id = $(this).data('id')
@@ -39,7 +40,7 @@ endif;
                     id: id,
                     nonce: '<?php echo wp_create_nonce('g3_get_wechatOA_message_content'); ?>'
                 }, function (res) {
-                    const viewModal = new jui.modal({
+                    const viewModal = new Modal({
                         title: '<?php _e("View"); ?>',
                         content: res.data.message,
                         confirmText: '<?php _e("Confirm", 'G3'); ?>',
@@ -59,7 +60,7 @@ endif;
                         id: id,
                         nonce: '<?php echo wp_create_nonce('g3_delete_wechatOA_message'); ?>'
                     }, function (res) {
-                        res.success ? jui.toast.success(res.data.message) : jui.toast.error(res.data.message)
+                        res.success ? success(res.data.message) : error(res.data.message)
                         setTimeout(function () {
                             location.reload()
                         }, 1000)
@@ -71,7 +72,7 @@ endif;
 
         if (!disabled) {
             $(document).on('click', '#flush-messages', function () {
-                const modal = new jui.modal({
+                const m = new Modal({
                     title: '<?php _e("Delete History Data", "G3"); ?>',
                     confirmText: '<?php _e("Delete"); ?>',
                     cancelText: '<?php _e("Cancel"); ?>',
@@ -87,10 +88,10 @@ endif;
                         }
                     ],
                     onSubmit: function (data) {
-                        modal.showLoading();
+                        m.state.loading = true;
                         if (data.days < 1) {
-                            jui.toast.error('<?php _e("Days must be greater than 0", "G3"); ?>');
-                            modal.hideLoading();
+                            error('<?php _e("Days must be greater than 0", "G3"); ?>');
+                            m.state.loading = false;
                             return;
                         }
                         $.post(ajaxurl, {
@@ -99,21 +100,21 @@ endif;
                             days: data.days
                         }, function (res) {
                             if (res.success) {
-                                jui.toast.success(res.data.message)
+                                success(res.data.message)
                                 setTimeout(function () {
                                     location.reload()
                                 }, 800)
                             } else {
-                                jui.toast.error(res.data.message)
-                                modal.hideLoading();
+                                error(res.data.message)
+                                m.state.loading = false;
                             }
                         }).done(function (res) {
-                            modal.hideLoading();
-                            modal.hide();
+                            m.state.loading = false;
+                            m.hide();
                         })
                     }
                 })
-                modal.show();
+                m.show();
             })
         }
     });

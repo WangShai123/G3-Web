@@ -13,8 +13,9 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
 
 <script>
     jQuery(document).ready(function ($) {
-        const { toast, modal } = jui;
-        const editor = new modal({
+        const { Toast, Modal } = jui;
+        const { success, error } = Toast;
+        const editor = new Modal({
             fields: [
                 {
                     label: '<?php _e('Name'); ?>',
@@ -22,7 +23,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     type: 'select',
                     options: [
                         <?php foreach ($groups as $slug => $group) : ?>
-            {
+                                {
                                 text: '<?php echo $group['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -35,7 +36,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     type: 'select',
                     options: [
                         <?php foreach ($durations as $slug => $duration) : ?>
-            {
+                                {
                                 text: '<?php echo $duration['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -49,21 +50,21 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                 }
             ],
             onSubmit: (data) => {
-                editor.showLoading();
+                editor.state.loading = true;
                 $.post(ajaxurl, {
                     action: 'g3_edit_membership_project',
                     data: data
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 }).done(() => {
-                    editor.hideLoading()
+                    editor.state.loading = false
                 });
             },
             onHidden: () => {
@@ -83,7 +84,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     value: t.data('name'),
                     options: [
                         <?php foreach ($groups as $slug => $group) : ?>
-            {
+                                {
                                 text: '<?php echo $group['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -97,7 +98,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     value: t.data('duration'),
                     options: [
                         <?php foreach ($durations as $slug => $duration) : ?>
-            {
+                                {
                                 text: '<?php echo $duration['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -123,12 +124,12 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     }
                 }, (res) => {
                     if (res.success) {
-                        toast.success(res.data.message);
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
                     } else {
-                        toast.error(res.data.message);
+                        error(res.data.message);
                     }
                 })
             }

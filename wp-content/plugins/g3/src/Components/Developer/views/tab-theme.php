@@ -108,7 +108,8 @@ echo Element::tip(
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { toast, postJson, q, on, restUrl } = jui
+        const { Toast, postJson, q, on, restUrl } = jui
+        const { success, error } = Toast
         on(q('#createTheme'), 'click', function (e) {
             e.preventDefault()
             const name = q('#name').value
@@ -119,7 +120,7 @@ echo Element::tip(
             const authorUrl = q('#authorUrl').value
             const version = q('#version').value
             if (!name || !folder || !url || !description || !author || !authorUrl || !version) {
-                toast.error('<?php _e('No data supplied.'); ?>')
+                error('<?php _e('No data supplied.'); ?>')
                 return
             }
             postJson(restUrl + '/api/v1/theme/generate', {
@@ -134,7 +135,7 @@ echo Element::tip(
                 this.disabled = true
                 switch (data.code) {
                     case 200:
-                        toast.success(data.message, 2000);
+                        success(data.message, 2000);
                         const tip = `
                             <div class="j-tip is-success mb-2" id="createTip">
                                 <div class="tip-content">
@@ -151,13 +152,13 @@ echo Element::tip(
                         }, 5000);
                         break;
                     case 400:
-                        toast.error(data.message, 2000)
+                        error(data.message, 2000)
                         break;
                     case 422:
-                        toast.error(data.data.errors[0], 2000)
+                        error(data.data.errors[0], 2000)
                         break;
                     default:
-                        toast.error(data.message, 2000)
+                        error(data.message, 2000)
                         break;
                 }
             }).then(() => { setTimeout(() => { this.disabled = false }, 2000) });

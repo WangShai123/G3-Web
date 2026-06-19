@@ -177,7 +177,7 @@ class InvitationCodeListTable extends WP_List_Table {
 
         if ($successCount > 0) {
             $msg = __('Deleted', 'G3') . ': ' . $successCount;
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '");setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '");setTimeout(()=>{location.reload()},800)');
         }
     }
     private function getData(array $params): array

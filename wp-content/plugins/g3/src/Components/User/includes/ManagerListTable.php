@@ -63,10 +63,10 @@ class ManagerListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'name' => sprintf('%s', __($item['name'], 'G3')),
-            'type' => $this->renderType($item[$column_name]),
+            'name'   => sprintf('%s', __($item['name'], 'G3')),
+            'type'   => $this->renderType($item[$column_name]),
             'action' => $this->renderAction($item),
-            default => $item[$column_name] ?? ''
+            default  => $item[$column_name] ?? ''
         };
     }
 
@@ -113,7 +113,7 @@ class ManagerListTable extends WP_List_Table {
         $result = Option::update(UserService::MANAGER_OPTION_KEY, $roles);
         if ($result) {
             $msg = __('Deleted', 'G3');
-            wp_add_inline_script('jui', 'jui.toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
+            wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');
         }
     }
 
@@ -155,8 +155,8 @@ class ManagerListTable extends WP_List_Table {
     private function renderType($key): string
     {
         return match ($key) {
-            1 => __('Build-In', 'G3'),
-            2 => __('Custom', 'G3'),
+            1       => __('Build-In', 'G3'),
+            2       => __('Custom', 'G3'),
             default => __('Unknown', 'G3')
         };
     }
