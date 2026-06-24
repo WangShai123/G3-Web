@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Core;
-
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\DBService;
 use JEALER\G3\Utilities\System;
@@ -9,34 +7,21 @@ use JEALER\G3\Core\Rewrite\RewriteRouter;
 use Redis;
 use Throwable;
 
-/**
- * Activator
- * 
- * 激活类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class Activator {
-
     public static Activator $instance;
     private DBService       $DBManager;
-
     public function __construct()
     {
         $this->DBManager = DBService::run();
         $this->init();
     }
-
     public static function activate(): Activator
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
         }
-
         return self::$instance;
     }
-
     private function init(): void
     {
         self::checkDependencies();
@@ -52,12 +37,10 @@ class Activator {
 
         $this->param();
     }
-
     private function registerRewrites(): void
     {
         RewriteRouter::flushRewriteRules();
     }
-
     /**
      * @deprecated check PHP version by composer instead.
      */
@@ -72,7 +55,6 @@ class Activator {
             );
         }
     }
-
     private function checkRedis(): void
     {
         try {
@@ -88,7 +70,6 @@ class Activator {
             );
         }
     }
-
     private function checkWordPress(): void
     {
         global $wp_version;
@@ -101,7 +82,6 @@ class Activator {
             );
         }
     }
-
     /**
      * dependencies check:
      * - PHP cURL
@@ -161,22 +141,18 @@ class Activator {
             }
         }
     }
-
     private function initCli(): void
     {
         SystemService::initCli();
     }
-
     private function initObjectCache(): void
     {
         SystemService::initObjectCache();
     }
-
     private function initTables(): void
     {
         $this->DBManager->initTables();
     }
-
     private function param(): void
     {
         add_filter('wp_redirect', function ($location) {

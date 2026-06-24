@@ -108,6 +108,10 @@ class SystemService {
             rename(WP_CONTENT_DIR . '/object-cache.php', WP_CONTENT_DIR . '/object-cache.php.bak');
         }
         copy(WP_PLUGIN_DIR . '/g3/extensions/cache/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
+
+        if (file_exists(PLUGINDIR . '/g3/extensions/cache/llms.txt')) {
+            copy(PLUGINDIR . '/g3/extensions/cache/llms.txt', ABSPATH . 'llm/llms.txt');
+        }
     }
     /**
      * initCli

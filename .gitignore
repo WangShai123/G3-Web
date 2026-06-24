@@ -77,6 +77,7 @@ wp-content/object-cache.php
 wp-content/object-cache.php.bak
 wp-content/db.php
 sitemap
+llm
 document.md
 
 # composer vendor markdown
@@ -89,7 +90,6 @@ wp-content/plugins/g3/vendor/**/LICENSE
 .vscode/
 .claude/
 .codex/
-*.txt
 
 # Log files
 *.log
