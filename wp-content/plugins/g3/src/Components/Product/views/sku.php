@@ -1,6 +1,7 @@
 <?php
 
 use JEALER\G3\Components\Product\Includes\SkuListTable;
+use JEALER\G3\Utilities\Message;
 
 echo '<div class="wrap"><h1>SKU</h1>';
 $table = new SkuListTable();
@@ -21,7 +22,7 @@ echo '</div>';
                 id: id
             };
 
-            if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
+            if (!confirm('<?php Message::deleteConfirm(); ?>')) return
 
             $.post(ajaxurl, data, function (res) {
                 if (res.success) {

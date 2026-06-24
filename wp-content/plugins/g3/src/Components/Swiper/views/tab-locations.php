@@ -1,6 +1,6 @@
 <?php
-
 use JEALER\G3\Components\Swiper\Includes\SwiperLocationTable;
+use JEALER\G3\Utilities\Message;
 
 $location = new SwiperLocationTable();
 $location->prepare_items();
@@ -16,9 +16,12 @@ echo '</form>';
         const { Modal, Toast } = jui;
         const { success, warning, error } = Toast;
         $('.addLocation').on('click', function () {
-            console.log('add location modal open')
             const m = new Modal({
-                title: '<?php _e('Add New', 'G3'); ?>',
+                text: {
+                    title: '<?php _e('Add New', 'G3'); ?>',
+                    confirm: '<?php _e('Submit'); ?>',
+                    cancel: '<?php _e('Cancel'); ?>',
+                },
                 fields: [
                     {
                         label: '<?php _e('Slug'); ?>',
@@ -33,16 +36,13 @@ echo '</form>';
                         required: true
                     }
                 ],
-                confirmText: '<?php _e('Submit'); ?>',
-                cancelText: '<?php _e('Cancel'); ?>',
                 onSubmit: async (data) => {
-                    console.log(data);
                     $.post(ajaxurl, {
                         action: 'edit_swiper_location',
                         key: data.key,
                         name: data.name
                     }, function (res) {
-                        m.setState('loading', true)
+                        m.setState({ loading: true })
                         setTimeout(function () {
                             if (res.success) {
                                 success(res.data.message, 800)
@@ -53,20 +53,23 @@ echo '</form>';
                             } else {
                                 error(res.data.message, 2000)
                             }
-                            m.setState('loading', false)
+                            m.setState({ loading: false })
                         }, 300);
                     })
                 },
             });
             m.show();
-            console.log(m)
         });
 
         $('.editLocation').on('click', function () {
             const key = $(this).data('key');
             const name = $(this).data('name');
             const m = new Modal({
-                title: '<?php _e('Edit'); ?>',
+                text: {
+                    title: '<?php _e('Edit'); ?>',
+                    confirm: '<?php _e('Submit'); ?>',
+                    cancel: '<?php _e('Cancel'); ?>',
+                },
                 fields: [
                     {
                         label: '<?php _e('Slug'); ?>',
@@ -81,8 +84,6 @@ echo '</form>';
                         value: name
                     }
                 ],
-                confirmText: '<?php _e('Submit'); ?>',
-                cancelText: '<?php _e('Cancel'); ?>',
                 escClose: true,
                 onSubmit: function (data) {
                     const newKey = (data.key || '').trim();
@@ -96,7 +97,7 @@ echo '</form>';
                         key: newKey,
                         name: newName
                     }, function (res) {
-                        m.setState('loading', true)
+                        m.state.loading = true
                         setTimeout(() => {
                             if (res.success) {
                                 success(res.data.message, 800)
@@ -107,7 +108,7 @@ echo '</form>';
                             } else {
                                 error(res.data.message, 2000)
                             }
-                            m.setState('loading', false)
+                            m.state.loading = false
                         }, 300)
                     })
                 }
@@ -117,7 +118,7 @@ echo '</form>';
 
         $('.deleteLocation').on('click', function () {
             const key = $(this).data('key');
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
                     action: 'delete_swiper_location',
                     key: key

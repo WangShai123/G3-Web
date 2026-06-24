@@ -1,5 +1,4 @@
 <?php
-
 class ProductWidget extends WP_Widget {
     private int $count;
     private int $type;

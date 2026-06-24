@@ -45,7 +45,6 @@ class OrdersListTable extends WP_List_Table {
             'action'       => __('Action')
         ];
     }
-
     public function prepare_items()
     {
         $columns               = $this->get_columns();
@@ -68,7 +67,6 @@ class OrdersListTable extends WP_List_Table {
             'per_page'    => $this->perPage,
         ]);
     }
-
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
@@ -81,30 +79,23 @@ class OrdersListTable extends WP_List_Table {
             default        => $item[$column_name] ?? ''
         };
     }
-
     public function column_cb($item): string
     {
         return sprintf(
             '<input type="checkbox" name="order_ids[]" value="%s" />',
-            // $item['order_code']
             $item['id']
         );
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
             echo '<div class="alignleft actions mb-2"><button type="button" id="export-orders" class="button" disabled>' . __('Export') . '</button></div>';
         }
     }
-
     public function get_bulk_actions(): array
     {
-        return [
-            'delete' => __('Delete')
-        ];
+        return ['delete' => __('Delete')];
     }
-
     public function search_box($text, $input_id): void
     {
         ?>
@@ -116,7 +107,6 @@ class OrdersListTable extends WP_List_Table {
         </p>
         <?php
     }
-
     public function display(): void
     {
         $this->prepare_items();
@@ -130,7 +120,6 @@ class OrdersListTable extends WP_List_Table {
 
         $this->process_bulk_action();
     }
-
     public function get_sortable_columns(): array
     {
         return [
@@ -141,7 +130,6 @@ class OrdersListTable extends WP_List_Table {
             'order_status' => ['order_status', false],
         ];
     }
-
     public function process_bulk_action(): void
     {
         $action = $this->current_action();
@@ -161,7 +149,6 @@ class OrdersListTable extends WP_List_Table {
             wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '");setTimeout(()=>{location.reload()},800)');
         }
     }
-
     private function deleteOrders(array $ids)
     {
         foreach ($ids as $id) {
@@ -175,7 +162,6 @@ class OrdersListTable extends WP_List_Table {
             }
         }
     }
-
     private function getData(array $params): array
     {
         extract($params);
@@ -211,7 +197,6 @@ class OrdersListTable extends WP_List_Table {
 
         return $results ?: [];
     }
-
     private function getCount(string $search = ''): int
     {
         $where        = '1=1 AND order_status != 0';
@@ -237,7 +222,6 @@ class OrdersListTable extends WP_List_Table {
 
         return (int) $count;
     }
-
     private function renderAction($item): string
     {
         $action = $this->_actions($item);

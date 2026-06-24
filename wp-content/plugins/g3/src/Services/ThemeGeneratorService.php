@@ -1,26 +1,12 @@
 <?php
-
 namespace JEALER\G3\Services;
-
 use JEALER\G3\Services\SystemService;
 
-
-/**
- * Theme Generator Service
- * 
- * 主题生成服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class ThemeGeneratorService {
-
     public static ThemeGeneratorService $instance;
-
     public function __construct()
     {
     }
-
     public static function run(): ThemeGeneratorService
     {
         if (!self::$instance) {
@@ -69,7 +55,8 @@ class ThemeGeneratorService {
                 'define.php',
                 'encrypt.php',
                 'queue.php',
-                'rewriteRouter.php'
+                'rewriteRouter.php',
+                'whiteList.php'
             ],
             'src'       => [
                 'Aspects'     => [],
@@ -88,11 +75,14 @@ class ThemeGeneratorService {
             'category'  => ['index.php'],
             'editor'    => ['index.php'],
             'my'        => ['index.php'],
-            'parts'     => [],
+            'parts'     => [
+                'header' => ['index.php'],
+                'footer' => ['index.php'],
+            ],
             'single'    => ['index.php'],
             'tag'       => ['index.php'],
             'taxonomy'  => ['index.php'],
-            'templates' => [],
+            'templates' => ['index.php'],
             'user'      => ['index.php'],
             '404.php',
             'footer.php',
@@ -106,24 +96,79 @@ class ThemeGeneratorService {
             'license.txt'
         ];
 
-        // create project structure
-        $this->createStructure($themePath, $structure);
+        // prepare template map for files that need custom content
+        $templates = [
+            'style.css'              => $this->getStyleCssTemplate($params),
+            'header.php'             => $this->getHeaderTemplate($params),
+            'footer.php'             => $this->getFooterTemplate(),
+            'index.php'              => $this->getIndexTemplate(),
+            '404.php'                => $this->getDefaultTemplate(),
+            'page.php'               => $this->getDefaultTemplate(),
+            'parts/footer/index.php' => $this->getPartsFooterTemplate(),
+        ];
 
-        // write style.css file
-        $styleCss = <<<EOT
-/*
-Theme Name: {$params['name']}
-Theme URI: {$params['url']}
-Description: {$params['description']}
-Author: {$params['author']}
-Author URI: {$params['authorUrl']}
-Version: {$params['version']}
-*/
+        // apply array template to config files (except define.php)
+        $arrayTemplate = $this->getArrayTemplate();
+        if (isset($structure['config']) && is_array($structure['config'])) {
+            foreach ($structure['config'] as $cfg) {
+                if ($cfg === 'define.php') {
+                    continue;
+                }
+                $templates['config/' . $cfg] = $arrayTemplate;
+            }
+        }
+
+        // create project structure and write templates
+        $this->createStructure($themePath, $structure, $templates);
+    }
+
+    private function createStructure(string $base, array $structure, array $templates = [], string $root = null): void
+    {
+        if ($root === null) {
+            $root = $base;
+        }
+
+        foreach ($structure as $key => $value) {
+            if (is_array($value)) {
+                $dir = $base . '/' . $key;
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0777, true);
+                }
+                $this->createStructure($dir, $value, $templates, $root);
+            } else {
+                $file     = $base . '/' . $value;
+                $relative = ltrim(str_replace($root, '', $file), '/');
+                if (!file_exists($file)) {
+                    if (isset($templates[$relative])) {
+                        file_put_contents($file, $templates[$relative]);
+                    } else {
+                        file_put_contents($file, $this->getDefaultContent($value));
+                    }
+                }
+            }
+        }
+    }
+
+    private function getDefaultContent(string $filename): string
+    {
+        return preg_match('/index\.php$/', $filename) ? $this->getDefaultTemplate() : '';
+    }
+
+    private function getDefaultTemplate(): string
+    {
+        return <<<EOT
+<?php
+get_header();
+
+// your default template code here
+
+get_footer();
 EOT;
-        file_put_contents($themePath . '/style.css', $styleCss);
+    }
 
-        // write header.php file
-        $headerPhp = <<<EOT
+    private function getHeaderTemplate(array $params): string
+    {
+        return <<<EOT
 <?php
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
@@ -146,93 +191,75 @@ use JEALER\G3\Services\PostService;
 
 <body <?php body_class(); ?>>
 EOT;
-        file_put_contents($themePath . '/header.php', $headerPhp);
+    }
 
-        // write footer.php
-        $footerPhp = <<<EOT
+    private function getFooterTemplate(): string
+    {
+        return <<<EOT
 <?php
-
-get_template_part('parts/footer/general');
+get_template_part('parts/footer/index');
 wp_footer();
 ?>
 </body>
 
 </html>
 EOT;
-        file_put_contents($themePath . '/footer.php', $footerPhp);
+    }
 
-        // write index.php
-        $icp      = SystemService::icpHtml();
-        $indexPhp = <<<EOT
+    private function getIndexTemplate(): string
+    {
+        return <<<EOT
 <?php
 get_header();
 ?>
-<div style="height:95vh;display:flex;flex-direction:column;justify-content:space-between;">
-    <div>
-        <h1 style="text-align:center">Hello!</h1>
-        <p style="text-align:center">Welcome to my website built with G3-Web.</p>
-    </div>
-    <p style="text-align:center;color:gray;font-size:.75rem">{$icp}</p>
+<div style="height:90vh">
+    <h1 style="text-align:center">Hello!</h1>
+    <p style="text-align:center">Welcome to my website built with G3-Web.</p>
 </div>
 <?php
 get_footer();
 EOT;
-        file_put_contents($themePath . '/index.php', $indexPhp);
+    }
 
-        // write components.php & rewriteRouter with return array
-        $returnArray = <<<EOT
-<?php
-return [
-
-];
-EOT;
-        file_put_contents($themePath . '/config/components.php', $returnArray);
-        file_put_contents($themePath . '/config/rewriteRouter.php', $returnArray);
-
-        // write /parts/footer/general.php
-        $footerGeneralPhp = <<<EOT
+    private function getPartsFooterTemplate(): string
+    {
+        return <<<EOT
 <?php
 
 use JEALER\G3\Services\SystemService;
 
 ?>
 
-<div class="flex justify-end items-center px-4">
-    <p style="color:gray;font-size:.75em">
-        <?php echo SystemService::icpHtml(); ?>
-        &copy;
-        <?php echo date('Y'); ?>
-    </p>
-</div>
+<p style="width:100%;text-align:center;color:gray;font-size:.75em">
+    <?php echo SystemService::icpHtml(); ?>
+    &copy;
+    <?php echo date('Y'); ?>
+</p>
 EOT;
-        file_put_contents($themePath . '/parts/footer/general.php', $footerGeneralPhp);
-
     }
 
-    private function createStructure(string $base, array $structure): void
+    private function getArrayTemplate(): string
     {
-        foreach ($structure as $key => $value) {
-            if (is_array($value)) {
-                $dir = $base . '/' . $key;
-                if (!file_exists($dir)) {
-                    mkdir($dir, 0777, true);
-                }
-                $this->createStructure($dir, $value);
-            } else {
-                $file = $base . '/' . $value;
-                // file_put_contents($file, '');
-                if (!file_exists($file)) {
-                    file_put_contents($file, $this->getDefaultContent($value));
-                }
-            }
-        }
+        return <<<EOT
+<?php
+return [
+
+];
+EOT;
     }
 
-    private function getDefaultContent(string $filename): string
+    private function getStyleCssTemplate(array $params): string
     {
-        if (preg_match('/default\.php$/', $filename)) {
-            return "<?php\n\nget_header();\n// your default template code here\nget_footer();";
-        }
-        return '';
+        return <<<EOT
+/*
+Theme Name: {$params['name']}
+Theme URI: {$params['url']}
+Description: {$params['description']}
+Author: {$params['author']}
+Author URI: {$params['authorUrl']}
+Version: {$params['version']}
+*/
+EOT;
     }
+
 }

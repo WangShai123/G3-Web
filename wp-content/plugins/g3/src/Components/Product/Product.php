@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ProductService;
@@ -18,37 +16,30 @@ use Exception;
 
 class Product extends Components {
     public array $option;
-
     /**
      * @var ProductService $service
      */
     public ProductService $service;
-
-    #[Override]
     protected function options(): void
     {
-        $this->option = Option::get(ProductService::OPTION_KEY, [
+        $this->option  = Option::get(ProductService::OPTION_KEY, [
             'cart'       => '1',
             'download'   => '1',
             'membership' => '1'
         ]);
-
         $this->service = Container::run()->get(ProductService::class);
     }
-    #[Override]
     protected function form(): void
     {
         add_action('save_post_product', [$this, 'saveProduct']);
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'shop-settings') return;
         $this->option = Option::cache(ProductService::OPTION_KEY, $this->option);
     }
-    #[Override]
     protected function admin(): void
     {
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
         add_action('deleted_post', [$this, 'deletedProduct']);
     }
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -100,7 +91,6 @@ class Product extends Components {
         Element::tab('Product', 'specifications', $args);
         echo '</div>';
     }
-    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -157,7 +147,6 @@ class Product extends Components {
             ]
         ]);
     }
-    #[Override]
     protected function postType(): void
     {
         $labels = [
@@ -205,7 +194,6 @@ class Product extends Components {
         ];
         register_post_type('product', $args);
     }
-    #[Override]
     protected function taxonomy(): void
     {
         register_taxonomy(
@@ -261,7 +249,6 @@ class Product extends Components {
             ]
         );
     }
-    #[Override]
     protected function sidebar(): void
     {
         register_sidebar(
@@ -287,7 +274,6 @@ class Product extends Components {
             ]
         );
     }
-    #[Override]
     protected function widgets(): void
     {
         SidebarService::registerWidget('ProductWidget', __DIR__);
@@ -333,12 +319,8 @@ class Product extends Components {
 
         return $messages;
     }
-
-    #[Override]
     protected function metaBox(): void
     {
-        Frontend::css('swiper');
-        Frontend::umd('swiper');
         add_meta_box(
             'g3-metabox-gallery',
             __('Product Gallery', 'G3'),
@@ -364,8 +346,6 @@ class Product extends Components {
             'default'
         );
     }
-
-    #[Override]
     protected function adminScripts(): void
     {
         if (!Validator::screen('product')) return;
@@ -373,20 +353,12 @@ class Product extends Components {
         Frontend::umd('vanilla-signal');
         wp_register_script(
             'g3-admin-product',
-            // G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
             G3_ASSETS_URL . '/javascript/g3.admin.product.js',
-            // array('jquery'),
             [],
             '1.0.0',
             true
         );
         wp_enqueue_script('g3-admin-product');
-
-        // Frontend::esm('jui');
-        // Frontend::esm('vanilla-signal');
-        // Frontend::esm('g3.admin.localize');
-        // Frontend::esm('g3.admin.product');
-
         $this->localizeData();
     }
 
@@ -435,6 +407,7 @@ class Product extends Components {
 
     public function renderGalleryMetabox(WP_POST $post): void
     {
+        // Frontend::umd('jui');
         wp_nonce_field(ProductService::GALLERY_KEY . '_save', ProductService::GALLERY_KEY . '_nonce');
         echo '<div id="gallery-app"></div>';
     }
@@ -544,7 +517,7 @@ class Product extends Components {
         $this->service->clearProductCache($postId);
     }
 
-    #[Override]
+
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_update_spec', function () {
@@ -561,7 +534,7 @@ class Product extends Components {
 
             $owner_id = maybe_serialize(array_values(array_unique(array_filter(array_map('intval', array_filter(array_map('trim', explode(',', (string) ($fields['owner_ids'] ?? ''))), fn($v) => $v !== '' && ctype_digit($v))), fn($n) => $n > 0))));
 
-            $data = [
+            $data   = [
                 'id'        => $fields['id'] ?? 0,
                 'name'      => $name,
                 'key'       => $key,
@@ -571,7 +544,6 @@ class Product extends Components {
                 'status'    => $fields['status'] ?? 1,
                 'sort'      => $fields['sort'] ?? 0,
             ];
-            error_log('id: ' . print_r($data['id'], true));
             $result = $this->service->updateSpec($data);
 
             if ($result === -1) {
@@ -685,7 +657,6 @@ class Product extends Components {
             );
 
             if ($result !== false) {
-                // clear cache
                 $cache_key = "option:spec_{$spec_option->spec_id}";
                 wp_cache_delete($cache_key, ProductService::CACHE_GROUP);
 
@@ -697,7 +668,6 @@ class Product extends Components {
 
         add_action('wp_ajax_g3_get_spec_options', function () {
             $specId = (int) ($_POST['spec_id'] ?? 0);
-
             if (
                 !$specId
                 || !is_admin()
@@ -705,7 +675,6 @@ class Product extends Components {
             ) {
                 Response::ajaxIllegal();
             }
-
             try {
                 $options = $this->service->getSpecOptionsBySpecId($specId);
 
@@ -721,11 +690,9 @@ class Product extends Components {
 
         add_action('wp_ajax_g3_delete_sku', function () {
             $id = (int) ($_POST['id'] ?? 0);
-
             if (!$id || !is_admin() || !current_user_can('manage_options')) {
                 Response::ajaxIllegal();
             }
-
             try {
                 $result = $this->service->deleteSku($id);
                 if ($result) {
@@ -740,6 +707,4 @@ class Product extends Components {
             }
         });
     }
-
-
 }

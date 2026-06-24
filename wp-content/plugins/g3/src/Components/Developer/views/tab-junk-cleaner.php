@@ -14,28 +14,33 @@ $confirm = __('Are you sure you want to delete it?', 'G3');
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Toast } = jui;
+        const { Toast, all } = jui;
+        const { success, error } = Toast
 
-        $('.junk-action-button').each(function () {
-            if ($(this).data('count') === 0) {
-                $(this).attr('disabled', true);
+        const btns = all('.junk-action-button');
+        let toDelete = 0;
+        for (const btn of btns) {
+            if (btn.dataset.count === '0') {
+                btn.disabled = true;
+            } else {
+                toDelete++;
             }
-        });
+        }
+
+        if (toDelete === 0) return;
 
         const deletePost = (dataAction, action) => {
             $('body').on('click', `[data-action="${dataAction}"]`, function (e) {
                 e.preventDefault();
                 if (!confirm('<?php echo $confirm; ?>')) return;
-                $.post(ajaxurl, {
-                    action: action,
-                }, (response) => {
-                    if (response.success) {
-                        Toast.success(response.data.message);
+                $.post(ajaxurl, { action }, (res) => {
+                    if (res.success) {
+                        success(res.data.message);
                         setTimeout(() => {
                             location.reload();
-                        }, 1000);
+                        }, 800);
                     } else {
-                        Toast.error(response.data.message);
+                        error(res.data.message);
                     }
                 })
             })

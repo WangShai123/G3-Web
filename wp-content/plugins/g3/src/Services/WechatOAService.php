@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Services;
-
 use EasyWeChat\OfficialAccount\Application;
 use EasyWeChat\Kernel\Message;
 use JEALER\G3\Core\Container\Container;
@@ -18,14 +16,6 @@ use Exception;
 use Closure;
 use WP_User_Query;
 
-/**
- * Wechat OA Service
- * 
- * 微信公众号服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class WechatOAService {
 
     /**
@@ -1344,7 +1334,7 @@ class WechatOAService {
         ));
 
         // Update status in the main table
-        $sql    = "UPDATE {$table} SET status = %d, updated = %s WHERE id IN ({$placeholders})";
+        $sql    = "UPDATE {$table} SET status = %d, updated_at = %s WHERE id IN ({$placeholders})";
         $result = $wpdb->query($wpdb->prepare(
             $sql,
             array_merge([$status, gmdate('Y-m-d H:i:s', time())], $ids)

@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Components\Share;
 use JEALER\G3\Services\ShareService;
@@ -15,12 +13,8 @@ use JEALER\G3\Utilities\RobustEncoder;
 use Override;
 
 class Post extends Components {
-
-    public array $option = [];
-
+    public array  $option   = [];
     public string $viewsKey;
-
-    #[Override]
     protected function options(): void
     {
         $this->option   = Option::get(PostService::OPTION_KEY, [
@@ -33,8 +27,6 @@ class Post extends Components {
         ]);
         $this->viewsKey = PostService::getViewsKey();
     }
-
-    #[Override]
     protected function form(): void
     {
         $this->postViewsControl();
@@ -46,19 +38,14 @@ class Post extends Components {
             add_action('created_' . $taxonomy, [$this, 'updateCoverField']);
             add_action('edited_' . $taxonomy, [$this, 'updateCoverField']);
         }
-
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'post-reading') return;
         $this->option = Option::cache(PostService::OPTION_KEY, $this->option);
     }
-
-    #[Override]
     protected function system(): void
     {
         add_filter('nav_menu_css_class', [$this, 'renderMenuItemClasses'], 10, 3);
         add_filter('wp_nav_menu_objects', [$this, 'customFilterMenuItems'], 10, 2);
     }
-
-    #[Override]
     protected function init(): void
     {
         $this->initPostViews();
@@ -67,8 +54,6 @@ class Post extends Components {
         $this->registerCover();
         $this->menus();
     }
-
-    #[Override]
     protected function admin(): void
     {
         add_action('save_post', [$this, 'savePostPro']);
@@ -87,8 +72,6 @@ class Post extends Components {
         add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
         add_action('wp_update_nav_menu_item', [$this, 'saveMenuItemFields'], 10, 3);
     }
-
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -110,8 +93,6 @@ class Post extends Components {
         Element::tab('Post', 'general', $args);
         echo '</div>';
     }
-
-    #[Override]
     protected function settings(): void
     {
         register_setting(
@@ -233,7 +214,6 @@ class Post extends Components {
             ]
         ]);
     }
-
     public function removeAutoP(): void
     {
         /**
@@ -246,7 +226,6 @@ class Post extends Components {
          */
         remove_filter('term_description', 'wpautop');
     }
-
     public function mountCopyright($content)
     {
         if (isset($this->option['autoNotice']) && $this->option['autoNotice'] === '1') {
@@ -260,7 +239,6 @@ class Post extends Components {
         }
         return $content;
     }
-
     private function initPostViews(): void
     {
         if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
@@ -268,7 +246,6 @@ class Post extends Components {
         }
         add_action('wp_head', [$this, '_initPostViews']);
     }
-
     private function postViewsControl(): void
     {
         if (!isset($this->option['enable']) || $this->option['enable'] !== '1') {
@@ -282,7 +259,6 @@ class Post extends Components {
         add_filter('manage_edit-page_sortable_columns', [$this, 'addViewsSortableColumn']);
         add_action('pre_get_posts', [$this, 'viewsSorting']);
     }
-
     private function _setPostViews($postId): void
     {
         if ($this->loader->admin()) {
@@ -313,12 +289,10 @@ class Post extends Components {
             }
         }
     }
-
     public function _initPostViews()
     {
         return $this->_setPostViews(get_the_ID());
     }
-
     public function postboxRender($post): void
     {
         $postId = $post->ID ?? 0;
@@ -343,17 +317,14 @@ class Post extends Components {
          */
         do_action('g3_action_post_views', $post);
     }
-
     public function savePost($postId): void
     {
         $this->saveCustomData($postId);
     }
-
     public function savePostPro($postId): void
     {
         $this->copyrightProtected($postId);
     }
-
     private function copyrightProtected($postId): void
     {
         if (!isset($this->option['copyright']) || $this->option['copyright'] !== '1') {
@@ -460,7 +431,6 @@ class Post extends Components {
             error_log('' . $e->getMessage());
         }
     }
-
     private function saveCustomData($postId): void
     {
         if ((!isset($_POST['viewsCount'])) || (!isset($_POST['likeCount'])) || (!isset($_POST['dislikeCount'])) || (!isset($_POST['favoritesCount']))) {
@@ -475,7 +445,6 @@ class Post extends Components {
         update_post_meta($postId, PostService::DISLIKE_KEY, $dislikeCount);
         update_post_meta($postId, PostService::FAVORITE_KEY, $favoritesCount);
     }
-
     public function addViewsColumn(array $columns): array
     {
         $newColumns = [];
@@ -487,7 +456,6 @@ class Post extends Components {
         }
         return $newColumns;
     }
-
     public function showViewsColumn($column_name, $id): void
     {
         if ($column_name === 'views') {
@@ -500,7 +468,6 @@ class Post extends Components {
         $columns['views'] = __('Views', 'G3');
         return $columns;
     }
-
     public function viewsSorting($query): void
     {
         if (!is_admin() || !$query->is_main_query()) {
@@ -511,7 +478,6 @@ class Post extends Components {
             $query->set('orderby', 'meta_value_num');
         }
     }
-
     public function modifyPostNewPage()
     {
         echo <<<HTML
@@ -545,7 +511,6 @@ HTML;
 </div>
 HTML;
     }
-
     public function addCoverFieldInEditForm($tag)
     {
         wp_enqueue_media();
@@ -571,7 +536,6 @@ HTML;
         </tr>
         <?php
     }
-
     public function updateCoverField($term_id)
     {
         if (isset($_POST['cover'])) {
@@ -581,7 +545,6 @@ HTML;
             update_term_meta($term_id, PostService::COVER_KEY, $_POST['cover']);
         }
     }
-
     protected function sidebar(): void
     {
         register_sidebar([
@@ -630,7 +593,6 @@ HTML;
             'after_title'   => '</h3>',
         ]);
     }
-
     protected function widgets(): void
     {
         // remove WP widget: recent posts
@@ -639,7 +601,6 @@ HTML;
         // register custom widget
         SidebarService::registerWidget('PostWidget', __DIR__);
     }
-
     protected function metaBox(): void
     {
         add_meta_box(
@@ -670,7 +631,6 @@ HTML;
             );
         }
     }
-
     public function enhanceAdminPostSearch($where, $query)
     {
         if (!is_admin() || !$query->is_main_query()) {
@@ -697,7 +657,6 @@ HTML;
         }
         return $where;
     }
-
     private function menus(): void
     {
         register_nav_menus([
@@ -747,7 +706,7 @@ HTML;
             ?>
             <p class="field-type description description-wide">
                 <label for="edit-menu-item-menu-type-<?php echo $item_id; ?>">
-                    <?php _e('Menu Type', 'G3'); ?><br>
+                    <span class="advanced"><?php _e('Menu Type', 'G3'); ?></span><br>
                     <select id="edit-menu-item-menu-type-<?php echo $item_id; ?>" class="widefat code edit-menu-item-menu-type"
                         name="menu-item-menu-type[<?php echo $item_id; ?>]">
                         <?php foreach ($type_options as $value => $label) : ?>
@@ -777,7 +736,7 @@ HTML;
         ?>
         <p class="field-display-type description description-wide">
             <label for="edit-menu-item-display-type-<?php echo $item_id; ?>">
-                <?php _e('Display Type', 'G3'); ?><br>
+                <span class="advanced"><?php _e('Display Type', 'G3'); ?></span><br>
                 <select id="edit-menu-item-display-type-<?php echo $item_id; ?>"
                     class="widefat code edit-menu-item-display-type" name="menu-item-display-type[<?php echo $item_id; ?>]">
                     <?php foreach ($display_type_options as $value => $label) : ?>
@@ -790,7 +749,6 @@ HTML;
         </p>
         <?php
     }
-
     public function saveMenuItemFields($menu_id, $menu_item_db_id, $args): void
     {
         if (isset($_REQUEST['menu-item-menu-type'][$menu_item_db_id])) {
@@ -803,7 +761,6 @@ HTML;
             update_post_meta($menu_item_db_id, '_menu_item_display_type', $display_type);
         }
     }
-
     public function renderMenuItemClasses(array $classes, $item, $args): array
     {
         if ($item->menu_item_parent == 0) {
@@ -814,7 +771,6 @@ HTML;
         }
         return $classes;
     }
-
     public function customFilterMenuItems(array $items, $args): array
     {
         $status = is_user_logged_in();

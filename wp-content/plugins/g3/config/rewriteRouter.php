@@ -97,7 +97,7 @@ return [
     ],
 
     // LLM Endpoint
-    'llm/([^/]+)/?$'              => [
+    'helper/llm/([^/]+)/?$'       => [
         'var'        => 'g3_var_llm',
         'path'       => 'llm/endpointX.php',
         'priority'   => [

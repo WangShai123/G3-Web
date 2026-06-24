@@ -108,9 +108,9 @@ echo Element::tip(
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { Toast, postJson, q, on, restUrl } = jui
+        const { Toast, postJson, q, listen, restUrl } = jui
         const { success, error } = Toast
-        on(q('#createTheme'), 'click', function (e) {
+        listen(q('#createTheme'), 'click', function (e) {
             e.preventDefault()
             const name = q('#name').value
             const folder = q('#folder').value
@@ -163,7 +163,7 @@ echo Element::tip(
                 }
             }).then(() => { setTimeout(() => { this.disabled = false }, 2000) });
         })
-        on(q('form'), 'reset', (e) => {
+        listen(q('form'), 'reset', (e) => {
             q('#createTheme').disabled = false;
             if (q('#createTip')) {
                 for (const tip of document.querySelectorAll('#createTip')) {

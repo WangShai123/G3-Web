@@ -1,9 +1,9 @@
 <?php
-
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Components\WechatOA\Includes\WechatOAMenuListTable;
+use JEALER\G3\Utilities\Message;
 
 $table = new WechatOAMenuListTable();
 echo Element::tip(
@@ -37,7 +37,7 @@ echo Element::tip(
         $('.action-delete').on('click', function (e) {
             e.preventDefault()
             let id = $(this).attr('data-id')
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
                     action: 'g3_delete_wechatOA_menu',
                     id

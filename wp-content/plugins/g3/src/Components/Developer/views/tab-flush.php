@@ -18,36 +18,26 @@ settings_errors('flush');
 </form>
 
 <script>
-    jQuery('#g3-action__flush-options').on('click', function () {
+    jQuery(document).ready(function ($) {
         const { Toast } = jui
         const { success, error } = Toast
-        jQuery.ajax({
-            url: ajaxurl,
-            type: 'post',
-            data: {
-                action: 'g3_admin_flush_options'
-            },
-            beforeSend: function () {
-                jQuery('#g3-action__flush-options').attr('disabled', true);
-            },
-            success: function (res) {
-                if (res.code === 200) {
-                    success(res.message, 2000);
+        $('#g3-action__flush-options').on('click', function () {
+            $.post(ajaxurl, {
+                action: 'g3_admin_flush_options',
+            }, (res) => {
+                $('#g3-action__flush-options').attr('disabled', true)
+                if (res.success) {
+                    success(res.data.message, 1000);
                     setTimeout(function () {
                         window.location.reload();
-                    }, 2000);
+                    }, 1500);
                 } else {
-                    error(res.message, 2000);
+                    error(res.data.message, 2000);
                 }
-            },
-            error: function (err) {
-                error(err.responseJSON.data.message, 2000);
-            },
-            complete: function () {
                 setTimeout(function () {
-                    jQuery('#g3-action__flush-options').attr('disabled', false);
+                    $('#g3-action__flush-options').attr('disabled', false);
                 }, 2000);
-            }
-        });
-    });
+            })
+        })
+    })
 </script>

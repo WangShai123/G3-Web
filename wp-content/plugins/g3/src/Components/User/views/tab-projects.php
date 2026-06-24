@@ -1,7 +1,7 @@
 <?php
-
 use JEALER\G3\Components\User\Includes\ProjectListTable;
 use JEALER\G3\Services\UserService;
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 
 $table = new ProjectListTable();
@@ -23,7 +23,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     type: 'select',
                     options: [
                         <?php foreach ($groups as $slug => $group) : ?>
-                                {
+                                        {
                                 text: '<?php echo $group['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -36,7 +36,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     type: 'select',
                     options: [
                         <?php foreach ($durations as $slug => $duration) : ?>
-                                {
+                                        {
                                 text: '<?php echo $duration['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -84,7 +84,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     value: t.data('name'),
                     options: [
                         <?php foreach ($groups as $slug => $group) : ?>
-                                {
+                                        {
                                 text: '<?php echo $group['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -98,7 +98,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
                     value: t.data('duration'),
                     options: [
                         <?php foreach ($durations as $slug => $duration) : ?>
-                                {
+                                        {
                                 text: '<?php echo $duration['name']; ?>',
                                 value: '<?php echo $slug; ?>'
                             },
@@ -115,7 +115,7 @@ $durations = Option::get(UserService::DURATION_OPTION_KEY, [], false);
             editor.show()
         })
         $(document).on('click', '.delete-project', (e) => {
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 const t = $(e.currentTarget)
                 $.post(ajaxurl, {
                     action: 'g3_delete_membership_project',

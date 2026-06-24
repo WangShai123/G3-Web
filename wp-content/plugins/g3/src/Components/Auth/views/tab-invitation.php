@@ -1,6 +1,6 @@
 <?php
-
 use JEALER\G3\Components\Auth\Includes\InvitationCodeListTable;
+use JEALER\G3\Utilities\Message;
 
 $table = new InvitationCodeListTable();
 $table->display();
@@ -13,9 +13,11 @@ $table->display();
         $(document).on('click', '.generate-code', (e) => {
             e.preventDefault();
             const editor = new Modal({
-                title: '<?php _e('Generate Invitation Code', 'G3'); ?>',
-                confirmText: '<?php _e('Generate Invitation Code', 'G3'); ?>',
-                cancelText: '<?php _e('Cancel'); ?>',
+                text: {
+                    title: '<?php _e('Generate Invitation Code', 'G3'); ?>',
+                    confirm: '<?php _e('Generate Invitation Code', 'G3'); ?>',
+                    cancel: '<?php _e('Cancel'); ?>',
+                },
                 fields: [{
                     label: '<?php _e('Amount', 'G3'); ?>',
                     name: 'amount',
@@ -26,25 +28,26 @@ $table->display();
                     editor.state.loading = true;
                     $.post(ajaxurl, {
                         action: 'g3_generate_invite_code',
-                        data: data
+                        data
                     }, (res) => {
-                        if (res.success) {
-                            success(res.data.message);
-                            setTimeout(() => {
-                                location.reload();
-                            }, 800);
-                        } else {
-                            error(res.data.message);
-                        }
-                    }).done(() => {
-                        editor.state.loading = false;
+                        setTimeout(() => {
+                            if (res.success) {
+                                success(res.data.message);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 800);
+                            } else {
+                                error(res.data.message);
+                            }
+                            editor.state.loading = false;
+                        }, 300);
                     })
                 },
             });
             editor.show();
         });
         $(document).on('click', '.delete-code', (e) => {
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
                     action: 'g3_delete_invite_code',
                     data: {

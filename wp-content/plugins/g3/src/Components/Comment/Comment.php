@@ -1,22 +1,15 @@
 <?php
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Services\SidebarService;
 use Override;
 
 class Comment extends Components {
-    #[Override]
-    protected function init(): void
-    {
-    }
-    #[Override]
     protected function admin(): void
     {
         $this->autoclosePingback();
         add_action('admin_footer-options-discussion.php', [$this, 'hideSettingsInDiscussionOptions']);
     }
-
     private function autoclosePingback(): void
     {
         update_option('default_pingback_flag', '');

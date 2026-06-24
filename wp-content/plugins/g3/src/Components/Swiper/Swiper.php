@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Services\SwiperService;
 use JEALER\G3\Utilities\Element;
@@ -11,18 +9,13 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class Swiper extends Components {
-
     public array $option;
-
-    #[Override]
     protected function options(): void
     {
         $this->option = Option::get(SwiperService::LOCATION_OPTION_KEY, [
             'home' => __('Home')
         ]);
     }
-
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -46,7 +39,6 @@ class Swiper extends Components {
             remove_submenu_page('themes.php', 'swiper');
         });
     }
-
     public function render(): void
     {
         echo '<div class="wrap">';
@@ -58,13 +50,10 @@ class Swiper extends Components {
         Element::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
-
     public function editSwiper(): void
     {
         @require_once __DIR__ . '/views/page-edit.php';
     }
-
-    #[Override]
     protected function ajax(): void
     {
         add_action('wp_ajax_edit_swiper', function () {
@@ -115,19 +104,18 @@ class Swiper extends Components {
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
                 Response::ajaxUpdated();
-                wp_cache_delete($location, SwiperService::QUERY_CACHE_GROUP);
+                SwiperService::clearLocationCache($location);
             } else {
                 $result = $wpdb->update($table, $data, ['id' => $id]);
                 if ($result) {
-                    wp_cache_delete($id, SwiperService::CACHE_GROUP);
-                    wp_cache_delete($location, SwiperService::QUERY_CACHE_GROUP);
+                    SwiperService::clearSwiperCache((int) $id);
+                    SwiperService::clearLocationCache($location);
                     Response::ajaxUpdated();
                 } else {
                     Response::ajaxFailed();
                 }
             }
         });
-
         add_action('wp_ajax_edit_swiper_location', function () {
             if (!current_user_can('manage_options')) {
                 Response::ajaxForbidden();
@@ -153,7 +141,6 @@ class Swiper extends Components {
                 Response::ajaxFailed();
             }
         });
-
         add_action('wp_ajax_delete_swiper_location', function () {
             if (!current_user_can('manage_options')) {
                 Response::ajaxForbidden();
@@ -170,5 +157,4 @@ class Swiper extends Components {
             }
         });
     }
-
 }

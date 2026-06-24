@@ -25,7 +25,7 @@ class InvitationCodeListTable extends WP_List_Table {
     {
         global $wpdb;
         $this->wpdb    = $wpdb;
-        $this->table   = $wpdb->prefix . AuthService::InvitationCodeTable;
+        $this->table   = $wpdb->prefix . AuthService::INVITE_CODE_TABLE;
         $this->service = Container::run()->use(AuthService::class);
         $this->perPage = 20;
     }
@@ -120,16 +120,12 @@ class InvitationCodeListTable extends WP_List_Table {
             );
             return;
         }
-
         $this->prepare_items();
-
         echo '<div class="wrap">
-        <h3 class="float-left">' . __('All Invitation Codes', 'G3') . '</h3>
         <form id="list-form" method="post">';
         $this->search_box(__('Search'), 'reply');
         parent::display();
         echo '</form></div>';
-
         $this->process_bulk_action();
     }
     private function revitationValid()

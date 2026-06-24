@@ -10,7 +10,7 @@ return [
     'g3_option_securities',
 
     'g3_option_swiper_locations',
-    'g3_option_swipers_query',
+    // 'g3_option_swipers_query',
     'g3_option_themes',
 
     // 'g3_option_specs',

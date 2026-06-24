@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Components;
-
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Queue\Queue;
 use JEALER\G3\Jobs\EmailJob;
@@ -16,9 +15,6 @@ class Mail extends Components {
     public array  $option   = [];
     public array  $template = [];
     public string $setGroup = 'set';
-    protected function ready(): void
-    {
-    }
     protected function options(): void
     {
         $this->option   = Option::get(MailerService::OPTION_KEY, [
@@ -37,28 +33,28 @@ class Mail extends Components {
             'paymentSuccess' => '',
         ]);
     }
-    #[Override]
     protected function form(): void
     {
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'mail') return;
         $this->option   = Option::cache(MailerService::OPTION_KEY, $this->option);
         $this->template = Option::cache(MailerService::TEMPLATE_OPTION_KEY, $this->template);
     }
-    #[Override]
-    protected function init(): void
+    protected function hooks(): void
     {
         /**
-         * 修改 wordpress 内部邮件配置
+         * modify wordpress internal mail config
          */
-        add_action('phpmailer_init', [$this, 'smtpInit']);
-        add_filter('wp_mail_from', [$this, 'wpMailFrom']);
+        $this->filter([
+            'wp_mail_from' => [[$this, 'wpMailFrom'], 1],
+        ]);
+        $this->action([
+            'phpmailer_init' => [[$this, 'smtpInit'], 1],
+        ]);
     }
-    #[Override]
     protected function admin(): void
     {
         $this->systemEmailHandle();
     }
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -83,7 +79,6 @@ class Mail extends Components {
         Element::tab('Mail', 'set', $tabs);
         echo '</div>';
     }
-    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -263,7 +258,7 @@ class Mail extends Components {
                     },
                     'args'     => [
                         'label_for'         => 'register',
-                        'class'             => 'field-register',
+                        'class'             => 'field-register field-template display-none',
                         'sanitize_callback' => 'wp_kses_post'
                     ]
                 ],
@@ -281,7 +276,7 @@ class Mail extends Components {
                     },
                     'args'     => [
                         'label_for'         => 'resetPassword',
-                        'class'             => 'field-resetPassword',
+                        'class'             => 'field-resetPassword field-template display-none',
                         'sanitize_callback' => 'wp_kses_post'
                     ]
                 ],
@@ -299,7 +294,7 @@ class Mail extends Components {
                     },
                     'args'     => [
                         'label_for'         => 'paymentSuccess',
-                        'class'             => 'field-paymentSuccess',
+                        'class'             => 'field-paymentSuccess field-template display-none',
                         'sanitize_callback' => 'wp_kses_post'
                     ]
                 ]
@@ -399,5 +394,4 @@ class Mail extends Components {
         }
         return is_email($this->option['address']) ? $this->option['address'] : $original_email;
     }
-
 }

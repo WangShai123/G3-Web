@@ -15,8 +15,6 @@ class Setting extends Components {
     public array  $rss    = [];
     public array  $llm    = [];
     private array $config = [];
-
-    #[Override]
     protected function hooks(): void
     {
         $this->filter([
@@ -26,7 +24,6 @@ class Setting extends Components {
             'body_class' => [[$this, 'initBodyClass'], 10, 1],
         ]);
     }
-    #[Override]
     protected function options(): void
     {
         $siteName     = get_bloginfo('name');
@@ -56,15 +53,11 @@ class Setting extends Components {
             'postsPerType' => 2000,
         ], false);
     }
-
-    #[Override]
     protected function system(): void
     {
         $this->redirectLinkHandle();
         $this->rssHandle();
     }
-
-    #[Override]
     protected function form(): void
     {
         Frontend::css('jui');
@@ -95,16 +88,12 @@ class Setting extends Components {
         $this->rss    = Option::cache(SystemService::RSS_OPTION_KEY, $this->rss);
         $this->llm    = Option::cache(SystemService::LLM_OPTION_KEY, $this->llm);
     }
-
-    #[Override]
     protected function init(): void
     {
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
     }
-
-    #[Override]
     protected function adminMenu(): void
     {
         add_menu_page(
@@ -126,12 +115,10 @@ class Setting extends Components {
             1
         );
     }
-
     protected function end(): void
     {
         $this->linksHandle();
     }
-
     public function render(): void
     {
         $tabs = [
@@ -145,8 +132,6 @@ class Setting extends Components {
         Element::tab('Setting', 'general', $tabs);
         echo '</div>';
     }
-
-    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -413,8 +398,8 @@ class Setting extends Components {
                         sprintf(
                             '%s: <a href="%s" target="_blank">%s</a><br>%s: <a href="%s" target="_blank">%s</a>',
                             __('Real-time data', 'G3'),
-                            site_url('/llm/endpoint'),
-                            site_url('/llm/endpoint'),
+                            site_url('/helper/llm/endpoint'),
+                            site_url('/helper/llm/endpoint'),
                             __('Cache Data', 'G3'),
                             site_url('/llms.txt'),
                             site_url('/llms.txt')
@@ -468,7 +453,6 @@ class Setting extends Components {
             'sitemap'
         );
     }
-
     public function sadHandle(): void
     {
         if (!isset($this->option['sad']) || $this->option['sad'] !== '1' || is_admin()) {
@@ -587,7 +571,7 @@ class Setting extends Components {
 
         echo '<div class="flex-container">';
         echo '<div class="flex-col-1 flex-col-xl-3 flex-col-lg-2 flex-col-md-1 flex-col-sm-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Title', 'G3') . '</div></div><input class="j-input" type="text" id="seoTitle" name="seoTitle" value="' . $title . '"></div></div>';
-        echo '<div class="flex-col"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Keywords', 'G3') . '</div></div><input class="j-input" placeholder="' . __('Separate tags with commas.', 'G3') . '" type="text" id="seoKeywords" name="seoKeywords" value="' . $keywords . '"></div></div>';
+        echo '<div class="flex-cols"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Keywords', 'G3') . '</div></div><input class="j-input" placeholder="' . __('Separate tags with commas.', 'G3') . '" type="text" id="seoKeywords" name="seoKeywords" value="' . $keywords . '"></div></div>';
         echo '</div>';
         echo '<div class="flex-container">';
         echo '<div class="flex-col-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Description', 'G3') . '</div></div><input class="j-input" type="text" id="seoDescription" name="seoDescription" value="' . $description . '"></div></div>';
@@ -601,14 +585,12 @@ class Setting extends Components {
          */
         do_action('g3_action_seo', $post);
     }
-
     public function addKeywordsField(): void
     {
         echo '<div class="form-field"><label for="seoKeywords">';
         echo 'SEO ' . __('Keywords', 'G3') . '</label><input name="seoKeywords" id="seoKeywords" type="text" value="" size="40"><p>';
         echo __('Separate tags with commas.', 'G3') . '</p></div>';
     }
-
     public function editKeywordsField($tag): void
     {
         echo '<tr class="form-field"><th scope="row"><label for="seoKeywords">';
@@ -617,7 +599,6 @@ class Setting extends Components {
         echo esc_attr(get_term_meta($tag->term_id, PostService::KEYWORDS_KEY, true));
         echo '" size="40"/><p class="description">' . __('Separate tags with commas.', 'G3') . '</p></td></tr>';
     }
-
     public function updateKeywordsField(int $term_id): bool|int
     {
         if (isset($_POST['seoKeywords'])) {
@@ -629,7 +610,6 @@ class Setting extends Components {
         }
         return true;
     }
-
     public function rssHandle(): void
     {
         if (!isset($this->rss['rss']) || $this->rss['rss'] !== '0') {
@@ -655,7 +635,6 @@ class Setting extends Components {
         add_filter('feed_links_show_posts_feed', '__return_false', 999);
         add_filter('feed_links_show_comments_feed', '__return_false', 999);
     }
-
     public function disableRss(): void
     {
         wp_die(
@@ -668,7 +647,6 @@ class Setting extends Components {
             ]
         );
     }
-
     private function permalink(): void
     {
         if (Context::get('permalink_structure') === '/%postname%/') return;
@@ -676,7 +654,6 @@ class Setting extends Components {
         update_option('permalink_structure', '/%postname%/');
         flush_rewrite_rules();
     }
-
     private function pluginAction(): void
     {
         add_filter('plugin_row_meta', function ($links, $file) {
@@ -691,7 +668,6 @@ class Setting extends Components {
             return $links;
         });
     }
-
     private function linksHandle(): void
     {
         if (!SystemService::hasLinkService()) {
@@ -699,13 +675,11 @@ class Setting extends Components {
         }
         add_filter('pre_option_link_manager_enabled', '__return_true');
     }
-
     public function initBodyClass(array $classes): array
     {
         $classes[] = 'jui bg-background text-foreground';
         return $classes;
     }
-
     public function initHtmlClass(array $classes): array
     {
         if (!is_admin()) {
@@ -714,13 +688,11 @@ class Setting extends Components {
         }
         return $classes;
     }
-
     public static function onLLM(): bool
     {
         $v = Context::get(SystemService::LLM_OPTION_KEY)['llm'] ?? '1';
         return $v === '1';
     }
-
     private function getConfigString(): string
     {
         $this->config = $this->getConfigJson();
@@ -734,11 +706,9 @@ class Setting extends Components {
         }, array_keys($this->config), array_values($this->config));
         return implode(' ', $config);
     }
-
     private function getConfigJson(): array
     {
         $cookie = $_COOKIE['jui-theme'] ?? '{}';
         return json_decode(stripslashes($cookie), true);
     }
-
 }

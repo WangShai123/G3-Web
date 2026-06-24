@@ -10,7 +10,7 @@ global $wpdb;
             <th class="text-left">Description</th>
         </thead> -->
         <tr>
-            <td colspan="2" style="background-color: #f5f5f5;font-weight: 600;">
+            <td colspan="2" class="sys-subtitle">
                 <?php _e('System', 'G3'); ?>
             </td>
         </tr>
@@ -34,7 +34,7 @@ global $wpdb;
             ?>
 
             <tr>
-                <td colspan="2" style="background-color: #f5f5f5;font-weight: 600;">PHP</td>
+                <td colspan="2" class="sys-subtitle">PHP</td>
             </tr>
             <?php
             /**
@@ -57,7 +57,7 @@ global $wpdb;
             ?>
 
             <tr>
-                <td colspan="2" style="background-color: #f5f5f5;font-weight: 600;">
+                <td colspan="2" class="sys-subtitle">
                     <?php _e('Cache', 'G3'); ?>
                 </td>
             </tr>
@@ -78,7 +78,7 @@ global $wpdb;
             ?>
 
             <tr>
-                <td colspan="2" style="background-color: #f5f5f5;font-weight: 600;">WordPress Debug</td>
+                <td colspan="2" class="sys-subtitle">WordPress Debug</td>
             </tr>
             <?php
             /**
@@ -104,3 +104,9 @@ global $wpdb;
         </tbody>
     </table>
 </div>
+<style>
+    .sys-subtitle {
+        background-color: #f5f5f5;
+        font-weight: 600;
+    }
+</style>

@@ -7,11 +7,15 @@
 </form>
 
 <script>
-    const target = jQuery('.field-enable');
-    const switcher = jQuery('#switch-enable');
-    switcher.checked ? target.siblings('tr').show() : target.siblings('tr').hide();
-    switcher.change(function () {
-        this.checked ? target.siblings('tr').fadeIn() : target.siblings('tr').fadeOut();
-    });
+    jQuery(document).ready(($) => {
+        const target = $('.field-template');
+        const switcher = $('#switch-enable');
 
+        const checked = switcher.prop('checked');
+        target.toggle(checked);
+
+        switcher.change(function () {
+            this.checked ? target.fadeIn() : target.fadeOut();
+        });
+    })
 </script>

@@ -1,6 +1,6 @@
 <?php
-
 use JEALER\G3\Components\User\Includes\ManagerListTable;
+use JEALER\G3\Utilities\Message;
 
 $table = new ManagerListTable();
 $table->display();
@@ -11,9 +11,11 @@ $table->display();
         const { Toast, Modal } = jui;
         const { success, error } = Toast;
         const editor = new Modal({
-            title: '<?php _e('Edit'); ?>',
-            cancelText: '<?php _e('Cancel'); ?>',
-            confirmText: '<?php _e('Submit'); ?>',
+            text: {
+                title: '<?php _e('Edit'); ?>',
+                cancel: '<?php _e('Cancel'); ?>',
+                confirm: '<?php _e('Submit'); ?>',
+            },
             fields: [
                 {
                     label: '<?php _e('Name'); ?>',
@@ -55,7 +57,7 @@ $table->display();
         })
         $(document).on('click', '.delete-role', function (e) {
             const slug = $(e.currentTarget).data('slug');
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
                     action: 'g3_delete_manager_role',
                     slug: slug

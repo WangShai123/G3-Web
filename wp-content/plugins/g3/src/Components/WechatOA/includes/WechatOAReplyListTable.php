@@ -1,28 +1,14 @@
 <?php
-
 namespace JEALER\G3\Components\WechatOA\Includes;
-
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Date;
 
-/**
- * Wechat OA Reply List Table
- *
- * 微信公众号消息列表表格
- *
- * @since 1.0.0
- * @author Wang Shai
- */
 class WechatOAReplyListTable extends WP_List_Table {
-
-    private int $perPage;
-
+    private int    $perPage;
     private string $replyTable;
-
     private string $keywordTable;
-
     public function __construct($args = [])
     {
         parent::__construct([
@@ -32,7 +18,6 @@ class WechatOAReplyListTable extends WP_List_Table {
         ]);
         $this->init();
     }
-
     public function get_columns(): array
     {
         return [
@@ -45,7 +30,6 @@ class WechatOAReplyListTable extends WP_List_Table {
             'action'   => __('Action'),
         ];
     }
-
     public function prepare_items(): void
     {
         $columns               = $this->get_columns();
@@ -66,7 +50,6 @@ class WechatOAReplyListTable extends WP_List_Table {
             'per_page'    => $this->perPage,
         ]);
     }
-
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
@@ -79,7 +62,6 @@ class WechatOAReplyListTable extends WP_List_Table {
             default    => $item[$column_name] ?? '',
         };
     }
-
     public function column_cb($item): string
     {
         return sprintf(
@@ -87,14 +69,12 @@ class WechatOAReplyListTable extends WP_List_Table {
             $item['id']
         );
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
             echo '<div class="alignleft actions mb-2"><button type="button" id="add-reply" class="button button-primary">' . __('Add New', 'G3') . '</button></div>';
         }
     }
-
     public function get_bulk_actions(): array
     {
         return [
@@ -103,34 +83,28 @@ class WechatOAReplyListTable extends WP_List_Table {
             'disable' => __('Disable'),
         ];
     }
-
     public function process_bulk_action(): void
     {
         // 防止非 POST 请求或无操作
         if (!isset($_POST['action']) && !isset($_POST['action2'])) {
             return;
         }
-
         $action = $this->current_action();
         if (!$action || $action === '-1') {
             return;
         }
-
         // 获取选中的 reply_ids
         $replyIds = $_POST['reply_ids'] ?? [];
         if (empty($replyIds) || !is_array($replyIds)) {
             $this->add_admin_notice(__('No items selected.', 'G3'), 'error');
             return;
         }
-
         // 确保是整数数组
         $replyIds = array_map('intval', array_filter($replyIds, fn($id) => $id > 0));
         if (empty($replyIds)) {
             $this->add_admin_notice(__('Invalid IDs selected.', 'G3'), 'error');
             return;
         }
-
-        // 执行对应操作
         switch ($action) {
             case 'enable':
                 $result = WechatOAService::enableReply(['ids' => $replyIds]);
@@ -140,7 +114,6 @@ class WechatOAReplyListTable extends WP_List_Table {
                     $this->successNotice(__('Updated', 'G3'));
                 }
                 break;
-
             case 'disable':
                 $result = WechatOAService::disableReply(['ids' => $replyIds]);
                 if (is_wp_error($result)) {
@@ -149,7 +122,6 @@ class WechatOAReplyListTable extends WP_List_Table {
                     $this->successNotice(__('Updated', 'G3'));
                 }
                 break;
-
             case 'delete':
                 $result = WechatOAService::deleteReply(['ids' => $replyIds]);
                 if (is_wp_error($result)) {
@@ -158,13 +130,10 @@ class WechatOAReplyListTable extends WP_List_Table {
                     $this->successNotice(__('Deleted', 'G3'));
                 }
                 break;
-
             default:
                 break;
         }
-
     }
-
     public function search_box($text, $input_id): void
     {
         if (empty($_REQUEST['s']) && !$this->has_items()) {
@@ -193,12 +162,11 @@ class WechatOAReplyListTable extends WP_List_Table {
         </p>
         <?php
     }
-
     public function display(): void
     {
         $this->prepare_items();
 
-        echo '<h3 class="float-left">' . __('Custom Reply', 'G3') . '</h3>';
+        // echo '<h3 class="float-left">' . __('Custom Reply', 'G3') . '</h3>';
         echo '<form id="list-form" method="post">';
         $this->search_box(__('Search'), 'reply');
         parent::display();
@@ -206,7 +174,6 @@ class WechatOAReplyListTable extends WP_List_Table {
 
         $this->process_bulk_action();
     }
-
     private function init(): void
     {
         global $wpdb;
@@ -214,7 +181,6 @@ class WechatOAReplyListTable extends WP_List_Table {
         $this->keywordTable = $wpdb->prefix . WechatOAService::KEYWORD_TABLE;
         $this->perPage      = 20;
     }
-
     private function renderType($item)
     {
         return match ($item['type']) {
@@ -223,7 +189,6 @@ class WechatOAReplyListTable extends WP_List_Table {
             default => __(ucfirst($item['type'])),
         };
     }
-
     private function renderAction($item): string
     {
         $encodedContent  = json_encode($item['content'] ?? '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
@@ -245,7 +210,6 @@ class WechatOAReplyListTable extends WP_List_Table {
             esc_html__('Delete')
         );
     }
-
     private function getData($args): array
     {
         global $wpdb;
@@ -254,7 +218,6 @@ class WechatOAReplyListTable extends WP_List_Table {
         $perPage = $args['perPage'] ?? $this->perPage;
         $offset  = $args['offset'] ?? 0;
 
-        // Build the query
         if ($search) {
             $like  = '%' . $wpdb->esc_like($search) . '%';
             $query = $wpdb->prepare(
@@ -287,7 +250,6 @@ class WechatOAReplyListTable extends WP_List_Table {
 
         return $results ?: [];
     }
-
     private function getCount($search = ''): int
     {
         global $wpdb;
@@ -308,14 +270,12 @@ class WechatOAReplyListTable extends WP_List_Table {
 
         return (int) $wpdb->get_var($query);
     }
-
     private function add_admin_notice(string $message, string $type = 'updated'): void
     {
         add_action('admin_notices', function () use ($message, $type) {
             printf('<div class="%s"><p>%s</p></div>', esc_attr($type), esc_html($message));
         });
     }
-
     private function errorNotice(string $message): void
     {
         echo <<<HTML
@@ -329,7 +289,6 @@ jQuery(document).ready(function () {
 </script>
 HTML;
     }
-
     private function successNotice(string $message): void
     {
         echo <<<HTML

@@ -4,23 +4,8 @@ use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
 use WP_User;
 
-/**
- * User Service
- * 
- * 用户服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class UserService {
 
-    /**
-     * Meta key
-     * 
-     * 元数据键
-     * 
-     * @var string
-     */
     const META_KEY = 'g3_user_meta';
 
     const ROLE_OPTION_KEY    = 'g3_option_roles';
@@ -110,8 +95,8 @@ class UserService {
     public static function renderStatus(int $statusId): string
     {
         return match ($statusId) {
-            100 => __('Unknown', 'G3'),
-            101 => __('Pending'),
+            100     => __('Unknown', 'G3'),
+            101     => __('Pending'),
             default => __('Active')
         };
     }

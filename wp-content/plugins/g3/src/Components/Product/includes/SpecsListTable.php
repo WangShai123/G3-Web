@@ -1,31 +1,15 @@
 <?php
-
 namespace JEALER\G3\Components\Product\Includes;
-
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ProductService;
 use WP_List_Table;
 
-/**
- * Specs List Table
- * 
- * 规格列表表格
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class SpecsListTable extends WP_List_Table {
-
-    private string $table;
-
-    private int $perPage;
-
-    private int $count;
-
-    private $wpdb;
-
+    private string         $table;
+    private int            $perPage;
+    private int            $count;
+    private                $wpdb;
     private ProductService $service;
-
     public function __construct()
     {
         parent::__construct([
@@ -37,7 +21,6 @@ class SpecsListTable extends WP_List_Table {
         $this->wpdb = $wpdb;
         $this->prepare_items();
     }
-
     public function get_columns(): array
     {
         return [
@@ -51,7 +34,6 @@ class SpecsListTable extends WP_List_Table {
             'action'    => __('Action')
         ];
     }
-
     public function prepare_items(): void
     {
         $this->service = Container::run()->get(ProductService::class);
@@ -75,18 +57,14 @@ class SpecsListTable extends WP_List_Table {
             'per_page'    => $this->perPage,
         ]);
     }
-
     public function display(): void
     {
-        echo '<h3 class="float-left">' . __('Specifications', 'G3') . '</h3>';
         echo '<form id="list-form" method="post">';
-
         $this->search_box(__('Search'), 'specs');
         parent::display();
         echo '</form>';
         // $this->process_bulk_action();
     }
-
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
@@ -100,7 +78,6 @@ class SpecsListTable extends WP_List_Table {
             default     => $item[$column_name] ?? '',
         };
     }
-
     public function column_cb($item): string
     {
         return sprintf(
@@ -108,21 +85,18 @@ class SpecsListTable extends WP_List_Table {
             $item['id']
         );
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
             echo '<div class="alignleft actions mb-2"><button type="button" id="add-spec" class="button button-primary">' . __('Add') . '</button></div>';
         }
     }
-
     public function get_bulk_actions(): array
     {
         return [
             // 'delete'  => __('Delete'),
         ];
     }
-
     public function getData($args): array
     {
         $search  = $args['search'] ?? '';
@@ -153,7 +127,6 @@ class SpecsListTable extends WP_List_Table {
         $results = $this->wpdb->get_results($query, ARRAY_A);
         return $results ?: [];
     }
-
     public function getCount($search)
     {
         if ($search) {
@@ -169,22 +142,18 @@ class SpecsListTable extends WP_List_Table {
 
         return (int) $this->wpdb->get_var($query);
     }
-
     public function process_bulk_action(): void
     {
     }
-
     private function renderCount($item): int
     {
         $options = $this->service->getSpecOptionsBySpecId($item['id']);
         return count($options);
     }
-
     private function renderOwner($item)
     {
         return implode(',', unserialize($item['owner_ids'])) ?: __('All');
     }
-
     private function renderAction($item): string
     {
         return sprintf(

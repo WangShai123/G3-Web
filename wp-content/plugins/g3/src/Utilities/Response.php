@@ -26,9 +26,10 @@ final class Response {
      */
     public static function ajaxSuccess(string $message): void
     {
-        wp_send_json_success([
-            'message' => $message
-        ]);
+        wp_send_json_success(
+            ['message' => $message],
+            200
+        );
     }
 
     /**
@@ -41,9 +42,10 @@ final class Response {
      */
     public static function ajaxError(string $message): void
     {
-        wp_send_json_error([
-            'message' => $message
-        ]);
+        wp_send_json_error(
+            ['message' => $message],
+            400
+        );
     }
 
     /**
@@ -51,9 +53,10 @@ final class Response {
      */
     public static function ajaxUpdated(): void
     {
-        wp_send_json_success([
-            'message' => __('Updated', 'G3')
-        ]);
+        wp_send_json_success(
+            ['message' => __('Updated', 'G3')],
+            200
+        );
     }
 
     /**
@@ -71,9 +74,10 @@ final class Response {
      */
     public static function ajaxForbidden(): void
     {
-        wp_send_json_error([
-            'message' => __('Forbidden', 'G3')
-        ]);
+        wp_send_json_error(
+            ['message' => __('Forbidden', 'G3')],
+            403
+        );
     }
 
     /**
@@ -81,9 +85,10 @@ final class Response {
      */
     public static function ajaxIllegal(): void
     {
-        wp_send_json_error([
-            'message' => __('Illegal request', 'G3')
-        ]);
+        wp_send_json_error(
+            ['message' => __('Illegal request', 'G3')],
+            402
+        );
     }
 
     /**
@@ -91,9 +96,10 @@ final class Response {
      */
     public static function ajaxFailed(): void
     {
-        wp_send_json_error([
-            'message' => __('Failed', 'G3')
-        ]);
+        wp_send_json_error(
+            ['message' => __('Failed', 'G3')],
+            400
+        );
     }
 
     /**
@@ -101,8 +107,9 @@ final class Response {
      */
     public static function ajaxParamMissing(): void
     {
-        wp_send_json_error([
-            'message' => __('Param missing', 'G3')
-        ]);
+        wp_send_json_error(
+            ['message' => __('Param missing', 'G3')],
+            400
+        );
     }
 }

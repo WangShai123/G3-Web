@@ -1,27 +1,14 @@
 <?php
-
 namespace JEALER\G3\Components\Swiper\Includes;
-
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Date;
 
-/**
- * Swiper List Table
- *
- * 轮播图列表表格
- *
- * @since 1.0.0
- * @author Wang Shai
- */
 class SwiperListTable extends WP_List_Table {
-
     private array $columns;
-
-    private int $perPage = 15;
-
+    private int   $perPage = 15;
     public function __construct($args = [])
     {
         parent::__construct([
@@ -30,7 +17,6 @@ class SwiperListTable extends WP_List_Table {
             'ajax'     => true
         ]);
     }
-
     public function get_columns(): array
     {
         return [
@@ -46,7 +32,6 @@ class SwiperListTable extends WP_List_Table {
             'updated_at' => __('Update Time', 'G3')
         ];
     }
-
     public function prepare_items(): void
     {
         $currentPage = $this->get_pagenum();
@@ -63,7 +48,6 @@ class SwiperListTable extends WP_List_Table {
         ]);
         $this->items = $this->getData($this->perPage, $currentPage);
     }
-
     public function column_default($item, $column_name)
     {
         switch ($column_name) {
@@ -83,7 +67,6 @@ class SwiperListTable extends WP_List_Table {
                 return $item->{$column_name} ?? '-';
         }
     }
-
     private function getData($per_page, $current_page): array|object|null
     {
         global $wpdb;
@@ -116,7 +99,6 @@ class SwiperListTable extends WP_List_Table {
 
         return $wpdb->get_results($sql);
     }
-
     public function get_sortable_columns(): array
     {
         return [
@@ -124,10 +106,9 @@ class SwiperListTable extends WP_List_Table {
             'status'     => ['status', false],
             'location'   => ['location', false],
             'sort'       => ['sort', false],
-            'updated_at' => ['updated', false],
+            'updated_at' => ['updated_at', false],
         ];
     }
-
     public function column_title($item): string
     {
         $actions = [
@@ -136,7 +117,6 @@ class SwiperListTable extends WP_List_Table {
 
         return sprintf('%1$s %2$s', $item->{"title"}, $this->row_actions($actions));
     }
-
     public function get_bulk_actions(): array
     {
         return [
@@ -145,7 +125,6 @@ class SwiperListTable extends WP_List_Table {
             'disable' => __('Disable'),
         ];
     }
-
     public function column_cb($item): string
     {
         return sprintf(
@@ -153,14 +132,12 @@ class SwiperListTable extends WP_List_Table {
             $item->{"id"}
         );
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
             echo '<div class="alignleft actions mb-2"><a href="themes.php?page=swiper&t=new" class="button button-primary swiper-add">' . __('Add New', 'G3') . '</a></div>';
         }
     }
-
     public function process_bulk_actions(): void
     {
         $action = $this->current_action();
@@ -190,12 +167,8 @@ class SwiperListTable extends WP_List_Table {
 
     private function renderMedia($item, $columnName): string
     {
-        // if (Validator::isImage($item->{$columnName})) {
         return '<img class="object-cover cursor-pointer swiperPreview" style="width:100px;height:60px" src="' . $item->{$columnName} . '" draggable="false"></img>';
-        // }
-        // return '-';
     }
-
     private function renderLink($item, $columnName): string
     {
         $link = $item->{$columnName};
@@ -203,7 +176,6 @@ class SwiperListTable extends WP_List_Table {
             ? '<a href="' . $link . '" target="_blank">' . Common::truncateHtml($link, 50) . '</a>'
             : '-';
     }
-
     private function renderLocation($item, $columnName): string
     {
         $option = maybe_unserialize(get_option(SwiperService::LOCATION_OPTION_KEY));
@@ -227,10 +199,8 @@ class SwiperListTable extends WP_List_Table {
                 }
             }
         }
-
         return $found ? $location_str : '-';
     }
-
     private function renderUpdated($item, $columnName): string
     {
         return Date::dateTime(strtotime($item->{$columnName}));

@@ -29,6 +29,7 @@ class Security extends Components {
             'login'       => '0',
             'url'         => Common::hash(8),
             'upload'      => '1',
+            'sitemap'     => '1',
             'userSiteMap' => '1',
             'restApi'     => '1',
             'session'     => '0',
@@ -163,6 +164,19 @@ class Security extends Components {
                             'upload',
                             __('Reset Upload File Names', 'G3'),
                             __('Rename the currently uploaded file using a timestamp.', 'G3')
+                        );
+                    }
+                ],
+                [
+                    'id'       => 'sitemap',
+                    'title'    => __('Reset SiteMap', 'G3'),
+                    'callback' => function () {
+                        echo Element::switch(
+                            SystemService::SECURITY_OPTION_KEY,
+                            $this->option,
+                            'sitemap',
+                            __('Reset SiteMap', 'G3'),
+                            __('Remove the default site map of WordPress and use the custom site map.', 'G3'),
                         );
                     }
                 ],

@@ -6,6 +6,7 @@ use JEALER\G3\Core\Router\Router;
 use JEALER\G3\Services\TemplateService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Response;
 use JEALER\G3\Utilities\System;
@@ -23,7 +24,6 @@ class Developer extends Components {
     public static           $z;
     private TemplateService $template;
 
-    #[Override]
     protected function start(): void
     {
         /** @var TemplateService */
@@ -47,7 +47,7 @@ class Developer extends Components {
             'admin_bar_menu' => [[$this, 'adminBarMenuHandle'], 999, 1],
         ]);
     }
-    #[Override]
+
     protected function options(): void
     {
         $this->settingOption = Option::get(SystemService::SETTING_OPTION_KEY, [
@@ -84,7 +84,6 @@ class Developer extends Components {
         ]);
     }
 
-    #[Override]
     protected function prepareInAdmin(): void
     {
         $this->formOption = Option::get(SystemService::FORM_OPTION_KEY, [
@@ -104,7 +103,6 @@ class Developer extends Components {
         ], false);
     }
 
-    #[Override]
     protected function form(): void
     {
         if (isset($_REQUEST['page']) && $_REQUEST['page'] === 'developer-mode') {
@@ -116,7 +114,6 @@ class Developer extends Components {
         }
     }
 
-    #[Override]
     protected function init(): void
     {
         $this->wpAutoUpdateHandle();
@@ -124,7 +121,6 @@ class Developer extends Components {
         $this->wpHeadHandle();
     }
 
-    #[Override]
     protected function admin(): void
     {
         $this->onActivate();
@@ -154,7 +150,6 @@ class Developer extends Components {
         $this->opMpSetting();
     }
 
-    #[Override]
     protected function adminMenu(): void
     {
         $this->adminMenuHandle();
@@ -199,10 +194,8 @@ class Developer extends Components {
         }
     }
 
-    #[Override]
     protected function system(): void
     {
-        // Auto define environment
         // $this->autoDefineEnvironment();
     }
 
@@ -220,7 +213,6 @@ class Developer extends Components {
         if (!isset($this->settingOption['adminLogo']) || $this->settingOption['adminLogo'] !== '0') {
             return $text;
         }
-
         return get_bloginfo('name');
     }
 
@@ -241,12 +233,6 @@ class Developer extends Components {
                 width: auto !important;
             }
         </style>';
-    }
-
-    #[Override]
-    protected function front(): void
-    {
-        // show_admin_bar subscription is registered in start()
     }
 
     private function onActivate(): void
@@ -864,15 +850,9 @@ class Developer extends Components {
     {
         if (current_user_can('manage_options')) {
             $this->_flushOptions();
-            wp_send_json([
-                'code'    => 200,
-                'message' => __('Refreshed', 'G3')
-            ]);
+            Response::ajaxSuccess(__('Refreshed', 'G3'));
         } else {
-            wp_send_json([
-                'code'    => 403,
-                'message' => __('Forbidden', 'G3')
-            ], 403);
+            Response::ajaxForbidden();
         }
     }
 
@@ -1119,7 +1099,7 @@ class Developer extends Components {
         );
     }
 
-    #[Override]
+
     public function x(): void
     {
         add_action("admin_bar_menu", [$this, "noticeInAdminBar"], 999);
@@ -1136,7 +1116,7 @@ class Developer extends Components {
         });
     }
 
-    #[Override]
+
     public function y(): void
     {
         self::$z = $this->loader;

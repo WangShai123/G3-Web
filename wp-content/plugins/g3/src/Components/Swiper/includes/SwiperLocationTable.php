@@ -1,31 +1,17 @@
 <?php
-
 namespace JEALER\G3\Components\Swiper\Includes;
-
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
 
-/**
- * Swiper Location Table
- *
- * 轮播图位置列表表格
- *
- * @since 1.0.0
- * @author Wang Shai
- */
 class SwiperLocationTable extends WP_List_Table {
-
     private string $key;
-
-    private array $locations;
-
+    private array  $locations;
     public function __construct($args = [])
     {
         parent::__construct();
         $this->key       = SwiperService::LOCATION_OPTION_KEY;
         $this->locations = get_option($this->key, []);
     }
-
     public function get_columns()
     {
         return [
@@ -35,7 +21,6 @@ class SwiperLocationTable extends WP_List_Table {
             'action' => __('Action')
         ];
     }
-
     public function prepare_items()
     {
         $perPage    = 50;
@@ -52,12 +37,10 @@ class SwiperLocationTable extends WP_List_Table {
             'per_page'    => $perPage
         ]);
     }
-
     public function column_default($item, $column_name)
     {
         return $item[$column_name];
     }
-
     private function getData(): array
     {
         $data = [];
@@ -66,7 +49,6 @@ class SwiperLocationTable extends WP_List_Table {
         }
         return $data;
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
@@ -74,13 +56,11 @@ class SwiperLocationTable extends WP_List_Table {
             <button class="button button-primary addLocation" type="button">' . __('Add New', 'G3') . '</button></div>';
         }
     }
-
     public function column_action($item)
     {
         if ($item['key'] === 'home') {
             return '';
         }
-
         $actions = [
             'view'   => sprintf(
                 '<span class="editLocation color-link cursor-pointer" data-key="%s" data-name="%s">%s</span>',
@@ -95,39 +75,31 @@ class SwiperLocationTable extends WP_List_Table {
                 __('Delete')
             )
         ];
-
         return join(' | ', $actions);
     }
-
     public function get_bulk_actions(): array
     {
         return ['delete' => __('Delete')];
     }
-
     public function column_cb($item)
     {
         if ($item['key'] === 'home') {
             return '';
         }
-
         return sprintf(
             '<input type="checkbox" name="swiperLocation[]" value="%s" />',
             $item['key']
         );
     }
-
     public function process_bulk_actions(): void
     {
         if ($this->current_action() === 'delete') {
             if (!empty($_POST['swiperLocation'])) {
                 $items = $_POST['swiperLocation'];
-
                 if (!is_array($items)) {
                     $items = [$items];
                 }
-
                 $result = SwiperService::deleteLocations($items);
-
                 if ($result) {
                     $msg = __('Deleted', 'G3');
                     wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');

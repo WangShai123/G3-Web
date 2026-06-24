@@ -1,26 +1,13 @@
 <?php
-
 namespace JEALER\G3\Components\WechatOA\Includes;
-
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Validator;
 
-/**
- * Wechat OA Message List Table
- * 
- * 微信公众号消息列表表格
- *
- * @since 1.0.0
- * @author Wang Shai
- */
 class WechatOAMessageListTable extends WP_List_Table {
-
-    private int $perPage;
-
+    private int    $perPage;
     private string $table;
-
     public function __construct()
     {
         parent::__construct([
@@ -30,14 +17,12 @@ class WechatOAMessageListTable extends WP_List_Table {
         ]);
         $this->init();
     }
-
     private function init(): void
     {
         global $wpdb;
         $this->table   = $wpdb->prefix . WechatOAService::MESSAGES_TABLE;
         $this->perPage = 20;
     }
-
     public function get_columns(): array
     {
         return [
@@ -50,7 +35,6 @@ class WechatOAMessageListTable extends WP_List_Table {
             'action'     => __('Action')
         ];
     }
-
     public function prepare_items(): void
     {
         $columns               = $this->get_columns();
@@ -71,7 +55,6 @@ class WechatOAMessageListTable extends WP_List_Table {
             'per_page'    => $this->perPage,
         ]);
     }
-
     public function column_default($item, $column_name): mixed
     {
         return match ($column_name) {
@@ -84,7 +67,6 @@ class WechatOAMessageListTable extends WP_List_Table {
             default      => isset($item->$column_name) ? $item->$column_name : '-',
         };
     }
-
     public function column_cb($item): string
     {
         return sprintf(
@@ -92,7 +74,6 @@ class WechatOAMessageListTable extends WP_List_Table {
             $item->id
         );
     }
-
     public function extra_tablenav($which): void
     {
         if ($which == "top") {
@@ -103,20 +84,17 @@ class WechatOAMessageListTable extends WP_List_Table {
             echo '</div>';
         }
     }
-
     public function get_bulk_actions(): array
     {
         return [
             'delete' => __('Delete')
         ];
     }
-
     public function process_bulk_action(): void
     {
         if ('delete' === $this->current_action()) {
             $messages = [];
 
-            // Check if the request contains message IDs
             if (isset($_REQUEST['messages']) && is_array($_REQUEST['messages'])) {
                 $messages = $_REQUEST['messages'];
             } elseif (isset($_GET['messages'])) {
@@ -141,7 +119,6 @@ class WechatOAMessageListTable extends WP_List_Table {
             }
         }
     }
-
     public function search_box($text, $input_id): void
     {
         if (empty($_REQUEST['s']) && !$this->has_items()) {
@@ -170,12 +147,11 @@ class WechatOAMessageListTable extends WP_List_Table {
         </p>
         <?php
     }
-
     public function display(): void
     {
         $this->prepare_items();
 
-        echo '<h3 class="float-left">' . __('Messages', 'G3') . '</h3>';
+        // echo '<h3 class="float-left">' . __('Messages', 'G3') . '</h3>';
         echo '<form id="list-form" method="post">';
         $this->search_box(__('Search'), 'message');
         parent::display();
@@ -183,7 +159,6 @@ class WechatOAMessageListTable extends WP_List_Table {
 
         $this->process_bulk_action();
     }
-
     public function column_action($item): string
     {
         $actions = [
@@ -199,8 +174,6 @@ class WechatOAMessageListTable extends WP_List_Table {
 
         return join(' | ', $actions);
     }
-
-
     private function renderContent($content): string
     {
         if (Validator::isImage($content)) {
@@ -209,7 +182,6 @@ class WechatOAMessageListTable extends WP_List_Table {
         $content = Common::truncateHtml($content, 50);
         return $content;
     }
-
     private function getData($args): array
     {
         global $wpdb;
@@ -228,7 +200,6 @@ class WechatOAMessageListTable extends WP_List_Table {
         }
         return $result;
     }
-
     private function getCount($search = ''): int
     {
         global $wpdb;

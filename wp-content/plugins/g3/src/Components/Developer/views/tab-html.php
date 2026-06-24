@@ -144,15 +144,15 @@ function _renderIconList(array $list)
 </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const { copy, Toast, q } = jui;
+    document.addEventListener("DOMContentLoaded", () => {
+        const { copy, Toast, q, listen } = jui;
         for (const item of document.querySelectorAll('.icon-wrap icon')) {
-            item.addEventListener('click', function () {
+            listen(item, 'click', () => {
                 const iconText = q('div', item).textContent;
                 copyText = `Image::icon('${iconText}')`;
                 copy(copyText);
                 Toast.success('<?php _e('Copied'); ?> ' + iconText);
-            });
+            })
         }
     });
 </script>

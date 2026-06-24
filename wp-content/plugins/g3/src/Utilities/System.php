@@ -232,7 +232,7 @@ final class System {
 
         $userConfig = get_stylesheet_directory() . '/config/' . $key . '.php';
         if (file_exists($userConfig)) {
-            $user = require $userConfig;
+            $user = (array) $userConfig;
         } else {
             $user = $default;
         }

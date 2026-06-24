@@ -1,5 +1,4 @@
 <?php
-
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PageService;
 
@@ -15,35 +14,8 @@ if (is_user_logged_in()) {
     }
 }
 Frontend::css('jui');
-Frontend::esm('jui');
+Frontend::esm('vanilla-create-storage');
 Frontend::esm('g3.login.oa');
 get_header();
-?>
-
-<div class="j-background-grid"></div>
-<div class="oa-container flex flex-col items-center justify-center w-full">
-    <h1 class="text-center -translate-y-24px"><?php echo $name; ?></h1>
-</div>
-
-<style>
-    .oa-container {
-        height: calc(100vh - 100px);
-        min-height: fit-content;
-    }
-
-    .oa-container section {
-        display: flex;
-        justify-content: center;
-    }
-
-    .-translate-y-24px {
-        transform: translateY(-24px);
-    }
-
-    .e {
-        border-color: var(--red-9) !important;
-    }
-</style>
-
-<?php
+echo '<div id="app"></div>';
 get_footer();

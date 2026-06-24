@@ -1,19 +1,8 @@
 <?php
-
 namespace JEALER\G3\Components\Developer\Includes;
-
 use WP_List_Table;
 
-/**
- * Rewrite Rules Table
- * 
- * 重写规则表格
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class RewriteRulesTable extends WP_List_Table {
-
     public function __construct()
     {
         parent::__construct(
@@ -24,12 +13,6 @@ class RewriteRulesTable extends WP_List_Table {
             ]
         );
     }
-
-    /**
-     * Get columns.
-     *
-     * @return array
-     */
     public function get_columns()
     {
         return [
@@ -38,12 +21,6 @@ class RewriteRulesTable extends WP_List_Table {
             'rewrite' => __('Rewrite', 'G3'),
         ];
     }
-
-    /**
-     * Get sortable columns.
-     *
-     * @return array
-     */
     public function get_sortable_columns()
     {
         return [
@@ -52,27 +29,16 @@ class RewriteRulesTable extends WP_List_Table {
             'rewrite' => ['rewrite', true],
         ];
     }
-
-    /**
-     * Get bulk actions.
-     *
-     * @return array
-     */
     public function get_bulk_actions()
     {
         return [];
     }
-
-    /**
-     * Prepare items.
-     */
     public function prepare_items()
     {
-        // 直接从数据库获取rewrite规则，确保显示所有规则
+        // make sure to display all rules from database
         $rules = get_option('rewrite_rules');
-
-        $data = [];
-        $id   = 1;
+        $data  = [];
+        $id    = 1;
         if (is_array($rules)) {
             foreach ($rules as $rule => $rewrite_rule_value) {
                 $data[] = [
@@ -82,15 +48,10 @@ class RewriteRulesTable extends WP_List_Table {
                 ];
             }
         }
-
-        // 不分页，显示所有数据
+        // no pagination
         $this->_column_headers = [$this->get_columns(), [], $this->get_sortable_columns()];
         $this->items           = $data;
     }
-
-    /**
-     * Display the table.
-     */
     public function display()
     {
         $this->prepare_items();
@@ -109,10 +70,6 @@ class RewriteRulesTable extends WP_List_Table {
     .test-rewrite-rules-table {table-layout:fixed;margin-top:16px;}
 </style>';
     }
-
-    /**
-     * Display the table header.
-     */
     public function display_table_header()
     {
         echo '<thead><tr>';
@@ -135,10 +92,6 @@ class RewriteRulesTable extends WP_List_Table {
         }
         echo '</tr></thead>';
     }
-
-    /**
-     * Display the rows.
-     */
     public function display_rows()
     {
         foreach ($this->items as $item) {

@@ -1,102 +1,48 @@
 <?php
-
 namespace JEALER\G3\Services;
-
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Common;
 use WP_Error;
 use Exception;
 use wpdb;
 
-/**
- * Product Service
- * 
- * 商品服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class ProductService {
-
-    /**
-     * Option Key
-     * 
-     * 配置项键名
-     * 
-     * @var string
-     */
+    // Option Key
     const OPTION_KEY = 'g3_option_shop';
-
-    /**
-     * Gallery Key
-     * 
-     * 商品相册配置项键名
-     * 
-     * @var string
-     */
+    // Gallery Key
     const GALLERY_KEY = 'g3_product_gallery';
-
-    /**
-     * Property Key
-     * 
-     * 商品属性配置项键名
-     * 
-     * @var string
-     */
+    // Property Key
     const PROP_KEY = 'g3_product_prop';
-
-    /**
-     * SKU Table
-     */
+    // SKU Table
     const SKU_TABLE = 'g3_sku';
-
-    /**
-     * Global Specs Table
-     */
+    // Global Specs Table
     const SPECS_TABLE = 'g3_specs';
-
-    /**
-     * Global Specs Options Table
-     */
+    // Global Specs Options Table
     const SPECS_OPTIONS_TABLE = 'g3_specs_options';
-
-    /**
-     * Product Specs Relation Table
-     */
+    // Product Specs Relation Table
     const PRODUCT_SPECS_TABLE = 'g3_product_specs';
-
-    /**
-     * Sku Specs Relation Table
-     */
+    // Sku Specs Relation Table
     const SPECS_RELATIONS_TABLE = 'g3_sku_specs_relations';
-
-    /**
-     * Product Cache Group
-     */
+    // Product Cache Group
     const CACHE_GROUP = 'g3_products';
-
     /**
      * Cache Expire Time in Admin
      * 后台管理中缓存的过期时间
      * 有些逻辑和查询仅用于后台管理，设置一个较短的缓存时间
      */
     const EXPIRE_IN_ADMIN = DAY_IN_SECONDS;
-
     /**
      * Cache Expire Time in Global
      * 全局缓存的过期时间
      * 有些逻辑和查询用于全局且侧重用户端显示，设置一个较长的缓存时间
      */
     const EXPIRE_IN_GLOBAL = WEEK_IN_SECONDS;
-
     private wpdb $wpdb;
-
     public function __construct()
     {
         global $wpdb;
         $this->wpdb = $wpdb;
     }
-
     /**
      * render spec scope
      * 
@@ -108,11 +54,11 @@ class ProductService {
     public static function renderScope(int $id): string
     {
         return match ($id) {
-            0 => __('All'),
-            1 => __('Product', 'G3'),
-            2 => __('Categories'),
-            3 => __('Tags'),
-            4 => __('Brand', 'G3'),
+            0       => __('All'),
+            1       => __('Product', 'G3'),
+            2       => __('Categories'),
+            3       => __('Tags'),
+            4       => __('Brand', 'G3'),
             default => 'All'
         };
     }
@@ -128,10 +74,10 @@ class ProductService {
     public static function renderSkuType(int $typeId): string
     {
         return match ($typeId) {
-            1 => __('General Product', 'G3'),
-            2 => __('Digital Product', 'G3'),
-            3 => __('Membership Product', 'G3'),
-            4 => __('Download Product', 'G3'),
+            1       => __('General Product', 'G3'),
+            2       => __('Digital Product', 'G3'),
+            3       => __('Membership Product', 'G3'),
+            4       => __('Download Product', 'G3'),
             default => __('Unknown')
         };
     }

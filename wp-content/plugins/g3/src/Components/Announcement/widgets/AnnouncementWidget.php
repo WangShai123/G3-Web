@@ -1,14 +1,6 @@
 <?php
 use JEALER\G3\Utilities\Date;
 
-/**
- * Announcement Widget
- * 
- * 公告列表小工具
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class AnnouncementWidget extends WP_Widget {
     private $count;
     private $category;

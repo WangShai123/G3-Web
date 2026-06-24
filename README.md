@@ -7,6 +7,10 @@ G3-Web is a theme framework for WordPress (hereinafter referred to as WP). It is
 - Helping small and medium-sized entrepreneurs quickly acquire private data and application systems, enabling cross-platform operations and business experimentation at ultra-low cost.
 - It helps any creative user to turn their ideas into digital solutions and bring them to fruition quickly.
 
+## Project Path
+
+`/plugins/g3/`
+
 ## Features
 
 ### Componentization

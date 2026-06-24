@@ -1,5 +1,6 @@
 <?php
 use JEALER\G3\Components\Orders\Includes\OrdersListTable;
+use JEALER\G3\Utilities\Message;
 $table = new OrdersListTable();
 $table->display();
 ?>
@@ -28,7 +29,7 @@ $table->display();
             }
         });
         $(document).on('click', '.delete-order', function (e) {
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
                     action: 'g3_delete_order',
                     order_id: $(this).data('id')
@@ -39,9 +40,11 @@ $table->display();
         });
         $(document).on('click', '.ship-order', (e) => {
             const editor = new Modal({
-                title: '<?php _e('Deliver', 'G3'); ?>',
-                cancelText: '<?php _e('Cancel'); ?>',
-                confirmText: '<?php _e('Submit'); ?>',
+                text: {
+                    title: '<?php _e('Deliver', 'G3'); ?>',
+                    cancel: '<?php _e('Cancel'); ?>',
+                    confirm: '<?php _e('Submit'); ?>',
+                },
                 fields: [
                     {
                         label: '<?php _e('Deliver Tracking Number', 'G3'); ?>',

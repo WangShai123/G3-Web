@@ -6,13 +6,12 @@ use Override;
 
 class Announcement extends Components {
     private string $postType = 'announcement';
-
-    #[Override]
-    protected function admin(): void
+    protected function hooks(): void
     {
-        add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
+        $this->filter([
+            'post_updated_messages' => [[$this, 'resetUpdatedMessages'], 1]
+        ]);
     }
-    #[Override]
     protected function postType(): void
     {
         $labels = [
@@ -119,7 +118,6 @@ class Announcement extends Components {
 
         return $messages;
     }
-    #[Override]
     protected function widgets(): void
     {
         SidebarService::registerWidget('AnnouncementWidget', __DIR__);

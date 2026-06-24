@@ -11,7 +11,7 @@ use Override;
 class Auth extends Components {
     public ?array $option = [];
     public ?array $wechat = [];
-    #[Override]
+
     protected function options(): void
     {
         $this->option = Option::get(AuthService::OPTION_KEY, [
@@ -27,18 +27,12 @@ class Auth extends Components {
             'client'    => '0',
         ]);
     }
-    #[Override]
     protected function form(): void
     {
         if (!isset($_REQUEST['page']) || $_REQUEST['page'] !== 'auth-settings') return;
         $this->option = Option::cache(AuthService::OPTION_KEY, $this->option);
         $this->wechat = Option::cache(AuthService::WECHAT_OPTION_KEY, $this->wechat);
     }
-    #[Override]
-    protected function admin(): void
-    {
-    }
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(
@@ -62,7 +56,6 @@ class Auth extends Components {
         Element::tab('Auth', 'general', $args);
         echo '</div>';
     }
-    #[Override]
     protected function settings(): void
     {
         add_settings_section(
@@ -236,8 +229,6 @@ class Auth extends Components {
             // ],
         ]);
     }
-
-    #[Override]
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_generate_invite_code', function () {

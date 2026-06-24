@@ -1,14 +1,6 @@
 <?php
 use JEALER\G3\Utilities\Date;
 
-/**
- * Post List Widget: Display a list of posts.
- * 
- * 文章列表小工具
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class PostWidget extends WP_Widget {
     private int $count;
     private int $type;
@@ -30,7 +22,6 @@ class PostWidget extends WP_Widget {
         $this->category = 0;
         $this->type     = 0;
     }
-
     public function widget($args, $instance)
     {
         $title    = apply_filters('widget_title', $instance['title']);
@@ -56,7 +47,6 @@ class PostWidget extends WP_Widget {
         echo '</div>';
         echo $args['after_widget'];
     }
-
     public function form($instance)
     {
         $title      = !empty($instance['title']) ? $instance['title'] : __('Posts List', 'G3');
@@ -96,7 +86,6 @@ class PostWidget extends WP_Widget {
         </p>
         <?php
     }
-
     public function update($new_instance, $old_instance)
     {
         $instance             = $old_instance;
@@ -106,7 +95,6 @@ class PostWidget extends WP_Widget {
         $instance['category'] = $new_instance['category'];
         return $instance;
     }
-
     private function getPosts($count, $category, $type)
     {
         $posts = [];

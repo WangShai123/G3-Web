@@ -1,5 +1,5 @@
 <?php
-
+use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Request;
 use JEALER\G3\Components\WechatOA\Includes\WechatOAReplyListTable;
 
@@ -13,9 +13,11 @@ $table->display();
         const { success, error } = Toast
         $(document).on('click', '#add-reply', function () {
             const editor = new Modal({
-                title: "<?php _e('Add New', 'G3'); ?>",
-                confirmText: "<?php _e('Add New', 'G3'); ?>",
-                cancelText: "<?php _e('Cancel'); ?>",
+                text: {
+                    title: "<?php _e('Add New', 'G3'); ?>",
+                    confirm: "<?php _e('Add New', 'G3'); ?>",
+                    cancel: "<?php _e('Cancel'); ?>",
+                },
                 fields: [
                     {
                         label: '<?php _e('Keywords'); ?>',
@@ -93,9 +95,11 @@ $table->display();
             const keywords = JSON.parse(t.data('keywords'));
             const reply = JSON.parse(t.data('content'));
             const editModal = new Modal({
-                title: "<?php _e('Edit'); ?>",
-                confirmText: "<?php _e('Update'); ?>",
-                cancelText: "<?php _e('Cancel'); ?>",
+                text: {
+                    title: "<?php _e('Edit'); ?>",
+                    confirm: "<?php _e('Update'); ?>",
+                    cancel: "<?php _e('Cancel'); ?>",
+                },
                 fields: [
                     {
                         label: '<?php _e('Keywords'); ?>',
@@ -170,7 +174,7 @@ $table->display();
         });
 
         $(document).on('click', '.delete-reply', function () {
-            if (confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) {
+            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.ajax({
                     url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',
                     type: 'POST',

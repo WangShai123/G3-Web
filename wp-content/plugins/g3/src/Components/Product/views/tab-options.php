@@ -1,8 +1,8 @@
 <?php
-
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Components\Product\Includes\SpecOptionsListTable;
 use JEALER\G3\Services\ProductService;
+use JEALER\G3\Utilities\Message;
 
 $table = new SpecOptionsListTable();
 $table->display();
@@ -28,8 +28,10 @@ $specs = json_encode($specs);
         const ts = (k) => t(k, langs)
         const editModal = new Modal({
             header: false,
-            confirmText: '<?php _e('Add'); ?>',
-            cancelText: '<?php _e('Cancel'); ?>',
+            text: {
+                confirm: '<?php _e('Add'); ?>',
+                cancel: '<?php _e('Cancel'); ?>',
+            },
             fields: [
                 {
                     label: '<?php _e('Name'); ?>',
@@ -150,7 +152,7 @@ $specs = json_encode($specs);
                 lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
                 return
             }
-            if (!confirm('<?php _e('Are you sure you want to delete it?', 'G3'); ?>')) return
+            if (!confirm('<?php Message::deleteConfirm(); ?>')) return
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',

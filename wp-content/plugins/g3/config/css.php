@@ -1,6 +1,6 @@
 <?php
 return [
-    'jui'       => [G3_CSS_URL . '/jui.css', [], '0.4.0', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
+    'jui'       => [G3_CSS_URL . '/jui.css', [], '1.0.1', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
     /**
      * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
      * @link https://github.com/highlightjs/highlight.js

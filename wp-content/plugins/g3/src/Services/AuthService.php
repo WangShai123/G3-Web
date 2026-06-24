@@ -1,7 +1,5 @@
 <?php
-
 namespace JEALER\G3\Services;
-
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
@@ -12,73 +10,31 @@ use WP_Error;
 use Exception;
 use wpdb;
 
-/**
- * AuthService
- * 
- * 认证服务类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class AuthService {
-
-    const string InvitationCodeTable = 'g3_invite_codes';
-
-    /**
-     * General Auth Option Key
-     * 
-     * 常规授权配置项键名
-     * 
-     * @var string
-     * @access public
-     */
+    const string INVITE_CODE_TABLE = 'g3_invite_codes';
+    // General Auth Option Key
     const OPTION_KEY = 'g3_option_auth';
-
-    /**
-     * WeChat Auth Option Key
-     * 
-     * 微信登录的配置项键名
-     * 
-     * @var string
-     * @access public
-     */
-    const WECHAT_OPTION_KEY = 'g3_option_auth_wechat';
-
-    const OPENID_META_KEY = 'g3_wechat_openId';
-    const WX_OPEN_ID_KEY  = 'wx_openId';
-    const WX_UNION_ID_KEY = 'wx_unionId';
-
+    // WeChat Auth Option Key
+    const WECHAT_OPTION_KEY     = 'g3_option_auth_wechat';
+    const OPENID_META_KEY       = 'g3_wechat_openId';
+    const WX_OPEN_ID_KEY        = 'wx_openId';
+    const WX_UNION_ID_KEY       = 'wx_unionId';
     const SUBSCRIBE_HASH_PREFIX = 'g3_SubscribeLoginHash_';
+    const WECHAT_CALLBACK       = '/api/v1/auth/wechat/callback';
 
-    const WECHAT_CALLBACK = '/api/v1/auth/wechat/callback';
-
-    /**
-     * Wechat OA Application
-     * 
-     * 微信公众号应用
-     * 
-     * @var Application
-     * @access public
-     */
+    // Wechat OA Application
     public Application $wechatOA;
-
-    /**
-     * Wechat OA Service
-     * 
-     * @var WechatOAService
-     * @access public
-     */
+    // Wechat OA Service
     public WechatOAService $wechatOAService;
-
-    private wpdb $wpdb;
-    private string $fullInviteCodesTable;
+    private wpdb           $wpdb;
+    private string         $fullInviteCodesTable;
 
     public function __construct()
     {
         $this->wechatOAService = WechatOAService::run();
         global $wpdb;
         $this->wpdb                 = $wpdb;
-        $this->fullInviteCodesTable = $wpdb->prefix . self::InvitationCodeTable;
+        $this->fullInviteCodesTable = $wpdb->prefix . self::INVITE_CODE_TABLE;
     }
 
     /************************************************************
@@ -86,7 +42,6 @@ class AuthService {
      * Cookie Handle
      * 
      ************************************************************/
-
     /**
      * Check WordPress login cookie.
      * 
@@ -417,8 +372,8 @@ class AuthService {
     public static function renderCodeSource(int $id): string
     {
         return match ($id) {
-            1 => __('System Generated', 'G3'),
-            2 => __('User Bought', 'G3'),
+            1       => __('System Generated', 'G3'),
+            2       => __('User Bought', 'G3'),
             default => __('Unknown'),
         };
     }
@@ -429,10 +384,8 @@ class AuthService {
      * Auth UI
      * 
      ************************************************************/
-
     /**
      * Login Element
-     * 
      * @param string $element Login HTML element
      * @param bool $modal Whether to use modal for login
      * @return string Login HTML element
@@ -444,7 +397,6 @@ class AuthService {
         } else {
             load_template(G3_TEMPLATE_DIR . '/user/login-modal.php', true);
         }
-
         return $element;
     }
 }

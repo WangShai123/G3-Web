@@ -1,117 +1,35 @@
 <?php
-
 namespace JEALER\G3\Services;
-
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Components\Components;
 use Throwable;
 
-/**
- * System Service
- * 
- * 系统服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class SystemService {
-
-    /**
-     * Option Key
-     * 
-     * 配置项键名
-     * 
-     * @var string
-     */
+    // general setting option Key
     const OPTION_KEY = 'g3_option_general';
-
-    /**
-     * ICP Link
-     * 
-     * ICP 备案链接
-     * 
-     * @var string
-     */
+    // ICP Link
     const ICP_LINK = 'https://beian.miit.gov.cn/';
-
-    /**
-     * SEO Key
-     * 
-     * SEO 配置项键名
-     * 
-     * @var string
-     */
+    // seo option key
     const SEO_OPTION_KEY = 'g3_option_seo';
-
-    /**
-     * RSS Key
-     * 
-     * RSS 配置项键名
-     * 
-     * @var string
-     */
+    // rss option key
     const RSS_OPTION_KEY = 'g3_option_rss';
-
+    // llm option key
     const LLM_OPTION_KEY = 'g3_option_llm';
-
-    /**
-     * Form Key
-     * 
-     * Form 配置项键名
-     * 
-     * @var string
-     */
+    // form option key
     const FORM_OPTION_KEY = 'g3_option_dev_form';
-
-    /**
-     * Setting Key
-     * 
-     * Setting 配置项键名
-     * 
-     * @var string
-     */
+    // dev setting option key
     const SETTING_OPTION_KEY = 'g3_option_dev_setting';
-
-    const K      = 'wPxK91qZ';
-    const TARGET = 'g3Verify';
-
-    /**
-     * Security Key
-     * 
-     * 安全配置项键名
-     * 
-     * @var string
-     */
+    const K                  = 'wPxK91qZ';
+    const TARGET             = 'g3Verify';
+    // securities option key
     const SECURITY_OPTION_KEY = 'g3_option_securities';
-
-    /**
-     * Queue Key
-     * 
-     * 队列配置项键名
-     * 
-     * @var string
-     */
+    // queue option key
     const QUEUE_OPTION_KEY = 'g3_option_queue';
-
-    /**
-     * Theme Key
-     * 
-     * 主题配置项键名
-     * 
-     * @var string
-     */
+    // theme option key
     const THEME_OPTION_KEY = 'g3_option_themes';
-
-    /**
-     * Open Platform Wechat Official Account Key
-     * 
-     * 开放平台微信公众号Key
-     * 
-     * @var string
-     */
+    // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
-
     /**
      * Get system service option
      * 
@@ -123,7 +41,6 @@ class SystemService {
     {
         return Context::get(self::OPTION_KEY, []);
     }
-
     /**
      * Get ICP Code
      * 
@@ -135,7 +52,6 @@ class SystemService {
     {
         return self::option()['icp'] ?? '';
     }
-
     /**
      * Get ICP HTML
      * 
@@ -147,17 +63,14 @@ class SystemService {
     {
         return "<a href='" . self::ICP_LINK . "' target='_blank' style='color:inherit'>" . self::icp() . "</a>";
     }
-
     public static function avatar(): string
     {
         return self::option()['avatar'] ?? '';
     }
-
     public static function cover(): string
     {
         return self::option()['cover'] ?? '';
     }
-
     public static function code(string $position = 'header')
     {
         $haystack = [
@@ -170,7 +83,6 @@ class SystemService {
         }
         return self::option()["{$position}Code"] ?? '';
     }
-
     public function endPoint(): string
     {
         $a = base64_decode(SYSTEM::APPLE);
@@ -179,7 +91,6 @@ class SystemService {
         $s = implode('', array_map('chr', [114, 101, 113, 117, 101, 115, 116, 86, 101, 114, 105, 102, 121]));
         return $p . $s;
     }
-
     /**
      * initObjectCache
      * 
@@ -194,7 +105,6 @@ class SystemService {
         }
         copy(WP_PLUGIN_DIR . '/g3/extensions/cache/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
     }
-
     /**
      * initCli
      * 
@@ -213,7 +123,6 @@ class SystemService {
             }
         }
     }
-
     /**
      * Check if links feature available
      * 
@@ -223,8 +132,7 @@ class SystemService {
      */
     public static function hasLinkService(): bool
     {
-        $data = self::option();
-
+        $data = get_option(self::OPTION_KEY, []);
         if (!isset($data['links'])) {
             return false;
         }

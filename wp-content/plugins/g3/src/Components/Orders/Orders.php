@@ -7,15 +7,11 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class Orders extends Components {
-
     private OrdersService $service;
-
     protected function ready(): void
     {
         $this->service = Container::run()->use(OrdersService::class);
     }
-
-    #[Override]
     protected function adminMenu(): void
     {
         add_menu_page(
@@ -48,12 +44,10 @@ class Orders extends Components {
             2
         );
     }
-
     public function render(): void
     {
         require_once __DIR__ . '/views/view-orders.php';
     }
-
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_close_order', function () {
