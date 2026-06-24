@@ -1,7 +1,7 @@
 <?php
 use JEALER\G3\Utilities\Validator;
 
-$encoded = get_query_var('redirect_url');
+$encoded = get_query_var('g3_var_redirect_url');
 if (!$encoded) return;
 
 $url = rawurldecode($encoded);

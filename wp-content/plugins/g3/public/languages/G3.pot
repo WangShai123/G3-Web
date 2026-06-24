@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 09:24+0000\n"
+"POT-Creation-Date: 2026-06-24 17:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -23,7 +23,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number of failed attempts
-#: src/Components/Auth/Auth.php:293
+#: src/Components/Auth/Auth.php:284
 msgid "%d code generation failed."
 msgid_plural "%d codes generation failed."
 msgstr[0] ""
@@ -57,15 +57,15 @@ msgid_plural "%s seconds ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Components/Post/Post.php:164
+#: src/Components/Post/Post.php:145
 msgid "1 Day"
 msgstr ""
 
-#: src/Components/Post/Post.php:158
+#: src/Components/Post/Post.php:139
 msgid "1 Hour"
 msgstr ""
 
-#: src/Components/Post/Post.php:153
+#: src/Components/Post/Post.php:134
 msgid "1 Minute"
 msgstr ""
 
@@ -73,19 +73,19 @@ msgstr ""
 msgid "1. Install Redis software on the server and enable it to run."
 msgstr ""
 
-#: src/Components/Post/Post.php:155
+#: src/Components/Post/Post.php:136
 msgid "10 Minutes"
 msgstr ""
 
-#: src/Components/Post/Post.php:163
+#: src/Components/Post/Post.php:144
 msgid "12 Hours"
 msgstr ""
 
-#: src/Components/Post/Post.php:156
+#: src/Components/Post/Post.php:137
 msgid "15 Minutes"
 msgstr ""
 
-#: src/Components/Post/Post.php:159
+#: src/Components/Post/Post.php:140
 msgid "2 Hours"
 msgstr ""
 
@@ -93,7 +93,7 @@ msgstr ""
 msgid "2. Install the Redis extension for PHP and enable it."
 msgstr ""
 
-#: src/Components/Post/Post.php:160
+#: src/Components/Post/Post.php:141
 msgid "3 Hours"
 msgstr ""
 
@@ -105,23 +105,23 @@ msgid ""
 "WordPress."
 msgstr ""
 
-#: src/Components/Post/Post.php:157
+#: src/Components/Post/Post.php:138
 msgid "30 Minutes"
 msgstr ""
 
-#: src/Components/Post/Post.php:161
+#: src/Components/Post/Post.php:142
 msgid "4 Hours"
 msgstr ""
 
-#: src/Components/Post/Post.php:154
+#: src/Components/Post/Post.php:135
 msgid "5 Minutes"
 msgstr ""
 
-#: src/Components/Post/Post.php:162
+#: src/Components/Post/Post.php:143
 msgid "6 Hours"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:770
+#: src/Components/Developer/Developer.php:756
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
@@ -151,6 +151,12 @@ msgid ""
 "server:<br><b>extension = %s</b>"
 msgstr ""
 
+#: src/Components/Setting/Setting.php:483
+msgid ""
+"<strong>Share it to your friends, robots or AI!</strong> You can access the "
+"local sitemap cache file through the current address."
+msgstr ""
+
 #: src/Components/Developer/views/tab-help.php:17
 msgid "About G3 System"
 msgstr ""
@@ -159,39 +165,39 @@ msgstr ""
 msgid "About G3 Web"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:536
+#: src/Components/Developer/Developer.php:522
 msgid "Active & Remove <code>WordPress</code> in the admin page title."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:549
+#: src/Components/Developer/Developer.php:535
 msgid ""
 "Active & Remove the WordPress Logo & menu in the admin bar & admin login "
 "page."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:588
+#: src/Components/Developer/Developer.php:574
 msgid "Active & Remove Theme Install button in admin page themes.php."
+msgstr ""
+
+#: src/Components/Activity/Activity.php:12
+#: src/Components/Activity/Activity.php:14
+msgid "Activities"
+msgstr ""
+
+#: src/Components/Activity/Activity.php:35
+msgid "Activities list"
+msgstr ""
+
+#: src/Components/Activity/Activity.php:34
+msgid "Activities list navigation"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:13
 #: src/Components/Activity/Activity.php:15
-msgid "Activities"
-msgstr ""
-
-#: src/Components/Activity/Activity.php:36
-msgid "Activities list"
-msgstr ""
-
-#: src/Components/Activity/Activity.php:35
-msgid "Activities list navigation"
-msgstr ""
-
-#: src/Components/Activity/Activity.php:14
-#: src/Components/Activity/Activity.php:16
 msgid "Activity"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:31
+#: src/Components/Activity/Activity.php:30
 msgid "Activity Archives"
 msgstr ""
 
@@ -199,42 +205,42 @@ msgstr ""
 msgid "Activity Feature"
 msgstr ""
 
-#: src/Components/Ad/Ad.php:12 src/Components/Ad/Ad.php:13
+#: src/Components/Ad/Ad.php:10 src/Components/Ad/Ad.php:11
 msgid "Ad"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:17
-#: src/Components/Activity/Activity.php:19
-#: src/Components/Product/Product.php:168
-#: src/Components/Announcement/Announcement.php:23
-#: src/Components/Swiper/includes/SwiperListTable.php:160
-#: src/Components/Swiper/includes/SwiperLocationTable.php:74
-#: src/Components/Swiper/views/tab-locations.php:18
+#: src/Components/Activity/Activity.php:16
+#: src/Components/Activity/Activity.php:18
+#: src/Components/Product/Product.php:157
+#: src/Components/Announcement/Announcement.php:22
+#: src/Components/Swiper/includes/SwiperListTable.php:138
+#: src/Components/Swiper/includes/SwiperLocationTable.php:56
+#: src/Components/Swiper/views/tab-locations.php:21
 #: src/Components/User/includes/PremiumListTable.php:93
 #: src/Components/User/includes/ProjectListTable.php:85
 #: src/Components/User/includes/ManagerListTable.php:94
 #: src/Components/User/includes/RoleListTable.php:96
 #: src/Components/User/includes/DurationListTable.php:80
 #: src/Components/User/includes/CustomListTable.php:90
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:94
-#: src/Components/WechatOA/views/tab-reply.php:15
-#: src/Components/WechatOA/views/tab-reply.php:16
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:75
+#: src/Components/WechatOA/views/tab-reply.php:17
+#: src/Components/WechatOA/views/tab-reply.php:18
 msgid "Add New"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:18
+#: src/Components/Activity/Activity.php:17
 msgid "Add New Activity"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:24
+#: src/Components/Announcement/Announcement.php:23
 msgid "Add New Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:257
+#: src/Components/Product/Product.php:245
 msgid "Add New Brand"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:80
+#: src/Components/Activity/Activity.php:78
 msgid "Add New Category"
 msgstr ""
 
@@ -243,36 +249,36 @@ msgstr ""
 msgid "Add New Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:169
+#: src/Components/Product/Product.php:158
 msgid "Add New Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:231
+#: src/Components/Product/Product.php:219
 msgid "Add New Product Category"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:39 src/Components/Swiper/Swiper.php:40
+#: src/Components/Swiper/Swiper.php:32 src/Components/Swiper/Swiper.php:33
 #: src/Components/Swiper/views/page-edit.php:11
 msgid "Add Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:477
-#: src/Components/Developer/Developer.php:483
+#: src/Components/Developer/Developer.php:463
+#: src/Components/Developer/Developer.php:469
 msgid "Admin Bar"
 msgstr ""
 
-#: src/Components/Security/Security.php:141
-#: src/Components/Security/Security.php:147
+#: src/Components/Security/Security.php:144
+#: src/Components/Security/Security.php:150
 msgid "Admin Login URL"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:542
-#: src/Components/Developer/Developer.php:548
+#: src/Components/Developer/Developer.php:528
+#: src/Components/Developer/Developer.php:534
 msgid "Admin Logo"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:529
-#: src/Components/Developer/Developer.php:535
+#: src/Components/Developer/Developer.php:515
+#: src/Components/Developer/Developer.php:521
 msgid "Admin Page Title"
 msgstr ""
 
@@ -288,12 +294,12 @@ msgstr ""
 msgid "Ads Management"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:261
+#: src/Components/Mail/Mail.php:256
 msgid ""
 "After successful user registration, send an email notification to the user."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:279
+#: src/Components/Mail/Mail.php:274
 msgid ""
 "After the user retrieves the password, send an email notification to the "
 "user."
@@ -307,23 +313,23 @@ msgid ""
 "access logs after enabling it."
 msgstr ""
 
-#: src/Components/Activity/Activity.php:22
+#: src/Components/Activity/Activity.php:21
 msgid "All Activities"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:28
+#: src/Components/Announcement/Announcement.php:27
 msgid "All Announcements"
 msgstr ""
 
-#: src/Components/Product/Product.php:252
+#: src/Components/Product/Product.php:240
 msgid "All Brands"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:75
+#: src/Components/Activity/Activity.php:73
 msgid "All Categories"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:84
+#: src/Components/Comment/widgets/CommentWidget.php:76
 msgid "All Comments"
 msgstr ""
 
@@ -334,34 +340,30 @@ msgid ""
 "as needed."
 msgstr ""
 
-#: src/Components/Auth/includes/InvitationCodeListTable.php:127
-msgid "All Invitation Codes"
-msgstr ""
-
-#: src/Components/Orders/Orders.php:32 src/Components/Orders/Orders.php:33
-#: src/Components/Orders/includes/OrdersListTable.php:125
+#: src/Components/Orders/Orders.php:28 src/Components/Orders/Orders.php:29
+#: src/Components/Orders/includes/OrdersListTable.php:115
 msgid "All Orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:290
+#: src/Components/Setting/Setting.php:276
 msgid ""
 "All outbound links will be intercepted by the system and redirected to the "
 "link middle page instead of the original target url."
 msgstr ""
 
-#: src/Components/Product/Product.php:226
+#: src/Components/Product/Product.php:214
 msgid "All Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:173
+#: src/Components/Product/Product.php:162
 msgid "All Products"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1330
+#: src/Services/WechatOAService.php:1320
 msgid "All provided IDs are invalid"
 msgstr ""
 
-#: src/Components/Post/Post.php:29
+#: src/Components/Post/Post.php:23
 msgid ""
 "All publicly displayed data on this platform is sourced from the public "
 "internet and is only used for functional testing purposes. They do not "
@@ -371,27 +373,27 @@ msgid ""
 "advised to verify the information themselves."
 msgstr ""
 
-#: src/Components/Auth/views/tab-invitation.php:19
+#: src/Components/Auth/views/tab-invitation.php:22
 msgid "Amount"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:20
+#: src/Components/Announcement/Announcement.php:19
 msgid "Announcement"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:74
+#: src/Components/Announcement/Announcement.php:73
 msgid "Announcement Categories"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:75
+#: src/Components/Announcement/Announcement.php:74
 msgid "Announcement Category"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:89
+#: src/Components/Comment/widgets/CommentWidget.php:81
 msgid "Announcement Comments"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:103
+#: src/Components/Announcement/Announcement.php:102
 msgid "Announcement draft updated."
 msgstr ""
 
@@ -399,89 +401,75 @@ msgstr ""
 msgid "Announcement Feature"
 msgstr ""
 
-#: src/Components/Announcement/widgets/AnnouncementWidget.php:25
-#: src/Components/Announcement/widgets/AnnouncementWidget.php:61
+#: src/Components/Announcement/widgets/AnnouncementWidget.php:17
+#: src/Components/Announcement/widgets/AnnouncementWidget.php:53
 msgid "Announcement List"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:96
+#: src/Components/Announcement/Announcement.php:95
 msgid "Announcement published."
 msgstr ""
 
 #. %s: date and time of the revision
-#: src/Components/Announcement/Announcement.php:95
+#: src/Components/Announcement/Announcement.php:94
 #, php-format
 msgid "Announcement restored to version from %s."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:97
+#: src/Components/Announcement/Announcement.php:96
 msgid "Announcement saved."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:100
+#: src/Components/Announcement/Announcement.php:99
 #, php-format
 msgid "Announcement scheduled for:<strong>%1$s</strong>."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:98
+#: src/Components/Announcement/Announcement.php:97
 msgid "Announcement submitted."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:90
-#: src/Components/Announcement/Announcement.php:93
+#: src/Components/Announcement/Announcement.php:89
+#: src/Components/Announcement/Announcement.php:92
 msgid "Announcement updated."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:19
+#: src/Components/Announcement/Announcement.php:18
+#: src/Components/Announcement/Announcement.php:20
 #: src/Components/Announcement/Announcement.php:21
-#: src/Components/Announcement/Announcement.php:22
 msgid "Announcements"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:37
+#: src/Components/Announcement/Announcement.php:36
 msgid "Announcements Archives"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:42
+#: src/Components/Announcement/Announcement.php:41
 msgid "Announcements List"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:41
+#: src/Components/Announcement/Announcement.php:40
 msgid "Announcements List Navigation"
 msgstr ""
 
-#: src/Components/Post/Post.php:597
+#: src/Components/Post/Post.php:560
 msgid "Archive Sidebar"
 msgstr ""
 
-#: src/Components/Orders/views/view-orders.php:21
+#: src/Components/Orders/views/view-orders.php:22
 msgid "Are you sure you want to close it?"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-menus.php:57
+#: src/Components/WechatOA/views/tab-menus.php:59
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr ""
 
+#: src/Utilities/Message.php:38
 #: src/Components/Developer/views/tab-junk-cleaner.php:12
-#: src/Components/Swiper/views/tab-locations.php:116
-#: src/Components/Auth/views/tab-invitation.php:46
-#: src/Components/User/views/tab-level.php:91
-#: src/Components/User/views/tab-projects.php:117
-#: src/Components/User/views/tab-custom.php:76
-#: src/Components/User/views/tab-premium.php:76
-#: src/Components/User/views/tab-duration.php:157
-#: src/Components/User/views/tab-manager.php:57
-#: src/Components/Product/views/tab-specifications.php:178
-#: src/Components/Product/views/sku.php:23
-#: src/Components/Product/views/tab-options.php:152
-#: src/Components/WechatOA/views/tab-menus.php:38
-#: src/Components/WechatOA/views/tab-message.php:56
-#: src/Components/WechatOA/views/tab-reply.php:172
-#: src/Components/Orders/views/view-orders.php:31
 msgid "Are you sure you want to delete it?"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-menus.php:79
+#: src/Components/WechatOA/views/tab-menus.php:81
 msgid "Are you sure you want to flush the menus online?"
 msgstr ""
 
@@ -494,12 +482,12 @@ msgstr ""
 msgid "Array %s[%s] must be type %s."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1710
+#: src/Services/WechatOAService.php:1700
 #: src/Components/WechatOA/views/view-menu-edit.php:288
 msgid "Article ID"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1709
+#: src/Services/WechatOAService.php:1699
 #: src/Components/WechatOA/views/view-menu-edit.php:276
 msgid "Article URL"
 msgstr ""
@@ -511,11 +499,11 @@ msgid ""
 "waste."
 msgstr ""
 
-#: src/Services/WechatOAService.php:908
+#: src/Services/WechatOAService.php:898
 msgid "At least one keyword is required"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:383
+#: src/Components/Setting/Setting.php:369
 msgid "Atom URL"
 msgstr ""
 
@@ -529,19 +517,19 @@ msgid ""
 "the live broadcast."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:333
+#: src/Components/Developer/Developer.php:319
 msgid "Auto Backup"
 msgstr ""
 
-#: src/Components/Post/Post.php:191 src/Components/Post/Post.php:197
+#: src/Components/Post/Post.php:172 src/Components/Post/Post.php:178
 msgid "Auto Notice"
 msgstr ""
 
-#: src/Components/Post/Post.php:198
+#: src/Components/Post/Post.php:179
 msgid "Automatically add a notice at the end of the article"
 msgstr ""
 
-#: src/Components/Post/Post.php:211
+#: src/Components/Post/Post.php:192
 msgid ""
 "Automatically add your encoded & invisible brand mark in the article while "
 "saving to protect your content copyright.<br>It will cost several memory "
@@ -549,7 +537,7 @@ msgid ""
 "test=robustEncoder\" target=\"_blank\">Test Performance</a>"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:627
+#: src/Components/Developer/Developer.php:613
 msgid "Back-end Form Fields Demonstration"
 msgstr ""
 
@@ -557,7 +545,7 @@ msgstr ""
 msgid "Balance Management"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1168
+#: src/Services/WechatOAService.php:1158
 msgid "Batch insert keywords failed"
 msgstr ""
 
@@ -583,7 +571,7 @@ msgstr ""
 msgid "Between Credits"
 msgstr ""
 
-#: src/Utilities/Message.php:21
+#: src/Utilities/Message.php:13
 msgid "Bind Successful"
 msgstr ""
 
@@ -607,8 +595,8 @@ msgstr ""
 msgid "Block access to XML-RPC"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:438
-#: src/Components/Developer/Developer.php:444
+#: src/Components/Developer/Developer.php:424
+#: src/Components/Developer/Developer.php:430
 msgid "Block Patterns"
 msgstr ""
 
@@ -617,17 +605,17 @@ msgstr ""
 msgid "Block User-Agent, such as: libredtail-http, python-httpx..."
 msgstr ""
 
-#: src/Services/ProductService.php:115
-#: src/Components/Product/views/tab-specifications.php:59
-#: src/Components/Product/views/tab-specifications.php:154
+#: src/Services/ProductService.php:61
+#: src/Components/Product/views/tab-specifications.php:61
+#: src/Components/Product/views/tab-specifications.php:156
 msgid "Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:259
+#: src/Components/Product/Product.php:247
 msgid "Brands"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:284
+#: src/Components/Developer/Developer.php:270
 msgid "Build Theme"
 msgstr ""
 
@@ -661,12 +649,13 @@ msgstr ""
 msgid "Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:323
-#: src/Components/Setting/Setting.php:417
+#: src/Components/Developer/Developer.php:309
+#: src/Components/Setting/Setting.php:403
+#: src/Components/Setting/Setting.php:483
 msgid "Cache Data"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:878
+#: src/Components/Developer/Developer.php:863
 msgid "Cache flushed successfully!"
 msgstr ""
 
@@ -674,54 +663,54 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
-#: src/Components/Product/views/tab-options.php:149
+#: src/Components/Product/views/tab-options.php:152
 msgid "Cannot delete this spec option, it is used in sku."
 msgstr ""
 
-#: src/Components/Product/Product.php:665
+#: src/Components/Product/Product.php:637
 msgid "Cannot delete this spec option, it is used in some SKUs."
 msgstr ""
 
-#: src/Components/Product/Product.php:599
-#: src/Components/Product/views/tab-specifications.php:175
+#: src/Components/Product/Product.php:571
+#: src/Components/Product/views/tab-specifications.php:177
 msgid "Cannot delete this spec, it is used in some sku or options."
 msgstr ""
 
-#: src/Components/Post/Post.php:740
+#: src/Components/Post/Post.php:699
 msgid "Card Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:119
-#: src/Components/Product/Product.php:125
+#: src/Components/Product/Product.php:109
+#: src/Components/Product/Product.php:115
 msgid "Cart"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:71
-#: src/Components/Activity/Activity.php:82
-#: src/Components/Product/Product.php:233
-#: src/Components/Announcement/Announcement.php:76
+#: src/Components/Activity/Activity.php:69
+#: src/Components/Activity/Activity.php:80
+#: src/Components/Product/Product.php:221
+#: src/Components/Announcement/Announcement.php:75
 msgid "Categories"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:72
+#: src/Components/Activity/Activity.php:70
 msgid "Category"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:744
-#: src/Components/Developer/Developer.php:746
+#: src/Components/Developer/Developer.php:730
+#: src/Components/Developer/Developer.php:732
 msgid "Change the direction"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:596
+#: src/Components/Developer/Developer.php:582
 msgid "Check & Remove the default dashboard widgets."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:755
-#: src/Components/Developer/Developer.php:757
+#: src/Components/Developer/Developer.php:741
+#: src/Components/Developer/Developer.php:743
 msgid "Checkbox field"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:510
+#: src/Components/Developer/Developer.php:496
 msgid "Clean the data wp head."
 msgstr ""
 
@@ -730,12 +719,12 @@ msgstr ""
 msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1700
+#: src/Services/WechatOAService.php:1690
 #: src/Components/WechatOA/views/view-menu-edit.php:168
 msgid "Click Event"
 msgstr ""
 
-#: src/Services/WechatOAService.php:621
+#: src/Services/WechatOAService.php:611
 #, php-format
 msgid "Click here to view \"%s\" search results."
 msgstr ""
@@ -749,8 +738,8 @@ msgstr ""
 msgid "Coming soon."
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:24
-#: src/Components/Comment/widgets/CommentWidget.php:73
+#: src/Components/Comment/widgets/CommentWidget.php:16
+#: src/Components/Comment/widgets/CommentWidget.php:65
 msgid "Comment List"
 msgstr ""
 
@@ -775,7 +764,7 @@ msgstr ""
 msgid "Configuration Guide"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-message.php:45
+#: src/Components/WechatOA/views/tab-message.php:46
 msgid "Confirm"
 msgstr ""
 
@@ -789,13 +778,13 @@ msgstr ""
 msgid "Contact Us"
 msgstr ""
 
-#: templates/developer/w.php:118 src/Components/Post/Post.php:665
+#: templates/developer/w.php:118 src/Components/Post/Post.php:626
 #: src/Components/Share/Share.php:85 src/Components/Share/Share.php:91
 msgid "Content Distribution"
 msgstr ""
 
-#: src/Components/Security/Security.php:223
-#: src/Components/Security/Security.php:229
+#: src/Components/Security/Security.php:255
+#: src/Components/Security/Security.php:261
 msgid "Content Security Policy"
 msgstr ""
 
@@ -803,30 +792,30 @@ msgstr ""
 msgid "Continue to Visit"
 msgstr ""
 
-#: src/Components/Post/Post.php:176 src/Components/Post/Post.php:182
+#: src/Components/Post/Post.php:157 src/Components/Post/Post.php:163
 msgid "Copyright Notice"
 msgstr ""
 
-#: src/Components/Post/Post.php:204 src/Components/Post/Post.php:210
+#: src/Components/Post/Post.php:185 src/Components/Post/Post.php:191
 msgid "Copyright Protection"
 msgstr ""
 
-#: src/Components/Post/widgets/PostWidget.php:81
+#: src/Components/Post/widgets/PostWidget.php:71
 msgid "Count"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:679
-#: src/Components/Developer/Developer.php:681
+#: src/Components/Developer/Developer.php:665
+#: src/Components/Developer/Developer.php:667
 msgid "Counter input"
 msgstr ""
 
-#: src/Components/Post/Post.php:538 src/Components/Post/Post.php:560
-#: src/Components/Announcement/Announcement.php:33
+#: src/Components/Post/Post.php:504 src/Components/Post/Post.php:525
+#: src/Components/Announcement/Announcement.php:32
 msgid "Cover"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:27
-#: src/Components/Product/Product.php:178
+#: src/Components/Activity/Activity.php:26
+#: src/Components/Product/Product.php:167
 msgid "Cover Image"
 msgstr ""
 
@@ -850,11 +839,11 @@ msgstr ""
 msgid "Cryptocurrency"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:164
+#: src/Components/Auth/Auth.php:157
 msgid "Currency Pay"
 msgstr ""
 
-#: src/Services/SwiperService.php:359
+#: src/Services/SwiperService.php:234
 msgid "Current Tab"
 msgstr ""
 
@@ -866,13 +855,13 @@ msgstr ""
 msgid "Custom Admin"
 msgstr ""
 
-#: src/Components/Security/Security.php:128
-#: src/Components/Security/Security.php:134
+#: src/Components/Security/Security.php:131
+#: src/Components/Security/Security.php:137
 msgid "Custom Admin Login"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:254
-#: src/Components/Setting/Setting.php:260
+#: src/Components/Setting/Setting.php:240
+#: src/Components/Setting/Setting.php:246
 msgid "Custom Code"
 msgstr ""
 
@@ -880,17 +869,17 @@ msgstr ""
 msgid "Custom Email Template"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:241 src/Components/Mail/Mail.php:247
+#: src/Components/Mail/Mail.php:236 src/Components/Mail/Mail.php:242
 msgid "Custom Email Templates"
 msgstr ""
 
-#: src/Components/Product/Product.php:306
-#: src/Components/Announcement/Announcement.php:92
+#: src/Components/Product/Product.php:292
+#: src/Components/Announcement/Announcement.php:91
 msgid "Custom field deleted."
 msgstr ""
 
-#: src/Components/Product/Product.php:305
-#: src/Components/Announcement/Announcement.php:91
+#: src/Components/Product/Product.php:291
+#: src/Components/Announcement/Announcement.php:90
 msgid "Custom field updated."
 msgstr ""
 
@@ -898,16 +887,15 @@ msgstr ""
 msgid "Custom Group"
 msgstr ""
 
-#: src/Components/Post/Post.php:647
+#: src/Components/Post/Post.php:608
 msgid "Custom interaction data"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:82
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:201
+#: src/Components/WechatOA/WechatOA.php:70
 msgid "Custom Reply"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:681
+#: src/Components/Developer/Developer.php:667
 msgid "Custom Texts"
 msgstr ""
 
@@ -915,11 +903,11 @@ msgstr ""
 msgid "Customize the title that will be displayed when shared on WeChat."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:354
+#: src/Components/WechatOA/WechatOA.php:341
 msgid "Data Flush Complete"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:84
+#: src/Components/Swiper/Swiper.php:73
 msgid "Data Missing"
 msgstr ""
 
@@ -930,33 +918,33 @@ msgstr ""
 msgid "Data missing"
 msgstr ""
 
-#: src/Components/Post/widgets/PostWidget.php:74
+#: src/Components/Post/widgets/PostWidget.php:64
 msgid "Data Type"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:126 src/Components/Auth/Auth.php:127
-#: src/Components/Auth/Auth.php:128 src/Components/Auth/Auth.php:129
-#: src/Components/Auth/Auth.php:130 src/Components/Auth/Auth.php:131
-#: src/Components/Auth/Auth.php:132
+#: src/Components/Auth/Auth.php:119 src/Components/Auth/Auth.php:120
+#: src/Components/Auth/Auth.php:121 src/Components/Auth/Auth.php:122
+#: src/Components/Auth/Auth.php:123 src/Components/Auth/Auth.php:124
+#: src/Components/Auth/Auth.php:125
 msgid "Days"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-message.php:92
+#: src/Components/WechatOA/views/tab-message.php:97
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:174
-#: src/Components/Setting/Setting.php:180
+#: src/Components/Setting/Setting.php:160
+#: src/Components/Setting/Setting.php:166
 msgid "Default Avatar"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:190
-#: src/Components/Setting/Setting.php:196
+#: src/Components/Setting/Setting.php:176
+#: src/Components/Setting/Setting.php:182
 msgid "Default Cover"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:202
-#: src/Components/WechatOA/WechatOA.php:208
+#: src/Components/WechatOA/WechatOA.php:189
+#: src/Components/WechatOA/WechatOA.php:195
 msgid "Default Message"
 msgstr ""
 
@@ -964,46 +952,46 @@ msgstr ""
 msgid "Define cache switch"
 msgstr ""
 
-#: src/Components/Post/Post.php:150
+#: src/Components/Post/Post.php:131
 msgid ""
 "Defines how long a visit from the same user must wait before it counts as a "
 "new view."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:169
-#: src/Components/Swiper/includes/SwiperLocationTable.php:135
+#: src/Components/Swiper/Swiper.php:156
+#: src/Components/Swiper/includes/SwiperLocationTable.php:107
 msgid "Delete Failed"
 msgstr ""
 
-#: src/Components/WechatOA/includes/WechatOAMessageListTable.php:101
-#: src/Components/WechatOA/views/tab-message.php:75
+#: src/Components/WechatOA/includes/WechatOAMessageListTable.php:82
+#: src/Components/WechatOA/views/tab-message.php:79
 msgid "Delete History Data"
 msgstr ""
 
-#: src/Utilities/Response.php:65 src/Controllers/AdminController.php:134
+#: src/Utilities/Response.php:68 src/Controllers/AdminController.php:134
 #: src/Services/OrdersService.php:139
-#: src/Components/Swiper/includes/SwiperListTable.php:176
-#: src/Components/Swiper/includes/SwiperLocationTable.php:132
-#: src/Components/Auth/includes/InvitationCodeListTable.php:179
+#: src/Components/Swiper/includes/SwiperListTable.php:153
+#: src/Components/Swiper/includes/SwiperLocationTable.php:104
+#: src/Components/Auth/includes/InvitationCodeListTable.php:175
 #: src/Components/User/includes/PremiumListTable.php:114
 #: src/Components/User/includes/ProjectListTable.php:133
 #: src/Components/User/includes/ManagerListTable.php:115
 #: src/Components/User/includes/RoleListTable.php:117
 #: src/Components/User/includes/DurationListTable.php:120
 #: src/Components/User/includes/CustomListTable.php:111
-#: src/Components/Product/includes/SkuListTable.php:201
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:158
-#: src/Components/WechatOA/includes/WechatOAMessageListTable.php:135
-#: src/Components/Orders/includes/OrdersListTable.php:160
+#: src/Components/Product/includes/SkuListTable.php:173
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:130
+#: src/Components/WechatOA/includes/WechatOAMessageListTable.php:113
+#: src/Components/Orders/includes/OrdersListTable.php:148
 msgid "Deleted"
 msgstr ""
 
-#: src/Components/Orders/includes/OrdersListTable.php:262
-#: src/Components/Orders/views/view-orders.php:42
+#: src/Components/Orders/includes/OrdersListTable.php:246
+#: src/Components/Orders/views/view-orders.php:44
 msgid "Deliver"
 msgstr ""
 
-#: src/Components/Orders/views/view-orders.php:47
+#: src/Components/Orders/views/view-orders.php:50
 msgid "Deliver Tracking Number"
 msgstr ""
 
@@ -1012,7 +1000,7 @@ msgstr ""
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:592
+#: src/Components/Setting/Setting.php:613
 msgid "Description"
 msgstr ""
 
@@ -1020,25 +1008,25 @@ msgstr ""
 msgid "Design"
 msgstr ""
 
-#: src/Components/Post/Post.php:706
+#: src/Components/Post/Post.php:665
 msgid "Desktop Footer Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:707
+#: src/Components/Post/Post.php:666
 msgid "Desktop Footer Secondary Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:704
+#: src/Components/Post/Post.php:663
 msgid "Desktop Header Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:705
+#: src/Components/Post/Post.php:664
 msgid "Desktop Header Secondary Menu"
 msgstr ""
 
-#: templates/developer/w.php:154 src/Components/Developer/Developer.php:192
-#: src/Components/Developer/Developer.php:193
-#: src/Components/Developer/Developer.php:278
+#: templates/developer/w.php:154 src/Components/Developer/Developer.php:187
+#: src/Components/Developer/Developer.php:188
+#: src/Components/Developer/Developer.php:264
 msgid "Developer Mode"
 msgstr ""
 
@@ -1046,11 +1034,11 @@ msgstr ""
 msgid "Development"
 msgstr ""
 
-#: src/Services/ProductService.php:132
+#: src/Services/ProductService.php:78
 msgid "Digital Product"
 msgstr ""
 
-#: src/Utilities/Element.php:100 src/Components/Auth/Auth.php:91
+#: src/Utilities/Element.php:100 src/Components/Auth/Auth.php:84
 msgid "Disable"
 msgstr ""
 
@@ -1060,7 +1048,7 @@ msgid ""
 "avoid some mistakes."
 msgstr ""
 
-#: src/Components/Security/Security.php:191
+#: src/Components/Security/Security.php:223
 msgid ""
 "Disable the WordPress built-in REST API to avoid exposing sensitive "
 "information. Only admin can visit the build-in REST API."
@@ -1072,15 +1060,15 @@ msgid ""
 "the speed of the backend access."
 msgstr ""
 
-#: src/Components/Post/Post.php:335
+#: src/Components/Post/Post.php:309
 msgid "Dislike"
 msgstr ""
 
-#: src/Components/Post/Post.php:780
+#: src/Components/Post/Post.php:739
 msgid "Display Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:684
+#: src/Components/Setting/Setting.php:698
 msgid "Documents"
 msgstr ""
 
@@ -1092,7 +1080,7 @@ msgstr ""
 msgid "DouYin"
 msgstr ""
 
-#: src/Services/ProductService.php:134
+#: src/Services/ProductService.php:80
 msgid "Download Product"
 msgstr ""
 
@@ -1128,31 +1116,31 @@ msgid ""
 "Attribute."
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:134
+#: src/Components/Swiper/includes/SwiperListTable.php:115
 msgid "Edit"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:20
+#: src/Components/Activity/Activity.php:19
 msgid "Edit Activity"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:26
+#: src/Components/Announcement/Announcement.php:25
 msgid "Edit Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:255
+#: src/Components/Product/Product.php:243
 msgid "Edit Brand"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:78
+#: src/Components/Activity/Activity.php:76
 msgid "Edit Category"
 msgstr ""
 
-#: src/Components/Product/Product.php:171
+#: src/Components/Product/Product.php:160
 msgid "Edit Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:229
+#: src/Components/Product/Product.php:217
 msgid "Edit Product Category"
 msgstr ""
 
@@ -1160,29 +1148,29 @@ msgstr ""
 msgid "Edit Swiper"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:55
+#: src/Components/Swiper/Swiper.php:47
 msgid "Edit Swipers"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:66 src/Components/Mail/Mail.php:67
-#: src/Components/Mail/Mail.php:77
+#: src/Components/Mail/Mail.php:62 src/Components/Mail/Mail.php:63
+#: src/Components/Mail/Mail.php:73
 msgid "Email"
 msgstr ""
 
-#: src/Components/Security/Security.php:256
+#: src/Components/Security/Security.php:288
 msgid "Email Queue"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:80
+#: src/Components/Mail/Mail.php:76
 msgid "Email Templates"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:81
+#: src/Components/Mail/Mail.php:77
 msgid "Email Test"
 msgstr ""
 
-#: src/Utilities/Element.php:101 src/Components/Developer/Developer.php:770
-#: src/Components/Mail/Mail.php:102
+#: src/Utilities/Element.php:101 src/Components/Developer/Developer.php:756
+#: src/Components/Mail/Mail.php:97
 msgid "Enable"
 msgstr ""
 
@@ -1190,8 +1178,8 @@ msgstr ""
 msgid "Enable Recharge, if you want users can recharge wallet."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:723
-#: src/Components/Developer/Developer.php:725
+#: src/Components/Developer/Developer.php:709
+#: src/Components/Developer/Developer.php:711
 msgid "Enable Select"
 msgstr ""
 
@@ -1199,33 +1187,33 @@ msgstr ""
 msgid "Enable Wallet, if you want balance feature."
 msgstr ""
 
-#: src/Components/User/views/tab-level.php:56
-#: src/Components/User/views/tab-level.php:166
-#: src/Components/User/views/tab-level.php:196
+#: src/Components/User/views/tab-level.php:58
+#: src/Components/User/views/tab-level.php:168
+#: src/Components/User/views/tab-level.php:198
 msgid "End Credits"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:261
+#: src/Components/Setting/Setting.php:247
 msgid "Enter any HTML, CSS, JS code here that you want to customize output."
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-reply.php:24
-#: src/Components/WechatOA/views/tab-reply.php:104
+#: src/Components/WechatOA/views/tab-reply.php:27
+#: src/Components/WechatOA/views/tab-reply.php:109
 msgid "Enter keywords please"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-reply.php:32
-#: src/Components/WechatOA/views/tab-reply.php:113
+#: src/Components/WechatOA/views/tab-reply.php:35
+#: src/Components/WechatOA/views/tab-reply.php:118
 msgid "Enter reply please"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:245
+#: src/Components/Setting/Setting.php:231
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "footer here."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:229
+#: src/Components/Setting/Setting.php:215
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "header here."
@@ -1243,15 +1231,15 @@ msgid ""
 "                website development."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:83
+#: src/Components/WechatOA/WechatOA.php:71
 msgid "Event Replay"
 msgstr ""
 
-#: src/Components/Auth/includes/InvitationCodeListTable.php:257
+#: src/Components/Auth/includes/InvitationCodeListTable.php:253
 msgid "Expired"
 msgstr ""
 
-#: src/Utilities/Response.php:95 src/Components/Auth/Auth.php:272
+#: src/Utilities/Response.php:100 src/Components/Auth/Auth.php:263
 msgid "Failed"
 msgstr ""
 
@@ -1276,19 +1264,19 @@ msgstr ""
 msgid "Failed to delete order related data: %s."
 msgstr ""
 
-#: src/Components/Orders/includes/OrdersListTable.php:173
+#: src/Components/Orders/includes/OrdersListTable.php:160
 msgid "Failed to delete orders"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1266
+#: src/Services/WechatOAService.php:1256
 msgid "Failed to delete replies from main table."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1276
+#: src/Services/WechatOAService.php:1266
 msgid "Failed to delete reply(s)."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:895
+#: src/Components/Developer/Developer.php:880
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
@@ -1309,7 +1297,7 @@ msgstr ""
 msgid "Failed to insert order item: %s."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1074
+#: src/Services/WechatOAService.php:1064
 msgid "Failed to insert reply into main table"
 msgstr ""
 
@@ -1330,24 +1318,24 @@ msgstr ""
 msgid "Failed to send test email!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1108
+#: src/Services/WechatOAService.php:1098
 msgid "Failed to update reply in main table"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1354
+#: src/Services/WechatOAService.php:1344
 msgid "Failed to update reply status"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:252
+#: src/Components/Auth/Auth.php:243
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr ""
 
-#: src/Components/Post/Post.php:333
+#: src/Components/Post/Post.php:307
 msgid "Favorite"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:661
-#: src/Components/Setting/Setting.php:662
+#: src/Components/Setting/Setting.php:677
+#: src/Components/Setting/Setting.php:678
 msgid "Feed Disabled"
 msgstr ""
 
@@ -1385,20 +1373,20 @@ msgstr ""
 msgid "File Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:657
-#: src/Components/Developer/Developer.php:659
+#: src/Components/Developer/Developer.php:643
+#: src/Components/Developer/Developer.php:645
 msgid "File upload"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:34
+#: src/Components/Activity/Activity.php:33
 msgid "Filter activities list"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:40
+#: src/Components/Announcement/Announcement.php:39
 msgid "Filter Announcements List"
 msgstr ""
 
-#: src/Components/Product/Product.php:185
+#: src/Components/Product/Product.php:174
 msgid "Filter products list"
 msgstr ""
 
@@ -1420,25 +1408,25 @@ msgstr ""
 msgid "Flexible Payment Terms"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:823
+#: src/Components/Developer/Developer.php:809
 msgid "Flush all the cache data."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:805
+#: src/Components/Developer/Developer.php:791
 msgid "Flush and fix the rewrite rules."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:817
+#: src/Components/Developer/Developer.php:803
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:822
+#: src/Components/Developer/Developer.php:808
 msgid "Flush Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:283
+#: src/Components/Developer/Developer.php:269
 msgid "Flush Data"
 msgstr ""
 
@@ -1446,15 +1434,11 @@ msgstr ""
 msgid "Flush Menus Online"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:810
-msgid "Flush REST Route Cache"
-msgstr ""
-
-#: src/Components/Developer/Developer.php:804
+#: src/Components/Developer/Developer.php:790
 msgid "Flush Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:816
+#: src/Components/Developer/Developer.php:802
 msgid "Flush Setting Options"
 msgstr ""
 
@@ -1467,8 +1451,8 @@ msgstr ""
 msgid "Folder Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:238
-#: src/Components/Setting/Setting.php:244
+#: src/Components/Setting/Setting.php:224
+#: src/Components/Setting/Setting.php:230
 msgid "Footer Code"
 msgstr ""
 
@@ -1522,16 +1506,17 @@ msgstr ""
 msgid "For Traditional Wordpress Theme"
 msgstr ""
 
-#: src/Middleware/RoleMiddleware.php:55 src/Utilities/Response.php:75
-#: src/Utilities/Message.php:31 src/Components/Developer/Developer.php:869
+#: src/Middleware/RoleMiddleware.php:55 src/Utilities/Response.php:78
+#: src/Utilities/Message.php:23
 msgid "Forbidden"
 msgstr ""
 
-#: src/Middleware/RateLimitMiddleware.php:56
-msgid "Forbidden: Rate limit exceeded"
+#: src/Middleware/RateLimitMiddleware.php:58
+#, php-format
+msgid "Forbidden: Rate limit exceeded. Please try later after %s seconds."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:285
+#: src/Components/Developer/Developer.php:271
 msgid "Form Demo"
 msgstr ""
 
@@ -1561,7 +1546,7 @@ msgstr ""
 msgid "Frontend Editor"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1209
+#: src/Components/Developer/Developer.php:1194
 msgid "G3 License Code"
 msgstr ""
 
@@ -1601,60 +1586,60 @@ msgid ""
 "database 1."
 msgstr ""
 
-#: src/Components/Post/Post.php:738
+#: src/Components/Post/Post.php:697
 msgid "General Menu"
 msgstr ""
 
-#: src/Services/ProductService.php:131
+#: src/Services/ProductService.php:77
 msgid "General Product"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:79
+#: src/Components/Mail/Mail.php:75
 msgid "General Settings"
 msgstr ""
 
 #: src/Components/Auth/includes/InvitationCodeListTable.php:92
-#: src/Components/Auth/views/tab-invitation.php:15
-#: src/Components/Auth/views/tab-invitation.php:16
+#: src/Components/Auth/views/tab-invitation.php:17
+#: src/Components/Auth/views/tab-invitation.php:18
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:828
+#: src/Components/Developer/Developer.php:814
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:829
+#: src/Components/Developer/Developer.php:815
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
 msgstr ""
 
-#: src/Components/Product/includes/SpecsListTable.php:48
-#: src/Components/Product/views/tab-specifications.php:41
-#: src/Components/Product/views/tab-specifications.php:134
+#: src/Components/Product/includes/SpecsListTable.php:31
+#: src/Components/Product/views/tab-specifications.php:43
+#: src/Components/Product/views/tab-specifications.php:136
 msgid "Global Spec"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:222
-#: src/Components/Setting/Setting.php:228
+#: src/Components/Setting/Setting.php:208
+#: src/Components/Setting/Setting.php:214
 msgid "Header Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:464
-#: src/Components/Developer/Developer.php:470
+#: src/Components/Developer/Developer.php:450
+#: src/Components/Developer/Developer.php:456
 msgid "Help Link"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:320
-#: src/Components/Setting/Setting.php:326
+#: src/Components/Setting/Setting.php:306
+#: src/Components/Setting/Setting.php:312
 msgid "HomePage Keywords"
 msgstr ""
 
-#: src/Components/Post/Post.php:588
+#: src/Components/Post/Post.php:551
 msgid "Homepage Sidebar"
 msgstr ""
 
-#: src/Components/WechatOA/views/tab-message.php:80
+#: src/Components/WechatOA/views/tab-message.php:85
 msgid "How many days ago you want to delete?"
 msgstr ""
 
@@ -1663,7 +1648,7 @@ msgid ""
 "How to estimate the actual number of PHP files in your WordPress project?"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:286
+#: src/Components/Developer/Developer.php:272
 msgid "HTML Demo"
 msgstr ""
 
@@ -1679,12 +1664,12 @@ msgstr ""
 msgid "https://www.jealer.com/g3-system/"
 msgstr ""
 
-#: src/Components/Security/Security.php:274
+#: src/Components/Security/Security.php:306
 msgid "Hybrid Theme"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:206
-#: src/Components/Setting/Setting.php:212
+#: src/Components/Setting/Setting.php:192
+#: src/Components/Setting/Setting.php:198
 msgid "ICP Code"
 msgstr ""
 
@@ -1692,7 +1677,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:213
+#: src/Components/Setting/Setting.php:199
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1705,12 +1690,12 @@ msgid ""
 "theme <code>define(\"G3_HIDE_DEVELOPER_MODE\", true);</code>"
 msgstr ""
 
-#: src/Utilities/Response.php:85
+#: src/Utilities/Response.php:89
 msgid "Illegal request"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:668
-#: src/Components/Developer/Developer.php:670
+#: src/Components/Developer/Developer.php:654
+#: src/Components/Developer/Developer.php:656
 msgid "Image upload & preview"
 msgstr ""
 
@@ -1732,6 +1717,14 @@ msgid ""
 "loading speed and user experience."
 msgstr ""
 
+#: src/Components/Security/Security.php:208
+#, php-format
+msgid ""
+"In the <a href=\"%s\">site map settings page</a>, manually trigger to "
+"generate the site map cache file, instead of generating the site map cache "
+"file through the site map dynamic link."
+msgstr ""
+
 #: src/Components/WechatOA/views/tab-menus.php:10
 msgid ""
 "In the WeChat client, the menu of the official account is refreshed every 5 "
@@ -1739,20 +1732,20 @@ msgid ""
 "subscribe the official account and visit."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:635
-#: src/Components/Developer/Developer.php:637
+#: src/Components/Developer/Developer.php:621
+#: src/Components/Developer/Developer.php:623
 msgid "Input field"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:32
+#: src/Components/Activity/Activity.php:31
 msgid "Insert into activity"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:38
+#: src/Components/Announcement/Announcement.php:37
 msgid "Insert into Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:183
+#: src/Components/Product/Product.php:172
 msgid "Insert into product"
 msgstr ""
 
@@ -1780,11 +1773,11 @@ msgstr ""
 msgid "Invalid Hash"
 msgstr ""
 
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:129
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:105
 msgid "Invalid IDs selected."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:90
+#: src/Components/Swiper/Swiper.php:79
 msgid "Invalid Image"
 msgstr ""
 
@@ -1792,7 +1785,7 @@ msgstr ""
 msgid "Invalid item data at index %d."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:93
+#: src/Components/Swiper/Swiper.php:82
 msgid "Invalid Link"
 msgstr ""
 
@@ -1800,7 +1793,7 @@ msgstr ""
 msgid "Invalid username or password."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:60 src/Components/Auth/Auth.php:92
+#: src/Components/Auth/Auth.php:54 src/Components/Auth/Auth.php:85
 #: src/Components/Auth/includes/InvitationCodeListTable.php:36
 msgid "Invitation Code"
 msgstr ""
@@ -1811,7 +1804,7 @@ msgid ""
 "the registration code first."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:101 src/Components/Auth/Auth.php:107
+#: src/Components/Auth/Auth.php:94 src/Components/Auth/Auth.php:100
 msgid "Invite-Only Registration"
 msgstr ""
 
@@ -1823,43 +1816,43 @@ msgstr ""
 msgid "JEALER"
 msgstr ""
 
-#: templates/developer/w.php:153 src/Components/Developer/Developer.php:178
-#: src/Components/Developer/Developer.php:179
+#: templates/developer/w.php:153 src/Components/Developer/Developer.php:173
+#: src/Components/Developer/Developer.php:174
 #: src/Components/Developer/views/tab-junk-cleaner.php:4
 msgid "Junk Cleaner"
 msgstr ""
 
-#: src/Services/WechatOAService.php:933 src/Services/WechatOAService.php:946
+#: src/Services/WechatOAService.php:923 src/Services/WechatOAService.php:936
 #, php-format
 msgid "Keyword %s already exists"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1749
+#: src/Services/WechatOAService.php:1739
 #, php-format
 msgid "Keyword too long, max %s characters."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:589
-#: src/Components/Setting/Setting.php:607
-#: src/Components/Setting/Setting.php:614
+#: src/Components/Setting/Setting.php:610
+#: src/Components/Setting/Setting.php:627
+#: src/Components/Setting/Setting.php:633
 msgid "Keywords"
 msgstr ""
 
-#: src/Components/Announcement/widgets/AnnouncementWidget.php:77
+#: src/Components/Announcement/widgets/AnnouncementWidget.php:69
 msgid "Latest Announcements"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:108
+#: src/Components/Comment/widgets/CommentWidget.php:100
 msgid "Latest Comments"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:244
-#: src/Components/WechatOA/WechatOA.php:250
-#: src/Components/Post/widgets/PostWidget.php:77
+#: src/Components/WechatOA/WechatOA.php:231
+#: src/Components/WechatOA/WechatOA.php:237
+#: src/Components/Post/widgets/PostWidget.php:67
 msgid "Latest Posts"
 msgstr ""
 
-#: src/Components/Post/Post.php:227
+#: src/Components/Post/Post.php:208
 msgid "Launching a knowledge-based paid service."
 msgstr ""
 
@@ -1882,16 +1875,16 @@ msgstr ""
 msgid "Level Group"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1107
-#: src/Components/Developer/Developer.php:1110
+#: src/Components/Developer/Developer.php:1092
+#: src/Components/Developer/Developer.php:1095
 msgid "License Expired"
 msgstr ""
 
-#: src/Components/Post/Post.php:334
+#: src/Components/Post/Post.php:308
 msgid "Like"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1711
+#: src/Services/WechatOAService.php:1701
 #: src/Components/WechatOA/views/view-menu-edit.php:300
 msgid "Limited Article URL"
 msgstr ""
@@ -1900,26 +1893,26 @@ msgstr ""
 msgid "Limited User"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:41
+#: src/Components/Swiper/includes/SwiperListTable.php:27
 msgid "Link"
 msgstr ""
 
-#: src/Components/Product/includes/SpecOptionsListTable.php:49
+#: src/Components/Product/includes/SpecOptionsListTable.php:31
 msgid "Linked SKU"
 msgstr ""
 
-#: src/Components/Post/Post.php:739
+#: src/Components/Post/Post.php:698
 msgid "List Card Menu"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:43
+#: src/Components/Swiper/includes/SwiperListTable.php:29
 #: src/Components/Swiper/views/page-edit.php:94
 #: src/Components/Swiper/views/page-edit.php:97
 #: src/Components/Swiper/views/page-edit.php:100
 msgid "Location"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1706
+#: src/Services/WechatOAService.php:1696
 #: src/Components/WechatOA/views/view-menu-edit.php:240
 msgid "Location Selector"
 msgstr ""
@@ -1929,26 +1922,26 @@ msgid "Logged-in users are not cached"
 msgstr ""
 
 #: templates/user/test.php:9 src/Services/PostService.php:285
-#: src/Services/AuthService.php:443 src/Components/Security/Security.php:148
-#: src/Components/Auth/Auth.php:46 src/Components/Auth/Auth.php:47
-#: src/Components/Auth/Auth.php:56
+#: src/Services/AuthService.php:396 src/Components/Security/Security.php:151
+#: src/Components/Auth/Auth.php:40 src/Components/Auth/Auth.php:41
+#: src/Components/Auth/Auth.php:50
 msgid "Login"
 msgstr ""
 
-#: src/Utilities/Message.php:16
+#: src/Utilities/Message.php:8
 msgid "Login Successful"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:212 src/Components/Auth/Auth.php:218
+#: src/Components/Auth/Auth.php:205 src/Components/Auth/Auth.php:211
 msgid "Login via Wechat Client"
 msgstr ""
 
-#: src/Utilities/Message.php:26
+#: src/Utilities/Message.php:18
 msgid "Logout Successful"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:646
-#: src/Components/Developer/Developer.php:648
+#: src/Components/Developer/Developer.php:632
+#: src/Components/Developer/Developer.php:634
 msgid "Longer input"
 msgstr ""
 
@@ -1960,7 +1953,7 @@ msgstr ""
 msgid "Mailer service is not configured."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:56
+#: src/Components/Swiper/Swiper.php:48
 msgid "Manage Locations"
 msgstr ""
 
@@ -1968,8 +1961,8 @@ msgstr ""
 msgid "Manager Group"
 msgstr ""
 
-#: src/Services/OrdersService.php:119 src/Components/Orders/Orders.php:41
-#: src/Components/Orders/Orders.php:42
+#: src/Services/OrdersService.php:119 src/Components/Orders/Orders.php:37
+#: src/Components/Orders/Orders.php:38
 #: src/Components/Orders/views/view-manual.php:2
 msgid "Manual Orders"
 msgstr ""
@@ -1978,22 +1971,22 @@ msgstr ""
 msgid "Marketing"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:169
-#: src/Components/WechatOA/WechatOA.php:175
+#: src/Components/WechatOA/WechatOA.php:156
+#: src/Components/WechatOA/WechatOA.php:162
 msgid "Max Length of Search Keyword"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:40
+#: src/Components/Swiper/includes/SwiperListTable.php:26
 msgid "Media"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1708
+#: src/Services/WechatOAService.php:1698
 #: src/Components/WechatOA/views/view-menu-edit.php:264
 msgid "Media Library"
 msgstr ""
 
 #: src/Components/User/User.php:39 src/Components/User/User.php:40
-#: src/Components/User/User.php:64 src/Components/Product/Product.php:147
+#: src/Components/User/User.php:64 src/Components/Product/Product.php:137
 msgid "Membership"
 msgstr ""
 
@@ -2004,10 +1997,10 @@ msgstr ""
 #: src/Components/User/User.php:67
 #: src/Components/User/includes/ProjectListTable.php:41
 #: src/Components/User/includes/DurationListTable.php:40
-#: src/Components/User/views/tab-projects.php:33
-#: src/Components/User/views/tab-projects.php:94
-#: src/Components/User/views/tab-duration.php:30
-#: src/Components/User/views/tab-duration.php:114
+#: src/Components/User/views/tab-projects.php:34
+#: src/Components/User/views/tab-projects.php:95
+#: src/Components/User/views/tab-duration.php:33
+#: src/Components/User/views/tab-duration.php:117
 msgid "Membership Duration"
 msgstr ""
 
@@ -2015,7 +2008,7 @@ msgstr ""
 msgid "Membership Order"
 msgstr ""
 
-#: src/Services/ProductService.php:133
+#: src/Services/ProductService.php:79
 msgid "Membership Product"
 msgstr ""
 
@@ -2027,7 +2020,7 @@ msgstr ""
 msgid "Membership System"
 msgstr ""
 
-#: src/Components/Post/Post.php:750
+#: src/Components/Post/Post.php:709
 msgid "Menu Type"
 msgstr ""
 
@@ -2037,29 +2030,28 @@ msgid ""
 "been disabled."
 msgstr ""
 
-#: src/Services/WechatOAService.php:656 src/Components/WechatOA/WechatOA.php:28
+#: src/Services/WechatOAService.php:646 src/Components/WechatOA/WechatOA.php:25
 msgid "Message received, thanks for your advice!"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:81
-#: src/Components/WechatOA/includes/WechatOAMessageListTable.php:178
+#: src/Components/WechatOA/WechatOA.php:69
 msgid "Messages"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:637
-#: src/Components/Developer/Developer.php:659
-#: src/Components/Developer/Developer.php:670
-#: src/Components/Developer/Developer.php:681
-#: src/Components/Developer/Developer.php:692
-#: src/Components/Developer/Developer.php:708
-#: src/Components/Developer/Developer.php:725
-#: src/Components/Developer/Developer.php:733
-#: src/Components/Developer/Developer.php:757
-#: src/Components/Developer/Developer.php:782
+#: src/Components/Developer/Developer.php:623
+#: src/Components/Developer/Developer.php:645
+#: src/Components/Developer/Developer.php:656
+#: src/Components/Developer/Developer.php:667
+#: src/Components/Developer/Developer.php:678
+#: src/Components/Developer/Developer.php:694
+#: src/Components/Developer/Developer.php:711
+#: src/Components/Developer/Developer.php:719
+#: src/Components/Developer/Developer.php:743
+#: src/Components/Developer/Developer.php:768
 msgid "Method"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1707
+#: src/Services/WechatOAService.php:1697
 #: src/Components/WechatOA/views/view-menu-edit.php:252
 msgid "Mini Program"
 msgstr ""
@@ -2069,7 +2061,7 @@ msgstr ""
 msgid "Missing required field: %s (%s)."
 msgstr ""
 
-#: src/Components/Post/Post.php:708
+#: src/Components/Post/Post.php:667
 msgid "Mobile Menu"
 msgstr ""
 
@@ -2077,11 +2069,11 @@ msgstr ""
 msgid "MobileApp Order"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:181
+#: src/Components/Setting/Setting.php:167
 msgid "Modify the default system avatar."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:197
+#: src/Components/Setting/Setting.php:183
 msgid "Modify the default system cover."
 msgstr ""
 
@@ -2106,40 +2098,40 @@ msgstr ""
 msgid "My"
 msgstr ""
 
-#: src/Components/Product/Product.php:578
+#: src/Components/Product/Product.php:550
 msgid "Name or Key already exists."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:25
+#: src/Components/Announcement/Announcement.php:24
 msgid "New Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:258
+#: src/Components/Product/Product.php:246
 msgid "New Brand Name"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:81
+#: src/Components/Activity/Activity.php:79
 msgid "New Category Name"
 msgstr ""
 
-#: src/Components/Product/Product.php:170
+#: src/Components/Product/Product.php:159
 msgid "New Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:232
+#: src/Components/Product/Product.php:220
 msgid "New Product Category Name"
 msgstr ""
 
-#: src/Services/SwiperService.php:359
+#: src/Services/SwiperService.php:234
 msgid "New Tab"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:94
+#: src/Components/Comment/widgets/CommentWidget.php:86
 msgid "News Comments"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:142
-#: src/Components/WechatOA/WechatOA.php:148
+#: src/Components/WechatOA/WechatOA.php:129
+#: src/Components/WechatOA/WechatOA.php:135
 msgid "News Count"
 msgstr ""
 
@@ -2151,43 +2143,43 @@ msgstr ""
 msgid "Nginx sends the user request to php-fpm"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:115 src/Components/Mail/Mail.php:121
+#: src/Components/Mail/Mail.php:110 src/Components/Mail/Mail.php:116
 msgid "Nickname"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:26
+#: src/Components/Activity/Activity.php:25
 msgid "No activities found in trash."
 msgstr ""
 
-#: src/Components/Activity/Activity.php:25
+#: src/Components/Activity/Activity.php:24
 msgid "No activities found."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:32
+#: src/Components/Announcement/Announcement.php:31
 msgid "No announcements found in trash."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:31
+#: src/Components/Announcement/Announcement.php:30
 msgid "No announcements found."
 msgstr ""
 
-#: src/Components/Product/Product.php:251
+#: src/Components/Product/Product.php:239
 msgid "No brands found."
 msgstr ""
 
-#: src/Components/Activity/Activity.php:74
+#: src/Components/Activity/Activity.php:72
 msgid "No categories found."
 msgstr ""
 
-#: src/Utilities/Option.php:70 src/Components/Swiper/views/tab-locations.php:88
+#: src/Utilities/Option.php:70 src/Components/Swiper/views/tab-locations.php:92
 msgid "No data changed"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:175
+#: src/Components/Mail/Mail.php:170
 msgid "No Encryption"
 msgstr ""
 
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:122
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:99
 msgid "No items selected."
 msgstr ""
 
@@ -2202,23 +2194,23 @@ msgid ""
 "Position</a> first."
 msgstr ""
 
-#: src/Components/Product/Product.php:225
+#: src/Components/Product/Product.php:213
 msgid "No product categories found."
 msgstr ""
 
-#: src/Components/Product/Product.php:177
+#: src/Components/Product/Product.php:166
 msgid "No products found in trash."
 msgstr ""
 
-#: src/Components/Product/Product.php:176
+#: src/Components/Product/Product.php:165
 msgid "No products found."
 msgstr ""
 
-#: src/Services/WechatOAService.php:1322
+#: src/Services/WechatOAService.php:1312
 msgid "No reply IDs provided"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1230
+#: src/Services/WechatOAService.php:1220
 msgid "No valid reply ID(s) provided."
 msgstr ""
 
@@ -2226,15 +2218,15 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: templates/developer/w.php:148 src/Components/Developer/Developer.php:328
+#: templates/developer/w.php:148 src/Components/Developer/Developer.php:314
 msgid "Object Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:889
+#: src/Components/Developer/Developer.php:874
 msgid "object-cache.php file generated successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:902
+#: src/Components/Developer/Developer.php:887
 msgid "object_cache.php file already exists."
 msgstr ""
 
@@ -2244,34 +2236,34 @@ msgid ""
 "no-theme mode to build Web applications using pure front-end skills."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1355
-#: src/Components/Developer/Developer.php:1361
+#: src/Components/Developer/Developer.php:1340
+#: src/Components/Developer/Developer.php:1346
 msgid "Official Account Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:685
+#: src/Components/Setting/Setting.php:699
 msgid "Online Courses"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:768
-#: src/Components/Developer/Developer.php:770
+#: src/Components/Developer/Developer.php:754
+#: src/Components/Developer/Developer.php:756
 msgid "Only one option"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:139 src/Components/Auth/Auth.php:145
+#: src/Components/Auth/Auth.php:132 src/Components/Auth/Auth.php:138
 msgid "onSale"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:42
+#: src/Components/Swiper/includes/SwiperListTable.php:28
 #: src/Components/Swiper/views/page-edit.php:76
 #: src/Components/Swiper/views/page-edit.php:79
 #: src/Components/Swiper/views/page-edit.php:81
 msgid "Open Method"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:168
-#: src/Components/Developer/Developer.php:169
-#: src/Components/Developer/Developer.php:1335
+#: src/Components/Developer/Developer.php:163
+#: src/Components/Developer/Developer.php:164
+#: src/Components/Developer/Developer.php:1320
 msgid "Open Platform"
 msgstr ""
 
@@ -2282,14 +2274,13 @@ msgid ""
 "template related functions: <code>define('WP_USE_THEMES', true);</code>"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:110
-#: src/Components/Setting/Setting.php:111
+#: src/Components/Setting/Setting.php:100
+#: src/Components/Setting/Setting.php:101
 msgid "Operation Settings"
 msgstr ""
 
-#: src/Components/Product/Product.php:98
-#: src/Components/Product/includes/SpecsListTable.php:47
-#: src/Components/Product/includes/SpecOptionsListTable.php:90
+#: src/Components/Product/Product.php:89
+#: src/Components/Product/includes/SpecsListTable.php:30
 msgid "Options"
 msgstr ""
 
@@ -2314,11 +2305,11 @@ msgstr ""
 msgid "Order Type"
 msgstr ""
 
-#: src/Components/Orders/Orders.php:22 src/Components/Orders/Orders.php:23
+#: src/Components/Orders/Orders.php:18 src/Components/Orders/Orders.php:19
 msgid "Orders"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:290 src/Components/Mail/Mail.php:296
+#: src/Components/Mail/Mail.php:285 src/Components/Mail/Mail.php:291
 msgid "Orders Payment Receipt Template"
 msgstr ""
 
@@ -2335,11 +2326,11 @@ msgstr ""
 msgid "Page %s"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:86
+#: src/Components/Comment/widgets/CommentWidget.php:78
 msgid "Page Comments"
 msgstr ""
 
-#: src/Components/Post/Post.php:624
+#: src/Components/Post/Post.php:587
 msgid "Page Sidebar"
 msgstr ""
 
@@ -2351,11 +2342,11 @@ msgstr ""
 msgid "Paid Amount"
 msgstr ""
 
-#: src/Components/Post/Post.php:220 src/Components/Post/Post.php:226
+#: src/Components/Post/Post.php:201 src/Components/Post/Post.php:207
 msgid "Paid Reading"
 msgstr ""
 
-#: src/Utilities/Response.php:105
+#: src/Utilities/Response.php:111
 msgid "Param missing"
 msgstr ""
 
@@ -2363,27 +2354,27 @@ msgstr ""
 msgid "Parameter \"location\" is required."
 msgstr ""
 
-#: src/Components/Activity/Activity.php:24
+#: src/Components/Activity/Activity.php:23
 msgid "Parent Activity:"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:30
+#: src/Components/Announcement/Announcement.php:29
 msgid "Parent Announcement:"
 msgstr ""
 
-#: src/Components/Product/Product.php:253
+#: src/Components/Product/Product.php:241
 msgid "Parent Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:254
+#: src/Components/Product/Product.php:242
 msgid "Parent Brand:"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:76
+#: src/Components/Activity/Activity.php:74
 msgid "Parent Category"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:77
+#: src/Components/Activity/Activity.php:75
 msgid "Parent Category:"
 msgstr ""
 
@@ -2392,15 +2383,15 @@ msgstr ""
 msgid "Parent Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:227
+#: src/Components/Product/Product.php:215
 msgid "Parent Product Category"
 msgstr ""
 
-#: src/Components/Product/Product.php:228
+#: src/Components/Product/Product.php:216
 msgid "Parent Product Category:"
 msgstr ""
 
-#: src/Components/Product/Product.php:175
+#: src/Components/Product/Product.php:164
 msgid "Parent Product:"
 msgstr ""
 
@@ -2408,7 +2399,7 @@ msgstr ""
 msgid "Part of the advanced features need to be activated."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:272 src/Components/Mail/Mail.php:278
+#: src/Components/Mail/Mail.php:267 src/Components/Mail/Mail.php:273
 msgid "Password Recovery Notification Template"
 msgstr ""
 
@@ -2416,7 +2407,7 @@ msgstr ""
 msgid "Payment Link"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:153 src/Components/Auth/Auth.php:159
+#: src/Components/Auth/Auth.php:146 src/Components/Auth/Auth.php:152
 msgid "Payment Method"
 msgstr ""
 
@@ -2428,17 +2419,17 @@ msgstr ""
 msgid "Pending Payment"
 msgstr ""
 
-#: src/Components/Security/Security.php:89
-#: src/Components/Security/Security.php:90
-#: src/Components/Security/Security.php:268
+#: src/Components/Security/Security.php:92
+#: src/Components/Security/Security.php:93
+#: src/Components/Security/Security.php:300
 msgid "Performance"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:457
+#: src/Components/Developer/Developer.php:443
 msgid "Permalinks"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1704
+#: src/Services/WechatOAService.php:1694
 #: src/Components/WechatOA/views/view-menu-edit.php:216
 msgid "Photo or Album"
 msgstr ""
@@ -2455,7 +2446,7 @@ msgstr ""
 msgid "PHPMailer library not found."
 msgstr ""
 
-#: src/Components/Security/Security.php:148
+#: src/Components/Security/Security.php:151
 msgid ""
 "Please <a href=\"?page=developer-mode&tab=flush\">flush rewrite rules</a> "
 "after setting."
@@ -2465,45 +2456,45 @@ msgstr ""
 msgid "Please config the membership duration first."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1163
+#: src/Components/Developer/Developer.php:1148
 msgid "Please enter a valid license code."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:195
+#: src/Components/Mail/Mail.php:190
 msgid ""
 "Please enter the email address from which the sending operation will be "
 "executed."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:329
+#: src/Components/Mail/Mail.php:324
 msgid "Please enter the email address to receive the test email."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1219
+#: src/Components/Developer/Developer.php:1204
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
 "<a href=\"%s\" target=\"_blank\">HERE</a> to get one!"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:87 src/Components/Swiper/Swiper.php:140
-#: src/Components/Swiper/Swiper.php:163
+#: src/Components/Swiper/Swiper.php:76 src/Components/Swiper/Swiper.php:128
+#: src/Components/Swiper/Swiper.php:150
 msgid "Please fill in the complete data"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:213
+#: src/Components/Mail/Mail.php:208
 msgid ""
 "Please fill in the email password or authorization code according to the "
 "service rules of the email provider."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:138
+#: src/Components/Mail/Mail.php:133
 msgid ""
 "Please fill in the SMTP address of the mail server, for example <code>smtp.x."
 "com</code>."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:155
+#: src/Components/Mail/Mail.php:150
 msgid ""
 "Please fill in the SMTP port of the mail server, for example <code>465</code>"
 "."
@@ -2515,39 +2506,39 @@ msgstr ""
 msgid "Please Input the Field"
 msgstr ""
 
-#: src/Utilities/Element.php:94 src/Components/Developer/Developer.php:1365
+#: src/Utilities/Element.php:94 src/Components/Developer/Developer.php:1350
 msgid "Please Select"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:172
+#: src/Components/Mail/Mail.php:167
 msgid ""
 "Please select the appropriate encryption method based on the configuration "
 "of the mail server."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:84
+#: src/Components/Swiper/Swiper.php:73
 msgid "Please set status data again"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:399
-#: src/Components/Developer/Developer.php:405
+#: src/Components/Developer/Developer.php:385
+#: src/Components/Developer/Developer.php:391
 msgid "Plugin Editor"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:568
-#: src/Components/Developer/Developer.php:574
+#: src/Components/Developer/Developer.php:554
+#: src/Components/Developer/Developer.php:560
 msgid "Plugins Page"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:163
+#: src/Components/Auth/Auth.php:156
 msgid "Points Pay"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:148 src/Components/Mail/Mail.php:154
+#: src/Components/Mail/Mail.php:143 src/Components/Mail/Mail.php:149
 msgid "Port"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:85
+#: src/Components/Comment/widgets/CommentWidget.php:77
 msgid "Post Comments"
 msgstr ""
 
@@ -2555,7 +2546,7 @@ msgstr ""
 msgid "Post Extension"
 msgstr ""
 
-#: src/Components/Post/widgets/PostWidget.php:21
+#: src/Components/Post/widgets/PostWidget.php:13
 msgid "Post List"
 msgstr ""
 
@@ -2563,16 +2554,16 @@ msgstr ""
 msgid "POST requests are not cached"
 msgstr ""
 
-#: src/Components/Post/Post.php:615
+#: src/Components/Post/Post.php:578
 msgid "Post Sidebar"
 msgstr ""
 
-#: src/Components/Post/widgets/PostWidget.php:62
+#: src/Components/Post/widgets/PostWidget.php:52
 msgid "Posts List"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:426
-#: src/Components/Setting/Setting.php:432
+#: src/Components/Setting/Setting.php:412
+#: src/Components/Setting/Setting.php:418
 msgid "Posts Per Type"
 msgstr ""
 
@@ -2587,68 +2578,68 @@ msgid ""
 "parameters."
 msgstr ""
 
-#: src/Components/Security/Security.php:210
-#: src/Components/Security/Security.php:216
+#: src/Components/Security/Security.php:242
+#: src/Components/Security/Security.php:248
 msgid "Prevent XMLRPC Attacks"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:115
+#: src/Components/Announcement/Announcement.php:114
 msgid "Preview Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:329
+#: src/Components/Product/Product.php:315
 msgid "Preview Product"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:171 src/Components/Auth/Auth.php:177
+#: src/Components/Auth/Auth.php:164 src/Components/Auth/Auth.php:170
 #: src/Components/User/includes/ProjectListTable.php:42
-#: src/Components/User/views/tab-projects.php:46
-#: src/Components/User/views/tab-projects.php:108
-#: src/Components/Product/includes/SkuListTable.php:48
+#: src/Components/User/views/tab-projects.php:47
+#: src/Components/User/views/tab-projects.php:109
+#: src/Components/Product/includes/SkuListTable.php:31
 msgid "Price"
 msgstr ""
 
-#: src/Services/ProductService.php:112 src/Components/Product/Product.php:165
-#: src/Components/Product/Product.php:167
-#: src/Components/Product/includes/SkuListTable.php:45
-#: src/Components/Product/views/tab-specifications.php:56
-#: src/Components/Product/views/tab-specifications.php:151
+#: src/Services/ProductService.php:58 src/Components/Product/Product.php:154
+#: src/Components/Product/Product.php:156
+#: src/Components/Product/includes/SkuListTable.php:28
+#: src/Components/Product/views/tab-specifications.php:58
+#: src/Components/Product/views/tab-specifications.php:153
 msgid "Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:182
+#: src/Components/Product/Product.php:171
 msgid "Product Archives"
 msgstr ""
 
-#: src/Components/Product/Product.php:249
+#: src/Components/Product/Product.php:237
 msgid "Product Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:248
+#: src/Components/Product/Product.php:236
 msgid "Product Brands"
 msgstr ""
 
-#: src/Components/Product/Product.php:222
+#: src/Components/Product/Product.php:210
 msgid "Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:223
+#: src/Components/Product/Product.php:211
 msgid "Product Category"
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:99
+#: src/Components/Comment/widgets/CommentWidget.php:91
 msgid "Product Comments"
 msgstr ""
 
-#: src/Components/Product/Product.php:317
+#: src/Components/Product/Product.php:303
 msgid "Product draft updated."
 msgstr ""
 
-#: src/Components/Product/Product.php:344
+#: src/Components/Product/Product.php:326
 msgid "Product Gallery"
 msgstr ""
 
-#: src/Components/Product/widgets/ProductWidget.php:11
+#: src/Components/Product/widgets/ProductWidget.php:10
 msgid "Product List"
 msgstr ""
 
@@ -2656,55 +2647,55 @@ msgstr ""
 msgid "Product Order"
 msgstr ""
 
-#: src/Components/Product/Product.php:360
+#: src/Components/Product/Product.php:342
 msgid "Product Properties"
 msgstr ""
 
-#: src/Components/Product/Product.php:310
+#: src/Components/Product/Product.php:296
 msgid "Product published."
 msgstr ""
 
 #. %s: date and time of the revision
-#: src/Components/Product/Product.php:309
+#: src/Components/Product/Product.php:295
 #, php-format
 msgid "Product restored to version from %s."
 msgstr ""
 
-#: src/Components/Product/Product.php:311
+#: src/Components/Product/Product.php:297
 msgid "Product saved."
 msgstr ""
 
-#: src/Components/Product/Product.php:314
+#: src/Components/Product/Product.php:300
 #, php-format
 msgid "Product scheduled for:<strong>%1$s</strong>."
 msgstr ""
 
-#: src/Components/Product/Product.php:280
+#: src/Components/Product/Product.php:267
 msgid "Product Sidebar"
 msgstr ""
 
-#: src/Components/Product/Product.php:352
+#: src/Components/Product/Product.php:334
 msgid "Product SKU"
 msgstr ""
 
-#: src/Components/Product/Product.php:312
+#: src/Components/Product/Product.php:298
 msgid "Product submitted."
 msgstr ""
 
-#: src/Components/Product/Product.php:304
-#: src/Components/Product/Product.php:307
+#: src/Components/Product/Product.php:290
+#: src/Components/Product/Product.php:293
 msgid "Product updated."
 msgstr ""
 
-#: src/Components/Product/Product.php:164
+#: src/Components/Product/Product.php:153
 msgid "Products"
 msgstr ""
 
-#: src/Components/Product/Product.php:187
+#: src/Components/Product/Product.php:176
 msgid "Products list"
 msgstr ""
 
-#: src/Components/Product/Product.php:186
+#: src/Components/Product/Product.php:175
 msgid "Products list navigation"
 msgstr ""
 
@@ -2736,7 +2727,7 @@ msgstr ""
 msgid "Quest pending"
 msgstr ""
 
-#: src/Components/Security/Security.php:270
+#: src/Components/Security/Security.php:302
 msgid "Queue"
 msgstr ""
 
@@ -2748,16 +2739,17 @@ msgstr ""
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:731
-#: src/Components/Developer/Developer.php:733
+#: src/Components/Developer/Developer.php:717
+#: src/Components/Developer/Developer.php:719
 msgid "Radio field"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:414
+#: src/Components/Setting/Setting.php:400
+#: src/Components/Setting/Setting.php:465
 msgid "Real-time data"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:811
+#: src/Components/Developer/Developer.php:797
 msgid "Rebuild the REST route cache file."
 msgstr ""
 
@@ -2773,8 +2765,8 @@ msgstr ""
 msgid "Recommended configuration"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:283
-#: src/Components/Setting/Setting.php:289
+#: src/Components/Setting/Setting.php:269
+#: src/Components/Setting/Setting.php:275
 msgid "Redirect Link"
 msgstr ""
 
@@ -2785,11 +2777,11 @@ msgid ""
 "improve data query speed and response speed."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:93
+#: src/Components/Auth/Auth.php:86
 msgid "Referral Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:864
+#: src/Components/Developer/Developer.php:853
 msgid "Refreshed"
 msgstr ""
 
@@ -2801,20 +2793,20 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:81 src/Components/Auth/Auth.php:87
+#: src/Components/Auth/Auth.php:74 src/Components/Auth/Auth.php:80
 msgid "Registration Code"
 msgstr ""
 
-#: src/Components/Product/includes/SkuListTable.php:47
+#: src/Components/Product/includes/SkuListTable.php:30
 msgid "Regular Price"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:35
+#: src/Components/Announcement/Announcement.php:34
 msgid "Remove Cover"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:29
-#: src/Components/Product/Product.php:180
+#: src/Components/Activity/Activity.php:28
+#: src/Components/Product/Product.php:169
 msgid "Remove cover image"
 msgstr ""
 
@@ -2823,25 +2815,29 @@ msgstr ""
 msgid "Remove sensitive data from response headers, such as: X-Powered-By."
 msgstr ""
 
-#: src/Components/Security/Security.php:178
-msgid ""
-"Remove the default users site map to avoid exposing user ID and login name "
-"security risks."
+#: src/Components/Security/Security.php:181
+msgid "Remove the default sitemap of WordPress and use the G3 sitemap instead."
 msgstr ""
 
-#: src/Components/Security/Security.php:217
+#: src/Components/Security/Security.php:194
+msgid ""
+"Remove the default users sitemap module of WordPress to avoid exposing user "
+"ID and login name security risks."
+msgstr ""
+
+#: src/Components/Security/Security.php:249
 msgid "Remove the XML-RPC API to block access to xmlrpc.php."
 msgstr ""
 
-#: src/Components/Security/Security.php:165
+#: src/Components/Security/Security.php:168
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr ""
 
-#: src/Services/WechatOAService.php:917
+#: src/Services/WechatOAService.php:907
 msgid "Reply content cannot be empty"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1112
+#: src/Services/WechatOAService.php:1102
 msgid "Reply not found"
 msgstr ""
 
@@ -2857,62 +2853,67 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: src/Components/Security/Security.php:158
-#: src/Components/Security/Security.php:164
+#: src/Components/Security/Security.php:174
+#: src/Components/Security/Security.php:180
+msgid "Reset SiteMap"
+msgstr ""
+
+#: src/Components/Security/Security.php:161
+#: src/Components/Security/Security.php:167
 msgid "Reset Upload File Names"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:855
+#: src/Components/Developer/Developer.php:846
 msgid "REST route cache refreshed successfully."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:313
+#: src/Components/Developer/Developer.php:299
 msgid "REST Routes"
 msgstr ""
 
-#: src/Components/Announcement/widgets/AnnouncementWidget.php:21
+#: src/Components/Announcement/widgets/AnnouncementWidget.php:13
 msgid "Retrieve the data for the announcement list."
 msgstr ""
 
-#: src/Components/Comment/widgets/CommentWidget.php:27
+#: src/Components/Comment/widgets/CommentWidget.php:19
 msgid "Retrieve the data for the comment list."
 msgstr ""
 
-#: src/Components/Post/widgets/PostWidget.php:24
+#: src/Components/Post/widgets/PostWidget.php:16
 msgid "Retrieve the data for the post list."
 msgstr ""
 
-#: src/Components/Product/widgets/ProductWidget.php:14
+#: src/Components/Product/widgets/ProductWidget.php:13
 msgid "Retrieve the data for the product list."
 msgstr ""
 
-#: src/Components/Developer/includes/RewriteRulesTable.php:38
+#: src/Components/Developer/includes/RewriteRulesTable.php:21
 msgid "Rewrite"
 msgstr ""
 
-#: src/Components/Developer/includes/RewriteRulesTable.php:21
+#: src/Components/Developer/includes/RewriteRulesTable.php:10
 msgid "Rewrite Rule"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:281
-#: src/Components/Developer/Developer.php:308
-#: src/Components/Developer/includes/RewriteRulesTable.php:22
+#: src/Components/Developer/Developer.php:267
+#: src/Components/Developer/Developer.php:294
+#: src/Components/Developer/includes/RewriteRulesTable.php:11
 msgid "Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:836
+#: src/Components/Developer/Developer.php:827
 msgid "Rewrite rules flushed successfully!"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:361
+#: src/Components/Setting/Setting.php:347
 msgid "RSS URL"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:372
+#: src/Components/Setting/Setting.php:358
 msgid "RSS2 URL"
 msgstr ""
 
-#: src/Components/Developer/includes/RewriteRulesTable.php:37
+#: src/Components/Developer/includes/RewriteRulesTable.php:20
 msgid "Rule"
 msgstr ""
 
@@ -2926,8 +2927,8 @@ msgstr ""
 msgid "Runs wordpress to process the request"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:161
-#: src/Components/Setting/Setting.php:167
+#: src/Components/Setting/Setting.php:147
+#: src/Components/Setting/Setting.php:153
 msgid "Sad Mod"
 msgstr ""
 
@@ -2935,41 +2936,41 @@ msgstr ""
 msgid "Safe Reminder"
 msgstr ""
 
-#: src/Components/Security/Security.php:197
-#: src/Components/Security/Security.php:203
+#: src/Components/Security/Security.php:229
+#: src/Components/Security/Security.php:235
 msgid "Safe Session"
 msgstr ""
 
-#: src/Services/WechatOAService.php:984
+#: src/Services/WechatOAService.php:974
 msgid "Save failed, please try again later"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1702
+#: src/Services/WechatOAService.php:1692
 #: src/Components/WechatOA/views/view-menu-edit.php:192
 msgid "Scan & Alert"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1701
+#: src/Services/WechatOAService.php:1691
 #: src/Components/WechatOA/views/view-menu-edit.php:180
 msgid "Scan Code"
 msgstr ""
 
-#: src/Components/Product/includes/SpecsListTable.php:49
-#: src/Components/Product/views/tab-specifications.php:51
-#: src/Components/Product/views/tab-specifications.php:145
+#: src/Components/Product/includes/SpecsListTable.php:32
+#: src/Components/Product/views/tab-specifications.php:53
+#: src/Components/Product/views/tab-specifications.php:147
 msgid "Scope"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:23
-#: src/Components/WechatOA/WechatOA.php:122
+#: src/Components/Activity/Activity.php:22
+#: src/Components/WechatOA/WechatOA.php:109
 msgid "Search"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:29
+#: src/Components/Announcement/Announcement.php:28
 msgid "Search Announcements"
 msgstr ""
 
-#: src/Components/Product/Product.php:250
+#: src/Components/Product/Product.php:238
 msgid "Search Brands"
 msgstr ""
 
@@ -2977,23 +2978,23 @@ msgstr ""
 msgid "Search by Invitation Code"
 msgstr ""
 
-#: src/Components/Orders/includes/OrdersListTable.php:114
+#: src/Components/Orders/includes/OrdersListTable.php:105
 msgid "Search by Order Code"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:73
+#: src/Components/Activity/Activity.php:71
 msgid "Search Categories"
 msgstr ""
 
-#: src/Services/WechatOAService.php:620
+#: src/Services/WechatOAService.php:610
 msgid "Search for: "
 msgstr ""
 
-#: src/Components/Product/Product.php:224
+#: src/Components/Product/Product.php:212
 msgid "Search Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:174
+#: src/Components/Product/Product.php:163
 msgid "Search Products"
 msgstr ""
 
@@ -3003,22 +3004,22 @@ msgstr ""
 msgid "Search results for %s"
 msgstr ""
 
-#: src/Components/Post/Post.php:606
+#: src/Components/Post/Post.php:569
 msgid "Search Sidebar"
 msgstr ""
 
-#: src/Components/User/views/tab-duration.php:43
-#: src/Components/User/views/tab-duration.php:128
+#: src/Components/User/views/tab-duration.php:46
+#: src/Components/User/views/tab-duration.php:131
 msgid "Second"
 msgstr ""
 
-#: src/Components/Security/Security.php:80
-#: src/Components/Security/Security.php:81
-#: src/Components/Security/Security.php:100
+#: src/Components/Security/Security.php:83
+#: src/Components/Security/Security.php:84
+#: src/Components/Security/Security.php:103
 msgid "Security"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1156
+#: src/Components/Developer/Developer.php:1141
 msgid "Security check failed. Please try again."
 msgstr ""
 
@@ -3026,12 +3027,12 @@ msgstr ""
 msgid "Security Extension"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:701
-#: src/Components/Developer/Developer.php:707
+#: src/Components/Developer/Developer.php:687
+#: src/Components/Developer/Developer.php:693
 msgid "Select field"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:297
+#: src/Components/Mail/Mail.php:292
 msgid "Send an email notification to the user after successful payment."
 msgstr ""
 
@@ -3039,50 +3040,50 @@ msgstr ""
 msgid "Send Test Email"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:188 src/Components/Mail/Mail.php:194
+#: src/Components/Mail/Mail.php:183 src/Components/Mail/Mail.php:189
 msgid "Sender's Email Address"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:206 src/Components/Mail/Mail.php:212
+#: src/Components/Mail/Mail.php:201 src/Components/Mail/Mail.php:207
 msgid "Sender's Email Secret"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:556
+#: src/Components/Setting/Setting.php:577
 msgid "SEO & Social Media"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:589
-#: src/Components/Setting/Setting.php:608
-#: src/Components/Setting/Setting.php:617
+#: src/Components/Setting/Setting.php:610
+#: src/Components/Setting/Setting.php:628
+#: src/Components/Setting/Setting.php:636
 msgid "Separate tags with commas."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:131 src/Components/Mail/Mail.php:137
+#: src/Components/Mail/Mail.php:126 src/Components/Mail/Mail.php:132
 msgid "Server"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1366
+#: src/Components/Developer/Developer.php:1351
 msgid "Service Account"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:34
+#: src/Components/Announcement/Announcement.php:33
 msgid "Set Cover"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:28
-#: src/Components/Product/Product.php:179
+#: src/Components/Activity/Activity.php:27
+#: src/Components/Product/Product.php:168
 msgid "Set cover image"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:648
+#: src/Components/Developer/Developer.php:634
 msgid "Set the class parameter to <code>regular-text</code>"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:610
+#: src/Components/Developer/Developer.php:596
 msgid "Set the data which will be displayed in the left footer area."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:617
+#: src/Components/Developer/Developer.php:603
 msgid "Set the data which will be displayed in the right footer area."
 msgstr ""
 
@@ -3090,7 +3091,7 @@ msgstr ""
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:318
+#: src/Components/Developer/Developer.php:304
 msgid "Setting Options"
 msgstr ""
 
@@ -3115,16 +3116,16 @@ msgstr ""
 msgid "Shipped"
 msgstr ""
 
-#: src/Components/Product/Product.php:56 src/Components/Product/Product.php:57
-#: src/Components/Product/Product.php:86 src/Components/Product/Product.php:166
+#: src/Components/Product/Product.php:47 src/Components/Product/Product.php:48
+#: src/Components/Product/Product.php:77 src/Components/Product/Product.php:155
 msgid "Shop"
 msgstr ""
 
-#: src/Components/Post/Post.php:709
+#: src/Components/Post/Post.php:668
 msgid "Shop Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:269
+#: src/Components/Product/Product.php:256
 msgid "Shop Sidebar"
 msgstr ""
 
@@ -3136,16 +3137,21 @@ msgstr ""
 msgid "Sina WeiBo"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:412
-#: src/Components/Developer/Developer.php:418
+#: src/Components/Developer/Developer.php:398
+#: src/Components/Developer/Developer.php:404
 msgid "Site Health"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:141
+#: src/Components/Setting/Setting.php:129
 msgid "SiteMap"
 msgstr ""
 
-#: src/Components/Product/includes/SkuListTable.php:46
+#: src/Components/Security/Security.php:200
+#: src/Components/Security/Security.php:206
+msgid "SiteMap Generator"
+msgstr ""
+
+#: src/Components/Product/includes/SkuListTable.php:29
 msgid "SKU Code"
 msgstr ""
 
@@ -3157,7 +3163,7 @@ msgstr ""
 msgid "Slug Param only allows English letters, numbers, and underscores"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:144
+#: src/Components/Swiper/Swiper.php:132
 msgid "Slug: Only supports English Letter"
 msgstr ""
 
@@ -3166,7 +3172,7 @@ msgstr ""
 msgid "SMS"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:165 src/Components/Mail/Mail.php:171
+#: src/Components/Mail/Mail.php:160 src/Components/Mail/Mail.php:166
 msgid "SMTP Encryption"
 msgstr ""
 
@@ -3174,15 +3180,15 @@ msgstr ""
 msgid "Social Accounts"
 msgstr ""
 
-#: templates/developer/w.php:141 src/Components/Auth/Auth.php:59
+#: templates/developer/w.php:141 src/Components/Auth/Auth.php:53
 msgid "Social Login"
 msgstr ""
 
-#: src/Components/Product/includes/SkuListTable.php:51
+#: src/Components/Product/includes/SkuListTable.php:34
 msgid "Sold"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:44
+#: src/Components/Swiper/includes/SwiperListTable.php:30
 #: src/Components/Swiper/views/page-edit.php:139
 #: src/Components/Swiper/views/page-edit.php:142
 #: src/Components/WechatOA/includes/WechatOAMenuListTable.php:31
@@ -3191,19 +3197,18 @@ msgstr ""
 msgid "Sort"
 msgstr ""
 
-#: src/Components/Product/Product.php:678
+#: src/Components/Product/Product.php:650
 msgid "Spec option not found."
 msgstr ""
 
-#: src/Components/Product/Product.php:76 src/Components/Product/Product.php:77
-#: src/Components/Product/Product.php:97
-#: src/Components/Product/includes/SpecsListTable.php:81
-#: src/Components/Product/includes/SpecOptionsListTable.php:47
-#: src/Components/Product/views/tab-options.php:46
+#: src/Components/Product/Product.php:67 src/Components/Product/Product.php:68
+#: src/Components/Product/Product.php:88
+#: src/Components/Product/includes/SpecOptionsListTable.php:29
+#: src/Components/Product/views/tab-options.php:50
 msgid "Specifications"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:683
+#: src/Components/Setting/Setting.php:697
 msgid "Sponsor"
 msgstr ""
 
@@ -3211,29 +3216,29 @@ msgstr ""
 msgid "Start and end credits must be positive integers."
 msgstr ""
 
-#: src/Components/User/views/tab-level.php:50
-#: src/Components/User/views/tab-level.php:189
+#: src/Components/User/views/tab-level.php:52
+#: src/Components/User/views/tab-level.php:191
 msgid "Start Credits"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:461
+#: src/Components/Setting/Setting.php:447
 msgid ""
 "Starting from version 5.5 of WordPress, the functionality of multi-level and "
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:45
+#: src/Components/Swiper/includes/SwiperListTable.php:31
 #: src/Components/Swiper/views/page-edit.php:151
 #: src/Components/Swiper/views/page-edit.php:154
 #: src/Components/Swiper/views/page-edit.php:156
-#: src/Components/Product/includes/SkuListTable.php:52
-#: src/Components/Product/includes/SpecOptionsListTable.php:48
-#: src/Components/Product/views/tab-options.php:53
-#: src/Components/Product/views/tab-options.php:129
+#: src/Components/Product/includes/SkuListTable.php:35
+#: src/Components/Product/includes/SpecOptionsListTable.php:30
+#: src/Components/Product/views/tab-options.php:57
+#: src/Components/Product/views/tab-options.php:132
 msgid "Status"
 msgstr ""
 
-#: src/Components/Product/includes/SkuListTable.php:50
+#: src/Components/Product/includes/SkuListTable.php:33
 msgid "Stock"
 msgstr ""
 
@@ -3241,8 +3246,8 @@ msgstr ""
 msgid "Store Management System"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:129
-#: src/Components/WechatOA/WechatOA.php:135
+#: src/Components/WechatOA/WechatOA.php:116
+#: src/Components/WechatOA/WechatOA.php:122
 msgid "Store Messages"
 msgstr ""
 
@@ -3250,33 +3255,33 @@ msgstr ""
 msgid "Subscribe Login"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:186
-#: src/Components/WechatOA/WechatOA.php:192
+#: src/Components/WechatOA/WechatOA.php:173
+#: src/Components/WechatOA/WechatOA.php:179
 msgid "Subscribe Message"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1367
+#: src/Components/Developer/Developer.php:1352
 msgid "Subscription Account"
 msgstr ""
 
 #. %d: number of successfully generated codes
-#: src/Components/Auth/Auth.php:280
+#: src/Components/Auth/Auth.php:271
 msgid "Successfully generated %d invitation code."
 msgid_plural "Successfully generated %d invitation codes."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Components/Swiper/Swiper.php:30 src/Components/Swiper/Swiper.php:31
-#: src/Components/Swiper/Swiper.php:53
+#: src/Components/Swiper/Swiper.php:23 src/Components/Swiper/Swiper.php:24
+#: src/Components/Swiper/Swiper.php:45
 msgid "Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:775
-#: src/Components/Developer/Developer.php:781
+#: src/Components/Developer/Developer.php:761
+#: src/Components/Developer/Developer.php:767
 msgid "Switch"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:280
+#: src/Components/Developer/Developer.php:266
 #: src/Components/Developer/views/tab-html.php:51
 #: src/Components/Developer/views/tab-system.php:14
 msgid "System"
@@ -3286,16 +3291,16 @@ msgstr ""
 msgid "System Admin"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1703
+#: src/Services/WechatOAService.php:1693
 #: src/Components/WechatOA/views/view-menu-edit.php:204
 msgid "System Camera"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:108
+#: src/Components/Mail/Mail.php:103
 msgid "System Email"
 msgstr ""
 
-#: src/Services/AuthService.php:420
+#: src/Services/AuthService.php:375
 msgid "System Generated"
 msgstr ""
 
@@ -3304,11 +3309,11 @@ msgstr ""
 msgid "Template file does not exist: %s"
 msgstr ""
 
-#: src/Services/SwiperService.php:240
+#: src/Services/SwiperService.php:134
 msgid "Template not found"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:322 src/Components/Mail/Mail.php:328
+#: src/Components/Mail/Mail.php:317 src/Components/Mail/Mail.php:323
 msgid "Test Email Address"
 msgstr ""
 
@@ -3321,12 +3326,12 @@ msgstr ""
 msgid "Test email sent successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:690
-#: src/Components/Developer/Developer.php:692
+#: src/Components/Developer/Developer.php:676
+#: src/Components/Developer/Developer.php:678
 msgid "Textarea"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:757
+#: src/Components/Developer/Developer.php:743
 msgid "the <code>value</code> is an array."
 msgstr ""
 
@@ -3342,26 +3347,23 @@ msgid ""
 "approved."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:209
+#: src/Components/WechatOA/WechatOA.php:196
 msgid ""
 "The default message replied to users when the search is disabled and no "
 "message is found."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:168
+#: src/Components/Setting/Setting.php:154
 msgid ""
 "The entire website will be immersed in a mournful mode with only black, "
 "white, and gray colors."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:122
+#: src/Components/Auth/Auth.php:115
 msgid "The expiration of the invitation code."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:184
-#: src/Components/Swiper/views/page-edit.php:190
-#: src/Components/Swiper/views/page-edit.php:196
-#: src/Components/Swiper/views/page-edit.php:204
+#: src/Components/Swiper/views/page-edit.php:200
 msgid "The field cannot be empty"
 msgstr ""
 
@@ -3371,30 +3373,30 @@ msgid ""
 "memory:"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:251
+#: src/Components/WechatOA/WechatOA.php:238
 msgid "The Key that will call the latest posts. Default: n"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:277
+#: src/Components/Setting/Setting.php:263
 msgid "The links feature helps you manage your friendship links."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:176
+#: src/Components/WechatOA/WechatOA.php:163
 msgid "The maximum length of the search keyword. Default: 16."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:149
+#: src/Components/WechatOA/WechatOA.php:136
 msgid ""
 "The maximum number of news items returned in the Key-Event message. Default: "
 "5."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:193
+#: src/Components/WechatOA/WechatOA.php:180
 msgid ""
 "The message sent to users when they Subscribe the WeChat Official Account."
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:136
+#: src/Components/WechatOA/WechatOA.php:123
 msgid ""
 "The messages sent to the WeChat Official Account will be stored in the "
 "database."
@@ -3410,17 +3412,17 @@ msgid ""
 "server load capacity."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:433
+#: src/Components/Setting/Setting.php:419
 msgid ""
 "The number of posts to be generated for each post type.<br>Default: <code>"
 "2000</code>."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:160
+#: src/Components/Auth/Auth.php:153
 msgid "The payment method used to pay for the invitation code."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:178
+#: src/Components/Auth/Auth.php:171
 msgid "The price of the invitation code."
 msgstr ""
 
@@ -3445,19 +3447,19 @@ msgstr ""
 msgid "The start credits must be less than the end credits."
 msgstr ""
 
-#: src/Components/Security/Security.php:135
+#: src/Components/Security/Security.php:138
 msgid ""
 "The system will replace <code>\"wp-login.php\"</code> with the new address "
 "<code>\"/oa/$url\"</code> below."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:248
+#: src/Components/Mail/Mail.php:243
 msgid ""
 "The system will replace the default email templates of the site with custom "
 "email templates."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:109
+#: src/Components/Mail/Mail.php:104
 msgid "The system will use SMTP to send emails."
 msgstr ""
 
@@ -3472,12 +3474,12 @@ msgstr ""
 msgid "The URL you visited is illegal."
 msgstr ""
 
-#: src/Components/Developer/views/tab-theme.php:141
+#: src/Components/Developer/views/tab-theme.php:142
 msgid "Theme Created Successfully"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:425
-#: src/Components/Developer/Developer.php:431
+#: src/Components/Developer/Developer.php:411
+#: src/Components/Developer/Developer.php:417
 msgid "Theme Customize"
 msgstr ""
 
@@ -3485,8 +3487,8 @@ msgstr ""
 msgid "Theme Description"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:386
-#: src/Components/Developer/Developer.php:392
+#: src/Components/Developer/Developer.php:372
+#: src/Components/Developer/Developer.php:378
 msgid "Theme Editor"
 msgstr ""
 
@@ -3502,7 +3504,7 @@ msgstr ""
 msgid "Theme generated successfully!"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:581
+#: src/Components/Developer/Developer.php:567
 msgid "Theme Install"
 msgstr ""
 
@@ -3542,7 +3544,7 @@ msgstr ""
 msgid "This tab is for Redis Cache advice."
 msgstr ""
 
-#: src/Services/AuthService.php:296
+#: src/Services/AuthService.php:251
 msgid "This WeChat account is already bound to another user."
 msgstr ""
 
@@ -3550,15 +3552,15 @@ msgstr ""
 msgid "Tiktok Order"
 msgstr ""
 
-#: src/Components/User/views/tab-duration.php:36
-#: src/Components/User/views/tab-duration.php:121
+#: src/Components/User/views/tab-duration.php:39
+#: src/Components/User/views/tab-duration.php:124
 msgid "Time Unit"
 msgstr ""
 
 #: templates/developer/w.php:17 src/Utilities/Element.php:690
-#: src/Components/Developer/Developer.php:757
-#: src/Components/Developer/Developer.php:770
-#: src/Components/Setting/Setting.php:689
+#: src/Components/Developer/Developer.php:743
+#: src/Components/Developer/Developer.php:756
+#: src/Components/Setting/Setting.php:703
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
 msgstr ""
@@ -3567,7 +3569,7 @@ msgstr ""
 msgid "Tip Order"
 msgstr ""
 
-#: src/Components/Post/Post.php:337
+#: src/Components/Post/Post.php:311
 msgid ""
 "Tip: You can customize the interaction data according to your operational "
 "needs."
@@ -3577,21 +3579,21 @@ msgstr ""
 msgid "Tips for First Time Users"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:588
-#: src/Components/Swiper/includes/SwiperListTable.php:39
+#: src/Components/Setting/Setting.php:609
+#: src/Components/Swiper/includes/SwiperListTable.php:25
 msgid "Title"
 msgstr ""
 
-#: src/Components/Post/Post.php:137
+#: src/Components/Post/Post.php:118
 msgid "To add view statistics function to each post & page."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:555
-#: src/Components/Developer/Developer.php:561
+#: src/Components/Developer/Developer.php:541
+#: src/Components/Developer/Developer.php:547
 msgid "Tools Page"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1535
+#: src/Components/Developer/Developer.php:1520
 msgid "Total"
 msgstr ""
 
@@ -3599,7 +3601,7 @@ msgstr ""
 msgid "Total Amount"
 msgstr ""
 
-#: src/Components/Orders/includes/OrdersListTable.php:263
+#: src/Components/Orders/includes/OrdersListTable.php:247
 msgid "Track"
 msgstr ""
 
@@ -3611,12 +3613,12 @@ msgstr ""
 msgid "Transaction System"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:373
-#: src/Components/Developer/Developer.php:379
+#: src/Components/Developer/Developer.php:359
+#: src/Components/Developer/Developer.php:365
 msgid "Translations API"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1510
+#: src/Components/Developer/Developer.php:1495
 msgid "Trash"
 msgstr ""
 
@@ -3625,17 +3627,17 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Middleware/RestAuthMiddleware.php:33 src/Utilities/Message.php:36
+#: src/Middleware/RestAuthMiddleware.php:33 src/Utilities/Message.php:28
 #: src/Components/Share/views/metabox-share.php:13
 msgid "Unauthorized"
 msgstr ""
 
-#: src/Services/UserService.php:113
+#: src/Services/UserService.php:98
 #: src/Components/User/includes/ManagerListTable.php:160
 msgid "Unknown"
 msgstr ""
 
-#: src/Services/WechatOAService.php:277
+#: src/Services/WechatOAService.php:267
 msgid "Unsupported message type"
 msgstr ""
 
@@ -3643,11 +3645,11 @@ msgstr ""
 msgid "Unused"
 msgstr ""
 
-#: src/Components/Product/Product.php:256
+#: src/Components/Product/Product.php:244
 msgid "Update Brand"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:79
+#: src/Components/Activity/Activity.php:77
 msgid "Update Category"
 msgstr ""
 
@@ -3655,19 +3657,19 @@ msgstr ""
 msgid "Update Menus Online"
 msgstr ""
 
-#: src/Components/Product/Product.php:230
+#: src/Components/Product/Product.php:218
 msgid "Update Product Category"
 msgstr ""
 
-#: src/Components/Swiper/includes/SwiperListTable.php:46
+#: src/Components/Swiper/includes/SwiperListTable.php:32
 msgid "Update Time"
 msgstr ""
 
-#: src/Utilities/Response.php:55 src/Utilities/Message.php:41
+#: src/Utilities/Response.php:57 src/Utilities/Message.php:33
 #: src/Controllers/AdminController.php:97
-#: src/Components/Swiper/includes/SwiperListTable.php:173
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:140
-#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:149
+#: src/Components/Swiper/includes/SwiperListTable.php:150
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:114
+#: src/Components/WechatOA/includes/WechatOAReplyListTable.php:122
 msgid "Updated"
 msgstr ""
 
@@ -3675,15 +3677,15 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:39
+#: src/Components/Announcement/Announcement.php:38
 msgid "Uploaded to Announcement"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:33
+#: src/Components/Activity/Activity.php:32
 msgid "UPloaded to this activity"
 msgstr ""
 
-#: src/Components/Product/Product.php:184
+#: src/Components/Product/Product.php:173
 msgid "Uploaded to this product"
 msgstr ""
 
@@ -3691,19 +3693,19 @@ msgstr ""
 msgid "URLs with query parameters are not cached"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:30
-#: src/Components/Product/Product.php:181
+#: src/Components/Activity/Activity.php:29
+#: src/Components/Product/Product.php:170
 msgid "Use as cover image"
 msgstr ""
 
-#: src/Components/Security/Security.php:230
+#: src/Components/Security/Security.php:262
 msgid ""
 "Use Content Security Policy (CSP) to prevent cross-site scripting attacks. "
 "Before enabling, please ensure that there are no external resource "
 "references."
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:36
+#: src/Components/Announcement/Announcement.php:35
 msgid "Use Cover"
 msgstr ""
 
@@ -3751,11 +3753,11 @@ msgstr ""
 msgid "Useful Development Features"
 msgstr ""
 
-#: src/Services/AuthService.php:421
+#: src/Services/AuthService.php:376
 msgid "User Bought"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:254 src/Components/Mail/Mail.php:260
+#: src/Components/Mail/Mail.php:249 src/Components/Mail/Mail.php:255
 msgid "User Registration Notification Template"
 msgstr ""
 
@@ -3763,13 +3765,13 @@ msgstr ""
 msgid "User visits the website"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:219
+#: src/Components/Auth/Auth.php:212
 msgid ""
 "Users can complete the login automatically while browsing your website with "
 "Wechat client."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:205
+#: src/Components/Auth/Auth.php:198
 msgid "Users can subscribe your WeChat official account to complete the login."
 msgstr ""
 
@@ -3838,12 +3840,12 @@ msgstr ""
 msgid "Users click and view the article of the specified URL."
 msgstr ""
 
-#: src/Components/Security/Security.php:171
-#: src/Components/Security/Security.php:177
+#: src/Components/Security/Security.php:187
+#: src/Components/Security/Security.php:193
 msgid "Users SiteMap"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:123
+#: src/Components/WechatOA/WechatOA.php:110
 msgid ""
 "Users who send messages to the WeChat Official Account will automatically "
 "search for the content on the website and return the content."
@@ -3853,20 +3855,20 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1368
+#: src/Components/Developer/Developer.php:1353
 msgid "Verified Service Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1369
+#: src/Components/Developer/Developer.php:1354
 msgid "Verified Subscription Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1174
+#: src/Components/Developer/Developer.php:1159
 msgid "Verified successfully! Redirecting..."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1188
-#: src/Components/Developer/Developer.php:1227
+#: src/Components/Developer/Developer.php:1173
+#: src/Components/Developer/Developer.php:1212
 msgid "Verify License"
 msgstr ""
 
@@ -3874,46 +3876,46 @@ msgstr ""
 msgid "Verify OPcache Efficiency & Fill"
 msgstr ""
 
-#: src/Components/Post/Post.php:332
+#: src/Components/Post/Post.php:306
 msgid "View"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:21
+#: src/Components/Activity/Activity.php:20
 msgid "View Activity"
 msgstr ""
 
-#: src/Components/Announcement/Announcement.php:27
-#: src/Components/Announcement/Announcement.php:109
+#: src/Components/Announcement/Announcement.php:26
+#: src/Components/Announcement/Announcement.php:108
 msgid "View Announcement"
 msgstr ""
 
-#: src/Components/Post/Post.php:143 src/Components/Post/Post.php:149
+#: src/Components/Post/Post.php:124 src/Components/Post/Post.php:130
 msgid "View Interval"
 msgstr ""
 
-#: src/Components/Product/Product.php:172
-#: src/Components/Product/Product.php:323
+#: src/Components/Product/Product.php:161
+#: src/Components/Product/Product.php:309
 msgid "View Product"
 msgstr ""
 
-#: src/Components/Post/Post.php:130 src/Components/Post/Post.php:136
+#: src/Components/Post/Post.php:111 src/Components/Post/Post.php:117
 msgid "View Statistics"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1699
+#: src/Services/WechatOAService.php:1689
 #: src/Components/WechatOA/views/view-menu-edit.php:156
 msgid "View URL"
 msgstr ""
 
-#: src/Components/Post/Post.php:485 src/Components/Post/Post.php:500
+#: src/Components/Post/Post.php:454 src/Components/Post/Post.php:468
 msgid "Views"
 msgstr ""
 
-#: src/Components/Post/Post.php:769
+#: src/Components/Post/Post.php:728
 msgid "Visible only when logged in"
 msgstr ""
 
-#: src/Components/Post/Post.php:770
+#: src/Components/Post/Post.php:729
 msgid "Visible only when not logged in"
 msgstr ""
 
@@ -3941,18 +3943,18 @@ msgstr ""
 msgid "Website Configuration"
 msgstr ""
 
-#: src/Services/WechatOAService.php:1705
+#: src/Services/WechatOAService.php:1695
 #: src/Components/WechatOA/views/view-menu-edit.php:228
 msgid "WeChat Album"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1376
-#: src/Components/Developer/Developer.php:1382
+#: src/Components/Developer/Developer.php:1361
+#: src/Components/Developer/Developer.php:1367
 msgid "Wechat ID"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1337
-#: src/Components/WechatOA/WechatOA.php:54
+#: src/Components/Developer/Developer.php:1322
+#: src/Components/WechatOA/WechatOA.php:42
 msgid "Wechat OA"
 msgstr ""
 
@@ -3961,8 +3963,8 @@ msgstr ""
 msgid "Wechat OA Media Library"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:101
-#: src/Components/WechatOA/WechatOA.php:107
+#: src/Components/WechatOA/WechatOA.php:88
+#: src/Components/WechatOA/WechatOA.php:94
 msgid "Wechat OA Service"
 msgstr ""
 
@@ -3975,12 +3977,12 @@ msgstr ""
 msgid "Wechat OA Support"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:53
-#: src/Components/WechatOA/WechatOA.php:77
+#: src/Components/WechatOA/WechatOA.php:41
+#: src/Components/WechatOA/WechatOA.php:65
 msgid "Wechat Official Account"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:272
+#: src/Components/WechatOA/WechatOA.php:259
 msgid "Wechat Official Account service is not enabled"
 msgstr ""
 
@@ -3988,12 +3990,12 @@ msgstr ""
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr ""
 
-#: src/Controllers/AuthController.php:412 src/Services/WechatOAService.php:1822
-#: src/Services/AuthService.php:215
+#: src/Controllers/AuthController.php:412 src/Services/WechatOAService.php:1812
+#: src/Services/AuthService.php:170
 msgid "WeChat service is not available."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:198 src/Components/Auth/Auth.php:204
+#: src/Components/Auth/Auth.php:191 src/Components/Auth/Auth.php:197
 msgid "WeChat Subscribe Login"
 msgstr ""
 
@@ -4002,21 +4004,21 @@ msgstr ""
 msgid "WeChat Title"
 msgstr ""
 
-#: src/Utilities/Common.php:237 src/Components/User/views/tab-duration.php:59
-#: src/Components/User/views/tab-duration.php:144
+#: src/Utilities/Common.php:237 src/Components/User/views/tab-duration.php:62
+#: src/Components/User/views/tab-duration.php:147
 msgid "Week"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1237
-#: src/Components/Developer/Developer.php:1238
+#: src/Components/Developer/Developer.php:1222
+#: src/Components/Developer/Developer.php:1223
 msgid "Welcome"
 msgstr ""
 
-#: src/Components/WechatOA/WechatOA.php:27
+#: src/Components/WechatOA/WechatOA.php:24
 msgid "Welcome back, my friend."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:597
+#: src/Components/Developer/Developer.php:583
 msgid "Welcome Panel"
 msgstr ""
 
@@ -4024,7 +4026,7 @@ msgstr ""
 msgid "Welcome!"
 msgstr ""
 
-#: src/Services/WechatOAService.php:751 src/Components/WechatOA/WechatOA.php:26
+#: src/Services/WechatOAService.php:741 src/Components/WechatOA/WechatOA.php:23
 msgid "Welcome! Thanks for your attention."
 msgstr ""
 
@@ -4040,14 +4042,14 @@ msgid ""
 "WeChat official account media library."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:335
+#: src/Components/Developer/Developer.php:321
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
 "database to avoid data pollution.<br>The backup file directory: "
 msgstr ""
 
-#: src/Components/Security/Security.php:204
+#: src/Components/Security/Security.php:236
 msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."
@@ -4059,13 +4061,13 @@ msgid ""
 "the mini program."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:88
+#: src/Components/Auth/Auth.php:81
 msgid ""
 "Whether to allow to register by registration code, The referral code is used "
 "as the user slug."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:146
+#: src/Components/Auth/Auth.php:139
 msgid "Whether to allow to sale the invitation code."
 msgstr ""
 
@@ -4074,21 +4076,21 @@ msgid ""
 "Whether to display the content distribution section on the post edit page."
 msgstr ""
 
-#: src/Components/Product/Product.php:126
+#: src/Components/Product/Product.php:116
 msgid "Whether to enable cart feature."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:108
+#: src/Components/Auth/Auth.php:101
 msgid ""
 "Whether to enforce mandatory invite-only registration, users without an "
 "invitation code cannot sign up."
 msgstr ""
 
-#: src/Components/Product/Product.php:140
+#: src/Components/Product/Product.php:130
 msgid "Whether to support the product of download type."
 msgstr ""
 
-#: src/Components/Product/Product.php:154
+#: src/Components/Product/Product.php:144
 msgid "Whether to support the product of membership type."
 msgstr ""
 
@@ -4096,8 +4098,8 @@ msgstr ""
 msgid "Withdrawal"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:360
-#: src/Components/Developer/Developer.php:366
+#: src/Components/Developer/Developer.php:346
+#: src/Components/Developer/Developer.php:352
 msgid "WordPress Auto Update"
 msgstr ""
 
@@ -4115,35 +4117,35 @@ msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:314
+#: src/Components/Setting/Setting.php:300
 msgid "You can add custom SEO data for each page."
 msgstr ""
 
-#: src/Components/Post/Post.php:599
+#: src/Components/Post/Post.php:562
 msgid "You can add widgets to archive sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:590
+#: src/Components/Post/Post.php:553
 msgid "You can add widgets to homepage sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:626
+#: src/Components/Post/Post.php:589
 msgid "You can add widgets to page sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:617
+#: src/Components/Post/Post.php:580
 msgid "You can add widgets to post sidebar."
 msgstr ""
 
-#: src/Components/Product/Product.php:282
+#: src/Components/Product/Product.php:269
 msgid "You can add widgets to product sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:608
+#: src/Components/Post/Post.php:571
 msgid "You can add widgets to search sidebar."
 msgstr ""
 
-#: src/Components/Product/Product.php:271
+#: src/Components/Product/Product.php:258
 msgid "You can add widgets to shop sidebar."
 msgstr ""
 
@@ -4153,13 +4155,20 @@ msgid ""
 "standard."
 msgstr ""
 
+#: src/Components/Setting/views/tab-sitemap.php:5
+msgid ""
+"You can choose to use G3-Sitemap instead of the default WordPress sitemap in "
+"the security settings, as the default sitemap may expose sensitive user "
+"information."
+msgstr ""
+
 #: src/Components/Themes/views/page-multiple-themes.php:7
 msgid ""
 "You can configure different theme templates for different types of devices "
 "to improve user experience."
 msgstr ""
 
-#: src/Components/Setting/views/tab-rss.php:6
+#: src/Components/Setting/views/tab-rss.php:5
 msgid ""
 "You can provide the RSS feed address to partners or users for subscribing to "
 "receive content from your platform."
@@ -4167,6 +4176,12 @@ msgstr ""
 
 #: src/Components/Themes/Themes.php:123
 msgid "You can Select a theme for mobile devices."
+msgstr ""
+
+#: src/Components/Setting/Setting.php:465
+msgid ""
+"You can visit the current address to generate local cache files of the "
+"sitemap."
 msgstr ""
 
 #: src/Components/Security/views/tab-fastcgi.php:47
@@ -4180,4 +4195,8 @@ msgstr ""
 #: templates/developer/w.php:23
 #, php-format
 msgid "Your G3-Web expires in %s"
+msgstr ""
+
+#: src/Components/Developer/Developer.php:796
+msgid "刷新 REST 路由缓存"
 msgstr ""

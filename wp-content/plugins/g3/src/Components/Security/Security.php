@@ -19,22 +19,24 @@ class Security extends Components {
     protected function hooks(): void
     {
         $this->filter([
-            'rest_authentication_errors' => [[$this, 'restrictNativeRestApi'], 10, 1]
+            'rest_authentication_errors' => [[$this, 'restrictNativeRestApi'], 10, 1],
+            'wp_sitemaps_enabled'        => [[$this, 'nativeSitemapEnabled'], 10, 1],
         ]);
     }
     #[Override]
     protected function options(): void
     {
         $this->option = Option::get(SystemService::SECURITY_OPTION_KEY, [
-            'login'       => '0',
-            'url'         => Common::hash(8),
-            'upload'      => '1',
-            'sitemap'     => '1',
-            'userSiteMap' => '1',
-            'restApi'     => '1',
-            'session'     => '0',
-            'xmlrpc'      => '1',
-            'csp'         => '0',
+            'login'            => '0',
+            'url'              => Common::hash(8),
+            'upload'           => '1',
+            'sitemap'          => '1',
+            'userSiteMap'      => '1',
+            'siteMapGenerator' => '1',
+            'restApi'          => '1',
+            'session'          => '0',
+            'xmlrpc'           => '1',
+            'csp'              => '0',
         ]);
         $this->queue  = Option::get(SystemService::QUEUE_OPTION_KEY, [
             'email' => '1',
@@ -148,11 +150,7 @@ class Security extends Components {
                             __('Admin Login URL', 'G3'),
                             __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('oa/' . (isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : ''))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'),
                         );
-                    },
-                    'args'     => [
-                        'label_for' => 'url',
-                        'class'     => 'security-field__url',
-                    ]
+                    }
                 ],
                 [
                     'id'       => 'upload',
@@ -176,7 +174,7 @@ class Security extends Components {
                             $this->option,
                             'sitemap',
                             __('Reset SiteMap', 'G3'),
-                            __('Remove the default site map of WordPress and use the custom site map.', 'G3'),
+                            __('Remove the default sitemap of WordPress and use the G3 sitemap instead.', 'G3'),
                         );
                     }
                 ],
@@ -189,7 +187,23 @@ class Security extends Components {
                             $this->option,
                             'userSiteMap',
                             __('Users SiteMap', 'G3'),
-                            __('Remove the default users site map to avoid exposing user ID and login name security risks.', 'G3'),
+                            __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'),
+                        );
+                    }
+                ],
+                [
+                    'id'       => 'siteMapGenerator',
+                    'title'    => __('SiteMap Generator', 'G3'),
+                    'callback' => function () {
+                        echo Element::switch(
+                            SystemService::SECURITY_OPTION_KEY,
+                            $this->option,
+                            'siteMapGenerator',
+                            __('SiteMap Generator', 'G3'),
+                            sprintf(
+                                __('In the <a href="%s">site map settings page</a>, manually trigger to generate the site map cache file, instead of generating the site map cache file through the site map dynamic link.', 'G3'),
+                                admin_url('admin.php?page=g3-settings&tab=sitemap')
+                            )
                         );
                     }
                 ],
@@ -271,7 +285,7 @@ class Security extends Components {
                     );
                 },
                 'args'     => [
-                    'class' => 'advanced'
+                    'class' => "advanced"
                 ]
             ]
         ]);
@@ -305,6 +319,17 @@ class Security extends Components {
             return false;
         }
         return true;
+    }
+    public static function onSitemap(): bool
+    {
+        $x = Context::get(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1';
+        $y = Context::get(SystemService::SECURITY_OPTION_KEY)['siteMapGenerator'] ?? '1';
+        return $x === '1' && $y !== '1';
+    }
+    public function nativeSitemapEnabled($enabled): bool
+    {
+        $x = Context::get(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1';
+        return $x === '1' ? false : (bool) $enabled;
     }
     public function customAdminParam(): string
     {

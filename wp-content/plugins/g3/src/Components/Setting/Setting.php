@@ -1,12 +1,15 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Services\SitemapService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Response;
 use Override;
 
 class Setting extends Components {
@@ -452,6 +455,61 @@ class Setting extends Components {
             'g3-settings&tab=sitemap',
             'sitemap'
         );
+        add_settings_field(
+            'g3-sitemap',
+            'G3-SiteMap',
+            function () {
+                $g3Sitemap = home_url('helper/sitemap/endpoint/');
+                ?>
+            <fieldset>
+                <legend class="screen-reader-text"><span>G3-Sitemap</span></legend>
+                <p><a href="<?php echo $g3Sitemap; ?>" target="_blank"><?php echo $g3Sitemap; ?></a></p>
+                <p class="description">
+                    <?php echo __('Real-time data', 'G3') . ': ' . __('You can visit the current address to generate local cache files of the sitemap.', 'G3'); ?>
+                </p>
+            </fieldset>
+            <?php
+            },
+            'g3-settings&tab=sitemap',
+            'sitemap'
+        );
+        add_settings_field(
+            'local-sitemap',
+            'Local Sitemap',
+            function () {
+                $localFile = home_url('sitemap/index.html');
+                ?>
+            <fieldset>
+                <legend class="screen-reader-text"><span>Local Sitemap</span></legend>
+                <p><a href="<?php echo $localFile; ?>" target="_blank"><?php echo $localFile; ?></a></p>
+                <p class="description">
+                    <?php echo __('Cache Data', 'G3') . ': ' . __('<strong>Share it to your friends, robots or AI!</strong> You can access the local sitemap cache file through the current address.', 'G3'); ?>
+                </p>
+            </fieldset>
+            <?php
+            },
+            'g3-settings&tab=sitemap',
+            'sitemap'
+        );
+        add_settings_field(
+            'sitemapGenerator',
+            __('SiteMap Generator', 'G3'),
+            function () {
+                ?>
+            <fieldset>
+                <legend class="screen-reader-text"><span><?php _e('SiteMap Generator', 'G3'); ?></span></legend>
+                <p>
+                    <button class="j-button is-outline" type="button" id="generateSitemap">
+                        <?php _e('Generate Sitemap', 'G3'); ?>
+                    </button>
+                </p>
+                <p class="description"><?php _e('Click to generate sitemap cache files.', 'G3'); ?></p>
+            </fieldset>
+            <?php
+            },
+            'g3-settings&tab=sitemap',
+            'sitemap'
+        );
     }
     public function sadHandle(): void
     {
@@ -710,5 +768,27 @@ class Setting extends Components {
     {
         $cookie = $_COOKIE['jui-theme'] ?? '{}';
         return json_decode(stripslashes($cookie), true);
+    }
+    protected function ajax(): void
+    {
+        add_action('wp_ajax_g3_generate_sitemap', function () {
+            $nonce = $_POST['nonce'] ?? '';
+            if (!wp_verify_nonce($nonce, 'g3_generate_sitemap') || !current_user_can('manage_options')) {
+                Response::ajaxForbidden();
+            }
+
+            $y = Context::get(SystemService::SECURITY_OPTION_KEY)['siteMapGenerator'] ?? '1';
+            if ($y !== '1') {
+                Response::ajaxError(__('Sitemap generation is disabled.', 'G3'));
+            }
+
+            /**
+             * @var SitemapService $service
+             */
+            $service = Container::run()->use(SitemapService::class);
+            $service->writeStaticFiles();
+
+            Response::ajaxSuccess(__('Sitemap generated successfully.', 'G3'));
+        });
     }
 }

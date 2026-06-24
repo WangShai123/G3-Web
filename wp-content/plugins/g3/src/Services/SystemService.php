@@ -30,6 +30,10 @@ class SystemService {
     const THEME_OPTION_KEY = 'g3_option_themes';
     // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
+    // menu cache key prefix
+    const MENU_CACHE_KEY_PREFIX = 'location';
+    // menu cache group
+    const MENU_CACHE_GROUP = 'g3_menu';
     /**
      * Get system service option
      * 

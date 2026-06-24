@@ -1,5 +1,4 @@
 <?php
-
 use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
@@ -14,7 +13,6 @@ do_settings_sections('g3-settings&tab=rss');
 submit_button();
 ?>
 </form>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const { copy, listen, Toast } = jui

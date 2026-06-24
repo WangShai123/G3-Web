@@ -1,19 +1,8 @@
 <?php
-
 namespace JEALER\G3\Utilities;
-
 use JEALER\G3\Utilities\System;
 use WP_REST_Request;
 
-
-/**
- * Response Utilities
- * 
- * 响应工具类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 final class Response {
 
     /**

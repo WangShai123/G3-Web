@@ -193,7 +193,7 @@ class Post extends Components {
                     );
                 },
                 'args'     => [
-                    'class' => 'advanced'
+                    'class' => "advanced"
                 ]
             ],
             [
@@ -209,7 +209,7 @@ class Post extends Components {
                     );
                 },
                 'args'     => [
-                    'class' => 'advanced'
+                    'class' => "advanced"
                 ]
             ]
         ]);

@@ -76,6 +76,7 @@ wp-content/backup-*.php
 wp-content/object-cache.php
 wp-content/object-cache.php.bak
 wp-content/db.php
+sitemap
 document.md
 
 # composer vendor markdown

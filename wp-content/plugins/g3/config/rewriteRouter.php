@@ -45,7 +45,7 @@ if (!defined('ABSPATH')) {
  */
 return [
     // Admin Login
-    'oa/([^/]+)/?$'               => [
+    'oa/([^/]+)/?$'                      => [
         'var'        => 'custom_admin_login',
         'path'       => 'admin/oa.php',
         'priority'   => [
@@ -58,7 +58,7 @@ return [
     ],
 
     // User Register Page
-    'user/([^/]+)/?$'             => [
+    'user/([^/]+)/?$'                    => [
         'var'      => 'user_action',
         'path'     => 'user/user.php',
         'priority' => [
@@ -78,7 +78,7 @@ return [
     ],
 
     // Wechat OA Callback
-    'dev/wechat_oa/([^/]+)/?$'    => [
+    'dev/wechat_oa/([^/]+)/?$'           => [
         'var'      => 'callback',
         'path'     => 'wechat/_.php',
         'priority' => [
@@ -90,14 +90,14 @@ return [
     ],
 
     // Redirect Link
-    'redirect/go/([^/]+)/?$'      => [
-        'var'        => 'redirect_url',
+    'redirect/go/([^/]+)/?$'             => [
+        'var'        => 'g3_var_redirect_url',
         'path'       => 'developer/redirect.php',
         'dependency' => [\JEALER\G3\Components\Setting::class, 'onRedirect']
     ],
 
     // LLM Endpoint
-    'helper/llm/([^/]+)/?$'       => [
+    'helper/llm/([^/]+)/?$'              => [
         'var'        => 'g3_var_llm',
         'path'       => 'llm/endpointX.php',
         'priority'   => [
@@ -109,15 +109,42 @@ return [
         'dependency' => [\JEALER\G3\Components\Setting::class, 'onLLM']
     ],
 
+    // Sitemap Endpoint
+    'helper/sitemap/([^/]+)/?$'          => [
+        'var'        => 'g3_var_sitemap',
+        'path'       => 'sitemap/endpointX.php',
+        'priority'   => [
+            [
+                'value' => 'endpoint',
+                'path'  => 'sitemap/endpoint.php'
+            ]
+        ],
+        'dependency' => [\JEALER\G3\Components\Security::class, 'onSitemap']
+    ],
+
+    // Sitemap Endpoint Pagination
+    'helper/sitemap/([^/]+)/([0-9]+)/?$' => [
+        'var'        => ['g3_var_sitemap', 'g3_var_sitemap_page'],
+        'path'       => 'sitemap/endpoint.php',
+        'priority'   => [
+            [
+                'var'   => 'g3_var_sitemap',
+                'value' => 'endpoint',
+                'path'  => 'sitemap/endpoint.php'
+            ]
+        ],
+        'dependency' => [\JEALER\G3\Components\Security::class, 'onSitemap']
+    ],
+
 
     // 单个 query var 示例
-    'test/one/([^/]+)/?$'         => [
+    'test/one/([^/]+)/?$'                => [
         'var'  => 'test_id',
         'path' => 'tests/single.php',
     ],
 
     // 多个 query vars 示例
-    'test/two/([^/]+)/([^/]+)/?$' => [
+    'test/two/([^/]+)/([^/]+)/?$'        => [
         'var'  => ['multiple_id', 'multiple_name'],
         'path' => 'tests/multiple.php',
     ],

@@ -87,7 +87,7 @@ class Auth extends Components {
                         ]
                     );
                 },
-                'args'     => ['class' => 'advanced']
+                'args'     => ['class' => "advanced"]
             ],
             [
                 'id'       => 'force',
@@ -101,7 +101,7 @@ class Auth extends Components {
                         __('Whether to enforce mandatory invite-only registration, users without an invitation code cannot sign up.', 'G3')
                     );
                 },
-                'args'     => ['class' => 'advanced']
+                'args'     => ['class' => "advanced"]
             ],
             [
                 'id'       => 'expire',
@@ -139,7 +139,7 @@ class Auth extends Components {
                         __('Whether to allow to sale the invitation code.', 'G3')
                     );
                 },
-                'args'     => ['class' => 'advanced']
+                'args'     => ['class' => "advanced"]
             ],
             [
                 'id'       => 'payment',
@@ -198,7 +198,7 @@ class Auth extends Components {
                         __('Users can subscribe your WeChat official account to complete the login.', 'G3')
                     );
                 },
-                'args'     => ['class' => 'advanced']
+                'args'     => ['class' => "advanced"]
             ],
             [
                 'id'       => 'client',
@@ -213,7 +213,8 @@ class Auth extends Components {
                         'field-client',
                         'md'
                     );
-                }
+                },
+                'args'     => ['class' => "advanced"]
             ],
             // [
             //     'id'       => 'wechatQRCode',

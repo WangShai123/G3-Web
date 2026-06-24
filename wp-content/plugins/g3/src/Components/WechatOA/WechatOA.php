@@ -95,7 +95,7 @@ class WechatOA extends Components {
                     );
                 },
                 'args'     => [
-                    'class' => 'advanced'
+                    'class' => "advanced"
                 ]
             ],
             [
