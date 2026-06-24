@@ -6,6 +6,7 @@ use JEALER\G3\Utilities\Date;
 class LLMService {
     private string $fileName     = 'llms.txt';
     private int    $postsPerType;
+    private string $lastError    = '';
     public function __construct()
     {
         $this->postsPerType = Context::get(SystemService::LLM_OPTION_KEY)['postsPerType'] ?? 2000;
@@ -14,12 +15,12 @@ class LLMService {
     public function handleRequest()
     {
         if (get_query_var('g3_var_llm') === 'endpoint') {
-            header('Content-Type: text/plain; charset=utf-8');
             $llms_txt = $this->generateLLMsTxt();
             $test     = $this->saveLLMsTxt($llms_txt);
 
+            header('Content-Type: text/plain; charset=utf-8');
             if ($test === false) {
-                echo "Failed to save llms.txt because of file permission issues. Please check the permissions of the server root directory.";
+                echo $this->lastError ?: 'Failed to save llms.txt because of file permission issues. Please check the permissions of the server root directory.';
             } else {
                 echo $llms_txt;
             }
@@ -31,8 +32,38 @@ class LLMService {
     private function saveLLMsTxt($content)
     {
         $file_path = ABSPATH . $this->fileName;
-        $bom       = "\xEF\xBB\xBF";
-        return file_put_contents($file_path, $bom . $content);
+        $directory = dirname($file_path);
+
+        if (file_exists($file_path) && !is_writable($file_path)) {
+            $this->lastError = sprintf(
+                'Failed to save %s because the file is not writable: %s',
+                $this->fileName,
+                $file_path
+            );
+            return false;
+        }
+
+        if (!file_exists($file_path) && (!is_dir($directory) || !is_writable($directory))) {
+            $this->lastError = sprintf(
+                'Failed to save %s because the server root directory is not writable: %s',
+                $this->fileName,
+                $directory
+            );
+            return false;
+        }
+
+        $bom   = "\xEF\xBB\xBF";
+        $saved = @file_put_contents($file_path, $bom . $content, LOCK_EX);
+
+        if ($saved === false) {
+            $this->lastError = sprintf(
+                'Failed to save %s because of file permission issues. Please check the permissions of: %s',
+                $this->fileName,
+                $file_path
+            );
+        }
+
+        return $saved;
     }
 
     /**
