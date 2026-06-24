@@ -232,6 +232,10 @@ final class System {
         return array_merge($main, $user);
     }
 
+    public static function ensureDirectory(string $directory): bool
+    {
+        return is_dir($directory) || wp_mkdir_p($directory);
+    }
     public static function writeFile(string $file, string $content): bool
     {
         return file_put_contents($file, $content) !== false;

@@ -2,6 +2,7 @@
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Date;
+use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\System;
 
 class LLMService {
@@ -22,20 +23,20 @@ class LLMService {
     {
         if (get_query_var('g3_var_llm') === 'endpoint') {
             $llms_txt = $this->generateLLMsTxt();
-            $test     = $this->saveLLMsTxt($llms_txt);
+
+            $v = Option::get(SystemService::LLM_OPTION_KEY)['manual'] ?? '0';
+            if ($v !== '1') {
+                $test = $this->saveLLMsTxt($llms_txt);
+            }
 
             header('Content-Type: text/plain; charset=utf-8');
-            if ($test === false) {
-                echo $this->lastError ?: 'Failed to save llms.txt because of file permission issues. Please check the permissions of the server root directory.';
-            } else {
-                echo $llms_txt;
-            }
+            echo $llms_txt;
             exit;
         }
         wp_redirect(home_url('404'));
     }
 
-    private function saveLLMsTxt($content)
+    public function saveLLMsTxt($content)
     {
         $file_path = $this->llmDir . DIRECTORY_SEPARATOR . $this->fileName;
 
@@ -58,7 +59,7 @@ class LLMService {
     /**
      * Generate llms.txt content, supporting all public post types and including metadata for each item.
      */
-    private function generateLLMsTxt()
+    public function generateLLMsTxt()
     {
         $site_name = get_bloginfo('name');
         $site_desc = get_bloginfo('description');
@@ -113,5 +114,17 @@ class LLMService {
         }
 
         return $output;
+    }
+
+    public function writeStaticFiles(): bool
+    {
+        if (!System::ensureDirectory($this->llmDir)) {
+            return false;
+        }
+
+        $content = $this->generateLLMsTxt();
+        $bom     = "\xEF\xBB\xBF";
+        $content = $bom . $content;
+        return System::writeFile($this->llmDir . DIRECTORY_SEPARATOR . $this->fileName, $content);
     }
 }

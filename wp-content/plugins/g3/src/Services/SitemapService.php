@@ -49,7 +49,7 @@ class SitemapService {
     }
     public function writeStaticFiles(): void
     {
-        if (!$this->ensureDirectory($this->sitemapDir)) {
+        if (!System::ensureDirectory($this->sitemapDir)) {
             return;
         }
 
@@ -93,7 +93,7 @@ class SitemapService {
         }
 
         $userDir = $this->sitemapDir . DIRECTORY_SEPARATOR . 'user';
-        if ($this->ensureDirectory($userDir)) {
+        if (System::ensureDirectory($userDir)) {
             foreach ($this->publicUsers() as $user) {
                 System::writeFile(
                     $userDir . DIRECTORY_SEPARATOR . $this->usernameHash($user->user_nicename ?: $user->user_login) . '.xml',
@@ -397,9 +397,5 @@ class SitemapService {
     {
         $username = $user->user_nicename ?: $user->user_login;
         return $this->siteUrl . '/user/' . $this->usernameHash($username) . '/';
-    }
-    private function ensureDirectory(string $directory): bool
-    {
-        return is_dir($directory) || wp_mkdir_p($directory);
     }
 }

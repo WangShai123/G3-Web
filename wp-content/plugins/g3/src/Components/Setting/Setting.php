@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Services\LLMService;
 use JEALER\G3\Services\SitemapService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
@@ -54,6 +55,7 @@ class Setting extends Components {
         $this->llm    = Option::get(SystemService::LLM_OPTION_KEY, [
             'llm'          => '1',
             'postsPerType' => 2000,
+            'manual'       => '1',
         ], false);
     }
     protected function system(): void
@@ -404,15 +406,15 @@ class Setting extends Components {
                             site_url('/helper/llm/endpoint'),
                             site_url('/helper/llm/endpoint'),
                             __('Cache Data', 'G3'),
-                            site_url('/llms.txt'),
-                            site_url('/llms.txt')
+                            site_url('/llm/llms.txt'),
+                            site_url('/llm/llms.txt')
                         )
                     );
                 }
             ],
             [
                 'id'       => 'postsPerType',
-                'title'    => __('Posts Per Type', 'G3'),
+                'title'    => __('Count', 'G3'),
                 'callback' => function () {
                     echo Element::input(
                         SystemService::LLM_OPTION_KEY,
@@ -422,6 +424,28 @@ class Setting extends Components {
                         __('The number of posts to be generated for each post type.<br>Default: <code>2000</code>.', 'G3'),
                         'number',
                     );
+                }
+            ],
+            [
+                'id'       => 'manual',
+                'title'    => __('LLM Cache', 'G3'),
+                'callback' => function () {
+                    echo Element::switch(
+                        SystemService::LLM_OPTION_KEY,
+                        $this->llm,
+                        'manual',
+                        __('LLM Cache', 'G3'),
+                        // 文案: 实时数据访问不再生成缓存文件，请手动生成缓存文件，以获得更好的性能。
+                        __('Real-time data access no longer generates cache files. Please generate cache files manually for better performance.', 'G3')
+                    );
+                }
+            ],
+            [
+                'id'       => 'generator',
+                'title'    => __('LLM Generator', 'G3'),
+                'callback' => function () {
+                    echo '<button class="j-button is-outline" type="button" id="generateLLM">' . __('Generate LLM Cache', 'G3') . '</button>';
+                    echo '<p class="description">' . __('Click to generate llms.txt cache file.', 'G3') . '</p>';
                 }
             ]
         ]);
@@ -771,6 +795,26 @@ class Setting extends Components {
     }
     protected function ajax(): void
     {
+        add_action('wp_ajax_g3_generate_llm', function () {
+            $x = Option::get(SystemService::LLM_OPTION_KEY)['llm'] ?? '1';
+            if ($x !== '1') {
+                Response::ajaxError(__('LLM feature is disabled.', 'G3'));
+            }
+
+            $nonce = $_POST['nonce'] ?? '';
+            if (!wp_verify_nonce($nonce, 'g3_generate_llm') || !current_user_can('manage_options')) {
+                Response::ajaxForbidden();
+            }
+            /**
+             * @var LLMService $service
+             */
+            $service = Container::run()->use(LLMService::class);
+            $result  = $service->writeStaticFiles();
+            if ($result !== false) {
+                Response::ajaxSuccess(__('LLM cache generated successfully.', 'G3'));
+            }
+            Response::ajaxError(__('Failed to generate LLM cache.', 'G3'));
+        });
         add_action('wp_ajax_g3_generate_sitemap', function () {
             $nonce = $_POST['nonce'] ?? '';
             if (!wp_verify_nonce($nonce, 'g3_generate_sitemap') || !current_user_can('manage_options')) {
