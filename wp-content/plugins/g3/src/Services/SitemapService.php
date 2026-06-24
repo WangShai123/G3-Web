@@ -1,22 +1,20 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Option;
+use JEALER\G3\Utilities\System;
 use WP_User_Query;
 
 class SitemapService {
     private const PER_PAGE = 4000;
-
     private string $siteUrl;
     private string $sitemapDir;
     private string $sitemapUrl;
-
     public function __construct()
     {
         $this->siteUrl    = rtrim(home_url('/'), '/');
         $this->sitemapDir = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'sitemap';
         $this->sitemapUrl = $this->siteUrl . '/sitemap';
     }
-
     public function handleRequest(): void
     {
         if (!$this->enabled() || get_query_var('g3_var_sitemap') !== 'endpoint') {
@@ -33,37 +31,32 @@ class SitemapService {
         echo $xml;
         exit;
     }
-
     private function enabled(): bool
     {
         $option = Option::get(SystemService::SECURITY_OPTION_KEY, [
             'sitemap' => '1',
         ]);
-
-        $v = $option['sitemap'] ?? '1';
+        $v      = $option['sitemap'] ?? '1';
         return (string) $v === '1';
     }
-
     private function requestPage(): int
     {
         $value = get_query_var('g3_var_sitemap_page');
         if (is_numeric($value)) {
             return max(1, (int) $value);
         }
-
         return 1;
     }
-
     public function writeStaticFiles(): void
     {
         if (!$this->ensureDirectory($this->sitemapDir)) {
             return;
         }
 
-        $this->writeFile($this->sitemapDir . DIRECTORY_SEPARATOR . 'index.html', $this->generateHtmlIndex());
+        System::writeFile($this->sitemapDir . DIRECTORY_SEPARATOR . 'index.html', $this->generateHtmlIndex());
         $homePages = $this->homePages();
         for ($page = 1; $page <= $homePages; $page++) {
-            $this->writeFile(
+            System::writeFile(
                 $this->sitemapDir . DIRECTORY_SEPARATOR . sprintf('home-%d.xml', $page),
                 $this->generateHomeUrlSet($page)
             );
@@ -73,7 +66,7 @@ class SitemapService {
             $pages = $this->postTypePages($postType);
             for ($page = 1; $page <= $pages; $page++) {
                 $filename = sprintf('posts-%s-%d.xml', $postType, $page);
-                $this->writeFile(
+                System::writeFile(
                     $this->sitemapDir . DIRECTORY_SEPARATOR . $filename,
                     $this->generatePostTypeUrlSet($postType, $page)
                 );
@@ -84,7 +77,7 @@ class SitemapService {
             $pages = $this->taxonomyPages($taxonomy);
             for ($page = 1; $page <= $pages; $page++) {
                 $filename = sprintf('taxonomies-%s-%d.xml', $taxonomy, $page);
-                $this->writeFile(
+                System::writeFile(
                     $this->sitemapDir . DIRECTORY_SEPARATOR . $filename,
                     $this->generateTaxonomyUrlSet($taxonomy, $page)
                 );
@@ -93,7 +86,7 @@ class SitemapService {
 
         $userPages = $this->userPages();
         for ($page = 1; $page <= $userPages; $page++) {
-            $this->writeFile(
+            System::writeFile(
                 $this->sitemapDir . DIRECTORY_SEPARATOR . sprintf('users-%d.xml', $page),
                 $this->generateUsersUrlSet($page)
             );
@@ -102,7 +95,7 @@ class SitemapService {
         $userDir = $this->sitemapDir . DIRECTORY_SEPARATOR . 'user';
         if ($this->ensureDirectory($userDir)) {
             foreach ($this->publicUsers() as $user) {
-                $this->writeFile(
+                System::writeFile(
                     $userDir . DIRECTORY_SEPARATOR . $this->usernameHash($user->user_nicename ?: $user->user_login) . '.xml',
                     $this->generateUrlSet([
                         [
@@ -114,14 +107,12 @@ class SitemapService {
             }
         }
     }
-
     private function generateIndex(int $page = 1): string
     {
         return $this->xmlDocument('sitemapindex', $this->indexEntries($page), [
             'local file url: ' . $this->sitemapUrl . '/index.html',
         ]);
     }
-
     private function generateHtmlIndex(): string
     {
         $siteName    = $this->siteName();
@@ -154,12 +145,10 @@ class SitemapService {
         $html .= '</html>' . "\n";
         return $html;
     }
-
     private function indexEntries(int $page): array
     {
         return array_slice($this->allIndexEntries(), max(0, ($page - 1) * self::PER_PAGE), self::PER_PAGE);
     }
-
     private function allIndexEntries(): array
     {
         $entries = [
@@ -199,7 +188,6 @@ class SitemapService {
 
         return $entries;
     }
-
     private function generateHomeUrlSet(int $page): string
     {
         $entries = [
@@ -211,7 +199,6 @@ class SitemapService {
 
         return $this->generateUrlSet(array_slice($entries, max(0, ($page - 1) * self::PER_PAGE), self::PER_PAGE));
     }
-
     private function generatePostTypeUrlSet(string $postType, int $page): string
     {
         $posts = get_posts([
@@ -242,7 +229,6 @@ class SitemapService {
 
         return $this->generateUrlSet($entries);
     }
-
     private function generateTaxonomyUrlSet(string $taxonomy, int $page): string
     {
         $terms = get_terms([
@@ -271,7 +257,6 @@ class SitemapService {
 
         return $this->generateUrlSet($entries);
     }
-
     private function generateUsersUrlSet(int $page): string
     {
         $query = new WP_User_Query([
@@ -293,12 +278,10 @@ class SitemapService {
 
         return $this->generateUrlSet($entries);
     }
-
     private function generateUrlSet(array $entries): string
     {
         return $this->xmlDocument('urlset', $entries);
     }
-
     private function xmlDocument(string $root, array $entries, array $comments = []): string
     {
         $item = $root === 'sitemapindex' ? 'sitemap' : 'url';
@@ -324,7 +307,6 @@ class SitemapService {
         $xml .= '</' . $root . '>' . "\n";
         return $xml;
     }
-
     private function publicPostTypes(): array
     {
         $postTypes = get_post_types([
@@ -335,24 +317,20 @@ class SitemapService {
 
         return array_values($postTypes);
     }
-
     private function siteName(): string
     {
         return get_bloginfo('name') ?: parse_url($this->siteUrl, PHP_URL_HOST) ?: 'Site';
     }
-
     private function publicTaxonomies(): array
     {
         return array_values(get_taxonomies([
             'public' => true,
         ], 'names'));
     }
-
     private function homePages(): int
     {
         return 1;
     }
-
     private function postTypePages(string $postType): int
     {
         $counts = wp_count_posts($postType);
@@ -360,7 +338,6 @@ class SitemapService {
 
         return max(1, (int) ceil($total / self::PER_PAGE));
     }
-
     private function taxonomyPages(string $taxonomy): int
     {
         $count = wp_count_terms([
@@ -371,7 +348,6 @@ class SitemapService {
         $total = is_wp_error($count) ? 0 : (int) $count;
         return max(1, (int) ceil($total / self::PER_PAGE));
     }
-
     private function userPages(): int
     {
         $query = new WP_User_Query([
@@ -381,7 +357,6 @@ class SitemapService {
 
         return max(1, (int) ceil((int) $query->get_total() / self::PER_PAGE));
     }
-
     private function publicUsers(): array
     {
         $query = new WP_User_Query([
@@ -393,7 +368,6 @@ class SitemapService {
 
         return $query->get_results();
     }
-
     private function postTypeLastmod(string $postType): string
     {
         $posts = get_posts([
@@ -410,31 +384,22 @@ class SitemapService {
 
         return $posts ? get_post_modified_time('c', true, $posts[0]) : wp_date('c', time());
     }
-
     private function userLastmod(object $user): string
     {
         $timestamp = isset($user->user_registered) ? strtotime($user->user_registered) : false;
         return wp_date('c', $timestamp ?: time());
     }
-
     private function usernameHash(string $username): string
     {
         return substr(hash('sha256', $username), 0, 16);
     }
-
     private function userPageUrl(object $user): string
     {
         $username = $user->user_nicename ?: $user->user_login;
         return $this->siteUrl . '/user/' . $this->usernameHash($username) . '/';
     }
-
     private function ensureDirectory(string $directory): bool
     {
         return is_dir($directory) || wp_mkdir_p($directory);
-    }
-
-    private function writeFile(string $file, string $content): bool
-    {
-        return file_put_contents($file, $content) !== false;
     }
 }

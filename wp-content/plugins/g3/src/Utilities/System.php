@@ -2,14 +2,6 @@
 namespace JEALER\G3\Utilities;
 use JEALER\G3\Services\SystemService;
 
-/**
- * System Utilities
- * 
- * 系统工具类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 final class System {
 
     /**
@@ -223,7 +215,7 @@ final class System {
      */
     public static function config(string $key, $default = []): array
     {
-        $mainConfig = G3_PlUGIN_DIR . '/config/' . $key . '.php';
+        $mainConfig = G3_PLUGIN_DIR . '/config/' . $key . '.php';
         if (file_exists($mainConfig)) {
             $main = require $mainConfig;
         } else {
@@ -238,5 +230,10 @@ final class System {
         }
 
         return array_merge($main, $user);
+    }
+
+    public static function writeFile(string $file, string $content): bool
+    {
+        return file_put_contents($file, $content) !== false;
     }
 }

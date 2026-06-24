@@ -2,13 +2,19 @@
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Date;
+use JEALER\G3\Utilities\System;
 
 class LLMService {
-    private string $fileName     = 'llms.txt';
+    private string $siteUrl;
+    private string $llmDir;
+    private string $fileName;
     private int    $postsPerType;
     private string $lastError    = '';
     public function __construct()
     {
+        $this->siteUrl      = rtrim(home_url('/'), '/');
+        $this->llmDir       = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'llm';
+        $this->fileName     = 'llms.txt';
         $this->postsPerType = Context::get(SystemService::LLM_OPTION_KEY)['postsPerType'] ?? 2000;
     }
 
@@ -31,29 +37,12 @@ class LLMService {
 
     private function saveLLMsTxt($content)
     {
-        $file_path = ABSPATH . $this->fileName;
-        $directory = dirname($file_path);
+        $file_path = $this->llmDir . DIRECTORY_SEPARATOR . $this->fileName;
 
-        if (file_exists($file_path) && !is_writable($file_path)) {
-            $this->lastError = sprintf(
-                'Failed to save %s because the file is not writable: %s',
-                $this->fileName,
-                $file_path
-            );
-            return false;
-        }
-
-        if (!file_exists($file_path) && (!is_dir($directory) || !is_writable($directory))) {
-            $this->lastError = sprintf(
-                'Failed to save %s because the server root directory is not writable: %s',
-                $this->fileName,
-                $directory
-            );
-            return false;
-        }
-
-        $bom   = "\xEF\xBB\xBF";
-        $saved = @file_put_contents($file_path, $bom . $content, LOCK_EX);
+        $bom     = "\xEF\xBB\xBF";
+        $content = $bom . $content;
+        // $saved = @file_put_contents($file_path, $bom . $content, LOCK_EX);
+        $saved = System::writeFile($file_path, $content);
 
         if ($saved === false) {
             $this->lastError = sprintf(
