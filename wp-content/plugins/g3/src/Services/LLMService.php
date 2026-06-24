@@ -9,8 +9,6 @@ class LLMService {
     public function __construct()
     {
         $this->postsPerType = Context::get(SystemService::LLM_OPTION_KEY)['postsPerType'] ?? 2000;
-        error_log('postsPerType type: ' . gettype($this->postsPerType));
-        error_log("LLMService initialized with postsPerType: " . $this->postsPerType);
     }
 
     public function handleRequest()
@@ -19,7 +17,12 @@ class LLMService {
             header('Content-Type: text/plain; charset=utf-8');
             $llms_txt = $this->generateLLMsTxt();
             $test     = $this->saveLLMsTxt($llms_txt);
-            echo $llms_txt;
+
+            if ($test === false) {
+                echo "Failed to save llms.txt because of file permission issues. Please check the permissions of the server root directory.";
+            } else {
+                echo $llms_txt;
+            }
             exit;
         }
         wp_redirect(home_url('404'));
