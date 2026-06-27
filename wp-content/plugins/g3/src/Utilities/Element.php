@@ -229,11 +229,11 @@ final class Element {
         $value = $isArray ? ($optionValue[$keyKame] ?? '') : $optionValue;
         $id    = $isArray ? $keyKame : $optionName;
         $name  = $isArray ? "{$optionName}[$keyKame]" : $optionName;
-        $class = "field-upload-url $class";
+        $class = "g3-field_input_upload-url $class";
         $title = __('Please Input the Field', 'G3');
 
         $html .= "<label for='$id'><input type='text' id='$id' name='$name' value='$value' class='$class' title='$title' />";
-        $html .= "<input type='button' class='button button-secondary field-upload-button' value='" . __('Upload', 'G3') . "' />";
+        $html .= "<input type='button' class='button button-secondary g3-field_button_upload' value='" . __('Upload', 'G3') . "' />";
 
         if ($description) {
             $html .= "<p class='description'>$description</p>";
@@ -285,24 +285,36 @@ final class Element {
         $value = $isArray ? ($default ? $default : $optionValue[$keyName] ?? '') : ($default ? $default : $optionValue);
         $id    = $isArray ? $keyName : $optionName;
         $name  = $isArray ? "{$optionName}[$keyName]" : $optionName;
-        $class = "field-upload-url $class";
+        $class = "g3-field_input_upload-url $class";
         $title = __('Please Input the Field', 'G3');
 
         $html .= "<label for='$id'><input type='text' id='$id' name='$name' value='$value' class='$class' title='$title' />";
-        $html .= '<input type="button" class="button button-secondary field-upload-image-button" value="' . __('Upload', 'G3') . '" />';
+        $html .= '<input type="button" class="button button-secondary g3-field_button_upload-image" value="' . __('Upload', 'G3') . '" />';
 
         if ($description) {
             $html .= '<p class="description">' . $description . '</p>';
         }
 
         if ($value) {
-            $html .= "<p class='description preview-wrap' style='position:relative;width:auto;height:{$size}px;overflow:hidden;'>";
-            $html .= "<img class='preview-image' src='$value' style='width:auto;height:{$size}px;object-fit:cover;' />";
-            // $html .= "<span class='clear-image' style='position:absolute;top:0;left:0;width:16px;height:16px;line-height:16px;text-align:center;background-color:#f00;color:#fff;cursor:pointer;'>×</span>";
-            $html .= "</p>";
+            $html .= self::previewWrap($value, $size);
         }
         $html .= "</label></fieldset>";
         return $html;
+    }
+
+    public static function previewWrap(string $url, int $size = 120): string
+    {
+        $url = esc_url($url);
+        if (empty($url)) return '';
+        $icon = Image::icon('close');
+        return <<<HTML
+<div class="preview-wrap" style="margin-block:8px">
+    <div style="position:relative;width:fit-content">
+        <img class="preview-image" style="width:auto;height:{$size}px;object-fit:cover;border:2px solid #eee;box-shadow:2px 1px 4px 1px rgba(55,55,55,.3)" src="{$url}" alt="preview" />
+        <button type="button" class="g3-preview_icon_delete button is-icon icon-sm icon-circle icon-error" style="position:absolute;top:4px;right:4px;">{$icon}</button>
+    </div>
+</div>
+HTML;
     }
 
     /**
@@ -346,7 +358,7 @@ final class Element {
         $value = $isArray ? ($optionValue[$keyName] ?? '') : $optionValue;
         $id    = $isArray ? $keyName : $optionName;
         $name  = $isArray ? "{$optionName}[$keyName]" : $optionName;
-        $class = "field-upload-url $class";
+        $class = "g3-field_input_upload-url $class";
         $title = __('Please Input the Field', 'G3');
 
         $html .= "<label for='$id'><input type='number' id='$id' name='$name' value='$value' class='$class' title='$title' min='{$counter['min']}' max='{$counter['max']}' step='{$counter['step']}' />";

@@ -132,7 +132,7 @@ abstract class Components {
      * @param string $message 日志信息
      * @return void
      */
-    protected function debug(string $message): void
+    protected function debug(string $message)
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log("[G3 {$this->componentName}] {$message}");
@@ -189,7 +189,7 @@ abstract class Components {
      * @param array<string, mixed> $actions
      * @return void
      */
-    protected function action(array $actions): void
+    protected function action(array $actions)
     {
         foreach ($actions as $hook => $params) {
             $normalized = $this->normalizeHookParams($params, 0);
@@ -206,7 +206,7 @@ abstract class Components {
      * @param array<string, mixed> $filters
      * @return void
      */
-    protected function filter(array $filters): void
+    protected function filter(array $filters)
     {
         foreach ($filters as $hook => $params) {
             $normalized = $this->normalizeHookParams($params, 1);
@@ -263,7 +263,7 @@ abstract class Components {
     /**
      * Backward compatibility alias for subscribeAction.
      */
-    protected function subscribeAction(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 0, array $extraArgs = []): void
+    protected function subscribeAction(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 0, array $extraArgs = [])
     {
         $this->action([
             $hook => [$callback, $priority, $acceptedArgs, $extraArgs],
@@ -273,7 +273,7 @@ abstract class Components {
     /**
      * Backward compatibility alias for subscribeFilter.
      */
-    protected function subscribeFilter(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 1, array $extraArgs = []): void
+    protected function subscribeFilter(string $hook, callable|string $callback, int $priority = 10, int $acceptedArgs = 1, array $extraArgs = [])
     {
         $this->filter([
             $hook => [$callback, $priority, $acceptedArgs, $extraArgs],
@@ -310,7 +310,7 @@ abstract class Components {
         return ComponentRegistry::run()->has($componentName);
     }
 
-    public function prepareDataActions(): void
+    public function prepareDataActions()
     {
         if ($this->loader->admin()) $this->ready();
         $this->options();
@@ -318,7 +318,7 @@ abstract class Components {
         if ($this->loader->y()) $this->y();
     }
 
-    public function initActions(): void
+    public function initActions()
     {
         if ($this->loader->admin()) $this->system();
         $this->init();
@@ -326,7 +326,7 @@ abstract class Components {
         $this->postType();
         $this->taxonomy();
     }
-    public function adminInitActions(): void
+    public function adminInitActions()
     {
         $this->prepareInAdmin();
         if ($this->loader->admin()) $this->admin();
@@ -334,29 +334,29 @@ abstract class Components {
         $this->ajax();
         $this->settings();
     }
-    public function adminMenuActions(): void
+    public function adminMenuActions()
     {
         $this->adminMenu();
     }
-    public function widgetsInitActions(): void
+    public function widgetsInitActions()
     {
         add_theme_support('widgets');
         $this->sidebar();
         $this->widgets();
     }
-    public function dashboardSetupActions(): void
+    public function dashboardSetupActions()
     {
         $this->dashboard();
     }
-    public function metaBoxActions(): void
+    public function metaBoxActions()
     {
         $this->metaBox();
     }
-    public function adminEnqueueScriptsActions(): void
+    public function adminEnqueueScriptsActions()
     {
         $this->adminScripts();
     }
-    public function wpEnqueueScriptsActions(): void
+    public function wpEnqueueScriptsActions()
     {
         $this->scripts();
     }
@@ -364,80 +364,104 @@ abstract class Components {
     {
         return $var;
     }
+    public function registerUMDFilters(array $scripts): array
+    {
+        return $this->registerUMD($scripts);
+    }
+    public function registerESMFilters(array $modules): array
+    {
+        return $this->registerESM($modules);
+    }
+    public function registerCSSFilters(array $styles): array
+    {
+        return $this->registerCSS($styles);
+    }
 
-    protected function ready(): void
+    protected function ready()
     {
     }
-    protected function start(): void
+    protected function start()
     {
     }
-    protected function system(): void
+    protected function system()
     {
     }
-    protected function front(): void
+    protected function front()
     {
     }
-    protected function cleanUp(): void
+    protected function cleanUp()
     {
     }
-    protected function x(): void
+    protected function x()
     {
     }
-    protected function y(): void
+    protected function y()
     {
     }
-    protected function end(): void
+    protected function end()
     {
     }
-    protected function options(): void
+    protected function options()
     {
     }
-    protected function form(): void
+    protected function form()
     {
     }
-    protected function init(): void
+    protected function init()
     {
     }
-    protected function prepareInAdmin(): void
+    protected function prepareInAdmin()
     {
     }
-    protected function admin(): void
+    protected function admin()
     {
     }
-    protected function adminMenu(): void
+    protected function adminMenu()
     {
     }
-    protected function sidebar(): void
+    protected function sidebar()
     {
     }
-    protected function hooks(): void
+    protected function hooks()
     {
     }
-    protected function widgets(): void
+    protected function widgets()
     {
     }
-    protected function dashboard(): void
+    protected function dashboard()
     {
     }
-    protected function metaBox(): void
+    protected function metaBox()
     {
     }
-    protected function postType(): void
+    protected function postType()
     {
     }
-    protected function taxonomy(): void
+    protected function taxonomy()
     {
     }
-    protected function ajax(): void
+    protected function ajax()
     {
     }
-    protected function settings(): void
+    protected function settings()
     {
     }
-    protected function adminScripts(): void
+    protected function adminScripts()
     {
     }
-    protected function scripts(): void
+    protected function scripts()
     {
+    }
+    protected function registerUMD($scripts)
+    {
+        return $scripts;
+    }
+    protected function registerESM($modules)
+    {
+        return $modules;
+    }
+    protected function registerCSS($styles)
+    {
+        return $styles;
     }
 }

@@ -1,56 +1,49 @@
 # G3-Web
 
-G3-Web is a theme framework for WordPress (hereinafter referred to as WP). It is released as a plugin, providing horizontal (system application layer) and vertical (development extension layer) extensions to WP. Its purpose is to:
+`G3-Web` is a modern `WordPress` plugin framework that provides horizontal (system application layer) and vertical (development extension layer) extensions for WP. It aims to help developers quickly build powerful `WordPress` themes and applications, and rapidly serve business needs:
 
-- Enhance the capabilities of WP applications to better meet the needs of modern digital operations.
-- Helps WP users quickly build fully functional and stable web projects and easily maintain them.
-- Helping small and medium-sized entrepreneurs quickly acquire private data and application systems, enabling cross-platform operations and business experimentation at ultra-low cost.
-- It helps any creative user to turn their ideas into digital solutions and bring them to fruition quickly.
+- Enhance WP application capabilities to better meet the demands of modern digital operations.
+- Help WP users quickly build fully functional, stable web projects and maintain them with ease.
+- Enable small and medium-sized entrepreneurs to achieve cross-platform operations, business experiments, and system privatization at ultra-low costs.
+- Empower any creative user to transform their ideas into digital solutions.
 
-## Project Path
+## 🛜 Project Path
 
-`/plugins/g3/`
+`wp-content/plugins/g3/`
 
-## Features
+## 🚀 Core Features
 
-### Componentization
+### Architectural Features
 
-G3-Web extends WordPress in a component-based manner, giving it more features. However, these features are not mandatory and are not directly added to WordPress.
+- **Modern PHP 8.3+** - Utilizes the latest PHP features and syntax
+- **PSR-11 Container** - Dependency injection container compliant with PSR-11 standard
+- **Component-Based Architecture** - Modular, on-demand loading component system with theme override support
+- **RESTful API** - Annotation-based REST API routing system
+- **Middleware Support** - Flexible middleware mechanism with comprehensive API permission control
+- **Rewrite System** - Configuration file-based rewrite system
+- **AOP Programming** - Aspect-Oriented Programming support
 
-You can add the features you need to your projects by selecting the features you require.
+### Functional Modules
 
-### Diverse interfaces
+- **Queue System** - Asynchronous task processing
+- **Cache System** - Redis object cache support
+- **User Authentication** - WeChat login and social login support
+- **Content Management** - Enhanced post management, view statistics, copyright protection
+- **E-commerce** - Product management, order system, SKU management
+- **WeChat Integration** - WeChat Official Account management and message handling
+- **Security Protection** - Multi-layer security protection mechanisms
+- **Payment System** - Integration support for multiple payment methods
+- **And more**
 
-G3-Web provides a variety of interfaces, including:
+## 📚 Free Tutorials
 
-- functions
-- hooks
-- shortcodes
-- wp-ajax
-- rest-api
+`G3-Web` provides free tutorials to help users quickly understand web applications, get started with `G3-Web`, and build their projects.
 
-### Individuation
-
-G3-Web prioritizes user privacy and data security, designing individualized data interaction solutions. You can customize the following aspects of your WordPress application:
-
-- independent encryption key
-- database tables prefix
-- admin page slug
-- `wordpress` update mechanism
-- api interface access address
-- api access permissions
-- api access frequency
-- routing rules
-- user slug rules
-- post views field name
-- post views update frequency
-- ...
-
-### Free tutorials
-
-G3-Web provides free tutorials to help users quickly get started with using G3-Web and building their projects. These tutorials cover a wide range of topics.
-
-## Respository
+## 💻 Code Repositories
 
 - [GitHub](https://github.com/JEALER/G3-Web)
 - [CodeBerg](https://codeberg.org/JEALER/G3-Web)
+
+## 📄 More Documentation
+
+- [README](wp-content/plugins/g3/README.md)

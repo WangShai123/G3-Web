@@ -23,9 +23,8 @@ class Product extends Components {
     protected function options(): void
     {
         $this->option  = Option::get(ProductService::OPTION_KEY, [
-            'cart'       => '1',
-            'download'   => '1',
-            'membership' => '1'
+            'cart'     => '1',
+            'download' => '1',
         ]);
         $this->service = Container::run()->get(ProductService::class);
     }
@@ -120,30 +119,17 @@ class Product extends Components {
             ],
             [
                 'id'       => 'download',
-                'title'    => __('Download'),
+                'title'    => __('Download', 'G3'),
                 'callback' => function () {
                     echo Element::switch(
                         ProductService::OPTION_KEY,
                         $this->option,
                         'download',
-                        __('Download'),
+                        __('Download', 'G3'),
                         __('Whether to support the product of download type.', 'G3')
                     );
                 },
                 'args'     => ['className' => 'advanced']
-            ],
-            [
-                'id'       => 'membership',
-                'title'    => __('Membership', 'G3'),
-                'callback' => function () {
-                    echo Element::switch(
-                        ProductService::OPTION_KEY,
-                        $this->option,
-                        'membership',
-                        __('Membership'),
-                        __('Whether to support the product of membership type.', 'G3')
-                    );
-                },
             ]
         ]);
     }
@@ -350,11 +336,10 @@ class Product extends Components {
     {
         if (!Validator::screen('product')) return;
 
-        Frontend::umd('vanilla-signal');
         wp_register_script(
             'g3-admin-product',
-            G3_ASSETS_URL . '/javascript/g3.admin.product.js',
-            [],
+            G3_ASSETS_URL . '/javascript/g3.admin.product.min.js',
+            ['vanilla-signal', 'vanilla-signal-i18n', 'jui'],
             '1.0.0',
             true
         );
@@ -383,8 +368,7 @@ class Product extends Components {
             'nonce' => wp_create_nonce('product_nonce_action'),
             'data'  => [
                 'support'  => [
-                    'download'   => $this->option['download'],
-                    'membership' => $this->option['membership']
+                    'download' => $this->option['download'],
                 ],
                 'data'     => [
                     'type'         => $type,
@@ -407,7 +391,6 @@ class Product extends Components {
 
     public function renderGalleryMetabox(WP_POST $post): void
     {
-        // Frontend::umd('jui');
         wp_nonce_field(ProductService::GALLERY_KEY . '_save', ProductService::GALLERY_KEY . '_nonce');
         echo '<div id="gallery-app"></div>';
     }
@@ -419,7 +402,7 @@ class Product extends Components {
 
     public function renderSkuMetabox(WP_POST $post): void
     {
-        echo '<div id="detail-app"><div id="type-app"></div><div id="sku-app"></div></div>';
+        echo '<div id="detail-app"><div id="sku-app"></div></div>';
     }
     public function renderPropertiesMetabox(WP_POST $post): void
     {

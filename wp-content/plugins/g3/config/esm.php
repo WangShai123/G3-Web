@@ -13,9 +13,6 @@ return [
     'g3.subscribe.modal'     => [G3_ASSETS_URL . '/javascript/es/g3.subscribe.modal.min.js', ['jui', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.0.0'],
     'g3.login.oa'            => [G3_ASSETS_URL . '/javascript/es/g3.login.oa.min.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage', 'jui'], '1.0.0'],
 
-    // htm
-    'htm'                    => [G3_JS_URL . '/es/htm.module.js', [], '3.1.1', 'https://unpkg.com/htm@3.1.1/dist/htm.module.js'],
-
     /**
      * qrcodeJS: Cross-browser QRCode generator for javascript
      * @link: https://github.com/davidshimjs/qrcodejs

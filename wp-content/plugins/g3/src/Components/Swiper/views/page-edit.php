@@ -1,4 +1,5 @@
 <?php
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SwiperService;
 
@@ -47,16 +48,10 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                         <legend class="screen-reader-text"><span><?php _e('Image'); ?></span></legend>
                         <label for="media">
                             <input type="text" id="media" name="media" value="<?php echo $media; ?>"
-                                class="field-upload-url">
-                            <input type="button" class="button button-secondary field-upload-image-button" value="上传">
-                            <?php if ($media) : ?>
-                                <p class="description preview-wrap"
-                                    style="position:relative;width:auto;height:120px;overflow:hidden;"><img
-                                        class="preview-image" src="<?php echo $media; ?>" alt="preview image"
-                                        style="width:auto;height:120px;object-fit:cover;"><span class="clear-image"
-                                        style="position:absolute;top:0;left:0;width:16px;height:16px;line-height:16px;text-align:center;background-color:#f00;color:#fff;cursor:pointer;">×</span>
-                                </p>
-                            <?php endif; ?>
+                                class="g3-field_input_upload-url">
+                            <input type="button" class="button button-secondary g3-field_button_upload-image"
+                                value="上传">
+                            <?php if ($media) echo Element::previewWrap($media, 120); ?>
                         </label>
                     </fieldset>
                 </td>

@@ -87,6 +87,10 @@ class ComposerStaticInitbea978368dd696eee53cf71f7148593f
         array (
             'EasyWeChat\\' => 11,
         ),
+        'D' => 
+        array (
+            'Detection\\' => 10,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -234,6 +238,10 @@ class ComposerStaticInitbea978368dd696eee53cf71f7148593f
         'EasyWeChat\\' => 
         array (
             0 => __DIR__ . '/..' . '/w7corp/easywechat/src',
+        ),
+        'Detection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/src',
         ),
     );
 

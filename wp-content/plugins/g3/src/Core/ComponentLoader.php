@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Core;
-
 use JEALER\G3\Components\ComponentManager;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
@@ -62,12 +61,30 @@ class ComponentLoader {
 
     private function getConfig(): array
     {
-        $config = $this->loadConfigFile(G3_PlUGIN_DIR . '/config/components.php');
+        $config = $this->loadConfigFile(G3_PLUGIN_DIR . '/config/components.php');
 
         $themeConfig = get_stylesheet_directory() . '/config/components.php';
         if (file_exists($themeConfig)) {
             $themeData = $this->loadConfigFile($themeConfig);
-            $config = array_replace($config, $themeData);
+            $config    = $this->mergeConfig($config, $themeData);
+        }
+
+        return $config;
+    }
+
+    private function mergeConfig(array $pluginConfig, array $themeConfig): array
+    {
+        $config = array_replace($pluginConfig, $themeConfig);
+
+        if (!array_key_exists('components', $themeConfig)) {
+            return $config;
+        }
+
+        $pluginComponents = $pluginConfig['components'] ?? [];
+        $themeComponents  = $themeConfig['components'];
+
+        if (is_array($pluginComponents) && is_array($themeComponents)) {
+            $config['components'] = array_replace($pluginComponents, $themeComponents);
         }
 
         return $config;
@@ -185,10 +202,10 @@ class ComponentLoader {
             return false;
         }
 
-        $spec            = $specs[$key];
-        $visiting[$key]  = true;
-        $canLoad         = true;
-        $dependencies    = $this->componentDependencyNames($spec['dependency']);
+        $spec           = $specs[$key];
+        $visiting[$key] = true;
+        $canLoad        = true;
+        $dependencies   = $this->componentDependencyNames($spec['dependency']);
 
         if ($dependencies !== null) {
             foreach ($dependencies as $dependencyName) {
@@ -271,7 +288,7 @@ class ComponentLoader {
             ];
         }
 
-        $pluginComponentFile = G3_PlUGIN_DIR . "/src/Components/{$className}/{$className}.php";
+        $pluginComponentFile = G3_PLUGIN_DIR . "/src/Components/{$className}/{$className}.php";
         if (file_exists($pluginComponentFile)) {
             return [
                 'file_path'         => $pluginComponentFile,

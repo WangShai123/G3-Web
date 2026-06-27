@@ -1,7 +1,7 @@
 <?php
 return [
     // jQuery
-    'jquery'                 => [includes_url('js/jquery/jquery.min.js'), [], '3.7.1', 'https://unpkg.com/jquery@latest/dist/jquery.min.js'],
+    'jquery'                 => [includes_url('js/jquery/jquery.min.js'), [], '', 'https://unpkg.com/jquery@latest/dist/jquery.min.js'],
     // vanilla signal & library
     'vanilla-signal'         => [G3_JS_URL . '/vanilla-signal.umd.js', [], '1.1.0', 'https://unpkg.com/vanilla-signal@latest/dist/index.umd.js'],
     'vanilla-simple-lru'     => [G3_JS_URL . '/vanilla-simple-lru.umd.js', [], '1.0.0', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.umd.js'],
@@ -11,13 +11,14 @@ return [
     'jui'                    => [G3_JS_URL . '/jui.umd.js', ['vanilla-signal', 'vanilla-signal-i18n'], '1.1.1', 'https://unpkg.com/vanilla-jui@latest/dist/index.umd.js'],
     'jui.pca'                => [G3_JS_URL . '/jui.pca.min.js', [], '1.0.0'],
     // G3
-    'g3.redirect.link'       => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.redirect.link.min.js', [], '1.0.0'],
-    'g3.admin'               => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.admin.min.js', ['jquery'], '1.0.0'],
+    'g3.redirect'            => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.redirect.min.js', [], '1.0.0'],
+    'g3.admin'               => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.admin.min.js', ['jquery', 'jui'], '1.0.0'],
+    // G3 Theme Helpers
+    'g3.login.modal'         => [G3_ASSETS_URL . '/javascript/g3.login.modal.min.js', ['vanilla-signal', 'jui', 'vanilla-signal-i18n', 'vanilla-signal-query'], '1.0.0'],
     // Template Scripts
     'g3.media.upload'        => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.upload.min.js', ['jquery'], '1.0.0'],
     'g3.media.image'         => [WP_PLUGIN_URL . '/g3/assets/javascript/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
 
-    'vue2'                   => [G3_JS_URL . '/vue@2.7.16.min.js', [], '2.7.16', 'https://unpkg.com/vue@2.7.16/dist/vue.min.js'],
     /**
      * Htm:
      * @link https://github.com/developit/htm
@@ -33,11 +34,6 @@ return [
      * @link https://github.com/CodeByZach/pace/
      */
     'pace'                   => [G3_JS_URL . '/pace.min.js', [], '1.2.4', 'https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js'],
-    /**
-     * Swiper: The most modern mobile touch slider with hardware accelerated transitions
-     * @link https://github.com/nolimits4web/Swiper
-     */
-    'swiper'                 => [G3_JS_URL . '/swiper-bundle.min.js', [], '12.1.1', 'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js'],
     /**
      * vanilla-lazyload: it leverages IntersectionObserver to lazy load images, backgrounds, videos, iframes and scripts.
      * @link https://github.com/verlok/vanilla-lazyload

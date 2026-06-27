@@ -42,4 +42,5 @@ return array(
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'EasyWeChat\\' => array($vendorDir . '/w7corp/easywechat/src'),
+    'Detection\\' => array($vendorDir . '/mobiledetect/mobiledetectlib/src'),
 );

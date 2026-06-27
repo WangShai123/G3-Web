@@ -1,16 +1,6 @@
 <?php
-
 namespace JEALER\G3\Utilities;
 
-/**
- * Validator Utilities
- * 
- * 验证工具类
- * 
- * @package G3
- * @since 1.0.0
- * @author Wang Shai
- */
 final class Validator {
 
     /**
@@ -25,8 +15,8 @@ final class Validator {
     public static function output($data, $context = 'html'): string
     {
         $result = match ($context) {
-            'attr' => esc_attr($data),
-            'post' => wp_kses_post($data),
+            'attr'  => esc_attr($data),
+            'post'  => wp_kses_post($data),
             default => esc_html($data),
         };
         return $result;

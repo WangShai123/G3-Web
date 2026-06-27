@@ -138,7 +138,7 @@ class RouteManifest {
     private function cachePaths(): array
     {
         return [
-            G3_PlUGIN_DIR . '/cache/routes.php',
+            G3_PLUGIN_DIR . '/cache/routes.php',
             WP_CONTENT_DIR . '/uploads/g3-cache/routes.php',
         ];
     }

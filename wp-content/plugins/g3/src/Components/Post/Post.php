@@ -62,7 +62,7 @@ class Post extends Components {
         add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
 
         if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
-            require_once G3_PlUGIN_DIR . '/tests/robustEncoder.php';
+            require_once G3_PLUGIN_DIR . '/tests/robustEncoder.php';
             if (isset($_GET['g3-test']) && $_GET['g3-test'] === 'robustEncoder') {
                 g3TestRobustEncoderPerformance();
                 exit;
@@ -506,8 +506,8 @@ HTML;
         echo <<<HTML
 <div class="form-field">
     <label for="cover">$cover</label>
-    <input class="field-upload-url" type="text" name="cover" id="cover" value="">
-    <input type="button" class="button field-upload-image-button" value="$upload" style="margin:4px 0">
+    <input class="g3-field_input_upload-url" type="text" name="cover" id="cover" value="">
+    <input type="button" class="button g3-field_button_upload-image" value="$upload" style="margin:4px 0">
 </div>
 HTML;
     }
@@ -526,8 +526,8 @@ HTML;
                 </label>
             </th>
             <td>
-                <input class="field-upload-url" type="text" name="cover" id="cover" value="<?php echo $cover; ?>">
-                <input type="button" class="button field-upload-image-button" value="<?php _e('Select Image'); ?>"
+                <input class="g3-field_input_upload-url" type="text" name="cover" id="cover" value="<?php echo $cover; ?>">
+                <input type="button" class="button g3-field_button_upload-image" value="<?php _e('Select Image'); ?>"
                     style="margin:4px 0">
                 <?php if ($cover) {
                     echo '<p class="description preview-wrap"><img src="' . $cover . '" style="width:auto;height:120px;object-fit:cover;" alt="cover" /></p>';

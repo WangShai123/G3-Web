@@ -69,7 +69,7 @@ class LLMService {
         $output  = "# $site_name\n";
         $output .= "> $site_desc\n\n";
         $output .= "Base URL: $site_url\n";
-        $output .= "LLMs Txt URL: $site_url/" . $this->fileName . "\n";
+        $output .= 'LLMs Txt URL: ' . $site_url . '/llm/' . $this->fileName . "\n";
         $output .= "Generated: " . Date::dateTime(time()) . "\n";
 
         // 2. Get all public post types, excluding attachments

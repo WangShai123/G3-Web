@@ -122,11 +122,11 @@ class SwiperService {
             'pagination'      => true,
             'navigation'      => true,
             'lazyload'        => true,
-            'targetBlank'     => true,
+            'blank'           => true,
             'data'            => [],
         ];
         $args     = wp_parse_args($args, $default);
-        $template = G3_PlUGIN_DIR . '/templates/swiper/render.php';
+        $template = G3_PLUGIN_DIR . '/templates/swiper/render.php';
         if (file_exists($template)) {
             load_template($template, true, $args);
             return true;

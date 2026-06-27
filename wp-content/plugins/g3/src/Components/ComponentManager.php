@@ -3,14 +3,10 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Utilities\Common;
 
 class ComponentManager {
-
     private static ?self $instance = null;
-
     /** @var Components[] */
-    private array $components = [];
-
-    private bool $prepareDataActionsFired = false;
-
+    private array $components              = [];
+    private bool  $prepareDataActionsFired = false;
     private function __construct()
     {
         // core lifecycle dispatch hooks
@@ -29,6 +25,9 @@ class ComponentManager {
         add_action('admin_enqueue_scripts', [$this, 'dispatchAdminEnqueueScriptsActions']);
         add_action('wp_enqueue_scripts', [$this, 'dispatchWpEnqueueScriptsActions'], 20);
         add_filter('query_vars', [$this, 'dispatchQueryVars'], 10, 1);
+        add_filter('g3_filter_umd', [$this, 'dispatchRegisterUMD'], 10, 1);
+        add_filter('g3_filter_esm', [$this, 'dispatchRegisterESM'], 10, 1);
+        add_filter('g3_filter_css', [$this, 'dispatchRegisterCSS'], 10, 1);
     }
 
     public static function run(): self
@@ -192,5 +191,32 @@ class ComponentManager {
             $vars = $component->queryVars($vars);
         }
         return $vars;
+    }
+
+    public function dispatchRegisterUMD(array $scripts): array
+    {
+        foreach ($this->components as $component) {
+            $scripts = $component->registerUMDFilters($scripts);
+        }
+
+        return $scripts;
+    }
+
+    public function dispatchRegisterESM(array $modules): array
+    {
+        foreach ($this->components as $component) {
+            $modules = $component->registerESMFilters($modules);
+        }
+
+        return $modules;
+    }
+
+    public function dispatchRegisterCSS(array $styles): array
+    {
+        foreach ($this->components as $component) {
+            $styles = $component->registerCSSFilters($styles);
+        }
+
+        return $styles;
     }
 }

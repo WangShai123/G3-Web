@@ -12,11 +12,11 @@ class RewriteRouter {
     private const ROUTE_QUERY_VAR = 'g3_rewrite_route';
     private const ERROR_OPTION    = 'g3_rewrite_last_error';
 
-    private array     $config    = [];
-    private array     $routes    = [];
-    private ?array    $activeRoutesCache = null;
-    private ?WP_Error $lastError = null;
-    private Container $container;
+    private array             $config            = [];
+    private array             $routes            = [];
+    private ?array            $activeRoutesCache = null;
+    private ?WP_Error         $lastError         = null;
+    private Container         $container;
     private ComponentRegistry $componentRegistry;
 
     public function __construct()
@@ -438,7 +438,7 @@ class RewriteRouter {
 
     private function matchedRoute(array $queryVars): ?array
     {
-        $routeId = $queryVars[self::ROUTE_QUERY_VAR] ?? null;
+        $routeId      = $queryVars[self::ROUTE_QUERY_VAR] ?? null;
         $activeRoutes = $this->activeRoutes();
         if (is_string($routeId) && isset($activeRoutes[$routeId])) {
             return $activeRoutes[$routeId];
@@ -810,7 +810,7 @@ class RewriteRouter {
 
     private function pluginDir(): string
     {
-        return defined('G3_PlUGIN_DIR') ? G3_PlUGIN_DIR : WP_PLUGIN_DIR . '/g3';
+        return defined('G3_PLUGIN_DIR') ? G3_PLUGIN_DIR : WP_PLUGIN_DIR . '/g3';
     }
 
     private function themeDir(): string

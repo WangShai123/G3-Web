@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Default component config file
  *
@@ -8,7 +7,8 @@
  * 配置说明：
  * - enabled: 全局组件开关；false 时不加载任何组件。
  * - components: 按声明顺序启用组件；依赖会优先于声明顺序加载。
- * - 主题端 config/components.php 存在时，其 components 列表整体覆盖插件默认列表。
+ * - 主题端 config/components.php 存在时，其 components 列表按组件名覆盖或追加插件默认列表。
+ * - 主题端同名组件配置覆盖插件默认配置；主题端新增组件追加启用；主题端设为 false 可禁用插件默认组件。
  *
  * 支持格式：
  * 'Setting' => true,                                  // 启用组件

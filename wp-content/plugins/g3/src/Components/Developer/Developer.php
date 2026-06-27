@@ -774,7 +774,7 @@ class Developer extends Components {
 
     public function _flushOptions(): void
     {
-        $options = @require_once G3_PlUGIN_DIR . '/backup/options.php';
+        $options = @require_once G3_PLUGIN_DIR . '/backup/options.php';
 
         if (!is_array($options)) {
             $options = [];

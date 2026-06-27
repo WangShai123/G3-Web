@@ -24,8 +24,8 @@ class Deactivator {
 
     private static function cleanOptions()
     {
-        $mapFile    = G3_PlUGIN_DIR . '/config/options.php';
-        $backupFile = G3_PlUGIN_DIR . '/backup/options.php';
+        $mapFile    = G3_PLUGIN_DIR . '/config/options.php';
+        $backupFile = G3_PLUGIN_DIR . '/backup/options.php';
 
         $optionsMap = @require_once $mapFile;
 

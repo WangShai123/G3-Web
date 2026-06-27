@@ -22,7 +22,7 @@ $table->display();
         const editModal = new Modal({
             header: false,
             text: {
-                confirm: '<?php _e('Add'); ?>',
+                confirm: '<?php _e('Submit'); ?>',
                 cancel: '<?php _e('Cancel'); ?>',
             },
             fields: [

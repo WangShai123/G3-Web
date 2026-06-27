@@ -19,6 +19,8 @@ xmlrpc.php
 # Default themes
 wp-content/themes
 wp-content/themes/twenty*/
+# wp-content/themes/*
+# !wp-content/themes/g3-web
 
 # Local files in plugin g3
 favicon.ico
@@ -100,3 +102,8 @@ wp-content/*.log
 
 # DS_Store
 .DS_Store
+
+# mobiledetect
+CNAME
+*.yml
+wp-content/plugins/g3/vendor/mobiledetect/mobiledetectlib/docker

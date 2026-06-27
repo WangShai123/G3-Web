@@ -221,15 +221,15 @@ $time = Developer::time();
         flex-wrap: wrap;
         width: 100%;
         gap: 1px;
-        background-color: var(--gray-a3);
-        border: 1px solid var(--gray-a1);
+        background-color: var(--ui-bg);
+        border: 1px solid var(--ui-border);
         user-select: none;
     }
 
     .functions div {
         flex: 1 0 120px;
         height: 96px;
-        background-color: var(--indigo-2);
+        background-color: var(--ui-surface-muted);
         padding: 16px;
         margin: 0;
         display: flex;
@@ -239,14 +239,14 @@ $time = Developer::time();
     }
 
     .functions div:nth-child(even) {
-        background-color: var(--gray-1);
+        background-color: var(--ui-surface-raised);
     }
 
     .functions div:hover {
-        background-color: var(--indigo-9);
-        color: white;
+        background-color: var(--ui-indigo);
+        color: #fff;
         outline-offset: 1.5px;
-        outline: 1.5px solid var(--indigo-9);
+        outline: 1.5px solid var(--ui-indigo);
         z-index: 1;
     }
 

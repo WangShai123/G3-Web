@@ -2,11 +2,9 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SwiperService;
 
-$containerClass = $args['containerClass'];
+$containerClass = $args['containerClass'] ?? 'j-swiper-container';
 $swipers        = SwiperService::queryByLocation($args['location']);
-$params         = $args;
-unset($params['containerClass'], $params['location']);
-$data = [];
+$data           = [];
 if (!empty($swipers)) {
     foreach ($swipers as $swiper) {
         if (isset($swiper['status']) && $swiper['status'] != 1) {
@@ -22,10 +20,10 @@ if (!empty($swipers)) {
         $data[] = $item;
     }
 }
-$params['data'] = $data;
+$args['data'] = $data;
 echo '<div class="' . esc_attr($containerClass) . '"></div>';
 
 Frontend::css('jui');
 Frontend::umd('jui');
-$jsonParams = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-wp_add_inline_script('jui', 'const {Swiper} = jui;console.log(' . $jsonParams . '); new Swiper(".j-swiper-container", ' . $jsonParams . ').build();');
+$json = json_encode($args, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+wp_add_inline_script('jui', 'new jui.Swiper(".' . $containerClass . '", ' . $json . ').build();');

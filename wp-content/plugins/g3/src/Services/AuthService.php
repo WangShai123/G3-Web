@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Context;
 use JEALER\G3\Utilities\Option;
@@ -87,7 +88,8 @@ class AuthService {
      */
     public static function subscribeLoginAvailable(): bool
     {
-        $loader = Context::get('loader')->y();
+        // $loader = Context::get('loader')->y();
+        $loader = Container::run()->get('loader')->y();
         $data   = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
         return ($data === '1' && $loader) ? true : false;
     }

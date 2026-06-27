@@ -32,7 +32,7 @@ class Security extends Components {
             'upload'           => '1',
             'sitemap'          => '1',
             'userSiteMap'      => '1',
-            'siteMapGenerator' => '1',
+            'siteMapGenerator' => '0',
             'restApi'          => '1',
             'session'          => '0',
             'xmlrpc'           => '1',
@@ -307,18 +307,23 @@ class Security extends Components {
 
     public function securityLoginHandle(): void
     {
-        if (!$this->customAdminLogin()) {
+        // if (!$this->customAdminLogin()) {
+        //     return;
+        // }
+        if (!self::customAdminLogin()) {
             return;
         }
         $this->disableWPLogin();
         $this->disableAdminVisit();
     }
-    public function customAdminLogin(): bool
+    public static function customAdminLogin(): bool
     {
-        if (!isset($this->option['login']) || $this->option['login'] !== '1') {
-            return false;
-        }
-        return true;
+        // if (!isset($this->option['login']) || $this->option['login'] !== '1') {
+        //     return false;
+        // }
+        // return true;
+        $v = get_option(SystemService::SECURITY_OPTION_KEY)['login'] ?? '0';
+        return $v === '1';
     }
     public static function onSitemap(): bool
     {
@@ -328,12 +333,14 @@ class Security extends Components {
     }
     public function nativeSitemapEnabled($enabled): bool
     {
-        $x = Context::get(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1';
+        // $x = Context::get(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1';
+        $x = get_option(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1';
         return $x === '1' ? false : (bool) $enabled;
     }
-    public function customAdminParam(): string
+    public static function customAdminParam(): string
     {
-        return isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : Common::hash();
+        // return isset($this->option['url']) && $this->option['url'] ? $this->option['url'] : Common::hash();
+        return get_option(SystemService::SECURITY_OPTION_KEY)['url'] ?? Common::hash();
     }
     private function disableWPLogin(): void
     {

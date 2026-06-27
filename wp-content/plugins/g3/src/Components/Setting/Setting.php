@@ -66,7 +66,7 @@ class Setting extends Components {
     protected function form(): void
     {
         Frontend::css('jui');
-        Frontend::umd(['jui', 'g3.admin']);
+        Frontend::umd('g3.admin');
 
         $this->permalink();
         if (isset($this->seo['seo']) && $this->seo['seo'] === '1') {
@@ -562,7 +562,7 @@ class Setting extends Components {
             return;
         }
         add_action('wp_footer', function () {
-            Frontend::umd('g3.redirect.link');
+            Frontend::umd('g3.redirect');
         });
         // Modify content url while saving
         add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);
@@ -759,7 +759,7 @@ class Setting extends Components {
     }
     public function initBodyClass(array $classes): array
     {
-        $classes[] = 'jui bg-background text-foreground';
+        $classes[] = 'jui';
         return $classes;
     }
     public function initHtmlClass(array $classes): array
