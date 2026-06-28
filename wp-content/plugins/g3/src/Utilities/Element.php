@@ -2,16 +2,7 @@
 namespace JEALER\G3\Utilities;
 use JEALER\G3\Utilities\Frontend;
 
-/**
- * Element utilities
- * 
- * 元素工具类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 final class Element {
-
     /**
      * Generate a tab navigation
      * 

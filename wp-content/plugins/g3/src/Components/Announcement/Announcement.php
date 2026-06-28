@@ -6,13 +6,13 @@ use Override;
 
 class Announcement extends Components {
     private string $postType = 'announcement';
-    protected function hooks(): void
+    protected function hooks()
     {
         $this->filter([
             'post_updated_messages' => [[$this, 'resetUpdatedMessages'], 1]
         ]);
     }
-    protected function postType(): void
+    protected function postType()
     {
         $labels = [
             'name'                  => __('Announcements', 'G3'),
@@ -57,8 +57,7 @@ class Announcement extends Components {
             ]
         );
     }
-    #[Override]
-    protected function taxonomy(): void
+    protected function taxonomy()
     {
         register_taxonomy(
             'announcement_category',
@@ -77,7 +76,7 @@ class Announcement extends Components {
             ]
         );
     }
-    public function resetUpdatedMessages($messages)
+    public function resetUpdatedMessages($messages): array
     {
         $post           = get_post();
         $postType       = $this->postType;
@@ -118,7 +117,7 @@ class Announcement extends Components {
 
         return $messages;
     }
-    protected function widgets(): void
+    protected function widgets()
     {
         SidebarService::registerWidget('AnnouncementWidget', __DIR__);
     }

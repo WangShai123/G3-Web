@@ -10,8 +10,8 @@ abstract class Controller {
         $this->container = $container ?: Container::run();
     }
 
-    protected function service(string $class): object
+    protected function service(string $id): object
     {
-        return $this->container->get($class);
+        return $this->container->get($id);
     }
 }

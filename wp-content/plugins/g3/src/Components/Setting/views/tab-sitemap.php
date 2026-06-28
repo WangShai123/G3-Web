@@ -7,16 +7,13 @@ echo Element::tip(
     'default',
     'mt-4'
 );
-echo '<form action="" method="POST">';
-settings_fields('sitemap');
-do_settings_sections('g3-settings&tab=sitemap');
+$renderer->form($panel, $panelTab);
 ?>
-</form>
 <script>
     jQuery(document).ready(function ($) {
-        const { q, Toast, listen } = jui
+        const { q, Toast } = jui
         const { success, error } = Toast
-        listen(q('#generateSitemap'), 'click', (e) => {
+        q('#generateSitemap').addEventListener('click', function () {
             e.preventDefault();
             $.post(ajaxurl, {
                 action: 'g3_generate_sitemap',

@@ -1,8 +1,6 @@
 <?php
-
 namespace JEALER\G3\Controllers;
-
-use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Service;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Middleware;
@@ -20,7 +18,18 @@ use WP_REST_Response;
 use WP_Error;
 use WP_User;
 
-class AuthController {
+class AuthController extends Controller {
+    private AuthService $authService;
+    public function __construct()
+    {
+        parent::__construct();
+        if ($this->container->has('authService')) {
+            $this->authService = $this->service('authService');
+        } else {
+            $this->container->setRawDefinition('authService', AuthService::class);
+            $this->authService = $this->container->get('authService');
+        }
+    }
 
     /**
      * Custom Admin Login API
@@ -86,7 +95,7 @@ class AuthController {
             );
         }
 
-        AuthService::doWPLogin($user);
+        $this->authService->doWPLogin($user);
 
         return rest_ensure_response([
             'code'    => 200,
@@ -147,7 +156,7 @@ class AuthController {
             );
         }
 
-        AuthService::doWPLogin($user);
+        $this->authService->doWPLogin($user);
 
         return rest_ensure_response([
             'code'    => 200,
@@ -221,11 +230,7 @@ class AuthController {
         $expiration = 1800;
         set_transient($cacheKey, '', $expiration);
 
-        /**
-         * @var AuthService
-         */
-        $service = Container::run()->get(AuthService::class);
-        $result  = $service->getSubscribeLoginQrCode($hash, $expiration);
+        $result = $this->authService->getSubscribeLoginQrCode($hash, $expiration);
 
         if (is_wp_error($result)) {
             return new WP_Error(
@@ -313,7 +318,7 @@ class AuthController {
             return new WP_Error(400, 'Unauthorized');
         }
 
-        AuthService::doWPLogin($user);
+        $this->authService->doWPLogin($user);
         delete_transient($cacheKey);
 
         return rest_ensure_response([
@@ -349,11 +354,7 @@ class AuthController {
         // 30 mins cache
         set_transient($cacheKey, $user->ID, 30 * MINUTE_IN_SECONDS);
 
-        /**
-         * @var AuthService
-         */
-        $service = Container::run()->get(AuthService::class);
-        $result  = $service->getSubscribeLoginQrCode($bindHash, 1800);
+        $result = $this->authService->getSubscribeLoginQrCode($bindHash, 1800);
 
         if (is_wp_error($result)) {
             return new WP_Error(
@@ -402,11 +403,7 @@ class AuthController {
     #[Middleware(RestAuthMiddleware::class)]
     public function getBindAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        /**
-         * @var AuthService
-         */
-        $service = Container::run()->get(AuthService::class);
-        if (!$service->wechatOAService->available()) {
+        if (!$this->authService->wechatOAService->available()) {
             return new WP_Error(
                 503,
                 __('WeChat service is not available.', 'G3'),
@@ -415,7 +412,7 @@ class AuthController {
         }
 
         $redirectUri = Request::restApi(AuthService::WECHAT_CALLBACK);
-        $authUrl     = $service->getOAuthUrl($redirectUri, 'bind');
+        $authUrl     = $this->authService->getOAuthUrl($redirectUri, 'bind');
 
         if (empty($authUrl)) {
             return new WP_Error(

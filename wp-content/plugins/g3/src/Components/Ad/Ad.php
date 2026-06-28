@@ -4,7 +4,7 @@ use JEALER\G3\Components\Components;
 use Override;
 
 class Ad extends Components {
-    protected function adminMenu(): void
+    protected function adminMenu()
     {
         add_menu_page(
             __('Ad', 'G3'),

@@ -5,8 +5,7 @@ use Override;
 
 class Activity extends Components {
     private string $postType = 'activity';
-
-    public function postType(): void
+    public function postType()
     {
         $labels = [
             'name'                  => __('Activities', 'G3'),
@@ -54,7 +53,7 @@ class Activity extends Components {
         ];
         register_post_type($this->postType, $args);
     }
-    public function taxonomy(): void
+    public function taxonomy()
     {
         register_taxonomy(
             'activity_category',

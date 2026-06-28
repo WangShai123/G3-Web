@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Context;
+use JEALER\G3\Utilities\State;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Components\Components;
 use Throwable;
@@ -43,7 +44,17 @@ class SystemService {
      */
     public static function option(): array
     {
-        return Context::get(self::OPTION_KEY, []);
+        try {
+            $value = State::get('Setting.option', null);
+            if (is_array($value)) {
+                return $value;
+            }
+        }
+        catch (Throwable) {
+        }
+
+        $value = get_option(self::OPTION_KEY, []);
+        return is_array($value) ? $value : [];
     }
     /**
      * Get ICP Code
@@ -140,7 +151,7 @@ class SystemService {
      */
     public static function hasLinkService(): bool
     {
-        $data = get_option(self::OPTION_KEY, []);
+        $data = self::option();
         if (!isset($data['links'])) {
             return false;
         }

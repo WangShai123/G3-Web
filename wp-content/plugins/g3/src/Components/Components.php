@@ -3,6 +3,11 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Core\ComponentRegistry;
 use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Admin\Panel;
+use JEALER\G3\Core\Admin\PanelRenderer;
+use JEALER\G3\Core\State\StateBag;
+use JEALER\G3\Core\State\StateDefinition;
+use JEALER\G3\Core\State\StateManager;
 use Exception;
 use ReflectionClass;
 
@@ -12,6 +17,8 @@ abstract class Components {
      * @var Container|null Container instance, used for dependency injection and service management
      */
     protected ?Container $container = null;
+
+    protected PanelRenderer $panelRenderer;
 
     /**
      * @var string component name (automatically inferred)
@@ -55,6 +62,10 @@ abstract class Components {
      */
     protected array $filterSubscriptions = [];
 
+    private ?array $stateDefinitions = null;
+
+    private ?array $adminPanelDefinitions = null;
+
     public function __construct()
     {
         $this->componentName = $this->getComponentName();
@@ -88,9 +99,37 @@ abstract class Components {
 
         $this->loader = $this->container->get('loader');
 
+        if (!$this->container->has('panelRenderer')) {
+            $this->container->setRawDefinition('panelRenderer', new PanelRenderer());
+        }
+        $this->panelRenderer = $this->container->get('panelRenderer');
+
+        $this->registerComponentStates();
+
         $this->start();
         $this->hooks();
         $this->end();
+    }
+
+    private function registerComponentStates(): void
+    {
+        $definitions = $this->getStateDefinitions();
+        if (empty($definitions)) {
+            return;
+        }
+
+        StateManager::run()->register($this->componentName, $definitions);
+    }
+
+    protected function hydrateStates(): void
+    {
+        foreach ($this->getStateDefinitions() as $property => $definition) {
+            if (!$definition instanceof StateDefinition) {
+                continue;
+            }
+
+            $this->{$property} = StateManager::run()->bag($this->componentName . '.' . $property)->all();
+        }
     }
 
     /**
@@ -181,6 +220,93 @@ abstract class Components {
     public function getSubscribedFilters(): array
     {
         return $this->filterSubscriptions;
+    }
+
+    public function getStateDefinitions(): array
+    {
+        if ($this->stateDefinitions === null) {
+            $this->stateDefinitions = $this->state();
+        }
+
+        return $this->stateDefinitions;
+    }
+
+    public function getAdminPanelDefinitions(): array
+    {
+        if (!$this->shouldLoadAdminPanels()) {
+            return [];
+        }
+
+        if ($this->adminPanelDefinitions === null) {
+            $this->adminPanelDefinitions = $this->adminPanels();
+        }
+
+        return $this->adminPanelDefinitions;
+    }
+
+    protected function firstPanel(): ?Panel
+    {
+        return $this->getAdminPanelDefinitions()[0] ?? null;
+    }
+
+    protected function adminPanelPage(): string
+    {
+        return '';
+    }
+
+    protected function currentAdminPage(): string
+    {
+        $page = $_REQUEST['page'] ?? '';
+        if (is_array($page)) {
+            return '';
+        }
+
+        $page = function_exists('wp_unslash') ? wp_unslash($page) : $page;
+        return $this->normalizeAdminPage((string) $page);
+    }
+
+    protected function shouldLoadAdminPanels(): bool
+    {
+        $page = $this->adminPanelPage();
+        if ($page === '') {
+            return true;
+        }
+
+        return $this->currentAdminPage() === $this->normalizeAdminPage($page);
+    }
+
+    private function normalizeAdminPage(string $page): string
+    {
+        if (function_exists('sanitize_key')) {
+            return sanitize_key($page);
+        }
+
+        return strtolower(preg_replace('/[^a-z0-9_\-]/i', '', $page) ?? '');
+    }
+
+    protected function optionState(string $optionName, array $defaults = []): StateDefinition
+    {
+        return StateDefinition::option($optionName, $defaults);
+    }
+
+    protected function memoryState(array $defaults = []): StateDefinition
+    {
+        return StateDefinition::memory($defaults);
+    }
+
+    protected function stateBag(string $name): StateBag
+    {
+        return StateManager::run()->bag($this->componentName . '.' . $name);
+    }
+
+    protected function stateValue(string $state, string $key, mixed $default = null): mixed
+    {
+        return $this->stateBag($state)->get($key, $default);
+    }
+
+    protected function panel(string $slug, string $title, string $menuTitle = ''): Panel
+    {
+        return Panel::make($slug, $title, $menuTitle);
     }
 
     /**
@@ -312,6 +438,7 @@ abstract class Components {
 
     public function prepareDataActions()
     {
+        $this->hydrateStates();
         if ($this->loader->admin()) $this->ready();
         $this->options();
         if ($this->loader->x()) $this->x();
@@ -328,6 +455,8 @@ abstract class Components {
     }
     public function adminInitActions()
     {
+        $this->saveAdminPanelStates();
+        $this->hydrateStates();
         $this->prepareInAdmin();
         if ($this->loader->admin()) $this->admin();
         $this->form();
@@ -404,6 +533,14 @@ abstract class Components {
     protected function options()
     {
     }
+    protected function state(): array
+    {
+        return [];
+    }
+    protected function adminPanels(): array
+    {
+        return [];
+    }
     protected function form()
     {
     }
@@ -445,6 +582,17 @@ abstract class Components {
     }
     protected function settings()
     {
+        foreach ($this->getAdminPanelDefinitions() as $panel) {
+            if (!$panel instanceof Panel) {
+                continue;
+            }
+
+            $this->panelRenderer->register($this->componentName, $panel);
+        }
+    }
+    protected function createPanel(): PanelRenderer
+    {
+        return $this->panelRenderer;
     }
     protected function adminScripts()
     {
@@ -463,5 +611,16 @@ abstract class Components {
     protected function registerCSS($styles)
     {
         return $styles;
+    }
+
+    private function saveAdminPanelStates(): void
+    {
+        foreach ($this->getAdminPanelDefinitions() as $panel) {
+            if (!$panel instanceof Panel) {
+                continue;
+            }
+
+            $this->panelRenderer->saveSubmitted($this->componentName, $panel);
+        }
     }
 }

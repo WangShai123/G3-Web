@@ -18,6 +18,9 @@ class ComponentLoader {
     /** @var array<int, array{code: string, message: string}> */
     private array $errors = [];
 
+    /** @var array<string, bool> */
+    private array $displayedErrors = [];
+
     private bool $initialized = false;
 
     private Container $container;
@@ -84,10 +87,66 @@ class ComponentLoader {
         $themeComponents  = $themeConfig['components'];
 
         if (is_array($pluginComponents) && is_array($themeComponents)) {
-            $config['components'] = array_replace($pluginComponents, $themeComponents);
+            $config['components'] = $this->mergeComponentConfigs($pluginComponents, $themeComponents);
         }
 
         return $config;
+    }
+
+    private function mergeComponentConfigs(array $pluginComponents, array $themeComponents): array
+    {
+        $components = $pluginComponents;
+        $forced     = $this->forcedPluginComponents($pluginComponents);
+
+        foreach ($themeComponents as $componentName => $definition) {
+            if (!is_string($componentName)) {
+                $components[$componentName] = $definition;
+                continue;
+            }
+
+            $key = $this->registry->normalizeName($componentName);
+            if (isset($forced[$key])) {
+                $this->addError(
+                    'g3_component_force_override',
+                    sprintf(
+                        'Theme config cannot override the built-in component "%s". Remove "%s" from the theme components config or rename it.',
+                        $forced[$key],
+                        $componentName
+                    ),
+                    true
+                );
+                continue;
+            }
+
+            $components[$componentName] = $definition;
+        }
+
+        return $components;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function forcedPluginComponents(array $components): array
+    {
+        $forced = [];
+
+        foreach ($components as $componentName => $definition) {
+            if (!is_string($componentName) || !$this->componentForced($definition)) {
+                continue;
+            }
+
+            $forced[$this->registry->normalizeName($componentName)] = $componentName;
+        }
+
+        return $forced;
+    }
+
+    private function componentForced(mixed $definition): bool
+    {
+        return is_array($definition)
+            && array_key_exists('force', $definition)
+            && ($definition['force'] === true || $definition['force'] === '1');
     }
 
     private function loadConfigFile(string $file): array
@@ -417,7 +476,7 @@ class ComponentLoader {
         return preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $componentName) === 1;
     }
 
-    private function addError(string $code, string $message): void
+    private function addError(string $code, string $message, bool $display = false): void
     {
         $this->errors[] = [
             'code'    => $code,
@@ -426,6 +485,33 @@ class ComponentLoader {
 
         $this->registry->addError($code, $message);
         error_log($message);
+
+        if ($display) {
+            $this->displayError($code, $message);
+        }
+    }
+
+    private function displayError(string $code, string $message): void
+    {
+        if (isset($this->displayedErrors[$code . ':' . $message])) {
+            return;
+        }
+
+        $this->displayedErrors[$code . ':' . $message] = true;
+
+        if (function_exists('add_action')) {
+            add_action('admin_notices', function () use ($message): void {
+                echo '<div class="notice notice-error"><p><strong>G3 Component Error:</strong> ' . esc_html($message) . '</p></div>';
+            });
+
+            add_action('wp_footer', function () use ($message): void {
+                if (function_exists('current_user_can') && !current_user_can('manage_options')) {
+                    return;
+                }
+
+                echo '<div style="position:fixed;left:16px;right:16px;bottom:16px;z-index:999999;padding:12px 16px;border-left:4px solid #d63638;background:#fff;color:#1d2327;box-shadow:0 2px 12px rgba(0,0,0,.18);font:14px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;"><strong>G3 Component Error:</strong> ' . esc_html($message) . '</div>';
+            });
+        }
     }
 
     public function getLoadedComponents(): array

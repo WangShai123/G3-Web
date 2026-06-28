@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3 Web\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-24 22:26+0000\n"
+"POT-Creation-Date: 2026-06-28 13:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -135,7 +135,7 @@ msgid ""
 "patiently.</div>"
 msgstr ""
 
-#: src/Core/Activator.php:154
+#: src/Core/Activator.php:134
 #, php-format
 msgid ""
 "<h3>Failed to active G3-Web plugin!</h3>G3-Web requires <b>%s</b>.<br>Please "
@@ -143,7 +143,7 @@ msgid ""
 "PHP server."
 msgstr ""
 
-#: src/Core/Activator.php:145
+#: src/Core/Activator.php:125
 #, php-format
 msgid ""
 "<h3>Failed to active G3-Web plugin!</h3>G3-Web requires JEALER PHP extension."
@@ -151,7 +151,7 @@ msgid ""
 "server:<br><b>extension = %s</b>"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:510
+#: src/Components/Setting/Setting.php:195
 msgid ""
 "<strong>Share it to your friends, robots or AI!</strong> You can access the "
 "local sitemap cache file through the current address."
@@ -211,7 +211,7 @@ msgstr ""
 
 #: src/Components/Activity/Activity.php:16
 #: src/Components/Activity/Activity.php:18
-#: src/Components/Product/Product.php:157
+#: src/Components/Product/Product.php:143
 #: src/Components/Announcement/Announcement.php:22
 #: src/Components/Swiper/includes/SwiperListTable.php:138
 #: src/Components/Swiper/includes/SwiperLocationTable.php:56
@@ -236,7 +236,7 @@ msgstr ""
 msgid "Add New Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:245
+#: src/Components/Product/Product.php:231
 msgid "Add New Brand"
 msgstr ""
 
@@ -249,16 +249,16 @@ msgstr ""
 msgid "Add New Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:158
+#: src/Components/Product/Product.php:144
 msgid "Add New Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:219
+#: src/Components/Product/Product.php:205
 msgid "Add New Product Category"
 msgstr ""
 
 #: src/Components/Swiper/Swiper.php:32 src/Components/Swiper/Swiper.php:33
-#: src/Components/Swiper/views/page-edit.php:11
+#: src/Components/Swiper/views/page-edit.php:12
 msgid "Add Swiper"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgstr ""
 msgid "All Announcements"
 msgstr ""
 
-#: src/Components/Product/Product.php:240
+#: src/Components/Product/Product.php:226
 msgid "All Brands"
 msgstr ""
 
@@ -344,17 +344,17 @@ msgstr ""
 msgid "All Orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:281
+#: src/Components/Setting/Setting.php:140
 msgid ""
 "All outbound links will be intercepted by the system and redirected to the "
 "link middle page instead of the original target url."
 msgstr ""
 
-#: src/Components/Product/Product.php:214
+#: src/Components/Product/Product.php:200
 msgid "All Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:162
+#: src/Components/Product/Product.php:148
 msgid "All Products"
 msgstr ""
 
@@ -502,7 +502,7 @@ msgstr ""
 msgid "At least one keyword is required"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:374
+#: src/Components/Setting/Setting.php:148
 msgid "Atom URL"
 msgstr ""
 
@@ -610,7 +610,7 @@ msgstr ""
 msgid "Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:247
+#: src/Components/Product/Product.php:233
 msgid "Brands"
 msgstr ""
 
@@ -649,8 +649,8 @@ msgid "Cache"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:309
-#: src/Components/Setting/Setting.php:408
-#: src/Components/Setting/Setting.php:510
+#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:195
 msgid "Cache Data"
 msgstr ""
 
@@ -666,11 +666,11 @@ msgstr ""
 msgid "Cannot delete this spec option, it is used in sku."
 msgstr ""
 
-#: src/Components/Product/Product.php:637
+#: src/Components/Product/Product.php:620
 msgid "Cannot delete this spec option, it is used in some SKUs."
 msgstr ""
 
-#: src/Components/Product/Product.php:571
+#: src/Components/Product/Product.php:554
 #: src/Components/Product/views/tab-specifications.php:177
 msgid "Cannot delete this spec, it is used in some sku or options."
 msgstr ""
@@ -679,14 +679,14 @@ msgstr ""
 msgid "Card Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:109
-#: src/Components/Product/Product.php:115
+#: src/Components/Product/Product.php:108
+#: src/Components/Product/Product.php:114
 msgid "Cart"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:69
 #: src/Components/Activity/Activity.php:80
-#: src/Components/Product/Product.php:221
+#: src/Components/Product/Product.php:207
 #: src/Components/Announcement/Announcement.php:75
 msgid "Categories"
 msgstr ""
@@ -728,11 +728,11 @@ msgstr ""
 msgid "Click here to view \"%s\" search results."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:448
+#: src/Components/Setting/Setting.php:161
 msgid "Click to generate llms.txt cache file."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:530
+#: src/Components/Setting/Setting.php:166
 msgid "Click to generate sitemap cache files."
 msgstr ""
 
@@ -807,7 +807,7 @@ msgstr ""
 msgid "Copyright Protection"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:417
+#: src/Components/Setting/Setting.php:159
 #: src/Components/Post/widgets/PostWidget.php:71
 msgid "Count"
 msgstr ""
@@ -823,7 +823,7 @@ msgid "Cover"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:26
-#: src/Components/Product/Product.php:167
+#: src/Components/Product/Product.php:153
 msgid "Cover Image"
 msgstr ""
 
@@ -868,8 +868,7 @@ msgstr ""
 msgid "Custom Admin Login"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:245
-#: src/Components/Setting/Setting.php:251
+#: src/Components/Setting/Setting.php:138
 msgid "Custom Code"
 msgstr ""
 
@@ -881,12 +880,12 @@ msgstr ""
 msgid "Custom Email Templates"
 msgstr ""
 
-#: src/Components/Product/Product.php:292
+#: src/Components/Product/Product.php:278
 #: src/Components/Announcement/Announcement.php:91
 msgid "Custom field deleted."
 msgstr ""
 
-#: src/Components/Product/Product.php:291
+#: src/Components/Product/Product.php:277
 #: src/Components/Announcement/Announcement.php:90
 msgid "Custom field updated."
 msgstr ""
@@ -941,13 +940,11 @@ msgstr ""
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:165
-#: src/Components/Setting/Setting.php:171
+#: src/Components/Setting/Setting.php:133
 msgid "Default Avatar"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:181
-#: src/Components/Setting/Setting.php:187
+#: src/Components/Setting/Setting.php:134
 msgid "Default Cover"
 msgstr ""
 
@@ -1008,7 +1005,7 @@ msgstr ""
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:659
+#: src/Components/Setting/Setting.php:318
 msgid "Description"
 msgstr ""
 
@@ -1076,7 +1073,7 @@ msgstr ""
 msgid "Display Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:744
+#: src/Components/Setting/Setting.php:403
 msgid "Documents"
 msgstr ""
 
@@ -1086,6 +1083,11 @@ msgstr ""
 
 #: src/Components/Share/views/metabox-share.php:40
 msgid "DouYin"
+msgstr ""
+
+#: src/Components/Product/Product.php:122
+#: src/Components/Product/Product.php:128
+msgid "Download"
 msgstr ""
 
 #: src/Services/ProductService.php:80
@@ -1136,7 +1138,7 @@ msgstr ""
 msgid "Edit Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:243
+#: src/Components/Product/Product.php:229
 msgid "Edit Brand"
 msgstr ""
 
@@ -1144,15 +1146,15 @@ msgstr ""
 msgid "Edit Category"
 msgstr ""
 
-#: src/Components/Product/Product.php:160
+#: src/Components/Product/Product.php:146
 msgid "Edit Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:217
+#: src/Components/Product/Product.php:203
 msgid "Edit Product Category"
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:11
+#: src/Components/Swiper/views/page-edit.php:12
 msgid "Edit Swiper"
 msgstr ""
 
@@ -1201,7 +1203,7 @@ msgstr ""
 msgid "End Credits"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:252
+#: src/Components/Setting/Setting.php:138
 msgid "Enter any HTML, CSS, JS code here that you want to customize output."
 msgstr ""
 
@@ -1215,13 +1217,13 @@ msgstr ""
 msgid "Enter reply please"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:236
+#: src/Components/Setting/Setting.php:137
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "footer here."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:220
+#: src/Components/Setting/Setting.php:136
 msgid ""
 "Enter the HTML, CSS, and JS code that you want to add to the website's "
 "header here."
@@ -1256,9 +1258,9 @@ msgstr ""
 msgid "Failed to acquire order code lock after multiple attempts."
 msgstr ""
 
-#: src/Core/Activator.php:70 src/Core/Activator.php:86
-#: src/Core/Activator.php:99 src/Core/Activator.php:148
-#: src/Core/Activator.php:157
+#: src/Core/Activator.php:53 src/Core/Activator.php:68
+#: src/Core/Activator.php:80 src/Core/Activator.php:128
+#: src/Core/Activator.php:137
 msgid "Failed to active G3-Web plugin!"
 msgstr ""
 
@@ -1284,7 +1286,7 @@ msgstr ""
 msgid "Failed to delete reply(s)."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:816
+#: src/Components/Setting/Setting.php:477
 msgid "Failed to generate LLM cache."
 msgstr ""
 
@@ -1346,8 +1348,8 @@ msgstr ""
 msgid "Favorite"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:723
-#: src/Components/Setting/Setting.php:724
+#: src/Components/Setting/Setting.php:382
+#: src/Components/Setting/Setting.php:383
 msgid "Feed Disabled"
 msgstr ""
 
@@ -1398,7 +1400,7 @@ msgstr ""
 msgid "Filter Announcements List"
 msgstr ""
 
-#: src/Components/Product/Product.php:174
+#: src/Components/Product/Product.php:160
 msgid "Filter products list"
 msgstr ""
 
@@ -1463,8 +1465,7 @@ msgstr ""
 msgid "Folder Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:229
-#: src/Components/Setting/Setting.php:235
+#: src/Components/Setting/Setting.php:137
 msgid "Footer Code"
 msgstr ""
 
@@ -1577,17 +1578,17 @@ msgid ""
 "G3-Web helps you easily create a clean, modern and full-fledged website."
 msgstr ""
 
-#: src/Core/Activator.php:69
+#: src/Core/Activator.php:52
 msgid "G3-Web requires PHP 8.3+. Please upgrade your PHP version."
 msgstr ""
 
-#: src/Core/Activator.php:85
+#: src/Core/Activator.php:67
 msgid ""
 "G3-Web requires Redis server. Please make sure Redis is installed and "
 "running."
 msgstr ""
 
-#: src/Core/Activator.php:98
+#: src/Core/Activator.php:79
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr ""
 
@@ -1616,7 +1617,7 @@ msgstr ""
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:447
+#: src/Components/Setting/Setting.php:161
 msgid "Generate LLM Cache"
 msgstr ""
 
@@ -1624,7 +1625,7 @@ msgstr ""
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:527
+#: src/Components/Setting/Setting.php:166
 msgid "Generate Sitemap"
 msgstr ""
 
@@ -1640,8 +1641,7 @@ msgstr ""
 msgid "Global Spec"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:213
-#: src/Components/Setting/Setting.php:219
+#: src/Components/Setting/Setting.php:136
 msgid "Header Code"
 msgstr ""
 
@@ -1650,8 +1650,7 @@ msgstr ""
 msgid "Help Link"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:311
-#: src/Components/Setting/Setting.php:317
+#: src/Components/Setting/Setting.php:143
 msgid "HomePage Keywords"
 msgstr ""
 
@@ -1688,8 +1687,7 @@ msgstr ""
 msgid "Hybrid Theme"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:197
-#: src/Components/Setting/Setting.php:203
+#: src/Components/Setting/Setting.php:135
 msgid "ICP Code"
 msgstr ""
 
@@ -1697,7 +1695,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:204
+#: src/Components/Setting/Setting.php:135
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1765,7 +1763,7 @@ msgstr ""
 msgid "Insert into Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:172
+#: src/Components/Product/Product.php:158
 msgid "Insert into product"
 msgstr ""
 
@@ -1807,6 +1805,10 @@ msgstr ""
 
 #: src/Components/Swiper/Swiper.php:82
 msgid "Invalid Link"
+msgstr ""
+
+#: src/Core/State/StateManager.php:92
+msgid "Invalid settings request."
 msgstr ""
 
 #: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:143
@@ -1852,9 +1854,9 @@ msgstr ""
 msgid "Keyword too long, max %s characters."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:656
-#: src/Components/Setting/Setting.php:673
-#: src/Components/Setting/Setting.php:679
+#: src/Components/Setting/Setting.php:315
+#: src/Components/Setting/Setting.php:332
+#: src/Components/Setting/Setting.php:338
 msgid "Keywords"
 msgstr ""
 
@@ -1925,27 +1927,26 @@ msgstr ""
 msgid "List Card Menu"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:431
-#: src/Components/Setting/Setting.php:437
+#: src/Components/Setting/Setting.php:160
 msgid "LLM Cache"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:814
+#: src/Components/Setting/Setting.php:475
 msgid "LLM cache generated successfully."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:801
+#: src/Components/Setting/Setting.php:462
 msgid "LLM feature is disabled."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:445
+#: src/Components/Setting/Setting.php:161
 msgid "LLM Generator"
 msgstr ""
 
 #: src/Components/Swiper/includes/SwiperListTable.php:29
-#: src/Components/Swiper/views/page-edit.php:94
-#: src/Components/Swiper/views/page-edit.php:97
-#: src/Components/Swiper/views/page-edit.php:100
+#: src/Components/Swiper/views/page-edit.php:89
+#: src/Components/Swiper/views/page-edit.php:92
+#: src/Components/Swiper/views/page-edit.php:95
 msgid "Location"
 msgstr ""
 
@@ -1959,7 +1960,7 @@ msgid "Logged-in users are not cached"
 msgstr ""
 
 #: templates/user/test.php:9 src/Services/PostService.php:285
-#: src/Services/AuthService.php:396 src/Components/Security/Security.php:151
+#: src/Services/AuthService.php:398 src/Components/Security/Security.php:151
 #: src/Components/Auth/Auth.php:40 src/Components/Auth/Auth.php:41
 #: src/Components/Auth/Auth.php:50
 msgid "Login"
@@ -2023,7 +2024,7 @@ msgid "Media Library"
 msgstr ""
 
 #: src/Components/User/User.php:39 src/Components/User/User.php:40
-#: src/Components/User/User.php:64 src/Components/Product/Product.php:137
+#: src/Components/User/User.php:64
 msgid "Membership"
 msgstr ""
 
@@ -2106,11 +2107,11 @@ msgstr ""
 msgid "MobileApp Order"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:172
+#: src/Components/Setting/Setting.php:133
 msgid "Modify the default system avatar."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:188
+#: src/Components/Setting/Setting.php:134
 msgid "Modify the default system cover."
 msgstr ""
 
@@ -2135,7 +2136,7 @@ msgstr ""
 msgid "My"
 msgstr ""
 
-#: src/Components/Product/Product.php:550
+#: src/Components/Product/Product.php:533
 msgid "Name or Key already exists."
 msgstr ""
 
@@ -2143,7 +2144,7 @@ msgstr ""
 msgid "New Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:246
+#: src/Components/Product/Product.php:232
 msgid "New Brand Name"
 msgstr ""
 
@@ -2151,11 +2152,11 @@ msgstr ""
 msgid "New Category Name"
 msgstr ""
 
-#: src/Components/Product/Product.php:159
+#: src/Components/Product/Product.php:145
 msgid "New Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:220
+#: src/Components/Product/Product.php:206
 msgid "New Product Category Name"
 msgstr ""
 
@@ -2200,7 +2201,7 @@ msgstr ""
 msgid "No announcements found."
 msgstr ""
 
-#: src/Components/Product/Product.php:239
+#: src/Components/Product/Product.php:225
 msgid "No brands found."
 msgstr ""
 
@@ -2208,7 +2209,8 @@ msgstr ""
 msgid "No categories found."
 msgstr ""
 
-#: src/Utilities/Option.php:70 src/Components/Swiper/views/tab-locations.php:92
+#: src/Utilities/Option.php:70 src/Core/State/StateBag.php:72
+#: src/Components/Swiper/views/tab-locations.php:92
 msgid "No data changed"
 msgstr ""
 
@@ -2224,22 +2226,22 @@ msgstr ""
 msgid "No matter who you are, G3-Web has got you covered."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:128
+#: src/Components/Swiper/views/page-edit.php:123
 #, php-format
 msgid ""
 "No Position Data Found. Please configure <a href=\"%s\">the Swiper "
 "Position</a> first."
 msgstr ""
 
-#: src/Components/Product/Product.php:213
+#: src/Components/Product/Product.php:199
 msgid "No product categories found."
 msgstr ""
 
-#: src/Components/Product/Product.php:166
+#: src/Components/Product/Product.php:152
 msgid "No products found in trash."
 msgstr ""
 
-#: src/Components/Product/Product.php:165
+#: src/Components/Product/Product.php:151
 msgid "No products found."
 msgstr ""
 
@@ -2278,7 +2280,7 @@ msgstr ""
 msgid "Official Account Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:745
+#: src/Components/Setting/Setting.php:404
 msgid "Online Courses"
 msgstr ""
 
@@ -2292,9 +2294,9 @@ msgid "onSale"
 msgstr ""
 
 #: src/Components/Swiper/includes/SwiperListTable.php:28
+#: src/Components/Swiper/views/page-edit.php:71
+#: src/Components/Swiper/views/page-edit.php:74
 #: src/Components/Swiper/views/page-edit.php:76
-#: src/Components/Swiper/views/page-edit.php:79
-#: src/Components/Swiper/views/page-edit.php:81
 msgid "Open Method"
 msgstr ""
 
@@ -2311,12 +2313,12 @@ msgid ""
 "template related functions: <code>define('WP_USE_THEMES', true);</code>"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:105
-#: src/Components/Setting/Setting.php:106
+#: src/Components/Setting/Setting.php:107
+#: src/Components/Setting/Setting.php:108
 msgid "Operation Settings"
 msgstr ""
 
-#: src/Components/Product/Product.php:89
+#: src/Components/Product/Product.php:88
 #: src/Components/Product/includes/SpecsListTable.php:30
 msgid "Options"
 msgstr ""
@@ -2395,11 +2397,11 @@ msgstr ""
 msgid "Parent Announcement:"
 msgstr ""
 
-#: src/Components/Product/Product.php:241
+#: src/Components/Product/Product.php:227
 msgid "Parent Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:242
+#: src/Components/Product/Product.php:228
 msgid "Parent Brand:"
 msgstr ""
 
@@ -2416,15 +2418,15 @@ msgstr ""
 msgid "Parent Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:215
+#: src/Components/Product/Product.php:201
 msgid "Parent Product Category"
 msgstr ""
 
-#: src/Components/Product/Product.php:216
+#: src/Components/Product/Product.php:202
 msgid "Parent Product Category:"
 msgstr ""
 
-#: src/Components/Product/Product.php:164
+#: src/Components/Product/Product.php:150
 msgid "Parent Product:"
 msgstr ""
 
@@ -2534,8 +2536,8 @@ msgid ""
 msgstr ""
 
 #: src/Utilities/Element.php:181 src/Utilities/Element.php:233
-#: src/Utilities/Element.php:289 src/Utilities/Element.php:350
-#: src/Utilities/Element.php:402
+#: src/Utilities/Element.php:289 src/Utilities/Element.php:362
+#: src/Utilities/Element.php:414
 msgid "Please Input the Field"
 msgstr ""
 
@@ -2595,10 +2597,6 @@ msgstr ""
 msgid "Posts List"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:423
-msgid "Posts Per Type"
-msgstr ""
-
 #: src/Components/User/User.php:56
 msgid "Premium Config"
 msgstr ""
@@ -2619,7 +2617,7 @@ msgstr ""
 msgid "Preview Announcement"
 msgstr ""
 
-#: src/Components/Product/Product.php:315
+#: src/Components/Product/Product.php:301
 msgid "Preview Product"
 msgstr ""
 
@@ -2631,31 +2629,31 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/Services/ProductService.php:58 src/Components/Product/Product.php:154
-#: src/Components/Product/Product.php:156
+#: src/Services/ProductService.php:58 src/Components/Product/Product.php:140
+#: src/Components/Product/Product.php:142
 #: src/Components/Product/includes/SkuListTable.php:28
 #: src/Components/Product/views/tab-specifications.php:58
 #: src/Components/Product/views/tab-specifications.php:153
 msgid "Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:171
+#: src/Components/Product/Product.php:157
 msgid "Product Archives"
 msgstr ""
 
-#: src/Components/Product/Product.php:237
+#: src/Components/Product/Product.php:223
 msgid "Product Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:236
+#: src/Components/Product/Product.php:222
 msgid "Product Brands"
 msgstr ""
 
-#: src/Components/Product/Product.php:210
+#: src/Components/Product/Product.php:196
 msgid "Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:211
+#: src/Components/Product/Product.php:197
 msgid "Product Category"
 msgstr ""
 
@@ -2663,11 +2661,11 @@ msgstr ""
 msgid "Product Comments"
 msgstr ""
 
-#: src/Components/Product/Product.php:303
+#: src/Components/Product/Product.php:289
 msgid "Product draft updated."
 msgstr ""
 
-#: src/Components/Product/Product.php:326
+#: src/Components/Product/Product.php:312
 msgid "Product Gallery"
 msgstr ""
 
@@ -2679,55 +2677,55 @@ msgstr ""
 msgid "Product Order"
 msgstr ""
 
-#: src/Components/Product/Product.php:342
+#: src/Components/Product/Product.php:328
 msgid "Product Properties"
 msgstr ""
 
-#: src/Components/Product/Product.php:296
+#: src/Components/Product/Product.php:282
 msgid "Product published."
 msgstr ""
 
 #. %s: date and time of the revision
-#: src/Components/Product/Product.php:295
+#: src/Components/Product/Product.php:281
 #, php-format
 msgid "Product restored to version from %s."
 msgstr ""
 
-#: src/Components/Product/Product.php:297
+#: src/Components/Product/Product.php:283
 msgid "Product saved."
 msgstr ""
 
-#: src/Components/Product/Product.php:300
+#: src/Components/Product/Product.php:286
 #, php-format
 msgid "Product scheduled for:<strong>%1$s</strong>."
 msgstr ""
 
-#: src/Components/Product/Product.php:267
+#: src/Components/Product/Product.php:253
 msgid "Product Sidebar"
 msgstr ""
 
-#: src/Components/Product/Product.php:334
+#: src/Components/Product/Product.php:320
 msgid "Product SKU"
 msgstr ""
 
-#: src/Components/Product/Product.php:298
+#: src/Components/Product/Product.php:284
 msgid "Product submitted."
 msgstr ""
 
-#: src/Components/Product/Product.php:290
-#: src/Components/Product/Product.php:293
+#: src/Components/Product/Product.php:276
+#: src/Components/Product/Product.php:279
 msgid "Product updated."
 msgstr ""
 
-#: src/Components/Product/Product.php:153
+#: src/Components/Product/Product.php:139
 msgid "Products"
 msgstr ""
 
-#: src/Components/Product/Product.php:176
+#: src/Components/Product/Product.php:162
 msgid "Products list"
 msgstr ""
 
-#: src/Components/Product/Product.php:175
+#: src/Components/Product/Product.php:161
 msgid "Products list navigation"
 msgstr ""
 
@@ -2776,13 +2774,12 @@ msgstr ""
 msgid "Radio field"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:405
-#: src/Components/Setting/Setting.php:492
+#: src/Components/Setting/Setting.php:152
+#: src/Components/Setting/Setting.php:190
 msgid "Real-time data"
 msgstr ""
 
-#. 文案: 实时数据访问不再生成缓存文件，请手动生成缓存文件，以获得更好的性能。
-#: src/Components/Setting/Setting.php:439
+#: src/Components/Setting/Setting.php:160
 msgid ""
 "Real-time data access no longer generates cache files. Please generate cache "
 "files manually for better performance."
@@ -2804,8 +2801,7 @@ msgstr ""
 msgid "Recommended configuration"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:274
-#: src/Components/Setting/Setting.php:280
+#: src/Components/Setting/Setting.php:140
 msgid "Redirect Link"
 msgstr ""
 
@@ -2845,7 +2841,7 @@ msgid "Remove Cover"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:28
-#: src/Components/Product/Product.php:169
+#: src/Components/Product/Product.php:155
 msgid "Remove cover image"
 msgstr ""
 
@@ -2944,11 +2940,11 @@ msgstr ""
 msgid "Rewrite rules flushed successfully!"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:352
+#: src/Components/Setting/Setting.php:146
 msgid "RSS URL"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:363
+#: src/Components/Setting/Setting.php:147
 msgid "RSS2 URL"
 msgstr ""
 
@@ -2966,8 +2962,7 @@ msgstr ""
 msgid "Runs wordpress to process the request"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:152
-#: src/Components/Setting/Setting.php:158
+#: src/Components/Setting/Setting.php:130
 msgid "Sad Mod"
 msgstr ""
 
@@ -3009,7 +3004,7 @@ msgstr ""
 msgid "Search Announcements"
 msgstr ""
 
-#: src/Components/Product/Product.php:238
+#: src/Components/Product/Product.php:224
 msgid "Search Brands"
 msgstr ""
 
@@ -3029,11 +3024,11 @@ msgstr ""
 msgid "Search for: "
 msgstr ""
 
-#: src/Components/Product/Product.php:212
+#: src/Components/Product/Product.php:198
 msgid "Search Product Categories"
 msgstr ""
 
-#: src/Components/Product/Product.php:163
+#: src/Components/Product/Product.php:149
 msgid "Search Products"
 msgstr ""
 
@@ -3087,13 +3082,13 @@ msgstr ""
 msgid "Sender's Email Secret"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:623
+#: src/Components/Setting/Setting.php:282
 msgid "SEO & Social Media"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:656
-#: src/Components/Setting/Setting.php:674
-#: src/Components/Setting/Setting.php:682
+#: src/Components/Setting/Setting.php:315
+#: src/Components/Setting/Setting.php:333
+#: src/Components/Setting/Setting.php:341
 msgid "Separate tags with commas."
 msgstr ""
 
@@ -3110,7 +3105,7 @@ msgid "Set Cover"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:27
-#: src/Components/Product/Product.php:168
+#: src/Components/Product/Product.php:154
 msgid "Set cover image"
 msgstr ""
 
@@ -3155,8 +3150,8 @@ msgstr ""
 msgid "Shipped"
 msgstr ""
 
-#: src/Components/Product/Product.php:47 src/Components/Product/Product.php:48
-#: src/Components/Product/Product.php:77 src/Components/Product/Product.php:155
+#: src/Components/Product/Product.php:46 src/Components/Product/Product.php:47
+#: src/Components/Product/Product.php:76 src/Components/Product/Product.php:141
 msgid "Shop"
 msgstr ""
 
@@ -3164,7 +3159,7 @@ msgstr ""
 msgid "Shop Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:256
+#: src/Components/Product/Product.php:242
 msgid "Shop Sidebar"
 msgstr ""
 
@@ -3181,22 +3176,21 @@ msgstr ""
 msgid "Site Health"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:134
+#: src/Components/Setting/Setting.php:162
 msgid "SiteMap"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:835
+#: src/Components/Setting/Setting.php:496
 msgid "Sitemap generated successfully."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:826
+#: src/Components/Setting/Setting.php:487
 msgid "Sitemap generation is disabled."
 msgstr ""
 
 #: src/Components/Security/Security.php:196
 #: src/Components/Security/Security.php:202
-#: src/Components/Setting/Setting.php:520
-#: src/Components/Setting/Setting.php:524
+#: src/Components/Setting/Setting.php:166
 msgid "SiteMap Generator"
 msgstr ""
 
@@ -3238,26 +3232,26 @@ msgid "Sold"
 msgstr ""
 
 #: src/Components/Swiper/includes/SwiperListTable.php:30
-#: src/Components/Swiper/views/page-edit.php:139
-#: src/Components/Swiper/views/page-edit.php:142
+#: src/Components/Swiper/views/page-edit.php:134
+#: src/Components/Swiper/views/page-edit.php:137
 #: src/Components/WechatOA/includes/WechatOAMenuListTable.php:31
 #: src/Components/WechatOA/views/view-menu-edit.php:84
 #: src/Components/WechatOA/views/view-menu-edit.php:87
 msgid "Sort"
 msgstr ""
 
-#: src/Components/Product/Product.php:650
+#: src/Components/Product/Product.php:633
 msgid "Spec option not found."
 msgstr ""
 
-#: src/Components/Product/Product.php:67 src/Components/Product/Product.php:68
-#: src/Components/Product/Product.php:88
+#: src/Components/Product/Product.php:66 src/Components/Product/Product.php:67
+#: src/Components/Product/Product.php:87
 #: src/Components/Product/includes/SpecOptionsListTable.php:29
 #: src/Components/Product/views/tab-options.php:50
 msgid "Specifications"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:743
+#: src/Components/Setting/Setting.php:402
 msgid "Sponsor"
 msgstr ""
 
@@ -3270,16 +3264,16 @@ msgstr ""
 msgid "Start Credits"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:474
+#: src/Components/Setting/Setting.php:185
 msgid ""
 "Starting from version 5.5 of WordPress, the functionality of multi-level and "
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr ""
 
 #: src/Components/Swiper/includes/SwiperListTable.php:31
+#: src/Components/Swiper/views/page-edit.php:146
+#: src/Components/Swiper/views/page-edit.php:149
 #: src/Components/Swiper/views/page-edit.php:151
-#: src/Components/Swiper/views/page-edit.php:154
-#: src/Components/Swiper/views/page-edit.php:156
 #: src/Components/Product/includes/SkuListTable.php:35
 #: src/Components/Product/includes/SpecOptionsListTable.php:30
 #: src/Components/Product/views/tab-options.php:57
@@ -3349,11 +3343,11 @@ msgstr ""
 msgid "System Email"
 msgstr ""
 
-#: src/Services/AuthService.php:375
+#: src/Services/AuthService.php:377
 msgid "System Generated"
 msgstr ""
 
-#: src/Utilities/Element.php:52
+#: src/Utilities/Element.php:52 src/Core/Admin/PanelRenderer.php:53
 #, php-format
 msgid "Template file does not exist: %s"
 msgstr ""
@@ -3402,7 +3396,7 @@ msgid ""
 "message is found."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:159
+#: src/Components/Setting/Setting.php:130
 msgid ""
 "The entire website will be immersed in a mournful mode with only black, "
 "white, and gray colors."
@@ -3412,7 +3406,7 @@ msgstr ""
 msgid "The expiration of the invitation code."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:200
+#: src/Components/Swiper/views/page-edit.php:195
 msgid "The field cannot be empty"
 msgstr ""
 
@@ -3426,7 +3420,7 @@ msgstr ""
 msgid "The Key that will call the latest posts. Default: n"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:268
+#: src/Components/Setting/Setting.php:139
 msgid "The links feature helps you manage your friendship links."
 msgstr ""
 
@@ -3461,7 +3455,7 @@ msgid ""
 "server load capacity."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:424
+#: src/Components/Setting/Setting.php:159
 msgid ""
 "The number of posts to be generated for each post type.<br>Default: <code>"
 "2000</code>."
@@ -3512,6 +3506,13 @@ msgstr ""
 msgid "The system will use SMTP to send emails."
 msgstr ""
 
+#: src/Components/Setting/Setting.php:132
+msgid ""
+"The theme mode is automatically determined based on the cookie <code>jui-"
+"theme</code>. The frontend template HTML element will have classes such as "
+"<code>dark</code>, <code>j-theme-indigo</code>, etc."
+msgstr ""
+
 #: src/Components/Themes/views/page-multiple-themes.php:8
 msgid ""
 "The theme you configure on the Appearance-Theme page is the main theme of "
@@ -3523,7 +3524,7 @@ msgstr ""
 msgid "The URL you visited is illegal."
 msgstr ""
 
-#: src/Components/Developer/views/tab-theme.php:142
+#: src/Components/Developer/views/tab-theme.php:143
 msgid "Theme Created Successfully"
 msgstr ""
 
@@ -3555,6 +3556,10 @@ msgstr ""
 
 #: src/Components/Developer/Developer.php:567
 msgid "Theme Install"
+msgstr ""
+
+#: src/Components/Setting/Setting.php:132
+msgid "Theme Mode"
 msgstr ""
 
 #: src/Components/Developer/views/tab-theme.php:16
@@ -3593,7 +3598,7 @@ msgstr ""
 msgid "This tab is for Redis Cache advice."
 msgstr ""
 
-#: src/Services/AuthService.php:251
+#: src/Services/AuthService.php:253
 msgid "This WeChat account is already bound to another user."
 msgstr ""
 
@@ -3606,10 +3611,10 @@ msgstr ""
 msgid "Time Unit"
 msgstr ""
 
-#: templates/developer/w.php:17 src/Utilities/Element.php:690
+#: templates/developer/w.php:17 src/Utilities/Element.php:702
 #: src/Components/Developer/Developer.php:743
 #: src/Components/Developer/Developer.php:756
-#: src/Components/Setting/Setting.php:749
+#: src/Components/Setting/Setting.php:408
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
 msgstr ""
@@ -3628,7 +3633,7 @@ msgstr ""
 msgid "Tips for First Time Users"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:655
+#: src/Components/Setting/Setting.php:314
 #: src/Components/Swiper/includes/SwiperListTable.php:25
 msgid "Title"
 msgstr ""
@@ -3694,7 +3699,7 @@ msgstr ""
 msgid "Unused"
 msgstr ""
 
-#: src/Components/Product/Product.php:244
+#: src/Components/Product/Product.php:230
 msgid "Update Brand"
 msgstr ""
 
@@ -3706,7 +3711,7 @@ msgstr ""
 msgid "Update Menus Online"
 msgstr ""
 
-#: src/Components/Product/Product.php:218
+#: src/Components/Product/Product.php:204
 msgid "Update Product Category"
 msgstr ""
 
@@ -3734,7 +3739,7 @@ msgstr ""
 msgid "UPloaded to this activity"
 msgstr ""
 
-#: src/Components/Product/Product.php:173
+#: src/Components/Product/Product.php:159
 msgid "Uploaded to this product"
 msgstr ""
 
@@ -3743,7 +3748,7 @@ msgid "URLs with query parameters are not cached"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:29
-#: src/Components/Product/Product.php:170
+#: src/Components/Product/Product.php:156
 msgid "Use as cover image"
 msgstr ""
 
@@ -3802,7 +3807,7 @@ msgstr ""
 msgid "Useful Development Features"
 msgstr ""
 
-#: src/Services/AuthService.php:376
+#: src/Services/AuthService.php:378
 msgid "User Bought"
 msgstr ""
 
@@ -3942,8 +3947,8 @@ msgstr ""
 msgid "View Interval"
 msgstr ""
 
-#: src/Components/Product/Product.php:161
-#: src/Components/Product/Product.php:309
+#: src/Components/Product/Product.php:147
+#: src/Components/Product/Product.php:295
 msgid "View Product"
 msgstr ""
 
@@ -4040,7 +4045,7 @@ msgid "Wechat Official Account supports 13 types of menu:"
 msgstr ""
 
 #: src/Controllers/AuthController.php:412 src/Services/WechatOAService.php:1812
-#: src/Services/AuthService.php:170
+#: src/Services/AuthService.php:172
 msgid "WeChat service is not available."
 msgstr ""
 
@@ -4125,7 +4130,7 @@ msgid ""
 "Whether to display the content distribution section on the post edit page."
 msgstr ""
 
-#: src/Components/Product/Product.php:116
+#: src/Components/Product/Product.php:115
 msgid "Whether to enable cart feature."
 msgstr ""
 
@@ -4135,12 +4140,8 @@ msgid ""
 "invitation code cannot sign up."
 msgstr ""
 
-#: src/Components/Product/Product.php:130
+#: src/Components/Product/Product.php:129
 msgid "Whether to support the product of download type."
-msgstr ""
-
-#: src/Components/Product/Product.php:144
-msgid "Whether to support the product of membership type."
 msgstr ""
 
 #: src/Components/Wallet/Wallet.php:63
@@ -4166,7 +4167,7 @@ msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:305
+#: src/Components/Setting/Setting.php:142
 msgid "You can add custom SEO data for each page."
 msgstr ""
 
@@ -4186,7 +4187,7 @@ msgstr ""
 msgid "You can add widgets to post sidebar."
 msgstr ""
 
-#: src/Components/Product/Product.php:269
+#: src/Components/Product/Product.php:255
 msgid "You can add widgets to product sidebar."
 msgstr ""
 
@@ -4194,7 +4195,7 @@ msgstr ""
 msgid "You can add widgets to search sidebar."
 msgstr ""
 
-#: src/Components/Product/Product.php:258
+#: src/Components/Product/Product.php:244
 msgid "You can add widgets to shop sidebar."
 msgstr ""
 
@@ -4227,7 +4228,7 @@ msgstr ""
 msgid "You can Select a theme for mobile devices."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:492
+#: src/Components/Setting/Setting.php:190
 msgid ""
 "You can visit the current address to generate local cache files of the "
 "sitemap."

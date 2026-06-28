@@ -9,6 +9,8 @@
  * - components: 按声明顺序启用组件；依赖会优先于声明顺序加载。
  * - 主题端 config/components.php 存在时，其 components 列表按组件名覆盖或追加插件默认列表。
  * - 主题端同名组件配置覆盖插件默认配置；主题端新增组件追加启用；主题端设为 false 可禁用插件默认组件。
+ * - force: 仅插件默认配置支持。默认 false，不需要声明；显式 true 时表示强制启用组件，不允许主题端同名组件配置覆盖。
+ *          如果主题端 config/components.php 中声明了同名组件，G3 会忽略主题端覆盖配置，并在页面中显示强提醒错误提示。
  *
  * 支持格式：
  * 'Setting' => true,                                  // 启用组件
@@ -16,6 +18,10 @@
  * 'Security' => [
  *     'enabled' => true,
  *     'dependency' => 'Setting',                      // 依赖单个组件
+ * ],
+ * 'Themes' => [
+ *     'enabled' => true,
+ *     'force' => true,                                // 强制启用，不允许主题端覆盖或禁用
  * ],
  * 'Developer' => [
  *     'enabled' => true,
@@ -40,25 +46,30 @@
 return [
     'enabled'    => true,
     'components' => [
-        'Setting'      => true, // 1
-        'Auth'         => true, // 2
-        'Post'         => true, // 3
-        'Share'        => true, // 4
-        'Product'      => true, // 5
+        'Setting'      => [
+            'enabled' => true,
+            'force'   => true,
+        ],
+        'Themes'       => [
+            'enabled' => true,
+            'force'   => true,
+        ],
 
-        'Wallet'       => true, // 14
-        'WechatOA'     => true, // 15
+        'Auth'         => true,
+        'Post'         => true,
+        'Share'        => true,
+        'Product'      => true,
+
+        'Wallet'       => true,
+        'WechatOA'     => true,
 
         'Comment'      => true,
         'Activity'     => true,
         'Announcement' => true,
         'Orders'       => true,
         'Swiper'       => true,
-        'Themes'       => true,
         'Ad'           => true,
-
         'Security'     => true,
-
         'Mail'         => true,
         'User'         => true,
         'Sms'          => true,

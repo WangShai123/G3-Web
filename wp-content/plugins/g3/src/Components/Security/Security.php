@@ -71,11 +71,6 @@ class Security extends Components {
         $this->cspHandle();
     }
     #[Override]
-    protected function admin(): void
-    {
-        $this->settings();
-    }
-    #[Override]
     protected function adminMenu(): void
     {
         add_submenu_page(

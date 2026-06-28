@@ -7,16 +7,12 @@ echo Element::tip(
     'default',
     'mt-4'
 );
-echo '<form action="" method="POST">';
-settings_fields('rss');
-do_settings_sections('g3-settings&tab=rss');
-submit_button();
+$renderer->form($panel, $panelTab);
 ?>
-</form>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { copy, listen, Toast } = jui
-        listen(document, 'click', (e) => {
+        const { copy, Toast } = jui
+        document.addEventListener('click', (e) => {
             if (['rss1', 'rss2', 'atom'].includes(e.target.id)) {
                 copy(e.target.value)
                 Toast.lite('<?php _e('Copied'); ?>')

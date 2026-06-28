@@ -8,8 +8,5 @@ echo Element::tip(
     'default',
     'mt-4'
 );
-echo '<form action="" method="post">';
-settings_fields('social');
-do_settings_sections('auth-settings&tab=social');
-submit_button();
-echo '</form>';
+
+$renderer->form($panel, $panelTab);

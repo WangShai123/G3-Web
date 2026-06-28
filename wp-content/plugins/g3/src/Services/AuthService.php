@@ -266,7 +266,7 @@ class AuthService {
      * @param WP_User $user
      * @return void
      */
-    public static function doWPLogin(WP_User $user): void
+    public function doWPLogin(WP_User $user): void
     {
         wp_set_current_user($user->ID, $user->user_login);
         wp_set_auth_cookie($user->ID);

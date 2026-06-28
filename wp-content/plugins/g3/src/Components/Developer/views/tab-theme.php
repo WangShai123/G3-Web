@@ -108,9 +108,10 @@ echo Element::tip(
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const { Toast, postJson, q, listen, restUrl } = jui
+        const { Toast, postJson, q, restUrl } = jui
         const { success, error } = Toast
-        listen(q('#createTheme'), 'click', function (e) {
+        const newTheme = q('#createTheme');
+        newTheme.addEventListener('click', (e) => {
             e.preventDefault()
             const name = q('#name').value
             const folder = q('#folder').value
@@ -132,7 +133,7 @@ echo Element::tip(
                 authorUrl,
                 version
             }).then(data => {
-                this.disabled = true
+                newTheme.disabled = true
                 switch (data.code) {
                     case 200:
                         success(data.message, 2000);
@@ -161,10 +162,10 @@ echo Element::tip(
                         error(data.message, 2000)
                         break;
                 }
-            }).then(() => { setTimeout(() => { this.disabled = false }, 2000) });
-        })
-        listen(q('form'), 'reset', (e) => {
-            q('#createTheme').disabled = false;
+            }).then(() => { setTimeout(() => { newTheme.disabled = false }, 2000) });
+        });
+        q('form').addEventListener('reset', (e) => {
+            newTheme.disabled = false;
             if (q('#createTip')) {
                 for (const tip of document.querySelectorAll('#createTip')) {
                     tip.remove();

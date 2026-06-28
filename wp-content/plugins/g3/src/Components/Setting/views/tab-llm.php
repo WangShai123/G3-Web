@@ -7,12 +7,8 @@ echo Element::tip(
     'default',
     'mt-4'
 );
-echo '<form action="" method="POST">';
-settings_fields('llm');
-do_settings_sections('g3-settings&tab=llm');
-submit_button();
+$renderer->form($panel, $panelTab);
 ?>
-</form>
 <script>
     jQuery(document).ready(function ($) {
         const { Toast } = jui
