@@ -58,7 +58,6 @@ class Auth extends Components {
     }
     protected function adminPanels(): array
     {
-        error_log('test in auth component');
         return [
             $this->panel('auth-settings', __('Login', 'G3'))
                 ->tab('general', __('General'), 'option')

@@ -220,7 +220,7 @@ class ExtensionManager implements ExtensionManagerInterface {
         try {
             $extension->load($this->container);
             $this->loadedExtensions[] = $name;
-            error_log("[G3 Debug][Container Extension Manager] Extension '{$name}' loaded successfully");
+            error_log("[G3 Container] Extension '{$name}' loaded successfully");
         }
         catch (\Throwable $e) {
             throw new RuntimeException(
