@@ -243,13 +243,27 @@ class PostService extends Service {
             ]);
         }
 
-        $results = [];
+        $uselessKeys = [
+            'filter',
+            'menu_order',
+            'pinged',
+            'post_content_filtered',
+            'post_mime_type',
+            'post_parent',
+            'ping_status',
+            'to_ping',
+        ];
+        $results     = [];
         foreach ($query->posts as $post) {
             if (!($post instanceof WP_Post)) {
                 continue;
             }
 
             $postData = (array) $post;
+            // remove unnecessary data
+            foreach ($uselessKeys as $key) {
+                unset($postData[$key]);
+            }
 
             $extra = $this->getExtra($post->ID);
             if ($extra instanceof WP_Error) {
