@@ -80,9 +80,7 @@ class Developer extends Components {
     {
         return [
             $this->panel('developer-mode', __('Developer Mode', 'G3'))
-                ->tab('system', __('System', 'G3'))
-                ->tab('rewrite', __('Rewrite Rules', 'G3'))
-                ->tab('setting', __('Settings'))
+                ->tab('general', __('Settings'))
                 ->option(SystemService::SETTING_OPTION_KEY, $this->settingDefaults())
                 ->switch('wpAutoUpdate', __('WordPress Auto Update', 'G3'))
                 ->switch('translationsApi', __('Translations API', 'G3'))
@@ -124,6 +122,9 @@ class Developer extends Components {
                 ->callback('g3_generate_object_cache', __('Object Cache', 'G3'), [$this, '_generateObjectCacheButton'])
                 ->callback('g3_migrate_views', __('Views Migration', 'G3'), [$this, '_migrateViewsButton'])
 
+                ->tab('system', __('System', 'G3'))
+                ->tab('rewrite', __('Rewrite Rules', 'G3'))
+                ->tab('cron', __('WP Cron'))
                 ->tab('theme', __('Build Theme', 'G3'))
 
                 ->tab('form', __('Form Demo', 'G3'))
@@ -172,7 +173,7 @@ class Developer extends Components {
     }
     public function render(): void
     {
-        $this->createPanel('system');
+        $this->createPanel();
     }
     #[Override]
     protected function start(): void
