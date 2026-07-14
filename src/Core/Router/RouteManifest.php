@@ -144,8 +144,8 @@ class RouteManifest {
     private function cachePaths(): array
     {
         return [
-            G3_PLUGIN_DIR . '/cache/routes.php',
-            WP_CONTENT_DIR . '/uploads/g3-cache/routes.php',
+            WP_CONTENT_DIR . '/G3-Web/cache/routes.php',
+            WP_CONTENT_DIR . '/uploads/G3-Web/cache/routes.php',
         ];
     }
 
@@ -227,7 +227,7 @@ class RouteManifest {
      */
     private function routeConflictKeys(array $route): array
     {
-        $base = trim($route['namespace'], '/') . '/' . $this->normalizeRoute($route['route']);
+        $base    = trim($route['namespace'], '/') . '/' . $this->normalizeRoute($route['route']);
         $methods = array_map(
             static fn(string $method): string => strtoupper(trim($method)),
             array_filter((array) ($route['methods'] ?? []), 'is_string')

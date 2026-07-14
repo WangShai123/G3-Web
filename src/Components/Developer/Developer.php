@@ -119,7 +119,7 @@ class Developer extends Components {
                 ->callback('g3_flush_cache', __('Cache Data', 'G3'), [$this, '_flushCacheButton'])
                 ->callback('jl_flush_options', __('Setting Options', 'G3'), [$this, '_flushOptionButton'])
                 ->callback('auto_backup', __('Auto Backup', 'G3'), function () {
-                    echo __('When the G3-Web plugin is uninstalled, the system will automatically backup related option configuration data, and clear the relevant option data in the database to avoid data pollution.<br>The backup file directory: ', 'G3') . '<code>/plugins/G3-Web/backup/options.php</code>.';
+                    echo __('When the G3-Web plugin is uninstalled, the system will automatically backup related option configuration data, and clear the relevant option data in the database to avoid data pollution.<br>The backup file directory: ', 'G3') . '<code>/wp-content/G3-Web/cache/options.php</code>.';
                 })
                 ->callback('g3_generate_object_cache', __('Object Cache', 'G3'), [$this, '_generateObjectCacheButton'])
                 ->callback('g3_migrate_views', __('Views Migration', 'G3'), [$this, '_migrateViewsButton'])
@@ -293,7 +293,7 @@ class Developer extends Components {
     }
     public function _flushOptions(): void
     {
-        $options = @require_once G3_PLUGIN_DIR . '/backup/options.php';
+        $options = require_once WP_CONTENT_DIR . '/G3-Web/cache/options.php';
 
         if (!is_array($options)) {
             $options = [];
@@ -322,7 +322,7 @@ class Developer extends Components {
     public function _flushOptionButton(): void
     {
         echo '<button class="button" name="g3_flush_options" type="submit">' . __('Flush Setting Options', 'G3') . '</button>';
-        echo '<p class="description">' . __('Flush and restore setting options from the last auto-generated backup data. File:', 'G3') . '<code>/plugins/G3-Web/backup/options.php</code></p>';
+        echo '<p class="description">' . __('Flush and restore setting options from the last auto-generated backup data. File:', 'G3') . '<code>/wp-content/G3-Web/cache/options.php</code></p>';
     }
 
     public function _flushCacheButton(): void

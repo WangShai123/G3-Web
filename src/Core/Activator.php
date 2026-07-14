@@ -32,8 +32,8 @@ class Activator {
         $this->initTables();
         $this->registerRewrites();
 
-        $this->initCli();
-        $this->initObjectCache();
+        // $this->initCli();
+        // $this->initObjectCache();
 
         $this->param();
     }
@@ -150,14 +150,14 @@ class Activator {
             }
         }
     }
-    private function initCli(): void
-    {
-        SystemService::initCli();
-    }
-    private function initObjectCache(): void
-    {
-        SystemService::initObjectCache();
-    }
+    // private function initCli(): void
+    // {
+    //     SystemService::initCli();
+    // }
+    // private function initObjectCache(): void
+    // {
+    //     SystemService::initObjectCache();
+    // }
     private function initTables(): void
     {
         $this->DBManager->initTables();

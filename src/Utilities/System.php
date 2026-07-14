@@ -240,4 +240,16 @@ final class System {
     {
         return file_put_contents($file, $content) !== false;
     }
+    public static function writeArray($file, array $data): bool
+    {
+        // generate readable PHP array content
+        $export = "<?php\nreturn " . var_export($data, true) . ";\n";
+
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        return file_put_contents($file, $export) !== false;
+    }
 }
