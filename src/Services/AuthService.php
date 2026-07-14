@@ -346,7 +346,7 @@ class AuthService {
         wp_set_auth_cookie($user->ID);
         do_action('wp_login', $user->user_login, $user);
 
-        setcookie('g3-user', $user->ID, time() + 86400 * 365, '/');
+        setcookie(UserService::USER_COOKIE, $user->ID, time() + 86400 * 365, '/');
     }
 
     /**

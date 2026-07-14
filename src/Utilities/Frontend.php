@@ -573,4 +573,10 @@ final class Frontend {
     {
         return function_exists('wp_script_is') && wp_script_is($handle, 'registered');
     }
+
+    public static function configScript(string $id, array $config): string
+    {
+        $json = str_replace('</script', '<\/script', wp_json_encode($config, JSON_UNESCAPED_UNICODE) ?: '{}');
+        return '<script type="application/json" id="' . esc_attr($id) . '">' . $json . '</script>';
+    }
 }

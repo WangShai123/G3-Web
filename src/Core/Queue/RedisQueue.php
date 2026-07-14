@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Core\Queue;
+use JEALER\G3\Core\Container\Container;
 use Redis;
 
 /**
@@ -11,10 +12,9 @@ use Redis;
  * @author Wang Shai
  */
 class RedisQueue implements QueueInterface {
-
-    protected Redis  $redis;
-    protected string $prefix;
-
+    protected Redis     $redis;
+    protected string    $prefix;
+    protected Container $container;
     /**
      * Constructor
      * 
@@ -24,10 +24,11 @@ class RedisQueue implements QueueInterface {
      */
     public function __construct(array $config = [])
     {
-        $this->redis = new Redis();
-        $host        = $config['host'] ?? '127.0.0.1';
-        $port        = $config['port'] ?? 6379;
-        $timeout     = $config['timeout'] ?? 5;
+        $this->container = Container::run();
+        $this->redis     = $this->container->get(Redis::class);
+        $host            = $config['host'] ?? '127.0.0.1';
+        $port            = $config['port'] ?? 6379;
+        $timeout         = $config['timeout'] ?? 5;
 
         $this->redis->connect($host, $port, $timeout);
 

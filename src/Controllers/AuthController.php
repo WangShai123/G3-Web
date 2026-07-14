@@ -9,6 +9,7 @@ use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\AuthService;
+use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Request;
@@ -165,7 +166,7 @@ class AuthController extends Controller {
     {
         wp_logout();
 
-        setcookie('g3-user', '', time() - 3600, '/');
+        setcookie(UserService::USER_COOKIE, '', time() - 3600, '/');
 
         return rest_ensure_response([
             'success' => true,

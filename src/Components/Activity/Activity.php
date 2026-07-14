@@ -5,7 +5,7 @@ use Override;
 
 class Activity extends Components {
     private string $postType = 'activity';
-    public function postType()
+    protected function postType()
     {
         $labels = [
             'name'               => __('Activities', 'G3'),
@@ -44,7 +44,10 @@ class Activity extends Components {
                 'show_in_admin_bar'  => true,
                 'show_in_nav_menus'  => true,
                 'query_var'          => true,
-                // 'rewrite'            => ['slug' => $this->postType],
+                'rewrite'            => [
+                    'slug'       => $this->postType,
+                    'with_front' => false // 避免继承全局固定链接前缀
+                ],
                 'capability_type'    => 'post',
                 'has_archive'        => true,
                 'hierarchical'       => false,

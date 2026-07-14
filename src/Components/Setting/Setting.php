@@ -5,28 +5,16 @@ use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\LLMService;
 use JEALER\G3\Services\SitemapService;
+use JEALER\G3\Services\UserService;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Response;
 use Override;
+use Redis;
 
 class Setting extends Components {
-    private function optionDefaults(): array
-    {
-        return [
-            'sad'          => '0',
-            'avatar'       => G3_IMG_URL . '/avatar.png',
-            'cover'        => G3_IMG_URL . '/cover-placeholder.png',
-            'icp'          => '',
-            'headerCode'   => '',
-            'footerCode'   => '',
-            'customCode'   => '',
-            'links'        => '1',
-            'redirectLink' => '1',
-        ];
-    }
 
     private function seoDefaults(): array
     {
@@ -54,6 +42,10 @@ class Setting extends Components {
             'postsPerType' => 2000,
             'manual'       => '1',
         ];
+    }
+    protected function defaultOption(): array
+    {
+        return [SystemService::OPTION_KEY => SystemService::optionValue()];
     }
     private static function optionData(string $key): array
     {
@@ -91,6 +83,49 @@ class Setting extends Components {
         add_action('wp_head', [$this, 'sadHandle']);
         add_action('wp_head', [$this, 'headerCodeHandle']);
         add_action('wp_footer', [$this, 'footerCodeHandle']);
+        add_action('wp_footer', [$this, 'fingerScript']);
+        $this->fingerId();
+    }
+    private function fingerId()
+    {
+        $v = $this->option();
+        if ($v['online'] ?? '0' === '1' && $this->loader->admin()) {
+            $ttl    = $v['onlineDelay'] ?? 30;
+            $redis  = $this->container->get(Redis::class);
+            $cookie = $_COOKIE[UserService::VISITOR_COOKIE] ?? '';
+            if (!empty($cookie)) {
+                $visitorId = sanitize_text_field($cookie);
+                // case 1:
+                // // for TTL
+                // $redis->setex("g3:g3_online:{$visitorId}", $ttl * 60, time());
+                // // for O(1) lightning-fast statistics
+                // $redis->sadd('g3:g3_online:online', $visitorId);
+
+                // case 2:
+                // 0(1) lightning-fast write and read, and use HyperLogLog to count unique visitors
+                // $redis->pfadd('g3:g3_hll:online', [$visitorId]);
+
+                // case 3:
+                // write and update active time (O(log(N)))
+                $expireAt = time() + ($ttl * 60);
+                $redis->zadd('g3:g3_zset:online', $expireAt, $visitorId);
+                // clean up expired entries (O(log(N))
+                $redis->zremrangebyscore('g3:g3_zset:online', '-inf', time());
+            }
+        }
+    }
+    public function fingerScript()
+    {
+        $v = $this->option();
+        if ($v['online'] ?? '0' === '1' && $this->loader->admin()) {
+            echo Frontend::configScript(UserService::VISITOR_SCRIPT_ID, $this->fingerScriptConfig());
+        }
+    }
+    private function fingerScriptConfig(): array
+    {
+        return [
+            'ttl' => $this->option()['onlineDelay'] ?? 30,
+        ];
     }
     protected function adminMenu(): void
     {
@@ -118,7 +153,7 @@ class Setting extends Components {
         return [
             $this->panel('g3-settings', __('General'))
                 ->tab('general', __('General'))
-                ->option(SystemService::OPTION_KEY, $this->optionDefaults())
+                ->option(SystemService::OPTION_KEY, SystemService::optionValue())
                 ->switch('sad', __('Sad Mod', 'G3'), __('The entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3'))
                 ->image('avatar', __('Default Avatar', 'G3'), __('Modify the default system avatar.', 'G3'))
                 ->image('cover', __('Default Cover', 'G3'), __('Modify the default system cover.', 'G3'))
@@ -128,6 +163,10 @@ class Setting extends Components {
                 ->textarea('customCode', __('Custom Code', 'G3'), __('Enter any HTML, CSS, JS code here that you want to customize output.', 'G3'))
                 ->switch('links', __('Links'), __('The links feature helps you manage your friendship links.', 'G3'))
                 ->switch('redirectLink', __('Redirect Link', 'G3'), __('All outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3'))
+                ->switch('online', __('Online', 'G3') . ' ' . __('Status'), __('Perform user identification and count concurrent online users using browser fingerprints.', 'G3'))
+                ->rowClass('advanced')
+                ->input('onlineDelay', __('Delay', 'G3'), __('The delay time in minutes for updating the online status. Default: 30.', 'G3'))
+                ->rowClass('advanced')
                 ->tab('seo', 'SEO')
                 ->option(SystemService::SEO_OPTION_KEY, $this->seoDefaults())
                 ->switch('seo', 'SEO', __('You can add custom SEO data for each page.', 'G3'))
@@ -188,33 +227,39 @@ class Setting extends Components {
     }
     public function sadHandle(): void
     {
-        if ((self::optionData(SystemService::OPTION_KEY)['sad'] ?? '0') !== '1' || is_admin()) return;
+        if (($this->option()['sad'] ?? '0') !== '1' || is_admin()) return;
 
         echo '<style>body{-webkit-filter: grayscale(100%);-ms-filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);filter:grayscale(100%);}</style>';
     }
     public function headerCodeHandle(): void
     {
-        $v = self::optionData(SystemService::OPTION_KEY)['headerCode'] ?? '';
+        $v = $this->option()['headerCode'] ?? '';
         if (trim($v) === '') return;
 
         echo stripslashes($v);
     }
     public function footerCodeHandle(): void
     {
-        $v = self::optionData(SystemService::OPTION_KEY)['footerCode'] ?? '';
+        $v = $this->option()['footerCode'] ?? '';
         if (trim($v) === '') return;
 
         echo stripslashes($v);
     }
     protected function scripts()
     {
-        if ((self::optionData(SystemService::OPTION_KEY)['redirectLink'] ?? '1') !== '1') return;
+        $v = $this->option();
 
-        add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);
-        if (preg_match('/^\/oa\//', $_SERVER['REQUEST_URI']) || is_admin()) {
-            return;
+        if ($v['online'] ?? '0' === '1' && $this->loader->admin()) {
+            Frontend::esm('g3.visitor');
         }
-        Frontend::esm('g3.redirect');
+
+        if (($v['redirectLink'] ?? '1') === '1') {
+            add_action('save_post', [$this, 'modifyContentUrl'], 10, 3);
+            if (preg_match('/^\/oa\//', $_SERVER['REQUEST_URI']) || is_admin()) {
+                return;
+            }
+            Frontend::esm('g3.redirect');
+        }
     }
     public function modifyContentUrl($postId, $post, $update)
     {

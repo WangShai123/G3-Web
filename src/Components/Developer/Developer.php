@@ -45,7 +45,7 @@ class Developer extends Components {
             'adminLogo'       => '0',
             'toolsPage'       => '1',
             'pluginsPage'     => '1',
-            'themeInstall'    => '1',
+            'themeInstall'    => '0',
             'dashboard'       => ['0', '1', '2', '3', '4', '5'],
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
@@ -89,17 +89,17 @@ class Developer extends Components {
                 ->switch('siteHealth', __('Site Health', 'G3'))
                 ->switch('themeCustomize', __('Theme Customize', 'G3'))
                 ->switch('blockPatterns', __('Block Patterns', 'G3'))
-                ->switch('permalink', __('Permalinks', 'G3'))
                 ->switch('helpLink', __('Help Link', 'G3'))
                 ->switch('adminBar', __('Admin Bar', 'G3'))
                 ->switch('emoji', 'Emoji')
-                ->switch('wpHead', 'WP Head', __('Clean the data in wp head.', 'G3'))
                 ->switch('gutenberg', 'Gutenberg')
                 ->switch('adminTitle', 'WP ' . __('Title'))
                 ->switch('adminLogo', 'WP Logo')
+                ->switch('themeInstall', __('Theme') . ' ' . __('Install'))
                 ->switch('toolsPage', __('Tools Page', 'G3'))
                 ->switch('pluginsPage', __('Plugins Page', 'G3'))
-                ->switch('themeInstall', __('Theme Install'), __('Active & Remove Theme Install button in admin page themes.php.', 'G3'))
+                ->switch('permalink', __('Permalinks', 'G3'))
+                ->switch('wpHead', 'WP Head', __('Clean the data in wp head.', 'G3'))
                 ->checkbox('dashboard', __('Dashboard'), [
                     '0' => __('Welcome Panel', 'G3'),
                     '1' => __('Site Health Status'),

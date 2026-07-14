@@ -55,7 +55,7 @@ class Customer extends Components {
     }
     public function customerConsolePage(): void
     {
-        echo '<div class="wrap"><h1 class="wp-heading-inline">' . __('Customer Service', 'G3') . '</h1><div id="g3-customer-admin-root" class="mt-4"></div></div>' . $this->configScript('g3-customer-admin-config', $this->adminConfig());
+        echo '<div class="wrap"><h1 class="wp-heading-inline">' . __('Customer Service', 'G3') . '</h1><div id="g3-customer-admin-root" class="mt-4"></div></div>' . Frontend::configScript('g3-customer-admin-config', $this->adminConfig());
     }
     protected function adminPanels(): array
     {
@@ -111,11 +111,11 @@ class Customer extends Components {
             return;
         }
 
-        echo '<div id="g3-customer-service-root"></div>' . $this->configScript('g3-customer-service-config', $this->frontConfig());
+        echo '<div id="g3-customer-service-root"></div>' . Frontend::configScript('g3-customer-service-config', $this->frontConfig());
     }
     public function renderAdminConfigScript(): void
     {
-        echo $this->configScript('g3-customer-admin-config', $this->adminConfig());
+        echo Frontend::configScript('g3-customer-admin-config', $this->adminConfig());
     }
     private function enabled(): bool
     {
@@ -149,11 +149,9 @@ class Customer extends Components {
     {
         return $this->loader->admin();
     }
-    private function option(): array
+    protected function defaultOption(): array
     {
-        $defaults = CustomerService::defaultOption();
-        $option   = get_option(CustomerService::OPTION_KEY, $defaults);
-        return is_array($option) ? $option : $defaults;
+        return [CustomerService::OPTION_KEY => CustomerService::defaultOption()];
     }
     private function adminConfig(): array
     {
@@ -184,10 +182,5 @@ class Customer extends Components {
                 'editTitle'   => __('Edit Conversation Title', 'G3'),
             ],
         ];
-    }
-    private function configScript(string $id, array $config): string
-    {
-        $json = str_replace('</script', '<\/script', wp_json_encode($config, JSON_UNESCAPED_UNICODE) ?: '{}');
-        return '<script type="application/json" id="' . esc_attr($id) . '">' . $json . '</script>';
     }
 }

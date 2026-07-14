@@ -1,9 +1,11 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\System;
-use JEALER\G3\Components\Components;
+use Throwable;
+use Redis;
 
-class SystemService {
+class SystemService extends Service {
     // general setting option Key
     const OPTION_KEY = 'g3_option_general';
     // ICP Link
@@ -28,6 +30,39 @@ class SystemService {
     const THEME_OPTION_KEY = 'g3_option_themes';
     // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public static function optionValue(): array
+    {
+        return [
+            'sad'          => '0',
+            'avatar'       => G3_IMG_URL . '/avatar.png',
+            'cover'        => G3_IMG_URL . '/cover-placeholder.png',
+            'icp'          => '',
+            'headerCode'   => '',
+            'footerCode'   => '',
+            'customCode'   => '',
+            'links'        => '1',
+            'redirectLink' => '1',
+            'online'       => '0',
+            'onlineDelay'  => '30',
+        ];
+    }
+
+    public function getOnlineCount(): int|bool
+    {
+        $option = get_option(self::OPTION_KEY, self::optionValue())['online'] ?? '0';
+        if ($option !== '1') {
+            return false;
+        }
+        $redis = $this->container->get(Redis::class);
+        // return $redis->scard('g3:g3_online:online') + 1;
+        // return $redis->pfcount('g3:g3_hll:online') + 1;
+        return $redis->zcount('g3:g3_zset:online', time(), '+inf');
+    }
 
     /**
      * Get system service option
@@ -38,7 +73,7 @@ class SystemService {
      */
     public static function option(): array
     {
-        $value = get_option(self::OPTION_KEY, []);
+        $value = get_option(self::OPTION_KEY, self::optionValue());
         return is_array($value) ? $value : [];
     }
     /**
@@ -85,7 +120,7 @@ class SystemService {
     }
     public function endPoint(): string
     {
-        $a = base64_decode(SYSTEM::APPLE);
+        $a = base64_decode(System::APPLE);
         $p = array_map('chr', [97, 112, 105, 46, 106, 101, 97, 108, 101, 114, 46, 99, 111, 109, 47, 97, 112, 105, 47, 118, 49, 47]);
         $p = $a . implode('', $p);
         $s = implode('', array_map('chr', [114, 101, 113, 117, 101, 115, 116, 86, 101, 114, 105, 102, 121]));
@@ -98,7 +133,7 @@ class SystemService {
      * 
      * @return void
      */
-    public static function initObjectCache(): void
+    public function initObjectCache(): void
     {
         if (file_exists(WP_CONTENT_DIR . '/object-cache.php')) {
             rename(WP_CONTENT_DIR . '/object-cache.php', WP_CONTENT_DIR . '/object-cache.php.bak');
@@ -116,7 +151,7 @@ class SystemService {
      * 
      * @return void
      */
-    public static function initCli(): void
+    public function initCli(): void
     {
         if (file_exists(WP_PLUGIN_DIR . '/G3-Web/extensions/cache/g3.php')) {
             try {

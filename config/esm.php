@@ -18,6 +18,14 @@ return [
     'g3.customer.service'    => [G3_ASSETS_URL . '/js/es/g3.customer-service.min.js', ['jui'], '1.0.0'],
 
     /**
+     * fingerprintjs
+     * @link: https://github.com/fingerprintjs/fingerprintjs
+     * format: IIFE
+     */
+    'fingerprint'            => [G3_JS_URL . '/es/fingerprint.min.js', [], '5.2.0', 'https://unpkg.com/@fingerprintjs/fingerprintjs@5.2.0/dist/fp.min.js'],
+    'g3.visitor'             => [G3_ASSETS_URL . '/js/es/g3.visitor.min.js', ['fingerprint'], '1.0.0'],
+
+    /**
      * qrcodeJS: Cross-browser QRCode generator for javascript
      * @link: https://github.com/davidshimjs/qrcodejs
      * @todo: add file

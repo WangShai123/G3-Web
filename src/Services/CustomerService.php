@@ -33,21 +33,21 @@ class CustomerService extends Service {
     public static function defaultOption(): array
     {
         return [
-            'enable'            => '0',
-            'title'             => __('Online Service'),
-            'announcement'      => '',
-            'announcementLink'  => '',
-            'welcomeTip'        => __('Hello, how can we help you?'),
-            'welcomeMessage'    => __('Welcome. Please leave your message here.'),
-            'offlineMessage'    => __('Please leave a message. We will reply as soon as possible.'),
-            'workDays'          => ['1', '2', '3', '4', '5'],
-            'workStart'         => '09:00',
-            'workEnd'           => '18:00',
-            'guestName'         => __('Guest'),
-            'retentionDays'     => 180,
-            'heartbeatSeconds'  => 45,
-            'timeoutMinutes'    => 120,
-            'fallbackMessage'   => __('The service is temporarily unavailable. Please try again later.'),
+            'enable'           => '0',
+            'title'            => __('Online Service'),
+            'announcement'     => '',
+            'announcementLink' => '',
+            'welcomeTip'       => __('Hello, how can we help you?'),
+            'welcomeMessage'   => __('Welcome. Please leave your message here.'),
+            'offlineMessage'   => __('Please leave a message. We will reply as soon as possible.'),
+            'workDays'         => ['1', '2', '3', '4', '5'],
+            'workStart'        => '09:00',
+            'workEnd'          => '18:00',
+            'guestName'        => __('Guest'),
+            'retentionDays'    => 180,
+            'heartbeatSeconds' => 45,
+            'timeoutMinutes'   => 120,
+            'fallbackMessage'  => __('The service is temporarily unavailable. Please try again later.'),
         ];
     }
 
@@ -67,17 +67,17 @@ class CustomerService extends Service {
         $option = $this->option();
         $z      = $this->z();
         return [
-            'enabled'           => $this->enabled(),
-            'title'             => (string) $option['title'],
-            'welcomeTip'        => $z ? (string) $option['welcomeTip'] : '',
-            'welcomeMessage'    => $z ? (string) $option['welcomeMessage'] : '',
-            'announcement'      => (string) $option['announcement'],
-            'announcementLink'  => (string) $option['announcementLink'],
-            'offlineMessage'    => $z ? (string) $option['offlineMessage'] : '',
-            'working'           => $this->withinWorkingHours(),
-            'guestId'           => $this->guestId(false),
-            'z'                 => $z,
-            'heartbeatSeconds'  => (int) $option['heartbeatSeconds'],
+            'enabled'          => $this->enabled(),
+            'title'            => (string) $option['title'],
+            'welcomeTip'       => $z ? (string) $option['welcomeTip'] : '',
+            'welcomeMessage'   => $z ? (string) $option['welcomeMessage'] : '',
+            'announcement'     => (string) $option['announcement'],
+            'announcementLink' => (string) $option['announcementLink'],
+            'offlineMessage'   => $z ? (string) $option['offlineMessage'] : '',
+            'working'          => $this->withinWorkingHours(),
+            'guestId'          => $this->guestId(false),
+            'z'                => $z,
+            'heartbeatSeconds' => (int) $option['heartbeatSeconds'],
         ];
     }
 
@@ -448,7 +448,7 @@ class CustomerService extends Service {
     public function touchPresence(string $scope, int|string $id): void
     {
         try {
-            $redis = new Redis();
+            $redis = $this->container->get(Redis::class);
             $redis->connect('127.0.0.1', 6379, 0.2);
             $redis->setex('g3:customer:presence:' . $scope . ':' . $id, 60, (string) time());
         }

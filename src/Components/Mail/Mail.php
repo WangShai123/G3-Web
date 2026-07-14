@@ -7,7 +7,7 @@ use Override;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mail extends Components {
-    private function optionDefaults(): array
+    private function default(): array
     {
         return [
             'enable'     => '0',
@@ -30,11 +30,9 @@ class Mail extends Components {
         ];
     }
 
-    private function option(): array
+    protected function defaultOption(): array
     {
-        $defaults = $this->optionDefaults();
-        $option   = get_option(MailerService::OPTION_KEY, $defaults);
-        return is_array($option) ? $option : $defaults;
+        return [MailerService::OPTION_KEY => $this->default()];
     }
 
     private function template(): array
@@ -70,7 +68,7 @@ class Mail extends Components {
         return [
             $this->panel('mail', __('Email', 'G3'))
                 ->tab('set', __('General Settings', 'G3'))
-                ->option(MailerService::OPTION_KEY, $this->optionDefaults())
+                ->option(MailerService::OPTION_KEY, $this->default())
                 ->switch('enable', __('System Email', 'G3'), __('The system will use SMTP to send emails.', 'G3'))
                 ->input('nickname', __('Nickname', 'G3'))
                 ->rowClass('field-nickname')

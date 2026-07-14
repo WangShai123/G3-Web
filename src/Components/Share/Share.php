@@ -5,7 +5,7 @@ use JEALER\G3\Services\ShareService;
 use Override;
 
 class Share extends Components {
-    private function optionDefaults(): array
+    private function default(): array
     {
         return [
             'enable'             => '1',
@@ -17,14 +17,10 @@ class Share extends Components {
             'douYin'             => '0',
         ];
     }
-
-    private function option(): array
+    protected function defaultOption(): array
     {
-        $defaults = $this->optionDefaults();
-        $option   = get_option(ShareService::OPTION_KEY, $defaults);
-        return is_array($option) ? $option : $defaults;
+        return [ShareService::OPTION_KEY => $this->default()];
     }
-
     #[Override]
     protected function admin(): void
     {
@@ -55,7 +51,7 @@ class Share extends Components {
         return [
             $this->panel('share-settings', __('Share', 'G3'))
                 ->tab('general', __('General'))
-                ->option(ShareService::OPTION_KEY, $this->optionDefaults())
+                ->option(ShareService::OPTION_KEY, $this->default())
                 ->switch('enable', __('Content Distribution', 'G3'), __('Whether to display the content distribution section on the post edit page.', 'G3'))
                 ->switch('poster', __('Share via Poster', 'G3'))
                 ->switch('wechatTitle', __('WeChat Title', 'G3'), __('Customize the title that will be displayed when shared on WeChat.', 'G3'))

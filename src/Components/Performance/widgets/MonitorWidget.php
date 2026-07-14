@@ -1,9 +1,15 @@
 <?php
+use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Services\SystemService;
+
 class MonitorWidget extends WP_Widget {
+    private Container $container;
+    private SystemService $systemService;
     private array $fields = [
         'queries' => 'Database Queries',
         'time'    => 'Elapsed Time',
         'memory'  => 'Memory Usage',
+        'online'  => '在线人数',
     ];
     public function __construct()
     {
@@ -14,6 +20,8 @@ class MonitorWidget extends WP_Widget {
             'show_instance_in_rest'       => true,
         ];
         parent::__construct('monitor_widget', __('Application Monitor', 'G3'), $widget_ops);
+        $this->container = Container::run();
+        $this->systemService = $this->container->get(SystemService::class);
     }
     public function widget($args, $instance)
     {
@@ -30,7 +38,7 @@ class MonitorWidget extends WP_Widget {
         if ($items) {
             echo '<div class="widget-body"><ul>';
             foreach ($items as $label => $value) {
-                echo '<li><span class="monitor-label">' . esc_html($label) . '</span>: <span class="monitor-value">' . esc_html($value) . '</span></li>';
+                echo '<li><span class="monitor-label">' . esc_html($label) . '</span> <span class="monitor-value">' . esc_html($value) . '</span></li>';
             }
             echo '</ul></div>';
         }
@@ -78,7 +86,7 @@ class MonitorWidget extends WP_Widget {
         $items = [];
 
         if ($this->isEnabled($instance, 'queries')) {
-            $items[__('Database Queries', 'G3')] = get_num_queries();
+            $items[__('Database Queries', 'G3')] = get_num_queries() . ' SQL';
         }
 
         if ($this->isEnabled($instance, 'time')) {
@@ -87,6 +95,11 @@ class MonitorWidget extends WP_Widget {
 
         if ($this->isEnabled($instance, 'memory')) {
             $items[__('Memory Usage', 'G3')] = sprintf('%.2f MB', memory_get_usage() / 1024 / 1024);
+        }
+
+        if ($this->isEnabled($instance, 'online')) {
+            $v = $this->systemService->getOnlineCount();
+            $items[__('Online', 'G3'). ' '. __('Users')] = $v === false ? __('Feature Disabled','G3') : $v;
         }
 
         return $items;

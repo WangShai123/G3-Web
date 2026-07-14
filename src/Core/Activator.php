@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Core;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\DBService;
 use JEALER\G3\Utilities\System;
@@ -10,9 +11,11 @@ use Throwable;
 class Activator {
     public static Activator $instance;
     private DBService       $DBManager;
+    private Container       $container;
     public function __construct()
     {
-        $this->DBManager = DBService::run();
+        $this->container = Container::run();
+        $this->DBManager = $this->container->get(DBService::class);
         $this->init();
     }
     public static function activate(): Activator
@@ -31,9 +34,6 @@ class Activator {
 
         $this->initTables();
         $this->registerRewrites();
-
-        // $this->initCli();
-        // $this->initObjectCache();
 
         $this->param();
     }
@@ -58,7 +58,7 @@ class Activator {
     private function checkRedis(): void
     {
         try {
-            $redis = new Redis();
+            $redis = $this->container->get(Redis::class);
             $redis->connect('127.0.0.1', 6379);
         }
         catch (Throwable $th) {

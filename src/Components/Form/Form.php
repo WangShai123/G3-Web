@@ -14,12 +14,18 @@ class Form extends Components {
     {
         $this->service = $this->container->get(FormService::class);
     }
-    private function optionDefaults(): array
+    private function default(): array
     {
         return [
             'enable'  => '0',
             'perPage' => '20',
             'email'   => '1',
+        ];
+    }
+    protected function defaultOption(): array
+    {
+        return [
+            FormService::FORM_OPTION_KEY => $this->default()
         ];
     }
     protected function adminMenu(): void
@@ -53,7 +59,7 @@ class Form extends Components {
         return [
             $this->panel('form-settings', __('Form', 'G3'))
                 ->page('general', __('General'))
-                ->option(FormService::FORM_OPTION_KEY, $this->optionDefaults())
+                ->option(FormService::FORM_OPTION_KEY, $this->default())
                 ->switch('enable', __('Enable'), __('Enable the contact form on the front-end of your website.', 'G3') . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'))
                 ->number('perPage', __('Items Per Page', 'G3'), __('The number of items displayed per page in the form list of admin panel.', 'G3'))
                 ->switch('email', __('Email Notification', 'G3'), __('Automatically send email to your system email when the form is submitted.', 'G3'))
@@ -77,12 +83,6 @@ class Form extends Components {
         return is_array($option) && ($option['enable'] ?? '0') === '1';
     }
 
-    private function option(): array
-    {
-        $defaults = $this->optionDefaults();
-        $option   = get_option(FormService::FORM_OPTION_KEY, $defaults);
-        return is_array($option) ? $option : $defaults;
-    }
     public function ajax()
     {
         add_action('wp_ajax_g3_delete_field', function () {

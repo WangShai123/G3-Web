@@ -21,7 +21,7 @@ class Post extends Components {
     {
         $this->filter([
             'locale'                 => [[$this, 'toggleLocale'], 10, 1],
-            'option_timezone_string' => [[$this, 'customTimezone'], 10, 1]
+            'option_timezone_string' => [[$this, 'customTimezone'], 10, 1],
         ]);
         $this->action([
             'save_post'          => [[$this, 'savePost'], 10, 2],
@@ -29,7 +29,7 @@ class Post extends Components {
             'wp_update_nav_menu' => [[$this, 'flushMenuCache'], 10, 1],
         ]);
     }
-    private function optionDefaults(): array
+    private function default(): array
     {
         return [
             'enable'       => '1',
@@ -42,11 +42,9 @@ class Post extends Components {
             'timezone'     => '0',
         ];
     }
-    private function option(): array
+    protected function defaultOption(): array
     {
-        $defaults = $this->optionDefaults();
-        $option   = get_option(PostService::OPTION_KEY, $defaults);
-        return is_array($option) ? $option : $defaults;
+        return [PostService::OPTION_KEY => $this->default()];
     }
     protected function form(): void
     {
@@ -115,7 +113,7 @@ class Post extends Components {
         return [
             $this->panel('post-reading', __('Reading'))
                 ->tab('general', __('General'))
-                ->option(PostService::OPTION_KEY, $this->optionDefaults())
+                ->option(PostService::OPTION_KEY, $this->default())
                 ->switch('enable', __('View Statistics', 'G3'), __('To add view statistics function to each post & page.', 'G3'))
                 ->select('viewInterval', __('View Interval', 'G3'), [
                     '0'    => __('No Limit', 'G3'),
@@ -832,5 +830,39 @@ HTML;
             }
         }
         return $items;
+    }
+    protected function postType()
+    {
+        register_post_type('g3_post', [
+            'labels'        => [
+                'name'          => __('Posts'),
+                'singular_name' => __('Post'),
+            ],
+            'public'        => true,
+            'has_archive'   => true,
+            'show_in_rest'  => true,
+            'rewrite'       => array(
+                'slug'       => 'posts',      // 期望的 URL 前缀
+                'with_front' => false   // 避免继承全局固定链接前缀
+            ),
+            'supports'      => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
+            'taxonomies'    => ['category', 'post_tag'],
+            'menu_position' => 4
+        ]);
+        register_post_type('g3_page', [
+            'labels'        => [
+                'name'          => __('Pages'),
+                'singular_name' => __('Page'),
+            ],
+            'public'        => true,
+            'hierarchical'  => true,     // 保持 Page 的层级特性
+            'supports'      => ['title', 'editor', 'thumbnail', 'page-attributes'],
+            'rewrite'       => [
+                'slug'       => 'pages',      // 期望的 URL 前缀
+                'with_front' => false
+            ],
+            'menu_icon'     => 'dashicons-admin-page',
+            'menu_position' => 9
+        ]);
     }
 }

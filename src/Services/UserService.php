@@ -15,6 +15,9 @@ class UserService extends Service {
     const DURATION_OPTION_KEY   = 'g3_option_durations';
     const G3_LANG_COOKIE        = 'g3_user_language';
     const G3_TIMEZONE_COOKIE    = 'g3_user_timezone';
+    const USER_COOKIE           = 'g3_user';
+    const VISITOR_COOKIE        = 'g3_visitor_id';
+    const VISITOR_SCRIPT_ID     = 'g3-visitor-finger-config';
     private ?WP_User $user  = null;
     private array    $extra = [];
     private array    $card  = [];

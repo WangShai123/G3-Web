@@ -53,7 +53,7 @@ class PostService extends Service {
         if ($post instanceof WP_Post) {
             $this->post  = $post;
             $this->extra = $this->getExtra($post->ID);
-            $this->cache = array_merge((array) $this->post, $this->extra);
+            $this->cache = array_merge($this->normalizePostData((array) $this->post), $this->extra);
             return $this;
         }
         return null;
@@ -243,27 +243,15 @@ class PostService extends Service {
             ]);
         }
 
-        $uselessKeys = [
-            'filter',
-            'menu_order',
-            'pinged',
-            'post_content_filtered',
-            'post_mime_type',
-            'post_parent',
-            'ping_status',
-            'to_ping',
-        ];
-        $results     = [];
+        $results = [];
         foreach ($query->posts as $post) {
             if (!($post instanceof WP_Post)) {
                 continue;
             }
 
             $postData = (array) $post;
-            // remove unnecessary data
-            foreach ($uselessKeys as $key) {
-                unset($postData[$key]);
-            }
+
+            $postData = $this->normalizePostData($postData);
 
             $extra = $this->getExtra($post->ID);
             if ($extra instanceof WP_Error) {
@@ -453,6 +441,28 @@ class PostService extends Service {
 
         $decoded = json_decode($value, true);
         return json_last_error() === JSON_ERROR_NONE ? $decoded : $value;
+    }
+    private function normalizePostData(array $postData): array
+    {
+        $uselessKeys = [
+            'filter',
+            'menu_order',
+            'pinged',
+            'post_content_filtered',
+            'post_mime_type',
+            'post_parent',
+            'ping_status',
+            'to_ping',
+        ];
+
+        foreach ($uselessKeys as $key) {
+            unset($postData[$key]);
+        }
+
+        // post_excerpt 清理移除 HTML 标签
+        $postData['post_excerpt'] = wp_strip_all_tags($postData['post_excerpt'] ?? '');
+
+        return $postData;
     }
 
     public function getSeoItems(): array

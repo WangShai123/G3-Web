@@ -562,4 +562,18 @@ abstract class Components {
             $this->panelRenderer->saveSubmitted($panel);
         }
     }
+    protected function defaultOption(): array
+    {
+        return [];
+    }
+    protected function option(): array
+    {
+        $default = $this->defaultOption();
+        $key     = array_key_first($default);
+        if ($key === null) {
+            return [];
+        }
+        $value = $default[$key] ?? [];
+        return get_option($key, $value);
+    }
 }

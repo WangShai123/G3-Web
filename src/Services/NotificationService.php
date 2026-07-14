@@ -220,7 +220,7 @@ class NotificationService extends Service {
     private function redis(): ?Redis
     {
         try {
-            $redis = new Redis();
+            $redis = $this->container->get(Redis::class);
             $redis->connect('127.0.0.1', 6379, 0.2);
             $redis->select(self::REDIS_DB);
             return $redis;

@@ -35,3 +35,5 @@ vendor/**/*/LICENSE
 vendor/**/*/*.yml
 vendor/mobiledetect/mobiledetectlib/docker
 CNAME
+
+public/js/es/fingerprint.js
