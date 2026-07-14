@@ -77,7 +77,7 @@ class Post extends Components {
         add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
 
         if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
-            require_once G3_PLUGIN_DIR . '/tests/robustEncoder.php';
+            require_once __DIR__ . '/views/page-robustEncoder.php';
             if (isset($_GET['g3-test']) && $_GET['g3-test'] === 'robustEncoder') {
                 g3TestRobustEncoderPerformance();
                 exit;

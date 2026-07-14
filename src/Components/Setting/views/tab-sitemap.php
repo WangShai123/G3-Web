@@ -9,6 +9,11 @@ echo Element::tip(
 );
 $renderer->form($panel, $panelTab);
 ?>
+<style>
+    p.submit {
+        display: none
+    }
+</style>
 <script>
     jQuery(document).ready(function ($) {
         const { q, Toast } = jui
@@ -28,5 +33,5 @@ $renderer->form($panel, $panelTab);
             })
         })
     });
-
 </script>
+<?php
