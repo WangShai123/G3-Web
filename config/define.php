@@ -3,8 +3,8 @@
  * 1. about G3 
  */
 // plugin
-defined('G3_PLUGIN_DIR') or define('G3_PLUGIN_DIR', WP_PLUGIN_DIR . '/g3-web');
-defined('G3_PLUGIN_URL') or define('G3_PLUGIN_URL', WP_PLUGIN_URL . '/g3-web');
+defined('G3_PLUGIN_DIR') or define('G3_PLUGIN_DIR', WP_PLUGIN_DIR . '/G3-Web');
+defined('G3_PLUGIN_URL') or define('G3_PLUGIN_URL', WP_PLUGIN_URL . '/G3-Web');
 // bin
 defined('G3_BIN_DIR') or define('G3_BIN_DIR', G3_PLUGIN_DIR . '/bin');
 // config

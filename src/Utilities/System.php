@@ -215,7 +215,7 @@ final class System {
      */
     public static function config(string $key, $default = []): array
     {
-        $mainConfig = PLUGINDIR . '/g3-web/config/' . $key . '.php';
+        $mainConfig = PLUGINDIR . '/G3-Web/config/' . $key . '.php';
         if (file_exists($mainConfig)) {
             $main = require $mainConfig;
         } else {

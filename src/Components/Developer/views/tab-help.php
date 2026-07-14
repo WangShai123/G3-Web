@@ -28,3 +28,4 @@ echo Element::tip(
     <a href="https://www.jealer.com/contact" target="_blank"
         title="<?php _e('Contact us', 'G3'); ?>"><?php _e('Contact us', 'G3'); ?></a>
 </p>
+<?php

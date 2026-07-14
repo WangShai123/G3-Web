@@ -38,7 +38,7 @@ class Aspects {
      */
     private function initConfig(): array
     {
-        $pluginConfig    = require_once WP_PLUGIN_DIR . '/g3-web/config/aspects.php' ?: [];
+        $pluginConfig    = require_once G3_CONFIG_DIR . '/aspects.php' ?: [];
         $themeConfigFile = get_stylesheet_directory() . '/config/aspects.php';
         if (file_exists($themeConfigFile)) {
             $themeConfig = require_once $themeConfigFile;

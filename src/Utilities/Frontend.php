@@ -1,15 +1,17 @@
 <?php
 namespace JEALER\G3\Utilities;
+use ReflectionFunction;
+use ReflectionException;
 
 final class Frontend {
 
-    private static bool $stylesRegistered = false;
-    private static bool $scriptsRegistered = false;
-    private static bool $modulesRegistered = false;
-    private static array $styles = [];
-    private static array $scripts = [];
-    private static array $modules = [];
-    private static array $moduleVariants = [];
+    private static bool  $stylesRegistered          = false;
+    private static bool  $scriptsRegistered         = false;
+    private static bool  $modulesRegistered         = false;
+    private static array $styles                    = [];
+    private static array $scripts                   = [];
+    private static array $modules                   = [];
+    private static array $moduleVariants            = [];
     private static ?bool $scriptModuleArgsSupported = null;
 
     /**
@@ -24,7 +26,7 @@ final class Frontend {
      */
     public static function htmlClass($echo = true)
     {
-        $classes = ['g3-web'];
+        $classes = ['G3-Web'];
 
         /**
          * @var array $classes
@@ -340,7 +342,7 @@ final class Frontend {
     private static function enqueueHandles(string|array $handles, callable $enqueue): bool
     {
         $handles = is_array($handles) ? $handles : [$handles];
-        $queued = false;
+        $queued  = false;
 
         foreach ($handles as $handle) {
             if (!is_string($handle) || $handle === '') {
@@ -362,7 +364,7 @@ final class Frontend {
         }
 
         $asset = self::$styles[$handle];
-        $src = self::resolveAssetSrc($asset, $cdn);
+        $src   = self::resolveAssetSrc($asset, $cdn);
         if ($src === '') {
             return null;
         }
@@ -393,7 +395,7 @@ final class Frontend {
         }
 
         $asset = self::$scripts[$handle];
-        $src = self::resolveAssetSrc($asset, $cdn);
+        $src   = self::resolveAssetSrc($asset, $cdn);
         if ($src === '') {
             return null;
         }
@@ -425,7 +427,7 @@ final class Frontend {
         }
 
         $asset = self::$modules[$handle];
-        $src = self::resolveAssetSrc($asset, $cdn);
+        $src   = self::resolveAssetSrc($asset, $cdn);
         if ($src === '') {
             return null;
         }
@@ -531,7 +533,8 @@ final class Frontend {
         array $dependencies,
         string|false|null $version,
         array $args
-    ): void {
+    ): void
+    {
         if (self::supportsScriptModuleArgs()) {
             wp_register_script_module($handle, $src, $dependencies, $version, $args);
             return;
@@ -547,8 +550,9 @@ final class Frontend {
         }
 
         try {
-            self::$scriptModuleArgsSupported = (new \ReflectionFunction('wp_register_script_module'))->getNumberOfParameters() >= 5;
-        } catch (\ReflectionException) {
+            self::$scriptModuleArgsSupported = (new ReflectionFunction('wp_register_script_module'))->getNumberOfParameters() >= 5;
+        }
+        catch (ReflectionException) {
             self::$scriptModuleArgsSupported = false;
         }
 

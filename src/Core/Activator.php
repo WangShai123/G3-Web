@@ -82,13 +82,14 @@ class Activator {
             );
         }
     }
+
     /**
      * dependencies check:
      * - PHP cURL
      * - PHP OpenSSL
      * - PHP SimpleXML
      * - PHP fileinfo
-     * - PHP Jealer
+     * - PHP Jealer [暂时移除 jealer 扩展，降低授权限制]
      * 
      * @return void
      */
@@ -99,16 +100,16 @@ class Activator {
             'openssl'   => 'PHP OpenSSL extension',
             'simplexml' => 'PHP SimpleXML extension',
             'fileinfo'  => 'PHP fileinfo extension',
+            'redis'     => 'PHP Redis extension',
             // 'jealer'    => 'JEALER PHP extension',
-            'redis'     => 'PHP Redis extension'
         ];
 
         $phpVersion = phpversion();
         $phpVersion = substr($phpVersion, 0, 3);
         $phpVersion = str_replace('.', '', $phpVersion);
 
-        $os   = System::osName();
-        $path = rtrim(WP_PLUGIN_DIR, '/') . '/g3-web/extension/' . $os . '/' . $phpVersion . '/jealer.so';
+        // $os   = System::osName();
+        // $path = rtrim(WP_PLUGIN_DIR, '/') . '/G3-Web/extension/' . $os . '/' . $phpVersion . '/jealer.so';
 
         $missingDependencies = [];
         foreach ($dependencies as $key => $value) {
@@ -119,25 +120,33 @@ class Activator {
         if (!empty($missingDependencies)) {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));
             foreach ($missingDependencies as $key => $value) {
-                if ($key === 'jealer') {
-                    wp_die(
-                        sprintf(
-                            __('<h3>Failed to active G3-Web plugin!</h3>G3-Web requires JEALER PHP extension.<br>Please add the config below in your <b>php.ini</b> file and restart PHP server:<br><b>extension = %s</b>', 'G3'),
-                            $path
-                        ),
-                        __('Failed to active G3-Web plugin!', 'G3'),
-                        ['back_link' => true]
-                    );
-                } else {
-                    wp_die(
-                        sprintf(
-                            __('<h3>Failed to active G3-Web plugin!</h3>G3-Web requires <b>%s</b>.<br>Please install it, then config it in your <strong>php.ini</strong> file and restart PHP server.', 'G3'),
-                            $value
-                        ),
-                        __('Failed to active G3-Web plugin!', 'G3'),
-                        ['back_link' => true]
-                    );
-                }
+                wp_die(
+                    sprintf(
+                        __('<h3>Failed to active G3-Web plugin!</h3>G3-Web requires <b>%s</b>.<br>Please install it, then config it in your <strong>php.ini</strong> file and restart PHP server.', 'G3'),
+                        $value
+                    ),
+                    __('Failed to active G3-Web plugin!', 'G3'),
+                    ['back_link' => true]
+                );
+                // if ($key === 'jealer') {
+                //     wp_die(
+                //         sprintf(
+                //             __('<h3>Failed to active G3-Web plugin!</h3>G3-Web requires JEALER PHP extension.<br>Please add the config below in your <b>php.ini</b> file and restart PHP server:<br><b>extension = %s</b>', 'G3'),
+                //             $path
+                //         ),
+                //         __('Failed to active G3-Web plugin!', 'G3'),
+                //         ['back_link' => true]
+                //     );
+                // } else {
+                //     wp_die(
+                //         sprintf(
+                //             __('<h3>Failed to active G3-Web plugin!</h3>G3-Web requires <b>%s</b>.<br>Please install it, then config it in your <strong>php.ini</strong> file and restart PHP server.', 'G3'),
+                //             $value
+                //         ),
+                //         __('Failed to active G3-Web plugin!', 'G3'),
+                //         ['back_link' => true]
+                //     );
+                // }
             }
         }
     }

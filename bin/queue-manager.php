@@ -137,7 +137,7 @@ class G3QueueManager {
 
     private function findWordPressRoot(): ?string
     {
-        // 从 /wp-content/plugins/g3-web/bin 向上4级到WordPress根目录
+        // 从 /wp-content/plugins/G3-Web/bin 向上4级到WordPress根目录
         $currentDir = dirname(__DIR__, 4);
 
         if (file_exists($currentDir . '/wp-config.php')) {

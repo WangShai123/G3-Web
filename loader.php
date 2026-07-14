@@ -46,16 +46,16 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-if (file_exists(__DIR__ . '/src/helpers.php')) {
-    require_once __DIR__ . '/src/helpers.php';
-}
-
 /**
  * @description Load Constants Configuration Files
  */
 require_once __DIR__ . '/config/define.php';
 if (file_exists(get_stylesheet_directory() . '/config/define.php')) {
     require_once get_stylesheet_directory() . '/config/define.php';
+}
+
+if (file_exists(__DIR__ . '/src/helpers.php')) {
+    require_once __DIR__ . '/src/helpers.php';
 }
 
 /**

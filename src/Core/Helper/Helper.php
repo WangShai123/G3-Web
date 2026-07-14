@@ -262,7 +262,7 @@ final class Helper {
         return [
             new RouteSource(
                 'plugin',
-                WP_PLUGIN_DIR . '/g3-web/src/Controllers',
+                WP_PLUGIN_DIR . '/G3-Web/src/Controllers',
                 'JEALER\\G3\\Controllers'
             ),
             new RouteSource(

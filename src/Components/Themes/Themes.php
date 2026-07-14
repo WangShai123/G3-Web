@@ -109,7 +109,7 @@ class Themes extends Components {
         wp_admin_css_color(
             'G3',
             'G3',
-            WP_PLUGIN_URL . '/g3-web/assets/css/admin.min.css',
+            G3_ASSETS_URL . '/css/admin.min.css',
             ['#2d2f39', '#434656', '#0f49bd', '#135bec'],
             ['base' => '#e5f8ff', 'focus' => '#fff', 'current' => '#fff']
         );

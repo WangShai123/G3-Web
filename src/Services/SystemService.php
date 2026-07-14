@@ -103,10 +103,10 @@ class SystemService {
         if (file_exists(WP_CONTENT_DIR . '/object-cache.php')) {
             rename(WP_CONTENT_DIR . '/object-cache.php', WP_CONTENT_DIR . '/object-cache.php.bak');
         }
-        copy(WP_PLUGIN_DIR . '/g3-web/library/redis/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
+        copy(WP_PLUGIN_DIR . '/G3-Web/library/redis/object-cache.php', WP_CONTENT_DIR . '/object-cache.php');
 
-        if (file_exists(WP_PLUGIN_DIR . '/g3-web/extensions/cache/llms.txt')) {
-            copy(WP_PLUGIN_DIR . '/g3-web/extensions/cache/llms.txt', ABSPATH . 'llm/llms.txt');
+        if (file_exists(WP_PLUGIN_DIR . '/G3-Web/extensions/cache/llms.txt')) {
+            copy(WP_PLUGIN_DIR . '/G3-Web/extensions/cache/llms.txt', ABSPATH . 'llm/llms.txt');
         }
     }
     /**
@@ -118,9 +118,9 @@ class SystemService {
      */
     public static function initCli(): void
     {
-        if (file_exists(WP_PLUGIN_DIR . '/g3-web/extensions/cache/g3.php')) {
+        if (file_exists(WP_PLUGIN_DIR . '/G3-Web/extensions/cache/g3.php')) {
             try {
-                copy(WP_PLUGIN_DIR . '/g3-web/extensions/cache/g3.php', ABSPATH . '/g3.php');
+                copy(WP_PLUGIN_DIR . '/G3-Web/extensions/cache/g3.php', ABSPATH . '/g3.php');
             }
             catch (Throwable $th) {
                 throw $th;
