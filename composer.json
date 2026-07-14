@@ -1,0 +1,34 @@
+{
+  "name": "jealer/g3web",
+  "description": "G3-Web helps you develop wordpress theme quickly.",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "JEALER\\G3\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Wang Shai",
+      "email": "biz@jealer.com"
+    }
+  ],
+  "minimum-stability": "RC",
+  "config": {
+    "platform-check": true
+  },
+  "require": {
+    "php": ">=8.3",
+    "ext-curl": "*",
+    "ext-openssl": "*",
+    "ext-simplexml": "*",
+    "ext-fileinfo": "*",
+    "symfony/console": "^7.3",
+    "w7corp/easywechat": "^6.19",
+    "symfony/dom-crawler": "^7.4",
+    "symfony/css-selector": "^7.4",
+    "psr/container": "^2.0",
+    "mobiledetect/mobiledetectlib": "^4.11"
+  }
+}

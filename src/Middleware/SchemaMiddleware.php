@@ -1,0 +1,230 @@
+<?php
+namespace JEALER\G3\Middleware;
+use WP_REST_Request;
+use WP_Error;
+
+/**
+ * Schema Middleware - JSON Schema Validator
+ *
+ * 验证 REST API 的请求体是否符合指定的 JSON Schema.
+ * 支持 JSON Schema 的简化版本：
+ * - type
+ * - required
+ * - properties
+ * - enum
+ * - minLength / maxLength
+ * - minimum / maximum
+ * - items
+ * 
+ * @since 1.0.0
+ * @author Wang Shai
+ */
+class SchemaMiddleware implements MiddlewareInterface {
+
+    /**
+     * JSON Schema 
+     * @var array
+     */
+    private array $schema;
+
+    public function __construct(array $schema)
+    {
+        $this->schema = $schema;
+    }
+
+    public function handle(WP_REST_Request $request): bool|WP_Error
+    {
+        $data = $request->get_json_params();
+
+        // No content is also considered invalid
+        if (!$data) {
+            return new WP_Error(
+                '400',
+                __('Request body should be valid JSON.', 'G3'),
+                [
+                    'status' => 400
+                ]
+            );
+        }
+
+        $result = $this->validate($data, $this->schema);
+
+        if ($result !== true) {
+            return new WP_Error(
+                '422',
+                // __('Schema validation failed', 'G3'),
+                $result[0],
+                [
+                    'status' => 422,
+                    'errors' => $result
+                ]
+            );
+        }
+        return true;
+    }
+
+    /**
+     * @param string|array $typeSpec
+     */
+    private function matchesType(mixed $value, string|array $typeSpec): bool
+    {
+        $types = \is_array($typeSpec) ? $typeSpec : [$typeSpec];
+
+        $knownTypeMatched = false;
+        foreach ($types as $type) {
+            if (!\is_string($type)) {
+                continue;
+            }
+
+            if (!$this->isKnownType($type)) {
+                continue;
+            }
+
+            $knownTypeMatched = true;
+            if ($this->matchesSingleType($value, $type)) {
+                return true;
+            }
+        }
+
+        // 保持兼容：如果只给了未知类型，沿用旧行为（放行）
+        return !$knownTypeMatched;
+    }
+
+    private function matchesSingleType(mixed $value, string $type): bool
+    {
+        return match ($type) {
+            'string'  => \is_string($value),
+            'number'  => \is_numeric($value),
+            'integer' => \is_int($value),
+            'boolean' => \is_bool($value),
+            'array'   => \is_array($value),
+            'object'  => \is_array($value),  // JSON object → PHP array
+            'null'    => \is_null($value),
+            'mixed'   => true,
+            default   => false,
+        };
+    }
+
+    private function isKnownType(string $type): bool
+    {
+        return \in_array($type, ['string', 'number', 'integer', 'boolean', 'array', 'object', 'null', 'mixed'], true);
+    }
+
+    /**
+     * @param string|array $typeSpec
+     */
+    private function typeSpecContains(string|array $typeSpec, string $expectedType): bool
+    {
+        $types = \is_array($typeSpec) ? $typeSpec : [$typeSpec];
+        return \in_array($expectedType, $types, true);
+    }
+
+    /**
+     * @param string|array $typeSpec
+     */
+    private function formatTypeSpec(string|array $typeSpec): string
+    {
+        if (\is_array($typeSpec)) {
+            return implode('|', $typeSpec);
+        }
+
+        return $typeSpec;
+    }
+
+    /**
+     * Simple JSON Schema Validator
+     * 
+     * JSON 数据简单校验，不属于任何 JSON Schema draft 版本。
+     * 如果后续需要，再重新实现符合 Draft 7 的 JSON Schema 校验。
+     * 
+     * @param array $data
+     * @param array $schema
+     * @return array|true
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    private function validate(array $data, array $schema): array|bool
+    {
+        $errors = [];
+
+        // required
+        if (!empty($schema['required'])) {
+            foreach ($schema['required'] as $key) {
+                if (!\array_key_exists($key, $data)) {
+                    $errors[] = "Field '$key' is required.";
+                }
+            }
+        }
+
+        // properties
+        if (!empty($schema['properties'])) {
+            foreach ($schema['properties'] as $key => $rule) {
+                if (!\array_key_exists($key, $data)) continue;
+
+                $value = $data[$key];
+
+                // --- type ---
+                if (!empty($rule['type'])) {
+                    $type  = $rule['type'];
+                    $valid = $this->matchesType($value, $type);
+
+                    if (!$valid) {
+                        // $errors[] = "Field '$key' must be of type '$type'.";
+                        $errors[] = sprintf(__('Field %s must be of type %s.', 'G3'), $key, $this->formatTypeSpec($type));
+                        continue;
+                    }
+                }
+
+                // --- enum ---
+                if (!empty($rule['enum'])) {
+                    if (!\in_array($value, $rule['enum'], true)) {
+                        $allowed = implode(', ', $rule['enum']);
+                        // $errors[] = "Field '$key' must be one of: $allowed.";
+                        $errors[] = sprintf(__('Field %s must be one of: %s.', 'G3'), $key, $allowed);
+                    }
+                }
+
+                // --- string length ---
+                if (\is_string($value)) {
+                    if (isset($rule['minLength']) && \strlen($value) < $rule['minLength']) {
+                        // $errors[] = "Field '$key' must be at least {$rule['minLength']} characters.";
+                        $errors[] = sprintf(__('Field %s must be at least %s characters.', 'G3'), $key, $rule['minLength']);
+                    }
+                    if (isset($rule['maxLength']) && \strlen($value) > $rule['maxLength']) {
+                        // $errors[] = "Field '$key' must be no more than {$rule['maxLength']} characters.";
+                        $errors[] = sprintf(__('Field %s must be no more than %s characters.', 'G3'), $key, $rule['maxLength']);
+                    }
+                }
+
+                // --- number range ---
+                if (\is_numeric($value)) {
+                    if (isset($rule['minimum']) && $value < $rule['minimum']) {
+                        // $errors[] = "Field '$key' must be >= {$rule['minimum']}.";
+                        $errors[] = sprintf(__('Field %s must be >= %s.', 'G3'), $key, $rule['minimum']);
+                    }
+                    if (isset($rule['maximum']) && $value > $rule['maximum']) {
+                        // $errors[] = "Field '$key' must be <= {$rule['maximum']}.";
+                        $errors[] = sprintf(__('Field %s must be <= %s.', 'G3'), $key, $rule['maximum']);
+                    }
+                }
+
+                // --- array items ---
+                if (isset($rule['type']) && $this->typeSpecContains($rule['type'], 'array') && \is_array($value) && !empty($rule['items'])) {
+                    foreach ($value as $idx => $item) {
+                        $itemRule = $rule['items'];
+
+                        if (!empty($itemRule['type'])) {
+                            $ok = $this->matchesType($item, $itemRule['type']);
+                            if (!$ok) {
+                                // $errors[] = "Array '$key'[$idx] must be type {$itemRule['type']}.";
+                                $errors[] = sprintf(__('Array %s[%s] must be type %s.', 'G3'), $key, $idx, $this->formatTypeSpec($itemRule['type']));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return empty($errors) ? true : $errors;
+    }
+}

@@ -1,0 +1,90 @@
+<?php
+
+namespace JEALER\G3\Components\WechatOA\Includes;
+
+use WP_List_Table;
+use JEALER\G3\Services\WechatOAService;
+
+/**
+ * Wechat OA Menu List Table
+ * 
+ * 微信公众号菜单列表表格
+ *
+ * @since 1.0.0
+ * @author Wang Shai
+ */
+class WechatOAMenuListTable extends WP_List_Table {
+
+    public function __construct($args = [])
+    {
+        parent::__construct([
+            'singular' => 'swiper',
+            'plural'   => 'swipers',
+            'ajax'     => true
+        ]);
+    }
+
+    public function get_columns(): array
+    {
+        return [
+            'name'   => __('Name'),
+            'sort'   => __('Sort', 'G3'),
+            'type'   => __('Type'),
+            'value'  => 'Key/URL/ID',
+            'action' => __('Action')
+        ];
+    }
+
+    public function prepare_items(): void
+    {
+        $menus                 = WechatOAService::getMenus();
+        $this->items           = WechatOAService::formatMenus($menus, '└─');
+        $this->_column_headers = [$this->get_columns(), [], $this->get_sortable_columns()];
+    }
+
+    public function display(): void
+    {
+        $this->prepare_items();
+
+        echo '<div class="mt-3">';
+        echo '<table class="wp-list-table widefat fixed striped wechat-oa-menus-table">';
+        $this->display_table_header();
+        $this->display_rows_or_placeholder();
+        echo '</table>';
+    }
+
+    public function display_table_header()
+    {
+        echo '<thead><tr>';
+        foreach ($this->get_columns() as $column_name => $column_display_name) {
+            $class      = "class='$column_name column-$column_name'";
+            $style      = '';
+            $attributes = $class . $style;
+
+            echo "<th $attributes>" . esc_html($column_display_name) . '</th>';
+        }
+        echo '</tr></thead>';
+    }
+
+    public function display_rows()
+    {
+        foreach ($this->items as $item) {
+            echo '<tr>';
+            foreach ($this->get_columns() as $column_name => $column_display_name) {
+                $class      = "class='$column_name column-$column_name'";
+                $style      = '';
+                $attributes = $class . $style;
+
+                if ($column_name == 'action') {
+                    echo "<td $attributes>";
+                    echo "<a href='admin.php?page=wechat-oa-menu-edit&id={$item['id']}''>" . __('Edit') . "</a> - ";
+                    echo "<span class='action-delete cursor-pointer color-error' data-id='{$item['id']}'>" . __('Delete') . "</span>";
+                    echo "</td>";
+                } else {
+                    echo "<td $attributes>" . esc_html($item[$column_name]) . "</td>";
+                }
+            }
+            echo '</tr>';
+        }
+    }
+}
