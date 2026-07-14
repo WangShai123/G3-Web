@@ -11,6 +11,12 @@ $groups    = get_option(UserService::GROUP_OPTION_KEY, []);
 $durations = get_option(UserService::DURATION_OPTION_KEY, []);
 ?>
 
+<style>
+    .j-tip .tip-content {
+        display: flex;
+        gap: 4px;
+    }
+</style>
 <script>
     jQuery(document).ready(function ($) {
         const { Toast, Modal } = jui;
@@ -142,3 +148,4 @@ $durations = get_option(UserService::DURATION_OPTION_KEY, []);
         })
     })
 </script>
+<?php

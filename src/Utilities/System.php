@@ -252,4 +252,53 @@ final class System {
 
         return file_put_contents($file, $export) !== false;
     }
+
+    public static function normalizeLocale(string $locale): ?string
+    {
+        $safeLocales = [
+            'zh'                 => 'zh_CN',
+            'zh_cn'              => 'zh_CN',
+            'zh-cn'              => 'zh_CN',
+            'zh_hans'            => 'zh_CN',
+            'zh-hans'            => 'zh_CN',
+            'zh_sg'              => 'zh_CN',
+            'zh-sg'              => 'zh_CN',
+            'zh_my'              => 'zh_CN',
+            'zh-my'              => 'zh_CN',
+            'zh_mo'              => 'zh_CN',
+            'zh-mo'              => 'zh_CN',
+            'cn'                 => 'zh_CN',
+            'chinese'            => 'zh_CN',
+            'simplified'         => 'zh_CN',
+            'simplified_chinese' => 'zh_CN',
+            'simplified-chinese' => 'zh_CN',
+            'en'                 => 'en_US',
+            'en_us'              => 'en_US',
+            'en-us'              => 'en_US',
+            'en_gb'              => 'en_US',
+            'en-gb'              => 'en_US',
+            'en_au'              => 'en_US',
+            'en-au'              => 'en_US',
+            'en_ca'              => 'en_US',
+            'en-ca'              => 'en_US',
+            'en_nz'              => 'en_US',
+            'en-nz'              => 'en_US',
+            'en_ie'              => 'en_US',
+            'en-ie'              => 'en_US',
+            'en_sg'              => 'en_US',
+            'en-sg'              => 'en_US',
+            'en_hk'              => 'en_US',
+            'en-hk'              => 'en_US',
+            'us'                 => 'en_US',
+            'uk'                 => 'en_US',
+            'english'            => 'en_US',
+        ];
+
+        $locale = strtolower(trim($locale));
+        if ($locale === '') {
+            return null;
+        }
+
+        return $safeLocales[$locale] ?? null;
+    }
 }

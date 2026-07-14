@@ -34,7 +34,7 @@ class UserController extends Controller {
             ],
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [10, 60])]
+    #[Middleware(RateLimitMiddleware::class, [15, 60])]
     public function locale(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         // check config

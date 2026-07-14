@@ -23,7 +23,7 @@ class PostService extends Service {
     const EXTRA_CACHE_GROUP = 'g3_posts_extra';
     const QUERY_CACHE_GROUP = 'g3_posts_query';
     const MAX_VIEWED        = 100;
-    const READED_COOKIE     = 'g3_readed';
+    const READED_COOKIE     = 'g3_posts_readed';
     const SKU_NAME          = 'g3_post_sku';
     const PROPERTY_NAME     = 'g3_post_property';
     const GALLERY_NAME      = 'g3_post_gallery';

@@ -11,6 +11,7 @@ use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\RobustEncoder;
+use JEALER\G3\Utilities\System;
 use Override;
 use Exception;
 
@@ -19,7 +20,8 @@ class Post extends Components {
     protected function hooks()
     {
         $this->filter([
-            'locale' => [[$this, 'toggleLocale'], 10, 1]
+            'locale'                 => [[$this, 'toggleLocale'], 10, 1],
+            'option_timezone_string' => [[$this, 'customTimezone'], 10, 1]
         ]);
         $this->action([
             'save_post'          => [[$this, 'savePost'], 10, 2],
@@ -37,6 +39,7 @@ class Post extends Components {
             'copyright'    => '0',
             'paidReading'  => '0',
             'language'     => '0',
+            'timezone'     => '0',
         ];
     }
     private function option(): array
@@ -134,25 +137,41 @@ class Post extends Components {
                 ->switch('autoNotice', __('Auto Notice', 'G3'), __('Automatically add a notice at the end of the article', 'G3'))
                 ->switch('copyright', __('Copyright Protection', 'G3'), __('Automatically add your encoded & invisible brand mark in the article while saving to protect your content copyright.<br>It will cost several memory while saving. <a href="/wp-admin/admin.php?page=post-reading&g3-test=robustEncoder" target="_blank">Test Performance</a>', 'G3'))
                 ->rowClass('advanced')
-                ->switch('paidReading', __('Paid Reading', 'G3'), __('Launching a knowledge-based paid service.', 'G3'))
+                ->switch('paidReading', __('Paid Reading', 'G3'), __('Before enabling the knowledge payment service, please ensure that payment and other related functional configurations have been completed.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('language', __('Language Switching', 'G3'), __('Enable language switching based on user preferences. Only support Chinese and English.', 'G3'))
+                ->switch('language', __('Language'), __('Enable language switching based on user preferences. Only support Chinese and English.', 'G3'))
+                ->rowClass('advanced')
+                ->switch('timezone', __('Timezone'), __('After being enabled, it will display the local time based on the user\'s time zone, rather than the time zone set in the system settings.', 'G3'))
                 ->rowClass('advanced')
         ];
     }
-    public function toggleLocale($locale)
+    public function toggleLocale($locale): string
     {
         $option = $this->option();
         if (!is_admin() && $this->loader->admin() && ($option['language'] ?? '0') === '1') {
             $cookie = UserService::G3_LANG_COOKIE;
-            if (isset($_COOKIE[$cookie])) {
-                $cookieLang = sanitize_text_field($_COOKIE[$cookie]);
-                if (in_array($cookieLang, ['zh_CN', 'en_US', 'zh-CN', 'en-US', 'zh-Hans'])) {
-                    return $cookieLang;
-                }
+            $v      = sanitize_text_field($_COOKIE[$cookie] ?? '');
+            $v      = System::normalizeLocale($v);
+            if ($v !== null) {
+                return $v;
             }
         }
         return $locale;
+    }
+
+    public function customTimezone($timezone): string
+    {
+        $option = $this->option();
+        if (!is_admin() && $this->loader->admin() && ($option['timezone'] ?? '0') === '1') {
+            $cookie = UserService::G3_TIMEZONE_COOKIE;
+            $v      = sanitize_text_field($_COOKIE[$cookie] ?? '');
+            if (!empty($v) && in_array($v, timezone_identifiers_list(), true)) {
+                return $v;
+            } else {
+                error_log('[G3 Error] Invalid or missing user timezone cookie: ' . $cookie);
+            }
+        }
+        return $timezone;
     }
     private function removeAutoP(): void
     {

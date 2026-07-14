@@ -13,7 +13,8 @@ class UserService extends Service {
     const PREMIUM_OPTION_KEY    = 'g3_option_premiums';
     const MEMBERSHIP_OPTION_KEY = 'g3_option_memberships';
     const DURATION_OPTION_KEY   = 'g3_option_durations';
-    const G3_LANG_COOKIE        = 'g3_current_lang';
+    const G3_LANG_COOKIE        = 'g3_user_language';
+    const G3_TIMEZONE_COOKIE    = 'g3_user_timezone';
     private ?WP_User $user  = null;
     private array    $extra = [];
     private array    $card  = [];

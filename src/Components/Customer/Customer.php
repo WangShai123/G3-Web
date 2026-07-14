@@ -66,14 +66,14 @@ class Customer extends Components {
                 ->switch('enable', __('Enable'), __('When enabled, a floating customer service icon is shown on the frontend and the service console is available in admin.', 'G3'))
                 ->input('title', __('Title'), __('Chat window title.', 'G3'))
                 ->textarea('announcement', __('Announcement', 'G3'), __('The announcement prompt that is fixedly displayed in front of the chat window. HTML is allowed.', 'G3'))
-                ->input('announcementLink', __('Announcement Link', 'G3'), __('Optional URL opened when the announcement is clicked.', 'G3'))
+                ->input('announcementLink', __('Announcement', 'G3') . ' ' . __('Link'), __('Optional URL opened when the announcement is clicked.', 'G3'))
                 ->textarea('welcomeTip', __('Tip', 'G3'), __('Frontend tip shown before conversation messages. HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('welcomeMessage', __('Welcome Message', 'G3'), __('Welcome message shown when a visitor opens the chat. HTML is allowed.', 'G3'))
+                ->textarea('welcomeMessage', __('Welcome', 'G3') . ' ' . __('Message', 'G3'), __('Welcome message shown when a visitor opens the chat. HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('offlineMessage', __('Offline Message', 'G3'), __('Automated message created outside working hours. HTML is allowed.', 'G3'))
+                ->textarea('offlineMessage', __('Offline', 'G3') . ' ' . __('Message', 'G3'), __('Automated message created outside working hours. HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('fallbackMessage', __('Fallback Message', 'G3'), __('Fallback message returned when customer service automation or business handling fails. HTML is allowed.', 'G3'))
+                ->textarea('fallbackMessage', 'Fallback ' . __('Message', 'G3'), __('Fallback message returned when customer service automation or business handling fails. HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
                 ->checkbox('workDays', __('Working Days', 'G3'), [
                     '1' => __('Monday'),
@@ -92,8 +92,8 @@ class Customer extends Components {
                 ->input('guestName', __('Guest Name', 'G3'), __('Default display name for anonymous visitors.', 'G3'))
                 ->number('retentionDays', __('Retention Days', 'G3'), __('<code>CustomerMessageJob</code> removes data older than this many days. Default: 180.', 'G3'))
                 ->rowClass('advanced')
-                ->number('heartbeatSeconds', __('SSE Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45, range: 30-60.', 'G3'))
-                ->number('timeoutMinutes', __('Conversation Timeout', 'G3'), __('Minutes without messages before the system marks a conversation as timeout. Default: 120.', 'G3'))
+                ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45, range: 30-60.', 'G3'))
+                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system marks a conversation as timeout. Default: 120.', 'G3'))
                 ->rowClass('advanced')
         ];
     }
@@ -138,10 +138,10 @@ class Customer extends Components {
             'announcementLink' => (string) ($option['announcementLink'] ?? ''),
             'z'                => $z,
             'labels'           => [
-                'open'             => __('Customer Service', 'G3'),
-                'close'            => __('Close'),
-                'send'             => __('Send', 'G3'),
-                'placeholder'      => __('Type a message...', 'G3'),
+                'open'        => __('Customer Service', 'G3'),
+                'close'       => __('Close'),
+                'send'        => __('Send', 'G3'),
+                'placeholder' => __('Type a message...', 'G3'),
             ],
         ];
     }
@@ -171,11 +171,11 @@ class Customer extends Components {
                 'placeholder' => __('Leave a Reply'),
                 'send'        => __('Reply'),
                 'close'       => __('Close'),
-                'handled'     => __('Handled', 'G3'),
+                'handled'     => 'Handled',
                 'onHold'      => __('On Hold', 'G3'),
                 'all'         => __('All'),
                 'pending'     => __('Pending', 'G3'),
-                'botHandled'  => __('Bot Handled', 'G3'),
+                'botHandled'  => 'Bot Handled',
                 'closed'      => __('Closed', 'G3'),
                 'timeout'     => __('Timeout', 'G3'),
                 'profile'     => __('User Profile', 'G3'),

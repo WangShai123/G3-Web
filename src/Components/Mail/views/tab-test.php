@@ -17,8 +17,8 @@ if (
     && current_user_can('manage_options')
 ) {
     $mailTo   = sanitize_email(wp_unslash($_POST['g3_mail_test']['mailTo']));
-    $subject  = __('Testing Email from ' . get_bloginfo('name'), 'G3');
-    $messages = __("Congratulations! If you receive this email, the email configuration is correct.", 'G3');
+    $subject  = 'Testing Email from ' . get_bloginfo('name');
+    $messages = "Bingo! Email testing complete.";
 
     $queue = get_option(SystemService::PERFORMANCE_OPTION_KEY, ['email' => '0'])['email'] ?? '0';
     if ($queue === '1') {

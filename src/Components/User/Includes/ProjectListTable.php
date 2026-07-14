@@ -101,7 +101,11 @@ class ProjectListTable extends WP_List_Table {
             echo '</form>';
         } else {
             $this->display = false;
-            echo Element::tip(__('The membership duration or group is not configured.', 'G3'), '', 'danger');
+            echo Element::tip(sprintf(
+                __('The membership <a href="%s">duration</a> or <a href="%s">group</a> is not configured.', 'G3'),
+                admin_url('admin.php?page=membership&tab=duration'),
+                admin_url('admin.php?page=user-settings&tab=custom')
+            ), '', 'danger');
         }
 
         echo '</div>';
