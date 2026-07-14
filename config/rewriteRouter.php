@@ -137,24 +137,6 @@ return [
         'dependency' => [\JEALER\G3\Components\Form::class, 'onForm']
     ],
 
-    // pages
-    'pages/([^/]+)/?$'                   => [
-        'var'      => 'g3_var_page',
-        'path'     => '302.php',
-        'priority' => [
-            [
-                'var'   => 'g3_var_page',
-                'value' => 'announcement',
-                'path'  => 'page/announcement.php'
-            ],
-            [
-                'var'   => 'g3_var_page',
-                'value' => 'post',
-                'path'  => 'page/post.php'
-            ],
-        ],
-    ],
-
     // my
     'my/(.*)?$'                          => [
         'var'      => 'g3_var_my',

@@ -831,38 +831,4 @@ HTML;
         }
         return $items;
     }
-    protected function postType()
-    {
-        register_post_type('g3_post', [
-            'labels'        => [
-                'name'          => __('Posts'),
-                'singular_name' => __('Post'),
-            ],
-            'public'        => true,
-            'has_archive'   => true,
-            'show_in_rest'  => true,
-            'rewrite'       => array(
-                'slug'       => 'posts',      // 期望的 URL 前缀
-                'with_front' => false   // 避免继承全局固定链接前缀
-            ),
-            'supports'      => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
-            'taxonomies'    => ['category', 'post_tag'],
-            'menu_position' => 4
-        ]);
-        register_post_type('g3_page', [
-            'labels'        => [
-                'name'          => __('Pages'),
-                'singular_name' => __('Page'),
-            ],
-            'public'        => true,
-            'hierarchical'  => true,     // 保持 Page 的层级特性
-            'supports'      => ['title', 'editor', 'thumbnail', 'page-attributes'],
-            'rewrite'       => [
-                'slug'       => 'pages',      // 期望的 URL 前缀
-                'with_front' => false
-            ],
-            'menu_icon'     => 'dashicons-admin-page',
-            'menu_position' => 9
-        ]);
-    }
 }

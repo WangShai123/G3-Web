@@ -24,7 +24,7 @@ class Developer extends Components {
     public static          $z;
     public TemplateService $template;
 
-    private function settingDefaults(): array
+    private function default(): array
     {
         return [
             'environment'     => 'production',
@@ -46,12 +46,17 @@ class Developer extends Components {
             'toolsPage'       => '1',
             'pluginsPage'     => '1',
             'themeInstall'    => '0',
+            'posts'           => '0',
+            'pages'           => '0',
             'dashboard'       => ['0', '1', '2', '3', '4', '5'],
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
         ];
     }
-
+    protected function defaultOption(): array
+    {
+        return [SystemService::SETTING_OPTION_KEY => $this->default()];
+    }
     private function formDefaults(): array
     {
         return [
@@ -70,18 +75,12 @@ class Developer extends Components {
             'key13' => ['1'],
         ];
     }
-
-    private function settingOptions(): array
-    {
-        $option = get_option(SystemService::SETTING_OPTION_KEY, []);
-        return is_array($option) ? $option : [];
-    }
     protected function adminPanels(): array
     {
         return [
             $this->panel('developer-mode', __('Developer Mode', 'G3'))
                 ->tab('general', __('Settings'))
-                ->option(SystemService::SETTING_OPTION_KEY, $this->settingDefaults())
+                ->option(SystemService::SETTING_OPTION_KEY, $this->default())
                 ->switch('wpAutoUpdate', __('WordPress Auto Update', 'G3'))
                 ->switch('translationsApi', __('Translations API', 'G3'))
                 ->switch('themeEditor', __('Theme Editor', 'G3'))
@@ -100,6 +99,8 @@ class Developer extends Components {
                 ->switch('pluginsPage', __('Plugins Page', 'G3'))
                 ->switch('permalink', __('Permalinks', 'G3'))
                 ->switch('wpHead', 'WP Head', __('Clean the data in wp head.', 'G3'))
+                ->switch('posts', __('Posts'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Posts', 'posts'))
+                ->switch('pages', __('Pages'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Pages', 'pages'))
                 ->checkbox('dashboard', __('Dashboard'), [
                     '0' => __('Welcome Panel', 'G3'),
                     '1' => __('Site Health Status'),
@@ -251,23 +252,70 @@ class Developer extends Components {
                 20
             );
         }
+        $v = $this->option();
+        if ($v['posts'] ?? '0' === '1') {
+            remove_menu_page('edit.php');
+        }
+        if ($v['pages'] ?? '0' === '1') {
+            remove_menu_page('edit.php?post_type=page');
+        }
+    }
+    protected function postType()
+    {
+        $v = $this->option();
+        if ($v['posts'] ?? '0' === '1') {
+            register_post_type('site-post', [
+                'labels'        => [
+                    'name'          => __('Posts'),
+                    'singular_name' => __('Post'),
+                ],
+                'public'        => true,
+                'has_archive'   => true,
+                'show_in_rest'  => true,
+                'rewrite'       => array(
+                    'slug'       => 'posts',
+                    'with_front' => false
+                ),
+                'supports'      => ['title', 'editor', 'comments', 'revisions', 'author', 'excerpt', 'thumbnail', 'post-formats'],
+                'taxonomies'    => ['category', 'post_tag'],
+                'menu_position' => 4
+            ]);
+        }
+        if ($v['pages'] ?? '0' === '1') {
+            register_post_type('site-page', [
+                'labels'        => [
+                    'name'          => __('Pages'),
+                    'singular_name' => __('Page'),
+                ],
+                'public'        => true,
+                'show_in_rest'  => true,
+                'hierarchical'  => true,
+                'supports'      => ['title', 'editor', 'comments', 'author', 'thumbnail', 'page-attributes'],
+                'rewrite'       => [
+                    'slug'       => 'pages',
+                    'with_front' => false
+                ],
+                'menu_icon'     => 'dashicons-admin-page',
+                'menu_position' => 9
+            ]);
+        }
     }
     public function handleLoginHeaderUrl(string $url): string
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['adminLogo'] ?? '0') === '1') return $url;
 
         return home_url('/');
     }
     public function handleLoginHeaderText(string $text): string
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['adminLogo'] ?? '0') === '1') return $text;
         return get_bloginfo('name');
     }
     public function handleLoginHead(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['adminLogo'] ?? '0') === '1') return;
 
         $themeLogo   = G3_THEME_IMG_URL . '/logo.png';
@@ -456,7 +504,7 @@ class Developer extends Components {
     public function wpAutoUpdateHandle(): void
     {
         if (!is_admin()) return;
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['wpAutoUpdate'] ?? '0') === '0') {
             // Remove update-core.php submenu page
             add_action('admin_menu', function () {
@@ -492,7 +540,7 @@ class Developer extends Components {
     }
     public function adminMenuHandle(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
 
         // Remove theme editor
         if (($option['themeEditor'] ?? '0') === '0') {
@@ -514,7 +562,7 @@ class Developer extends Components {
     }
     public function themeCustomizeHandle($caps, $cap, $user_id = 0, $args = []): array
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if ($cap === 'customize' && ($option['themeCustomize'] ?? '0') === '0') {
             $caps = ['do_not_allow'];
         }
@@ -522,7 +570,7 @@ class Developer extends Components {
     }
     public function translationsApiHandle($result, $action, $args)
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['translationsApi'] ?? '0') === '1') {
             return $result;
         }
@@ -530,7 +578,7 @@ class Developer extends Components {
     }
     public function helpLinkHandle(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['helpLink'] ?? '0') === '1') {
             return;
         }
@@ -539,7 +587,7 @@ class Developer extends Components {
     }
     public function adminBarMenuHandle($wp_admin_bar): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['adminLogo'] ?? '0') === '1') {
             return;
         }
@@ -547,12 +595,12 @@ class Developer extends Components {
     }
     public function adminBarHandle(): bool
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         return ($option['adminBar'] ?? '0') === '1';
     }
     public function emojiHandle(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['emoji'] ?? '0') === '1') return;
         /** Remove emoji detection script */
         remove_action('wp_head', 'print_emoji_detection_script', 7);
@@ -567,7 +615,7 @@ class Developer extends Components {
     }
     public function wpHeadHandle(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['wpHead'] ?? '1') === '0') return;
         /** Remove S.W.org DNS prefetch in head */
         remove_action('wp_head', 'wp_resource_hints', 2);
@@ -596,7 +644,7 @@ class Developer extends Components {
     }
     protected function scripts(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['gutenberg'] ?? '0') === '0') {
             /** Remove Gutenberg styles */
             wp_dequeue_style('wp-block-library');
@@ -608,7 +656,7 @@ class Developer extends Components {
     }
     private function gutenbergInAdmin(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['gutenberg'] ?? '0') === '0') {
             remove_theme_support('widgets-block-editor');
             /** Disable Gutenberg editor for all posts */
@@ -746,7 +794,7 @@ class Developer extends Components {
     }
     private function adminTitleHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['adminTitle'] ?? '0') === '1') {
             return;
         }
@@ -756,7 +804,7 @@ class Developer extends Components {
     }
     private function thanksHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         $text   = (string) ($option['footerThanks'] ?? G3_NAME);
         if (trim($text) === '') {
             return;
@@ -765,7 +813,7 @@ class Developer extends Components {
     }
     private function upgradeHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         $text   = (string) ($option['footerUpgrade'] ?? G3_VERSION);
         if (trim($text) === '') {
             return;
@@ -774,13 +822,13 @@ class Developer extends Components {
     }
     private function toolsPageHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['toolsPage'] ?? '1') === '1') return;
         remove_menu_page('tools.php');
     }
     private function pluginsPageHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['pluginsPage'] ?? '1') === '1') return;
         add_action('admin_menu', function () {
             remove_menu_page('plugins.php');
@@ -788,7 +836,7 @@ class Developer extends Components {
     }
     private function themeInstallHandle()
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         if (($option['themeInstall'] ?? '1') === '1') return;
         if (strpos($_SERVER['REQUEST_URI'], 'themes.php') !== false) {
             echo '<style>a.hide-if-no-js.page-title-action{display:none}</style>';
@@ -796,7 +844,7 @@ class Developer extends Components {
     }
     protected function dashboard(): void
     {
-        $option = $this->settingOptions();
+        $option = $this->option();
         $v      = $option['dashboard'] ?? ['0', '1', '2', '3', '4', '5'];
         $v      = is_array($v) ? $v : [];
         if (in_array('0', $v, true)) {
