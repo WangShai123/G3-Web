@@ -21,6 +21,12 @@ return [
     'g3.media.image'         => [G3_ASSETS_URL . '/js/g3.template.media.image.upload.min.js', ['jquery'], '1.0.0'],
 
     /**
+     * infiniteGrid
+     * @link: https://github.com/naver/egjs-infinitegrid
+     */
+    'infiniteGrid'           => [G3_JS_URL . '/infinitegrid.min.js', [], '4.13.0', 'https://unpkg.com/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js'],
+
+    /**
      * Htm:
      * @link https://github.com/developit/htm
      */

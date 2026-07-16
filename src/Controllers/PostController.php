@@ -55,6 +55,7 @@ class PostController extends Controller {
             'no_found_rows'          => ['type' => 'boolean'],
             'update_post_meta_cache' => ['type' => 'boolean'],
             'update_post_term_cache' => ['type' => 'boolean'],
+            'filter'                 => ['type' => 'array'],
         ],
         'required'   => ['post_type', 'posts_per_page']
     ])]
@@ -67,8 +68,9 @@ class PostController extends Controller {
     public function query(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params();
+        $unset  = $params['unset'] ?? null;
 
-        $result = $this->postService->query($params);
+        $result = $this->postService->query($params, $unset);
 
         if (isset($params['paged']) && $params['paged'] > 1) {
             sleep(1);

@@ -2,7 +2,7 @@
 use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
-    __('This tab is for Nginx FastCGI Cache configuration advice.', 'G3'),
+    __('This tab contains recommendations for Nginx FastCGI caching configuration. If your website primarily contains static content and you want to further reduce server CPU load and memory consumption, please use it.', 'G3'),
     '',
     'default',
     'mt-4'

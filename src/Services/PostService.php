@@ -4,6 +4,7 @@ use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\PageService;
+use JEALER\G3\Traits\Cache;
 use WP_Error;
 use WP_Post;
 use WP_Query;
@@ -29,6 +30,8 @@ class PostService extends Service {
     const GALLERY_NAME      = 'g3_post_gallery';
     private ?WP_Post $post  = null;
     private array    $extra = [];
+
+    use Cache;
 
     public function __construct()
     {
@@ -209,11 +212,12 @@ class PostService extends Service {
      * 查询文章列表并合并扩展数据，支持缓存
      * 
      * @param  array $args WP_Query arguments
+     * @param  array|null $unset Optional array of fields to remove from the post data
      * @return array|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function query(?array $args): array|WP_Error
+    public function query(?array $args, ?array $unset = null): array|WP_Error
     {
         if (!$args || !is_array($args)) {
             return new WP_Error('invalid_args', 'Invalid query arguments', [
@@ -221,7 +225,11 @@ class PostService extends Service {
             ]);
         }
 
-        $cacheKey = '' . md5(serialize($args));
+        $cacheParams = $args;
+        if (!empty($unset)) {
+            $cacheParams['_unset'] = $unset;
+        }
+        $cacheKey = $this->generateArrayCacheKey($cacheParams);
 
         $cachedResults = wp_cache_get($cacheKey, self::QUERY_CACHE_GROUP);
         if ($cachedResults !== false) {
@@ -250,26 +258,21 @@ class PostService extends Service {
             }
 
             $postData = (array) $post;
-
-            $postData = $this->normalizePostData($postData);
-
-            $extra = $this->getExtra($post->ID);
+            $extra    = $this->getExtra($post->ID);
             if ($extra instanceof WP_Error) {
-                // debug log
                 error_log('Failed to get extra data for post ' . $post->ID . ': ' . $extra->get_error_message());
                 $extra = [];
             } else {
                 unset($extra['post_id']);
             }
 
-            // Merge data
             $merged    = array_merge($postData, $extra);
+            $merged    = $this->normalizePostData($merged, $unset);
             $results[] = $merged;
         }
 
         wp_reset_postdata();
 
-        // add: found_posts, max_num_pages
         $result = [
             'data'          => $results,
             'found_posts'   => $query->found_posts,
@@ -442,8 +445,9 @@ class PostService extends Service {
         $decoded = json_decode($value, true);
         return json_last_error() === JSON_ERROR_NONE ? $decoded : $value;
     }
-    private function normalizePostData(array $postData): array
+    private function normalizePostData(array $postData, ?array $unset = null): array
     {
+        // remove useless keys from the post data
         $uselessKeys = [
             'filter',
             'menu_order',
@@ -454,13 +458,79 @@ class PostService extends Service {
             'ping_status',
             'to_ping',
         ];
-
         foreach ($uselessKeys as $key) {
             unset($postData[$key]);
         }
 
-        // post_excerpt 清理移除 HTML 标签
-        $postData['post_excerpt'] = wp_strip_all_tags($postData['post_excerpt'] ?? '');
+        /**
+         * usefull keys, contains:
+         * - taxonomy: 所有关联分类法的名称和链接
+         * - user: 作者别名
+         * 
+         * @var array
+         */
+        $usefulKeys = [
+            'taxonomy'  => [],
+            'user'      => [
+                'slug' => '',
+            ],
+            'thumbnail' => '',
+        ];
+
+        $postId   = (int) ($postData['ID'] ?? 0);
+        $postType = (string) ($postData['post_type'] ?? '');
+
+        if ($postId > 0 && $postType !== '') {
+            $taxonomyNames = get_object_taxonomies($postType, 'names');
+            if (is_array($taxonomyNames)) {
+                foreach ($taxonomyNames as $taxonomyName) {
+                    $terms = get_the_terms($postId, $taxonomyName);
+                    if (empty($terms) || is_wp_error($terms)) {
+                        continue;
+                    }
+
+                    $usefulKeys['taxonomy'][$taxonomyName] = [];
+                    foreach ($terms as $term) {
+                        if (!($term instanceof \WP_Term)) {
+                            continue;
+                        }
+
+                        $termLink = get_term_link($term);
+                        if (is_wp_error($termLink)) {
+                            $termLink = '';
+                        }
+
+                        $usefulKeys['taxonomy'][$taxonomyName][] = [
+                            'name' => $term->name,
+                            'link' => (string) $termLink,
+                        ];
+                    }
+                }
+            }
+            $usefulKeys['thumbnail'] = get_the_post_thumbnail_url($postId);
+        }
+
+        $authorId = (int) ($postData['post_author'] ?? 0);
+        if ($authorId > 0) {
+            $usefulKeys['user']['slug'] = (string) get_the_author_meta('nickname', $authorId);
+            if ($usefulKeys['user']['slug'] === '') {
+                $usefulKeys['user']['slug'] = (string) get_the_author_meta('user_nicename', $authorId);
+            }
+        }
+
+        // unset specified fields from the post data
+        if ($unset && is_array($unset)) {
+            foreach ($unset as $field) {
+                unset($postData[$field]);
+            }
+        }
+
+        // clean excerpt
+        if (isset($postData['post_excerpt'])) {
+            $postData['post_excerpt'] = wp_strip_all_tags($postData['post_excerpt'] ?? '', true);
+        }
+
+        $postData = array_merge($postData, $usefulKeys);
 
         return $postData;
     }

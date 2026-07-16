@@ -51,7 +51,7 @@ echo Element::tip(
     </h2>
     <?php
     echo Element::tip(
-        __('G3-Web will create 2 databases in Redis to cache regular data and queue tasks. Regular data is stored in database 0, and queue tasks are stored in database 1.', 'G3'),
+        __('G3-Web will create 3 databases in Redis to cache regular data and queue tasks. Regular data is stored in database 0, queue tasks are stored in database 1, and notification services are stored in database 2.', 'G3'),
         false,
         '',
         'mt-2',

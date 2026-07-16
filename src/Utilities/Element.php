@@ -298,10 +298,10 @@ final class Element {
         $url = esc_url($url);
         if (empty($url)) return '';
         $icon = Image::icon('close');
+        // <button type="button" class="g3-preview_icon_delete button is-icon icon-sm icon-circle icon-error" style="position:absolute;top:4px;right:4px;">{$icon}</button>
         return <<<HTML
 <div class="g3-preview-wrap">
     <img class="g3-preview-image" style="height:{$size}px;" src="{$url}" alt="preview" />
-    <button type="button" class="g3-preview_icon_delete button is-icon icon-sm icon-circle icon-error" style="position:absolute;top:4px;right:4px;">{$icon}</button>
 </div>
 HTML;
     }

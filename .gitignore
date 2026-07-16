@@ -37,3 +37,4 @@ vendor/mobiledetect/mobiledetectlib/docker
 CNAME
 
 public/js/es/fingerprint.js
+public/js/es/infinitegrid.esm.js

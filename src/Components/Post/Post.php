@@ -24,9 +24,12 @@ class Post extends Components {
             'option_timezone_string' => [[$this, 'customTimezone'], 10, 1],
         ]);
         $this->action([
-            'save_post'          => [[$this, 'savePost'], 10, 2],
-            'before_delete_post' => [[$this, 'cleanExtraData'], 10, 1],
-            'wp_update_nav_menu' => [[$this, 'flushMenuCache'], 10, 1],
+            'save_post'              => [[$this, 'savePost'], 10, 2],
+            'wp_update_nav_menu'     => [[$this, 'flushMenuCache'], 10, 1],
+            'transition_post_status' => [[$this, 'actionOnPublish'], 10, 3],
+            'trashed_post'           => [[$this, 'actionOnTrash'], 10, 1],
+            'before_delete_post'     => [[$this, 'actionBeforeDelete'], 10, 1],
+            'delete_post'            => [[$this, 'actionOnDelete'], 10, 2],
         ]);
     }
     private function default(): array
@@ -170,6 +173,35 @@ class Post extends Components {
             }
         }
         return $timezone;
+    }
+
+    public function actionOnPublish($newStatus, $oldStatus, $post)
+    {
+        if ($newStatus === 'publish' && $oldStatus !== 'publish') {
+            $this->flushQueryCache();
+        }
+    }
+    public function actionOnTrash($postId)
+    {
+        $this->flushQueryCache();
+    }
+    public function actionBeforeDelete($postId)
+    {
+        $this->cleanExtraData($postId);
+    }
+    public function actionOnDelete($postId, $post)
+    {
+        $this->flushQueryCache();
+    }
+    private function cleanExtraData($postId): void
+    {
+        /** @var PostService $postService */
+        $postService = $this->container->get(PostService::class);
+        $postService->deleteExtra($postId);
+    }
+    private function flushQueryCache(): void
+    {
+        wp_cache_flush_group(PostService::QUERY_CACHE_GROUP);
     }
     private function removeAutoP(): void
     {
@@ -354,12 +386,6 @@ class Post extends Components {
             'property'        => array_values($property),
             'ext'             => array_values($ext)
         ]);
-    }
-    public function cleanExtraData($postId): void
-    {
-        /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
-        $postService->deleteExtra($postId);
     }
     public function flushMenuCache($menuId): void
     {

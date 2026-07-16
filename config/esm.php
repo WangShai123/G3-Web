@@ -26,6 +26,12 @@ return [
     'g3.visitor'             => [G3_ASSETS_URL . '/js/es/g3.visitor.min.js', ['fingerprint'], '1.0.0'],
 
     /**
+     * infiniteGrid
+     * @link: https://github.com/naver/egjs-infinitegrid
+     */
+    'infiniteGrid'           => [G3_JS_URL . '/es/infinitegrid.esm.min.js', [], '4.13.0', 'https://unpkg.com/@egjs/infinitegrid@4.13.0/dist/infinitegrid.esm.js'],
+
+    /**
      * qrcodeJS: Cross-browser QRCode generator for javascript
      * @link: https://github.com/davidshimjs/qrcodejs
      * @todo: add file

@@ -9,13 +9,13 @@ use Override;
 use WP_Query;
 
 class Performance extends Components {
-    private string $adminCacheTTL       = '0';
-    private bool   $adminCacheResolving = false;
+    // private int  $adminCacheTTL       = 24;
+    // private bool $adminCacheResolving = false;
 
-    protected function start()
-    {
-        $this->adminCacheTTL = $this->loadAdminCacheTTL();
-    }
+    // protected function start()
+    // {
+    // $this->adminCacheTTL = $this->loadAdminCacheTTL();
+    // }
     protected function hooks()
     {
         $this->filter([
@@ -25,8 +25,8 @@ class Performance extends Components {
     private function optionDefaults(): array
     {
         return [
-            'email'      => '0',
-            'adminCache' => '0',
+            'email' => '0',
+            // 'adminCache' => '0',
         ];
     }
     #[Override]
@@ -44,25 +44,30 @@ class Performance extends Components {
     }
     protected function adminPanels(): array
     {
-        $eg1 = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code></p>';
-        $eg2 = '<p class="mt-1"><code>*_relationships</code></p>';
+        $eg1        = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code>, <code>*_relationships</code></p>';
+        $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? (int) G3_WP_BUILTIN_CACHE_TTL . ' ' . __('hours') : __('None');
+        $msg        = sprintf(__('Configure the constant <code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code> in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $currentTTL);
+        $cron       = '<p class="mt-1"><code>define(\'DISABLE_WP_CRON\', true);</code></p>';
         return [
             $this->panel('performance', __('Performance', 'G3'))
                 ->tab('general', __('General'))
                 ->option(SystemService::PERFORMANCE_OPTION_KEY, $this->optionDefaults())
-                ->switch('email', __('Email Queue', 'G3'))
+                ->switch('email', __('Email Queue', 'G3'), __('Before enabling this feature, please ensure that the relevant queue consumption function is already enabled. This is because, after this feature is enabled, SMTP emails will not be sent directly; instead, sending tasks will be pushed to a service queue, where systemd or supervisor will handle the consumption and execution. This will improve the system\'s concurrency and asynchronous processing capabilities.', 'G3'))
                 ->rowClass('advanced')
-                ->select('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), [
-                    '0'   => __('Disabled'),
-                    '1'   => sprintf(__('%s hour'), 1),
-                    '3'   => sprintf(__('%d hours'), 3),
-                    '6'   => sprintf(__('%d hours'), 6),
-                    '12'  => sprintf(__('%d hours'), 12),
-                    '24'  => sprintf(__('%d hours'), 24),
-                    '72'  => sprintf(__('%d days'), 3),
-                    '168' => sprintf(__('%d days'), 7),
-                ], __('Set cache expiration for some built-in functions in WordPress to avoid redundant junk data.', 'G3') . $eg1 . $eg2)
+                // ->select('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), [
+                //     '0'   => __('Disabled'),
+                //     '1'   => sprintf(__('%s hour'), 1),
+                //     '3'   => sprintf(__('%d hours'), 3),
+                //     '6'   => sprintf(__('%d hours'), 6),
+                //     '12'  => sprintf(__('%d hours'), 12),
+                //     '24'  => sprintf(__('%d hours'), 24),
+                //     '72'  => sprintf(__('%d days'), 3),
+                //     '168' => sprintf(__('%d days'), 7),
+                // ], __('Set cache expiration for some built-in functions in WordPress to avoid redundant junk data.', 'G3') . $eg1 )
+                ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg . $eg1)
                 ->rowClass('advanced')
+                ->html('cron', 'Cron', __('<p class="mt-1">Disable WordPress\'s built-in cron jobs to improve performance.</p><p class="mt-1">You\'ll find that even if you\'ve configured Redis, WordPress will still secretly and frequently request the database, preventing true zero-SQL operations. This is because WordPress cron is at work.</p>', 'G3') . $cron)
+                ->html('queue', __('Queue', 'G3'), __('If you want to use scheduled tasks, please use the Queue and Job services provided by G3-Web, which combine systemd or supervisor for high-performance and highly maintainable system-level features.', 'G3'))
                 ->tab('cleaner', __('Junk Cleaner', 'G3'))
                 ->callback('draft', __('Draft'), fn() => $this->renderActions('draft'))
                 ->callback('auto-draft', __('Auto Draft'), fn() => $this->renderActions('auto-draft'))
@@ -92,25 +97,38 @@ class Performance extends Components {
     {
         SidebarService::registerWidget('MonitorWidget', __DIR__);
     }
-    private function loadAdminCacheTTL(): string
-    {
-        if ($this->adminCacheResolving) {
-            return '0';
-        }
+    /**
+     * @deprecated 效率优先，配置取代选项。
+     * @since 1.0.0
+     * @author Wang Shai
+     */
+    // private function loadAdminCacheTTL(): int
+    // {
+    //     if ($this->adminCacheResolving) {
+    //         return 24;
+    //     }
 
-        $this->adminCacheResolving = true;
-        $option                    = get_option(SystemService::PERFORMANCE_OPTION_KEY, $this->optionDefaults());
-        $this->adminCacheResolving = false;
+    //     $this->adminCacheResolving = true;
+    //     $option                    = get_option(SystemService::PERFORMANCE_OPTION_KEY, $this->optionDefaults());
+    //     $this->adminCacheResolving = false;
 
-        return is_array($option) ? (string) ($option['adminCache'] ?? '0') : '0';
-    }
+    //     return is_array($option) ? (string) ($option['adminCache'] ?? '0') : '0';
+    // }
     public function setAdminCacheTTL($ttl, $key, $group)
     {
-        if ($this->adminCacheResolving) {
-            return $ttl;
-        }
+        // 规避 object-cache 无限递归陷阱
+        // if ($this->adminCacheResolving) {
+        //     return $ttl;
+        // }
 
-        $hours = (int) $this->adminCacheTTL;
+        // $hours = (int) $this->adminCacheTTL;
+
+        /**
+         * 效率优先，配置取代选项。
+         * @since 1.0.0
+         */
+        $hours = (int) (defined('G3_WP_BUILTIN_CACHE_TTL') ? G3_WP_BUILTIN_CACHE_TTL : 24);
+
         if ($hours <= 0) {
             return $ttl;
         }
