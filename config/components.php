@@ -83,6 +83,7 @@ return [
         'Mail'         => true,
         'Sms'          => true,
         'OpenPlatform' => true,
+        'OSS'          => true,
 
         'Security'     => [
             'enabled' => true,

@@ -80,6 +80,12 @@ class Post extends Components {
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
         add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
 
+        add_action('wp_update_nav_menu_item', [$this, 'saveMenuItemFields'], 10, 3);
+    }
+    protected function prepareInAdmin()
+    {
+        add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
+
         if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
             require_once __DIR__ . '/views/page-robustEncoder.php';
             if (isset($_GET['g3-test']) && $_GET['g3-test'] === 'robustEncoder') {
@@ -87,9 +93,6 @@ class Post extends Components {
                 exit;
             }
         }
-
-        add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
-        add_action('wp_update_nav_menu_item', [$this, 'saveMenuItemFields'], 10, 3);
     }
     protected function adminMenu(): void
     {
@@ -779,7 +782,7 @@ HTML;
              */
             $type_options = apply_filters('g3_filter_menu_type', $type_options);
             ?>
-            <p class="field-type description description-wide">
+            <p class="field-type description description-wide g3-menu-field">
                 <label for="edit-menu-item-menu-type-<?php echo $item_id; ?>">
                     <span class="advanced"><?php _e('Menu Type', 'G3'); ?></span><br>
                     <select id="edit-menu-item-menu-type-<?php echo $item_id; ?>" class="widefat code edit-menu-item-menu-type"
@@ -809,7 +812,7 @@ HTML;
          */
         $display_type_options = apply_filters('g3_filter_menu_display_type', $display_type_options);
         ?>
-        <p class="field-display-type description description-wide">
+        <p class="field-display-type description description-wide g3-menu-field">
             <label for="edit-menu-item-display-type-<?php echo $item_id; ?>">
                 <span class="advanced"><?php _e('Display Type', 'G3'); ?></span><br>
                 <select id="edit-menu-item-display-type-<?php echo $item_id; ?>"

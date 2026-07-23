@@ -1,25 +1,27 @@
 <?php
 use JEALER\G3\Components\Developer;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Utilities\Frontend;
 Frontend::css('jui');
-$time = Developer::time();
+$dev = Container::run()->get(Developer::class);
+$t   = $dev->time();
 ?>
 
 <div class="wrap">
     <h1>
         <?php _e('Welcome!', 'G3'); ?>
-        <?php if ($time) _e('Your G3 Web has been activated.', 'G3'); ?>
+        <?php if ($t) _e('Your G3 Web has been activated.', 'G3'); ?>
     </h1>
     <div class="mt-4 welcome-wrap">
-        <div class="j-tip <?php echo $time ? 'is-success' : 'is-danger'; ?>">
+        <div class="j-tip <?php echo $t ? 'is-success' : 'is-danger'; ?>">
             <div class="tip-title">
                 <?php echo __('Tip', 'G3'); ?>
             </div>
             <div class="tip-content">
                 <div>
                     <?php
-                    if ($time) {
-                        echo sprintf(__('Your G3-Web expires in %s', 'G3'), $time);
+                    if ($t) {
+                        echo sprintf(__('Your G3-Web expires in %s', 'G3'), $t);
                     } else {
                         echo '<span style="color: var(--tip-color)">';
                         echo __('Part of the advanced features need to be activated.', 'G3') . ' ';
@@ -147,7 +149,35 @@ $time = Developer::time();
                         ]
                     })
                 }),
+
                 jsx`<h2><?php _e('G3-Web helps you easily create a clean, modern and full-fledged website.', 'G3'); ?></h2>`,
+
+                jsx`<h3><?php _e('No matter who you are, G3-Web has got you covered.', 'G3'); ?></h3>`,
+                jsx('ul', {
+                    children: [
+                        jsx`<li><?php _e('For site / business owners: G3-Web provides complete support and services for your all business needs.', 'G3'); ?></li>`,
+                        jsx`<li><?php _e('For theme developers: G3-Web provides a set of comprehensive development tools to help you create professional-level WordPress themes quickly.', 'G3'); ?></li>`,
+                        jsx`<li><?php _e('For designers: G3-Web helps you easily turn design proposals into immediately implementable systematic solutions.', 'G3'); ?></li>`,
+                        jsx`<li><?php _e('For sales: G3-Web helps you easily build digital solutions that suit a variety of customers.', 'G3'); ?></li>`,
+                        jsx`<li><?php _e('For beginners: G3-Web provides a simple and easy-to-use interface and tutorial to help you learn and build your first website.', 'G3'); ?></li>`
+                    ]
+                }),
+
+                jsx`<h3><?php _e('Free and Helpful Courses', 'G3'); ?></h3>`,
+                jsx`<p><?php _e('Even if you have no technical knowledge, our course can still help you systematically learn about Internet application technologies in 7-14 days and enable you to independently complete website development.', 'G3'); ?></p>`,
+
+                jsx`<h3><?php _e('Over 30 Subsystem Components', 'G3'); ?></h3>`,
+                jsx('div', {
+                    className: 'functions',
+                    children: For({
+                        each: items,
+                        key: (item, index) => index,
+                        children: (item) => jsx`<div>${item().text}</div>`
+                    })
+                }),
+                jsx`<h3><?php _e('Lazy Load', 'G3') ?></h3>`,
+                jsx`<p><?php _e('All functional components are loaded only on demand, ensuring excellent runtime performance. Furthermore, users can freely combine and override them as needed.', 'G3'); ?></p>`,
+
                 jsx`<h3><?php _e('Useful Development Features', 'G3'); ?></h3>`,
                 jsx('div', {
                     className: 'features',
@@ -163,19 +193,7 @@ $time = Developer::time();
                         ]
                     })
                 }),
-                jsx`<h3><?php _e('Over 30 Subsystem Components', 'G3'); ?></h3>`,
-                jsx('div', {
-                    className: 'functions',
-                    children: For({
-                        each: items,
-                        key: (item, index) => index,
-                        children: (item) => jsx`<div>${item().text}</div>`
-                    })
-                }),
-                jsx`<h3><?php _e('Lazy Load', 'G3') ?></h3>`,
-                jsx`<p><?php _e('All functional components are loaded only on demand, ensuring excellent runtime performance. Furthermore, users can freely combine and override them as needed.', 'G3'); ?></p>`,
-                jsx`<h3><?php _e('Free and Helpful Courses', 'G3'); ?></h3>`,
-                jsx`<p><?php _e('Even if you have no technical knowledge, our course can still help you systematically learn about Internet application technologies in 7-14 days and enable you to independently complete website development.', 'G3'); ?></p>`,
+
                 jsx`<h3><?php _e('Flexible Payment Terms', 'G3'); ?></h3>`,
                 jsx('ul', {
                     children: [
@@ -183,16 +201,6 @@ $time = Developer::time();
                         jsx`<li><?php _e('Free Forever after the third year.', 'G3'); ?></li>`
                     ]
                 }),
-                jsx`<h3><?php _e('No matter who you are, G3-Web has got you covered.', 'G3'); ?></h3>`,
-                jsx('ul', {
-                    children: [
-                        jsx`<li><?php _e('For site / business owners: G3-Web provides complete support and services for your all business needs.', 'G3'); ?></li>`,
-                        jsx`<li><?php _e('For theme developers: G3-Web provides a set of comprehensive development tools to help you create professional-level WordPress themes quickly.', 'G3'); ?></li>`,
-                        jsx`<li><?php _e('For designers: G3-Web helps you easily turn design proposals into immediately implementable systematic solutions.', 'G3'); ?></li>`,
-                        jsx`<li><?php _e('For sales: G3-Web helps you easily build digital solutions that suit a variety of customers.', 'G3'); ?></li>`,
-                        jsx`<li><?php _e('For beginners: G3-Web provides a simple and easy-to-use interface and tutorial to help you learn and build your first website.', 'G3'); ?></li>`
-                    ]
-                })
             ]
         })
         insert(q('.welcome-wrap'), welcome)

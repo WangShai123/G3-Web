@@ -104,10 +104,6 @@ class CronListTable extends WP_List_Table {
 
     public function column_cb($item)
     {
-        if (!empty($item['is_build_in'])) {
-            return '';
-        }
-
         return sprintf(
             '<input type="checkbox" name="cron_jobs[]" value="%s" />',
             esc_attr($this->encodeDeletePayload($item))
@@ -324,7 +320,10 @@ class CronListTable extends WP_List_Table {
             'wp_update_user_counts',
             'wp_scheduled_auto_draft_delete',
             'wp_site_health_scheduled_check',
-            'wp_delete_temp_updater_backups'
+            'wp_delete_temp_updater_backups',
+            'wp_version_check',
+            'wp_version_check',
+            'wp_update_themes'
         ];
     }
 

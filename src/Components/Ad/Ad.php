@@ -18,6 +18,8 @@ class Ad extends Components {
     }
     public function render()
     {
-        echo 'todo';
+        echo '<div class="wrap"><h1>' . __('Ad', 'G3') . '</h1>';
+        echo __('Stay tuned, coming soon!', 'G3');
+        echo '</div>';
     }
 }

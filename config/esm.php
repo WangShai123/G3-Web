@@ -29,7 +29,7 @@ return [
      * infiniteGrid
      * @link: https://github.com/naver/egjs-infinitegrid
      */
-    'infiniteGrid'           => [G3_JS_URL . '/es/infinitegrid.esm.min.js', [], '4.13.0', 'https://unpkg.com/@egjs/infinitegrid@4.13.0/dist/infinitegrid.esm.js'],
+    // 'infiniteGrid'           => [G3_JS_URL . '/es/infinitegrid.esm.min.js', [], '4.13.0', 'https://unpkg.com/@egjs/infinitegrid@4.13.0/dist/infinitegrid.esm.js'],
 
     /**
      * qrcodeJS: Cross-browser QRCode generator for javascript

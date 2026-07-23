@@ -18,10 +18,6 @@ use WP_Error;
 use WP_Query;
 
 class Developer extends Components {
-    public array           $_form;
-    public array           $opMPOption;
-    public                 $v;
-    public static          $z;
     public TemplateService $template;
 
     private function default(): array
@@ -166,6 +162,7 @@ class Developer extends Components {
 
                 ->tab('html', __('HTML Demo', 'G3'))
                 ->tab('help', __('Help'))
+                ->tab('thanks', __('Thanks'))
         ];
     }
     protected function adminPanelPage(): string
@@ -352,10 +349,6 @@ class Developer extends Components {
             update_option($optionKey, $optionValue);
         }
     }
-    public function y(): void
-    {
-        self::$z = $this->loader;
-    }
     public function _flushRewriteButton(): void
     {
         echo '<button class="button button-error" name="g3_flush_rewrite_rules" type="submit">' . __('Flush Rewrite Rules', 'G3') . '</button>';
@@ -406,9 +399,9 @@ class Developer extends Components {
             ]);
         }
     }
-    public static function time()
+    public function time()
     {
-        return self::$z ? self::$z->gE() : false;
+        return $this->loader->gE();
     }
     public function flushRestRoutesHandle(): void
     {
@@ -670,7 +663,7 @@ class Developer extends Components {
             [
                 'id'    => 'G3-License-Notice',
                 'title' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.78307 2.82598L12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598ZM5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879L5 4.60434ZM13 10H16L11 17V12H8L13 5V10Z"></path></svg>' . __('License Expired', 'G3'),
-                'href'  => admin_url('admin.php?page=g3-verify-license'),
+                'href'  => admin_url('index.php?page=g3-verify-license'),
                 'meta'  => [
                     'title' => __('License Expired', 'G3'),
                     'class' => 'g3-license-notice',
@@ -680,6 +673,8 @@ class Developer extends Components {
     }
     public function x(): void
     {
+        $msg = sprintf(__('One more step. <a href="%s">Verify your G3-Web authorization</a> to access all services.', 'G3'), admin_url('index.php?page=g3-verify-license'));
+        wp_admin_notice($msg, ['type' => 'error']);
         add_action("admin_bar_menu", [$this, "noticeInAdminBar"], 999);
         add_action('admin_menu', function () {
             add_submenu_page(
@@ -692,6 +687,13 @@ class Developer extends Components {
                 2,
             );
         });
+        add_action('admin_footer', [$this, 'adminFooter']);
+    }
+    public function adminFooter(): void
+    {
+        $c = __('Membership Feature', 'G3');
+        echo "<style>table.form-table tbody tr.advanced:hover th::after {content: \"$c\";background: var(--state-danger-soft);color: var(--state-danger-text);padding: 4px 6px;border-radius: 4px;font-size: 12px;position:absolute}
+        .g3-menu-field:has(span.advanced):hover span.advanced::after {content: \"$c\";}</style>";
     }
     public function formHandler(): void
     {

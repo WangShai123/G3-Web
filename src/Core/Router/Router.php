@@ -110,26 +110,6 @@ class Router {
             register_rest_route($def['namespace'], $def['route'], [
                 'methods'             => $def['methods'],
                 'callback'            => function (WP_REST_Request $req) use ($def) {
-                    foreach ($def['middlewares'] as $middlewareDef) {
-                        $middlewareClass = $middlewareDef['class'];
-                        $params          = $middlewareDef['params'] ?? [];
-
-                        if (!class_exists($middlewareClass)) {
-                            continue;
-                        }
-
-                        $middleware = !empty($params)
-                            ? new $middlewareClass(...$params)
-                            : new $middlewareClass();
-
-                        if (method_exists($middleware, 'handle')) {
-                            $result = $middleware->handle($req);
-                            if ($result !== true) {
-                                return $result;
-                            }
-                        }
-                    }
-
                     $controllerClass = $def['class'];
                     $factory         = new FactoryDefinition($controllerClass);
                     $factory->singleton(false);
@@ -138,7 +118,7 @@ class Router {
 
                     return $controller->{$def['method']}($req);
                 },
-                'permission_callback' => '__return_true',
+                'permission_callback' => fn(WP_REST_Request $req) => $this->handleMiddlewares($req, $def['middlewares'] ?? []),
             ]);
         }
     }
@@ -162,6 +142,36 @@ class Router {
             $this->manifest = new RouteManifest($this->sources);
         }
         return $this->manifest;
+    }
+
+    private function handleMiddlewares(WP_REST_Request $req, array $middlewares): bool|WP_Error
+    {
+        foreach ($middlewares as $middlewareDef) {
+            $middlewareClass = $middlewareDef['class'];
+            $params          = $middlewareDef['params'] ?? [];
+
+            if (!class_exists($middlewareClass)) {
+                continue;
+            }
+
+            $factory = new FactoryDefinition($middlewareClass);
+            $factory->singleton(false);
+            if (!empty($params)) {
+                $factory->constructor(...$params);
+            }
+            $middleware = $factory->resolve($this->container);
+
+            if (!method_exists($middleware, 'handle')) {
+                continue;
+            }
+
+            $result = $middleware->handle($req);
+            if ($result !== true) {
+                return $result;
+            }
+        }
+
+        return true;
     }
 
     private function registerErrorRoute(WP_Error $error): void

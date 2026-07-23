@@ -7,6 +7,8 @@ return [
         'g3_option_mail',
         'g3_option_mail_template',
         'g3_option_op_wechatOA',
+        'g3_option_aliyun_oss',
+        'g3_option_qcloud_cos',
         'g3_option_securities',
         'g3_option_performance',
         'g3_option_swiper_locations',

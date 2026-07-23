@@ -31,10 +31,20 @@ assets/js/es/*.js
 *.pot~
 *.po~
 
+public/js/es/fingerprint.js
+public/js/es/infinitegrid.esm.js
+
 vendor/**/*/LICENSE
 vendor/**/*/*.yml
 vendor/mobiledetect/mobiledetectlib/docker
 CNAME
-
-public/js/es/fingerprint.js
-public/js/es/infinitegrid.esm.js
+vendor/alibabacloud/tea/*.dist
+vendor/aliyuncs/oss-sdk-php/.github
+vendor/aliyuncs/oss-sdk-php/samples
+vendor/aliyuncs/oss-sdk-php/.gitignore
+vendor/aliyuncs/oss-sdk-php/*.sh
+vendor/aliyuncs/oss-sdk-php/*.jpg
+vendor/aliyuncs/oss-sdk-php/*.xml
+vendor/qcloud/cos-sdk-v5/.github
+vendor/qcloud/cos-sdk-v5/sample
+vendor/tencentcloud
