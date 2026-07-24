@@ -16,6 +16,7 @@ class Auth extends Components {
     {
         return [
             'code'        => '0',
+            'override'    => '0',
             'force'       => '0',
             'expire'      => '7',
             'allowToSale' => '0',
@@ -44,6 +45,14 @@ class Auth extends Components {
             2
         );
     }
+    protected function hooks(): void
+    {
+        $this->filter([
+            'login_url'        => [[$this, 'loginUrl'], 10, 3],
+            'lostpassword_url' => [[$this, 'lostPasswordUrl'], 10, 2],
+            'register_url'     => [[$this, 'registerUrl'], 10, 1],
+        ]);
+    }
     protected function adminPanelPage(): string
     {
         return 'auth-settings';
@@ -58,8 +67,9 @@ class Auth extends Components {
             $this->panel('auth-settings', __('Login', 'G3'))
                 ->tab('general', __('General'))
                 ->option(AuthService::OPTION_KEY, $this->optionDefaults())
+                ->switch('override', __('Auth Route Override', 'G3'), __('Replace WordPress native login, registration and password reset URLs with the custom auth pages.', 'G3'))
                 ->select('code', __('Registration Code', 'G3'), [
-                    '0' => __('Disable', 'G3'),
+                    '0' => __('Disabled'),
                     '1' => __('Invitation Code', 'G3'),
                     '2' => __('Referral Code', 'G3'),
                 ], __('Whether to allow to register by registration code, The referral code is used as the user slug.', 'G3'))
@@ -91,6 +101,49 @@ class Auth extends Components {
                 ->rowClass('advanced')
                 ->tab('invitation', __('Invitation Code', 'G3'))
         ];
+    }
+    public static function onAuthOverride(): bool
+    {
+        $option = self::optionData();
+        return ($option['override'] ?? '0') === '1';
+    }
+    public function loginUrl(string $loginUrl, string $redirect = '', bool $forceReauth = false): string
+    {
+        if (!self::onAuthOverride()) {
+            return $loginUrl;
+        }
+
+        $args = [];
+        if ($redirect !== '') {
+            $args['redirect_to'] = $redirect;
+        }
+        if ($forceReauth) {
+            $args['reauth'] = '1';
+        }
+
+        return add_query_arg($args, home_url('/user/login/'));
+    }
+    public function lostPasswordUrl(string $lostPasswordUrl, string $redirect = ''): string
+    {
+        if (!self::onAuthOverride()) {
+            return $lostPasswordUrl;
+        }
+
+        $args = [];
+        if ($redirect !== '') {
+            $args['redirect_to'] = $redirect;
+        }
+
+        return add_query_arg($args, home_url('/user/lost-password/'));
+    }
+    public function registerUrl(string $registerUrl): string
+    {
+        return self::onAuthOverride() ? home_url('/user/register/') : $registerUrl;
+    }
+    private static function optionData(): array
+    {
+        $option = get_option(AuthService::OPTION_KEY, []);
+        return is_array($option) ? $option : [];
     }
     protected function ajax()
     {

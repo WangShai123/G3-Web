@@ -54,9 +54,13 @@ class FormListTable extends WP_List_Table {
         $this->set_pagination_args([
             'total_items' => $totalItems,
             'per_page'    => $this->perPage,
-            'total_pages' => ceil($totalItems / $this->perPage)
+            'total_pages' => $this->countPages($totalItems)
         ]);
         $this->items = $this->getData($this->perPage, $currentPage);
+    }
+    private function countPages($totalItems)
+    {
+        return $this->perPage != 0 ? ceil($totalItems / $this->perPage) : 0;
     }
     public function column_default($item, $column_name)
     {

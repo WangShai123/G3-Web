@@ -80,7 +80,11 @@ return [
         'Ad'           => true,
         'Form'         => true,
         'Customer'     => true,
-        'Mail'         => true,
+        'Mail'         => [
+            'enabled'    => true,
+            'force'      => true,
+            'dependency' => ['Auth'],
+        ],
         'Sms'          => true,
         'OpenPlatform' => true,
         'OSS'          => true,

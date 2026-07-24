@@ -67,6 +67,11 @@ final class Message {
         return __('Failed', 'G3');
     }
 
+    public static function illegalRequest(): string
+    {
+        return __('Illegal request', 'G3');
+    }
+
     public static function deleteConfirm(): void
     {
         echo __('Are you sure you want to delete it?', 'G3');

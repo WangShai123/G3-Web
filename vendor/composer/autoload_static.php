@@ -30,7 +30,6 @@ class ComposerStaticInitbea978368dd696eee53cf71f7148593f
         'T' => 
         array (
             'TheNorthMemory\\Xml\\' => 19,
-            'TencentCloud\\' => 13,
         ),
         'S' => 
         array (
@@ -116,11 +115,6 @@ class ComposerStaticInitbea978368dd696eee53cf71f7148593f
         'TheNorthMemory\\Xml\\' => 
         array (
             0 => __DIR__ . '/..' . '/thenorthmemory/xml/src',
-        ),
-        'TencentCloud\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/tencentcloud/monitor/src/TencentCloud',
-            1 => __DIR__ . '/..' . '/tencentcloud/common/src/TencentCloud',
         ),
         'Symfony\\Polyfill\\Php83\\' => 
         array (

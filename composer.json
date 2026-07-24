@@ -32,7 +32,6 @@
     "mobiledetect/mobiledetectlib": "^4.11",
     "aliyuncs/oss-sdk-php": "^2.7",
     "alibabacloud/credentials": "^1.2",
-    "qcloud/cos-sdk-v5": "^2.6",
-    "tencentcloud/monitor": "^3.0"
+    "qcloud/cos-sdk-v5": "^2.6"
   }
 }

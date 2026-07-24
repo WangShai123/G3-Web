@@ -480,6 +480,10 @@ class RewriteRouter {
 
     private function priorityTemplate(array $priority, array $context): ?string
     {
+        if (array_key_exists('dependency', $priority) && !$this->isDependencySatisfied($priority['dependency'], $context)) {
+            return null;
+        }
+
         if (array_key_exists('callback', $priority)) {
             $result = $this->invokeConfigCallback($priority['callback'], $context);
 
@@ -603,7 +607,7 @@ class RewriteRouter {
         return $this->activeRoutesCache;
     }
 
-    private function isDependencySatisfied(mixed $dependency): bool
+    private function isDependencySatisfied(mixed $dependency, ?array $context = null): bool
     {
         if ($dependency === null) {
             return true;
@@ -613,7 +617,7 @@ class RewriteRouter {
             return $dependency;
         }
 
-        if (is_string($dependency)) {
+        if (is_string($dependency) && !str_contains($dependency, '::')) {
             return $this->componentRegistry->has($dependency);
         }
 
@@ -634,12 +638,26 @@ class RewriteRouter {
         }
 
         try {
-            return (bool) $this->callWithContext($callback, [null, [], [], []]);
+            return (bool) $this->callWithContext($callback, $this->dependencyCallbackArguments($context));
         }
         catch (Throwable $e) {
             $this->logMessage('[G3 Rewrite] Dependency callback failed: ' . $e->getMessage());
             return false;
         }
+    }
+
+    private function dependencyCallbackArguments(?array $context): array
+    {
+        if ($context === null) {
+            return [null, [], [], []];
+        }
+
+        return [
+            $context['value'] ?? null,
+            $context['values'] ?? [],
+            $context['route'] ?? [],
+            $context['query_vars'] ?? [],
+        ];
     }
 
     private function invokeConfigCallback(mixed $callback, array $context): mixed

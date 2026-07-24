@@ -159,6 +159,120 @@ class AuthController extends Controller {
 
     #[RestRouter(
         namespace: 'api/v1',
+        route: 'auth/register/',
+        methods: 'POST'
+    )]
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['username', 'email', 'password', 'confirm_password'],
+        'properties' => [
+            'username'         => [
+                'type'      => 'string',
+                'minLength' => 3,
+                'maxLength' => 60
+            ],
+            'email'            => [
+                'type'      => 'string',
+                'minLength' => 6,
+                'maxLength' => 100
+            ],
+            'password'         => [
+                'type'      => 'string',
+                'minLength' => 8,
+                'maxLength' => 128
+            ],
+            'confirm_password' => [
+                'type'      => 'string',
+                'minLength' => 8,
+                'maxLength' => 128
+            ]
+        ]
+    ])]
+    #[Middleware(RateLimitMiddleware::class, [10, 60])]
+    public function userRegister(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        if (is_user_logged_in()) {
+            return new WP_Error(
+                'already_logged_in',
+                __('You are already logged in.', 'G3'),
+                ['status' => 409]
+            );
+        }
+
+        if (!get_option('users_can_register')) {
+            return new WP_Error(
+                'registration_disabled',
+                __('User registration is currently disabled.', 'G3'),
+                ['status' => 403]
+            );
+        }
+
+        $data            = $request->get_json_params();
+        $username        = sanitize_user((string) ($data['username'] ?? ''), true);
+        $email           = sanitize_email((string) ($data['email'] ?? ''));
+        $password        = (string) ($data['password'] ?? '');
+        $confirmPassword = (string) ($data['confirm_password'] ?? '');
+
+        if ($username === '' || !validate_username($username)) {
+            return new WP_Error(
+                'invalid_username',
+                __('Invalid username.', 'G3'),
+                ['status' => 422]
+            );
+        }
+
+        if (!is_email($email)) {
+            return new WP_Error(
+                'invalid_email',
+                __('Invalid email address.', 'G3'),
+                ['status' => 422]
+            );
+        }
+
+        if (username_exists($username)) {
+            return new WP_Error(
+                'username_exists',
+                __('This username is already registered.', 'G3'),
+                ['status' => 409]
+            );
+        }
+
+        if (email_exists($email)) {
+            return new WP_Error(
+                'email_exists',
+                __('This email address is already registered.', 'G3'),
+                ['status' => 409]
+            );
+        }
+
+        if ($password !== $confirmPassword) {
+            return new WP_Error(
+                'password_mismatch',
+                __('The two passwords do not match.', 'G3'),
+                ['status' => 422]
+            );
+        }
+
+        $userId = wp_create_user($username, $password, $email);
+        if ($userId instanceof WP_Error) {
+            return $userId;
+        }
+
+        $user = new WP_User($userId);
+        $this->authService->doWPLogin($user);
+
+        return rest_ensure_response([
+            'success' => true,
+            'code'    => 200,
+            'message' => __('Registration successful.', 'G3'),
+            'data'    => [
+                'redirect' => home_url('/'),
+            ],
+        ]);
+    }
+
+    #[RestRouter(
+        namespace: 'api/v1',
         route: 'auth/logout/',
         methods: 'POST'
     )]

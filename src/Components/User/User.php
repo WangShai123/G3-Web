@@ -15,7 +15,8 @@ class User extends Components {
     protected function hooks()
     {
         $this->filter([
-            'g3_filter_title' => [[$this, 'templateTitle'], 10, 1],
+            'g3_filter_title'           => [[$this, 'templateTitle'], 10, 1],
+            'password_reset_expiration' => [[UserService::class, 'passwordResetExpiration'], 10, 1],
         ]);
     }
     #[Override]
@@ -156,10 +157,11 @@ class User extends Components {
         $var = get_query_var('g3_var_user', false);
         if ($var) {
             return match ($var) {
-                'login'    => __('Login', 'G3'),
-                'register' => __('Register', 'G3'),
-                'reset'    => __('Reset Password', 'G3'),
-                default    => $title,
+                'login'          => __('Login', 'G3'),
+                'register'       => __('Register', 'G3'),
+                'lost-password'  => __('Reset Password', 'G3'),
+                'reset-password' => __('Reset Password', 'G3'),
+                default          => $title,
             };
         }
 

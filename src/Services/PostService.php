@@ -64,12 +64,12 @@ class PostService extends Service {
 
     /**
      * Get post extra data
-     * @param int|object $id postId / WP_Post
+     * @param int|WP_Post $id
      * @return array|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function getExtra(int|object $id): array|WP_Error
+    public function getExtra(int|WP_Post $id): array|WP_Error
     {
         $postId = $this->postId($id);
         if ($postId <= 0) {
@@ -101,13 +101,13 @@ class PostService extends Service {
 
     /**
      * Set post extra data
-     * @param int|object $id postId / WP_Post
+     * @param int|WP_Post $id
      * @param array $data extra data
      * @return bool|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function setExtra(int|object $id, array $data): bool|WP_Error
+    public function setExtra(int|WP_Post $id, array $data): bool|WP_Error
     {
         $postId = $this->postId($id);
         if ($postId <= 0) {
@@ -167,12 +167,12 @@ class PostService extends Service {
 
     /**
      * Delete post extra data
-     * @param int|object $id postId / WP_Post
+     * @param int|WP_Post $id postId / WP_Post
      * @return bool|WP_Error
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function deleteExtra(int|object $id): bool|WP_Error
+    public function deleteExtra(int|WP_Post $id): bool|WP_Error
     {
         $postId = $this->postId($id);
         if ($postId <= 0) {
@@ -362,7 +362,7 @@ class PostService extends Service {
         ];
     }
 
-    private function postId(int|object $id): int
+    private function postId(int|WP_Post $id): int
     {
         if ($id instanceof WP_Post) {
             return (int) $id->ID;
