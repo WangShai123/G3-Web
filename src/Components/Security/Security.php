@@ -216,30 +216,39 @@ class Security extends Components {
         if (empty($route)) {
             return $result;
         }
-        // if route is not WordPress native API
-        if (strpos($route, '/wp/') !== 0) {
+
+        /**
+         * if route is not WordPress native API
+         * 
+         * disabled:
+         *  - /wp/,
+         *  - /oembed/,
+         *  - /wp-site-health/
+         */
+        if (
+            strpos($route, '/wp/') !== 0
+            && strpos($route, '/oembed/') !== 0
+            && strpos($route, '/wp-site-health/') !== 0
+        ) {
             return $result;
         }
         $currentUser = wp_get_current_user();
         // denied: unauthorized
         if (!$currentUser || $currentUser->ID === 0) {
             return new WP_Error(
-                // 'unauthorized',
-                // Message::unauthorized(),
-                // ['status' => 401]
                 'forbidden',
                 Message::forbidden(),
                 ['status' => 403]
             );
         }
         // denied: not admin
-        // if (!current_user_can('manage_options')) {
-        //     return new WP_Error(
-        //         'forbidden',
-        //         Message::forbidden(),
-        //         ['status' => 403]
-        //     );
-        // }
+        if (!current_user_can('manage_options')) {
+            return new WP_Error(
+                'forbidden',
+                Message::forbidden(),
+                ['status' => 403]
+            );
+        }
         return $result;
     }
 }
