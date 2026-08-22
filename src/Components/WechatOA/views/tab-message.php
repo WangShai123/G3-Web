@@ -30,8 +30,8 @@ endif;
     jQuery('#flush-messages').prop('disabled', disabled);
 
     jQuery(document).ready(function ($) {
-        const { Toast, Modal } = jui
-        const { success, error } = Toast
+        const { Toast, createModal, createForm } = jui
+        const { success, error, confirm } = Toast
         if ($('.view-message').length) {
             $(document).on('click', '.view-message', function () {
                 const id = $(this).data('id')
@@ -40,14 +40,17 @@ endif;
                     id: id,
                     nonce: '<?php echo wp_create_nonce('g3_get_wechatOA_message_content'); ?>'
                 }, function (res) {
-                    const viewModal = new Modal({
+                    const viewModal = createModal({
                         text: {
-                            title: '<?php _e("View"); ?>',
+                            title: '<?php echo __("Content"); ?>',
                             confirm: '<?php _e("Confirm", 'G3'); ?>',
                         },
-                        content: res.data.message,
-                        showCancel: false
-                    })
+                        content: () => res.data.message,
+                        showCancel: false,
+                        bgClose: true,
+                        onConfirm: () => { viewModal.hide() },
+                        onHidden: () => { viewModal.destroy() }
+                    }).build();
                     viewModal.show()
                 })
             })
@@ -56,43 +59,47 @@ endif;
         if ($('.delete-message').length) {
             $(document).on('click', '.delete-message', function () {
                 const id = $(this).data('id')
-                if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                    $.post(ajaxurl, {
-                        action: 'g3_delete_wechatOA_message',
-                        id: id,
-                        nonce: '<?php echo wp_create_nonce('g3_delete_wechatOA_message'); ?>'
-                    }, function (res) {
-                        res.success ? success(res.data.message) : error(res.data.message)
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000)
-                    })
-                }
+                confirm('<?php Message::deleteConfirm(); ?>', {
+                    onConfirm: () => {
+                        $.post(ajaxurl, {
+                            action: 'g3_delete_wechatOA_message',
+                            id,
+                            nonce: '<?php echo wp_create_nonce('g3_delete_wechatOA_message'); ?>'
+                        }, (res) => {
+                            if (res.success) {
+                                success(res.data.message)
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 800)
+                            }
+                        }).fail((res) => {
+                            error(res.responseJSON.data.message)
+                        })
+                    }
+                })
             })
         }
 
 
         if (!disabled) {
             $(document).on('click', '#flush-messages', function () {
-                const m = new Modal({
-                    text: {
-                        title: '<?php _e("Delete History Data", "G3"); ?>',
-                        confirm: '<?php _e("Delete"); ?>',
-                        cancel: '<?php _e("Cancel"); ?>',
-                    },
-                    formData: [
+                const f = createForm({
+                    fields: [
                         {
-                            label: '<?php _e("How many days ago you want to delete?", "G3"); ?>',
                             type: 'number',
-                            name: 'days',
-                            id: 'days',
-                            placeholder: '<?php _e("Default"); ?> 7',
-                            value: 7,
-                            required: true
+                            payload: {
+                                label: '<?php _e("How many days ago you want to delete?", "G3"); ?>',
+                                name: 'days',
+                                id: 'days',
+                                placeholder: '<?php _e("Default"); ?> 7',
+                                value: 7,
+                                required: true
+                            }
                         }
                     ],
-                    onSubmit: function (data) {
-                        m.state.loading = true;
+                    buttons: "reverse",
+                    buttonsPosition: "end",
+                    onSubmit: (data) => {
                         if (data.days < 1) {
                             error('<?php _e("Days must be greater than 0", "G3"); ?>');
                             m.state.loading = false;
@@ -106,18 +113,24 @@ endif;
                             if (res.success) {
                                 success(res.data.message)
                                 setTimeout(function () {
+                                    m.hide();
                                     location.reload()
                                 }, 800)
-                            } else {
-                                error(res.data.message)
-                                m.state.loading = false;
                             }
-                        }).done(function (res) {
-                            m.state.loading = false;
-                            m.hide();
+                        }).fail((res) => {
+                            error(res.responseJSON.data.message)
                         })
                     }
-                })
+                }).build();
+                const m = createModal({
+                    text: {
+                        title: '<?php _e("Delete History Data", "G3"); ?>',
+                        confirm: '<?php _e("Delete"); ?>',
+                        cancel: '<?php _e("Cancel"); ?>',
+                    },
+                    content: f.element,
+                    footer: false
+                }).build();
                 m.show();
             })
         }

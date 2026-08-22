@@ -1,36 +1,16 @@
 <?php
 namespace JEALER\G3\Jobs;
-use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Queue\Queue;
 use JEALER\G3\Core\Queue\Job;
-use JEALER\G3\Services\LogService;
 use JEALER\G3\Services\MailerService;
-use JEALER\G3\Services\SystemService;
-use JEALER\G3\Utilities\System;
-use WP_Error;
 use Throwable;
 use Exception;
 
-/**
- * Email Job
- * 
- * 专门用于处理邮件发送的队列任务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class EmailJob extends Job {
-
-    private LogService $log;
-
-    public function __construct()
-    {
-        $this->log = Container::use(LogService::class);
-    }
 
     public function handle(array $data): void
     {
-        error_log('[G3 EmailJob] handle ready');
+        $this->logger->debug('Email job started.', ['module' => 'email']);
 
         // 验证必需的邮件数据
         $this->validateEmailData($data);
@@ -41,9 +21,11 @@ class EmailJob extends Job {
         $headers     = $data['headers'] ?? [];
         $attachments = $data['attachments'] ?? [];
 
-        // 记录开始发送邮件
-        error_log("[G3 EmailJob] Starting to send email to: {$to}");
-        error_log("[G3 EmailJob] Subject: {$subject}");
+        $this->logger->info('Email send started.', [
+            'module'  => 'email',
+            'to'      => $to,
+            'subject' => $subject,
+        ]);
 
         try {
             // 处理邮件头
@@ -55,20 +37,25 @@ class EmailJob extends Job {
             // 发送邮件
             $result = MailerService::send($to, $subject, $messages, $processedAttachments, $processedHeaders);
 
-            error_log('[G3 EmailJob] Email sent result: ' . print_r($result, true));
+            $this->logger->debug('Email send result received.', [
+                'module' => 'email',
+                'result' => $result,
+            ]);
 
             if ($result !== true) {
                 throw new Exception('Failed to send email');
             }
 
-            error_log("[G3 EmailJob] Email sent successfully to: {$to}");
-
-            // 记录发送成功的邮件
             $this->logEmailSent($data);
 
         }
         catch (Exception $e) {
-            error_log("[G3 EmailJob] Failed to send email: " . $e->getMessage());
+            $this->logger->error('Email send threw an exception.', [
+                'module'    => 'email',
+                'to'        => $to,
+                'subject'   => $subject,
+                'exception' => $e,
+            ]);
             throw $e;
         }
     }
@@ -92,7 +79,12 @@ class EmailJob extends Job {
             $exception->getMessage()
         );
 
-        error_log("[G3 EmailJob] " . $errorMessage);
+        $this->logger->error($errorMessage, [
+            'module'    => 'email',
+            'to'        => $to,
+            'subject'   => $subject,
+            'exception' => $exception,
+        ]);
 
         // 记录失败的邮件到数据库（可选）
         $this->logEmailFailed($data, $exception);
@@ -198,66 +190,38 @@ class EmailJob extends Job {
             if (is_string($attachment) && file_exists($attachment)) {
                 $processedAttachments[] = $attachment;
             } else {
-                error_log("[G3 EmailJob] Warning: Attachment not found or invalid: " . print_r($attachment, true));
+                $this->logger->warning('Email attachment not found or invalid.', [
+                    'module'     => 'email',
+                    'attachment' => $attachment,
+                ]);
             }
         }
 
         return $processedAttachments;
     }
 
-    /**
-     * Log when email is sent to the database.
-     * 
-     * 记录邮件发送成功的日志。
-     * 
-     * @param array $data
-     * @return int|WP_Error
-     */
-    private function logEmailSent(array $data): int|WP_Error
+    private function logEmailSent(array $data): void
     {
-        return $this->log->create(
-            'email',
-            'success',
-            'info',
-            'email',
-            get_current_user_id(),
-            System::ip() ?: null,
-            [
-                'to'           => $data['to'],
-                'subject'      => $data['subject'],
-                'status'       => 'sent',
-                'sent_at'      => current_time('mysql', true),
-                'message_hash' => md5($data['messages']),
-            ]
-        );
+        $this->logger->info('Email sent successfully.', [
+            'type'         => 'email',
+            'module'       => 'email',
+            'to'           => $data['to'],
+            'subject'      => $data['subject'],
+            'status'       => 'sent',
+            'message_hash' => md5($data['messages']),
+        ]);
     }
 
-    /**
-     * Log when email fails to be sent to the database.
-     * 
-     * 记录邮件发送失败的日志。
-     * 
-     * @param array $data
-     * @param Throwable $exception
-     * @return int|WP_Error
-     */
-    private function logEmailFailed(array $data, Throwable $exception): int|WP_Error
+    private function logEmailFailed(array $data, Throwable $exception): void
     {
-        return $this->log->create(
-            'email',
-            'failed',
-            'error',
-            'email',
-            get_current_user_id(),
-            System::ip() ?: null,
-            [
-                'to'            => $data['to'] ?? 'unknown',
-                'subject'       => $data['subject'] ?? 'unknown',
-                'status'        => 'failed',
-                'error_message' => $exception->getMessage(),
-                'failed_at'     => current_time('mysql', true),
-            ]
-        );
+        $this->logger->error('Email delivery failed.', [
+            'type'      => 'email',
+            'module'    => 'email',
+            'to'        => $data['to'] ?? 'unknown',
+            'subject'   => $data['subject'] ?? 'unknown',
+            'status'    => 'failed',
+            'exception' => $exception,
+        ]);
     }
 
     /**

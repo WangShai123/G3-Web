@@ -1,7 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
-use JEALER\G3\Services\AuthService;
 use WP_Error;
 
 class MenuService extends Service {
@@ -18,7 +17,7 @@ class MenuService extends Service {
      * @since 1.0.0
      * @author Wang Shai
      */
-    public function get(array $args = [])
+    public function getHtml(array $args = []): string|false|null
     {
         $defaults = [
             'theme_location'  => 'desktop-header',
@@ -28,22 +27,31 @@ class MenuService extends Service {
             'fallback_cb'     => false,
             'depth'           => 2,
             'echo'            => false,
+            'logged_in'       => false,
         ];
-        $params   = wp_parse_args($args, $defaults);
+        $params   = array_merge($defaults, $args);
 
-        if ($params['echo']) {
-            wp_nav_menu($params);
-            return;
+        $echo = false;
+        if ($params['echo'] === true) {
+            $echo           = true;
+            $params['echo'] = false;
         }
 
-        $key  = $params['theme_location'];
+        $sign = $params['logged_in'] ? '_logged_in' : '';
+        $key  = $params['theme_location'] . $sign;
         $menu = wp_cache_get($key, self::MENU_HTML_CACHE_GROUP);
+
         if (false === $menu) {
             $menu = wp_nav_menu($params);
             if (is_string($menu) && !empty(trim($menu))) {
                 // 24 hours cache
                 wp_cache_set($key, $menu, self::MENU_HTML_CACHE_GROUP, DAY_IN_SECONDS);
             }
+        }
+
+        if ($echo) {
+            echo $menu;
+            return null;
         }
         return $menu;
     }
@@ -110,11 +118,8 @@ class MenuService extends Service {
             return (int) $item['menu_item_parent'] === 0;
         });
 
-        // Filter menu items by display type (login status)
-        $filteredItems = $this->filterMenuItemsByDisplayType(array_values($topLevelItems));
-
         // Format the response data using helper function
-        $formattedItems = array_map([$this, 'formatMenuItem'], $filteredItems);
+        $formattedItems = array_map([$this, 'formatMenuItem'], array_values($topLevelItems));
 
         // Validate final result
         if (empty($formattedItems)) {
@@ -135,42 +140,6 @@ class MenuService extends Service {
     }
 
     /**
-     * Filter menu items by display type based on user login status.
-     * 
-     * 根据用户登录状态，按显示类型过滤菜单项。
-     * 
-     * @param array $items The menu items to filter.
-     * @return array The filtered menu items.
-     * @since 1.0.0
-     * @author Wang Shai
-     */
-    private function filterMenuItemsByDisplayType(array $items): array
-    {
-        AuthService::checkWordPressCookie();
-        $isLoggedIn = is_user_logged_in();
-
-        return array_filter($items, function ($item) use ($isLoggedIn) {
-            $displayType = get_post_meta($item['ID'], '_menu_item_display_type', true);
-
-            // Filter menu items based on login status
-            if ($displayType === 'logged-in' && !$isLoggedIn) {
-                return false;
-            }
-
-            if ($displayType === 'not-logged-in' && $isLoggedIn) {
-                return false;
-            }
-
-            // Recursively filter child menu items
-            if (!empty($item['children'])) {
-                $item['children'] = $this->filterMenuItemsByDisplayType($item['children']);
-            }
-
-            return true;
-        });
-    }
-
-    /**
      * Helper function to format a menu item and its children recursively.
      * 
      * 辅助函数，递归格式化菜单项及其子项。
@@ -186,6 +155,7 @@ class MenuService extends Service {
             'id'               => $item['ID'],
             'title'            => $item['title'],
             'url'              => $item['url'],
+            'type'             => $this->getMenuItemDisplayType($item['ID']),
             'target'           => $item['target'],
             'description'      => $item['description'],
             'classes'          => !empty($item['classes']) ? implode(' ', $item['classes']) : '',
@@ -200,5 +170,14 @@ class MenuService extends Service {
         }
 
         return $formattedItem;
+    }
+
+    private function getMenuItemDisplayType(int|string $itemId): int
+    {
+        return match (get_post_meta((int) $itemId, '_menu_item_display_type', true)) {
+            'logged-in'     => 1,
+            'not-logged-in' => 2,
+            default         => 0,
+        };
     }
 }

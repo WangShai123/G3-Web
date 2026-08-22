@@ -12,7 +12,7 @@ echo '</div>';
 <script>
     jQuery(document).ready(function ($) {
         const { Toast } = jui
-        const { success } = Toast
+        const { success, confirm, error } = Toast
 
         $('.delete-sku').click(function (e) {
             e.preventDefault();
@@ -21,15 +21,18 @@ echo '</div>';
                 action: 'g3_delete_sku',
                 id: id
             };
-
-            if (!confirm('<?php Message::deleteConfirm(); ?>')) return
-
-            $.post(ajaxurl, data, function (res) {
-                if (res.success) {
-                    success(res.data.message);
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 1000);
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, data, (res) => {
+                        if (res.success) {
+                            success(res.data.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 800);
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    })
                 }
             })
         })

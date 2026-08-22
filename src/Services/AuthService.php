@@ -37,6 +37,26 @@ class AuthService {
         $this->fullInviteCodesTable = $wpdb->prefix . self::INVITE_CODE_TABLE;
     }
 
+    public static function optionDefaults(): array
+    {
+        return [
+            'code'        => '0',
+            'override'    => '0',
+            'force'       => '0',
+            'expire'      => '7',
+            'allowToSale' => '0',
+            'payment'     => '1',
+            'price'       => '10.00',
+        ];
+    }
+    public static function wechatDefaults(): array
+    {
+        return [
+            'subscribe' => '0',
+            'client'    => '0',
+        ];
+    }
+
     /************************************************************
      * 
      * check authorization in REST API

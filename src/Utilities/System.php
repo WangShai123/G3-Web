@@ -301,4 +301,177 @@ final class System {
 
         return $safeLocales[$locale] ?? null;
     }
+
+    /**
+     * Parse a vanilla-storage cookie record.
+     * 
+     * 解析 vanilla-storage cookie 记录。
+     * 
+     * @param string $cookie The cookie string to parse.
+     * @return array|null The parsed cookie record, or null if the cookie is invalid.
+     */
+    public static function parseStorageCookie(string $cookie): ?array
+    {
+        $cookie = trim($cookie);
+
+        if ($cookie === '') {
+            return null;
+        }
+
+        $record = self::decodeStorageCookieRecord($cookie);
+
+        if (!is_array($record)) {
+            return null;
+        }
+
+        return $record;
+    }
+
+    public static function isDark(): bool
+    {
+        $cookie = $_COOKIE[SystemService::THEME_COOKIE] ?? '';
+        $result = self::parseStorageCookie($cookie)['val'] ?? [];
+        $v      = $result['render'] ?? 'light';
+        return $v === 'dark';
+    }
+
+    /**
+     * Set a vanilla-storage cookie record.
+     * 
+     * @param string   $name    Cookie name.
+     * @param mixed    $value   Storage value.
+     * @param int|null $ttl     Lifetime in seconds; null creates a session cookie with no storage expiration.
+     * @param array    $options Optional: codec, path, secure, httponly, domain, sameSite/samesite.
+     * @return bool             Whether the cookie header was accepted.
+     */
+    public static function setStorageCookie(string $name, mixed $value, ?int $ttl = null, array $options = []): bool
+    {
+        $name = trim($name);
+
+        if ($name === '') {
+            return false;
+        }
+
+        $codec = $options['codec'] ?? 'json';
+
+        if (!is_string($codec) || !in_array($codec, ['json', 'raw-string'], true)) {
+            return false;
+        }
+
+        if ($codec === 'raw-string' && !is_string($value)) {
+            return false;
+        }
+
+        if ($ttl !== null && $ttl < 0) {
+            return false;
+        }
+
+        $now       = time();
+        $expiresAt = $ttl === null ? null : ($now + $ttl) * 1000;
+        $cookie    = self::encodeStorageCookieRecord($value, $codec, $expiresAt);
+
+        if ($cookie === null) {
+            return false;
+        }
+
+        $cookieOptions = [
+            'expires'  => $ttl === null ? 0 : $now + $ttl,
+            'path'     => $options['path'] ?? ((defined('COOKIEPATH') && COOKIEPATH) ? COOKIEPATH : '/'),
+            'secure'   => $options['secure'] ?? (function_exists('is_ssl') && is_ssl()),
+            'httponly' => $options['httponly'] ?? false,
+        ];
+
+        $domain = $options['domain'] ?? (defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '');
+        if ($domain !== '') {
+            $cookieOptions['domain'] = $domain;
+        }
+
+        $sameSite = $options['sameSite'] ?? $options['samesite'] ?? 'Lax';
+        if ($sameSite !== '') {
+            $cookieOptions['samesite'] = self::normalizeStorageCookieSameSite($sameSite);
+        }
+
+        return setrawcookie(rawurlencode($name), rawurlencode($cookie), $cookieOptions);
+    }
+
+    private static function encodeStorageCookieRecord(mixed $value, string $codec, int|float|null $expiresAt): ?string
+    {
+        if ($expiresAt !== null && (!is_numeric($expiresAt) || !is_finite((float) $expiresAt))) {
+            return null;
+        }
+
+        $record = [
+            'v'   => 1,
+            'c'   => $codec,
+            'e'   => $expiresAt === null ? null : (int) $expiresAt,
+            'val' => $value,
+        ];
+
+        $encoded = json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        return $encoded === false ? null : $encoded;
+    }
+
+    private static function decodeStorageCookieRecord(string $cookie): ?array
+    {
+        foreach (self::storageCookieCandidates($cookie) as $candidate) {
+            $decoded = json_decode($candidate, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    continue;
+                }
+            }
+
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        return null;
+    }
+
+    private static function normalizeStorageCookieSameSite(mixed $sameSite): string
+    {
+        return match (strtolower((string) $sameSite)) {
+            'strict' => 'Strict',
+            'none'   => 'None',
+            default  => 'Lax',
+        };
+    }
+
+    private static function storageCookieCandidates(string $cookie): array
+    {
+        $values = [trim($cookie)];
+
+        for ($i = 0; $i < 2; $i++) {
+            foreach ($values as $value) {
+                $values[] = rawurldecode($value);
+                $values[] = urldecode($value);
+                $values[] = stripslashes($value);
+                $values[] = stripcslashes($value);
+            }
+
+            $values = array_values(array_unique(array_filter(array_map('trim', $values), static fn($value) => $value !== '')));
+        }
+
+        foreach ($values as $value) {
+            $value = trim($value);
+            if (
+                strlen($value) >= 2 &&
+                (($value[0] === '"' && str_ends_with($value, '"')) || ($value[0] === "'" && str_ends_with($value, "'")))
+            ) {
+                $values[] = substr($value, 1, -1);
+                $values[] = stripcslashes(substr($value, 1, -1));
+            }
+        }
+
+        return array_values(array_unique(array_filter(array_map('trim', $values), static fn($value) => $value !== '')));
+    }
 }

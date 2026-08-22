@@ -7,61 +7,82 @@ $table->display();
 
 <script>
     jQuery(document).ready(($) => {
-        const { Toast, Modal } = jui
+        const { Toast, createModal, createForm } = jui
+        const { success, error, confirm } = Toast
+
         const resAction = (res, time = 800) => {
             if (res.success) {
-                Toast.success(res.data.message)
-            } else {
-                Toast.error(res.data.message)
+                success(res.data.message)
+                setTimeout(() => {
+                    location.reload()
+                }, time)
             }
-            setTimeout(() => {
-                location.reload()
-            }, time)
         }
         $(document).on('click', '.close-order', (e) => {
-            if (confirm('<?php _e('Are you sure you want to close it?', 'G3'); ?>')) {
-                $.post(ajaxurl, {
-                    action: 'g3_close_order',
-                    order_id: $(e.currentTarget).data('id')
-                }, (res) => {
-                    resAction(res)
-                })
-            }
+            const order_id = $(e.currentTarget).data('id')
+            confirm('<?php _e('Are you sure you want to close it?', 'G3'); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_close_order',
+                        order_id
+                    }, (res) => {
+                        resAction(res)
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    })
+                }
+            })
         });
         $(document).on('click', '.delete-order', function (e) {
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                $.post(ajaxurl, {
-                    action: 'g3_delete_order',
-                    order_id: $(this).data('id')
-                }, (res) => {
-                    resAction(res)
-                })
-            }
+            const order_id = $(this).data('id')
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_order',
+                        order_id
+                    }, (res) => {
+                        resAction(res)
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    })
+                }
+            })
         });
+
         $(document).on('click', '.ship-order', (e) => {
-            const editor = new Modal({
-                text: {
-                    title: '<?php _e('Deliver', 'G3'); ?>',
-                    cancel: '<?php _e('Cancel'); ?>',
-                    confirm: '<?php _e('Submit'); ?>',
-                },
+            const order_id = $(e.currentTarget).data('id');
+            const form = createForm({
+                buttons: 'reverse',
+                buttonsPosition: 'end',
                 fields: [
                     {
-                        label: '<?php _e('Deliver Tracking Number', 'G3'); ?>',
                         type: 'text',
-                        name: 'number',
+                        payload: {
+                            label: '<?php _e('Deliver Tracking Number', 'G3'); ?>',
+                            name: 'number',
+                        }
                     }
                 ],
                 onSubmit: (data) => {
                     $.post(ajaxurl, {
                         action: 'g3_ship_order',
-                        order_id: $(e.currentTarget).data('id'),
+                        order_id,
                         number: data.number,
                     }, (res) => {
                         resAction(res)
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
                     })
                 }
-            });
+            }).build()
+            const editor = createModal({
+                text: {
+                    title: '<?php _e('Deliver', 'G3'); ?>',
+                },
+                content: form.element,
+                bgClose: true,
+                footer: false
+            }).build();
             editor.show();
         })
     })

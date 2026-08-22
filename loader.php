@@ -72,6 +72,11 @@ register_deactivation_hook(__FILE__, [JEALER\G3\Core\Deactivator::class, 'deacti
  * @description Load Plugin
  */
 $container = JEALER\G3\Core\Container\Container::run();
+if (!$container->has(Psr\Log\LoggerInterface::class)) {
+    $logger = new JEALER\G3\Core\Container\FactoryDefinition(JEALER\G3\Services\LogService::class);
+    $logger->singleton();
+    $container->setRawDefinition(Psr\Log\LoggerInterface::class, $logger);
+}
 if (!$container->has('app')) {
     $container->setRawDefinition('app', JEALER\G3\Core\Loader::class);
 }

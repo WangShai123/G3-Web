@@ -3,9 +3,12 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Core\ComponentRegistry;
 use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Admin\PanelRenderer;
+use JEALER\G3\Services\LogService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use wpdb;
 
@@ -61,6 +64,7 @@ abstract class Components {
     protected array $filterSubscriptions = [];
 
     private ?array $adminPanelDefinitions = null;
+    protected LoggerInterface $logger;
     protected wpdb $wpdb;
 
     public function __construct()
@@ -88,6 +92,8 @@ abstract class Components {
             $this->container = Container::run();
         }
 
+        $this->logger = $this->resolveLogger();
+
         global $wpdb;
         $this->wpdb = $wpdb;
 
@@ -104,6 +110,17 @@ abstract class Components {
         $this->start();
         $this->hooks();
         $this->end();
+    }
+
+    private function resolveLogger(): LoggerInterface
+    {
+        if (!$this->container->has(LoggerInterface::class)) {
+            $logger = new FactoryDefinition(LogService::class);
+            $logger->singleton();
+            $this->container->setRawDefinition(LoggerInterface::class, $logger);
+        }
+
+        return $this->container->get(LoggerInterface::class);
     }
 
     /**
@@ -148,7 +165,10 @@ abstract class Components {
     protected function debug(string $message)
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("[G3 {$this->componentName}] {$message}");
+            $this->logger->debug($message, [
+                'module'    => 'component',
+                'component' => $this->componentName,
+            ]);
         }
     }
 

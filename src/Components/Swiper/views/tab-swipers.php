@@ -12,20 +12,21 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Modal } = jui;
-        const preview = new Modal({
+        const { createModal } = jui;
+        const { jsx } = vanillaSignal;
+        const preview = createModal({
             escClose: true,
             bgClose: true,
             header: false,
             footer: false,
             style: 'max-width: 1024px',
-        });
+        }).build();
         $(document).on('click', '.swiperPreview', function (e) {
             e.preventDefault();
             const src = $(this).attr('src');
-            const content = '<img src="' + src + '" style="object-fit:cover">';
+            const content = jsx`<img src="${src}" style="object-fit:cover">`;
             preview.reset();
-            preview.setContent(content);
+            preview.setState({ content });
             preview.show();
         });
     });

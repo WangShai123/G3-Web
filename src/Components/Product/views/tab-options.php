@@ -14,9 +14,9 @@ $specs = json_encode($specs);
 ?>
 <script>
     jQuery(document).ready(function ($) {
-        const { Modal, Toast } = jui
-        const { t, getLang } = vanillaSignalI18n
-        const { lite, success, error } = Toast
+        const { createModal, createForm, Toast } = jui
+        const { t } = vanillaSignalI18n
+        const { lite, success, error, confirm } = Toast
         const langs = {
             en: {
                 keyExists: 'The key & sku_id relation is duplicated, please change it.',
@@ -26,42 +26,48 @@ $specs = json_encode($specs);
             }
         }
         const ts = (k) => t(k, langs)
-        const editModal = new Modal({
-            header: false,
-            text: {
-                confirm: '<?php _e('Add'); ?>',
-                cancel: '<?php _e('Cancel'); ?>',
-            },
+
+        const form = createForm({
+            buttons: "reverse",
+            buttonsPosition: "end",
             fields: [
                 {
-                    label: '<?php _e('Name'); ?>',
                     type: 'text',
-                    name: 'name',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        required: true
+                    }
                 },
                 {
-                    label: 'Key',
                     type: 'text',
-                    name: 'key',
-                    placeholder: '<?php _e('The unique and machine-readable name.'); ?>',
-                    required: true
+                    payload: {
+                        label: 'Key',
+                        name: 'key',
+                        placeholder: '<?php _e('The unique and machine-readable name.'); ?>',
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Specifications', 'G3'); ?>',
                     type: 'select',
-                    name: 'spec_id',
-                    options: <?php echo $specs; ?>,
-                    required: true
+                    payload: {
+                        label: '<?php _e('Specifications', 'G3'); ?>',
+                        name: 'spec_id',
+                        options: <?php echo $specs; ?>,
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Status', 'G3'); ?>',
                     type: 'select',
-                    name: 'status',
-                    options: [
-                        { value: '1', text: '<?php _e('Enabled'); ?>' },
-                        { value: '0', text: '<?php _e('Disabled'); ?>' }
-                    ],
-                    required: true
+                    payload: {
+                        label: '<?php _e('Status', 'G3'); ?>',
+                        name: 'status',
+                        options: [
+                            { value: '1', text: '<?php _e('Enabled'); ?>' },
+                            { value: '0', text: '<?php _e('Disabled'); ?>' }
+                        ],
+                        required: true
+                    }
                 }
             ],
             onSubmit: (fields) => {
@@ -74,77 +80,87 @@ $specs = json_encode($specs);
                         return false;
                     }
                 }
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        fields: fields,
-                        action: 'g3_update_spec_option',
-                    },
-                    beforeSend: function () {
-                        editModal.state.loading = true;
-                    },
-                    success: function (res) {
-                        if (res.success) {
-                            success(res.data.message);
-                            setTimeout(function () {
-                                location.reload();
-                            }, 800);
-                        } else {
-                            error(res.data.message);
-                            editModal.state.loading = false;
-                        }
-                    },
-                    error: function (res) {
-                        error(ts('keyExists'))
+                console.table(fields)
+                $.post(ajaxurl, {
+                    fields,
+                    action: 'g3_update_spec_option',
+                }, (res) => {
+                    if (res.success) {
+                        success(res.data.message);
                         setTimeout(function () {
-                            editModal.state.loading = false
+                            location.reload();
                         }, 800);
-                    },
+                    }
+                }).fail((res) => {
+                    error(ts('keyExists'))
                 })
             },
+        }).build()
+
+        const modal = createModal({
+            header: false,
+            footer: false,
+            bgClose: true,
+            escClose: true,
+            content: form.element,
             onHidden: () => {
-                editModal.reset()
+                form.reset()
             }
-        })
+        }).build()
         $(document).on('click', 'button#add-spec-option', (e) => {
             e.preventDefault()
-            editModal.show()
+            modal.show()
         })
         $(document).on('click', 'span.edit-spec-option', (e) => {
             const t = $(e.currentTarget)
-            editModal.setFields([
+            form.setFields([
                 {
-                    label: '<?php _e('Name'); ?>',
-                    type: 'text',
-                    name: 'name',
-                    value: t.data('name'),
-                    required: true,
+                    type: 'hidden',
+                    payload: {
+                        name: 'id',
+                        value: t.data('id'),
+                    }
                 },
                 {
-                    label: 'Key',
-                    type: 'text',
-                    name: 'key',
-                    value: t.data('key'),
-                    required: true,
+                    type: 'hidden',
+                    payload: {
+                        name: 'spec_id',
+                        value: t.data('spec'),
+                    }
                 },
                 {
-                    label: '<?php _e('Status', 'G3'); ?>',
+                    type: 'text',
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        value: t.data('name'),
+                        required: true,
+                    }
+                },
+                {
+                    type: 'text',
+                    payload: {
+                        label: 'Key',
+                        name: 'key',
+                        value: t.data('key'),
+                        required: true,
+                    }
+                },
+                {
                     type: 'select',
-                    name: 'status',
-                    options: [
-                        { value: '1', text: '<?php _e('Enabled'); ?>' },
-                        { value: '0', text: '<?php _e('Disabled'); ?>' }
-                    ],
-                    value: t.data('status'),
-                    required: true
+                    payload: {
+                        label: '<?php _e('Status', 'G3'); ?>',
+                        name: 'status',
+                        options: [
+                            { value: '1', text: '<?php _e('Enabled'); ?>' },
+                            { value: '0', text: '<?php _e('Disabled'); ?>' }
+                        ],
+                        value: t.data('status'),
+                        required: true
+                    }
                 }
             ])
-            editModal.addFields({
-                id: t.data('id'),
-                spec_id: t.data('spec'),
-            })
-            editModal.show()
+            modal.show()
         })
         $(document).on('click', 'span.delete-spec-option', (e) => {
             const t = $(e.currentTarget)
@@ -152,31 +168,21 @@ $specs = json_encode($specs);
                 lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
                 return
             }
-            if (!confirm('<?php Message::deleteConfirm(); ?>')) return
-            $.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'g3_delete_spec_option',
-                    id: t.attr('data-id'),
-                },
-                success: function (res) {
-                    if (res.success) {
-                        success(res.data.message);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        error(res.data.message);
-                    }
-                    editModal.state.loading = false;
-                },
-                error: function (res) {
-                    editModal.state.loading = false;
-                    error(res.responseText);
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1000);
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_spec_option',
+                        id: t.attr('data-id'),
+                    }, (res) => {
+                        if (res.success) {
+                            success(res.data.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message);
+                    })
                 }
             })
         })

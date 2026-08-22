@@ -9,35 +9,34 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { restUrl, Toast, Modal } = jui;
-        const { success, error } = Toast
-        $(document).on('click', '#add-reply', function () {
-            const editor = new Modal({
-                text: {
-                    title: "<?php _e('Add New', 'G3'); ?>",
-                    confirm: "<?php _e('Add New', 'G3'); ?>",
-                    cancel: "<?php _e('Cancel'); ?>",
-                },
-                fields: [
-                    {
+        const { restUrl, Toast, createModal, createForm } = jui;
+        const { success, error, confirm } = Toast
+        const f = createForm({
+            fields: [
+                {
+                    type: 'text',
+                    payload: {
                         label: '<?php _e('Keywords'); ?>',
-                        type: 'text',
                         name: 'keywords',
                         id: '_keywords',
                         placeholder: '<?php _e('Enter keywords please', 'G3'); ?>',
                         required: true
-                    },
-                    {
+                    }
+                },
+                {
+                    type: 'textarea',
+                    payload: {
                         label: '<?php _e('Reply'); ?>',
-                        type: 'textarea',
                         name: 'reply',
                         id: '_reply',
                         placeholder: '<?php _e('Enter reply please', 'G3'); ?>',
                         required: true
-                    },
-                    {
+                    }
+                },
+                {
+                    type: 'select',
+                    payload: {
                         label: '<?php _e('Status'); ?>',
-                        type: 'select',
                         name: 'status',
                         id: '_status',
                         value: '0',
@@ -53,39 +52,45 @@ $table->display();
                         ],
                         required: true
                     }
-                ],
-                onSubmit: function (formData) {
-                    editor.state.loading = true;
-                    const data = {
-                        id: 0,
-                        keywords: formData.keywords,
-                        content: formData.reply,
-                        status: formData.status,
-                        type: 'text'
-                    };
-                    $.ajax({
-                        url: restUrl + '/api/v1/admin/wechat_oa/reply/update',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: function (res) {
-                            success(res.message);
-                            setTimeout(function () {
-                                location.reload();
-                            }, 500);
-                        },
-                        error: function (xhr, status, error) {
-                            const msg = JSON.parse(xhr.responseText);
-                            error(msg.message);
-                        },
-                        complete: function () {
-                            setTimeout(function () {
-                                editor.state.loading = false;
-                            }, 500);
-                        }
-                    });
                 }
-            });
+            ],
+            buttons: "reverse",
+            buttonsPosition: "end",
+            onSubmit: function (formData) {
+                const data = {
+                    id: parseInt(formData.id) || 0,
+                    keywords: formData.keywords,
+                    content: formData.reply,
+                    status: formData.status,
+                    type: 'text'
+                };
+                $.ajax({
+                    url: restUrl + '/api/v1/admin/wechat_oa/reply/update',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        success(res.message);
+                        setTimeout(function () {
+                            editor.hide();
+                            location.reload();
+                        }, 800);
+                    },
+                    error: (res) => {
+                        error(res.responseJSON.message);
+                    }
+                });
+            }
+        }).build();
+        const editor = createModal({
+            text: {
+                title: "<?php _e('Edit'); ?>",
+            },
+            content: f.element,
+            footer: false,
+            onHidden: () => { f.reset() }
+        }).build();
+        $(document).on('click', '#add-reply', function () {
             editor.show();
         })
 
@@ -94,34 +99,40 @@ $table->display();
             const id = parseInt(t.data('id'));
             const keywords = JSON.parse(t.data('keywords'));
             const reply = JSON.parse(t.data('content'));
-            const editModal = new Modal({
-                text: {
-                    title: "<?php _e('Edit'); ?>",
-                    confirm: "<?php _e('Update'); ?>",
-                    cancel: "<?php _e('Cancel'); ?>",
+            f.setFields([
+                {
+                    type: 'hidden',
+                    payload: {
+                        name: 'id',
+                        value: id
+                    }
                 },
-                fields: [
-                    {
+                {
+                    type: 'text',
+                    payload: {
                         label: '<?php _e('Keywords'); ?>',
-                        type: 'text',
                         name: 'keywords',
                         id: '_keywords',
                         placeholder: '<?php _e('Enter keywords please', 'G3'); ?>',
                         required: true,
                         value: keywords
-                    },
-                    {
+                    }
+                },
+                {
+                    type: 'textarea',
+                    payload: {
                         label: '<?php _e('Reply'); ?>',
-                        type: 'textarea',
                         name: 'reply',
                         id: '_reply',
                         placeholder: '<?php _e('Enter reply please', 'G3'); ?>',
                         required: true,
                         value: reply
-                    },
-                    {
+                    }
+                },
+                {
+                    type: 'select',
+                    payload: {
                         label: '<?php _e('Status'); ?>',
-                        type: 'select',
                         name: 'status',
                         id: '_status',
                         value: t.data('status'),
@@ -137,21 +148,22 @@ $table->display();
                         ],
                         required: true,
                     }
-                ],
-                onSubmit: function (d) {
-                    editModal.state.loading = true
-                    const data = {
-                        id: id,
-                        keywords: d.keywords,
-                        content: d.reply,
-                        status: d.status,
-                        type: 'text'
-                    }
+                }
+            ]);
+
+            editor.show();
+        });
+
+        $(document).on('click', '.delete-reply', function () {
+            const id = $(this).data('id');
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
                     $.ajax({
-                        url: restUrl + '/api/v1/admin/wechat_oa/reply/update',
+                        // url: '<?php //echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',
+                        url: restUrl + '/api/v1/admin/wechat_oa/reply/delete',
                         type: 'POST',
                         contentType: 'application/json',
-                        data: JSON.stringify(data),
+                        data: JSON.stringify({ id }),
                         success: function (res) {
                             success(res.message);
                             setTimeout(function () {
@@ -161,37 +173,10 @@ $table->display();
                         error: function (xhr, status, error) {
                             const msg = JSON.parse(xhr.responseText);
                             error(msg.message);
-                        },
-                        complete: function () {
-                            setTimeout(function () {
-                                editModal.state.loading = false;
-                            }, 500);
                         }
                     });
                 }
             })
-            editModal.show();
-        });
-
-        $(document).on('click', '.delete-reply', function () {
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                $.ajax({
-                    url: '<?php echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ id: $(this).data('id') }),
-                    success: function (res) {
-                        success(res.message);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 500);
-                    },
-                    error: function (xhr, status, error) {
-                        const msg = JSON.parse(xhr.responseText);
-                        error(msg.message);
-                    }
-                });
-            }
         });
     });
 </script>

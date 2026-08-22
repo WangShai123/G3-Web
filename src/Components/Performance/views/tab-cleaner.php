@@ -10,8 +10,8 @@ $renderer->form($panel, $panelTab);
 </style>
 <script>
     jQuery(document).ready(function ($) {
-        const { Toast, all } = jui;
-        const { success, error } = Toast
+        const { Toast, all, createLoading } = jui;
+        const { success, error, confirm } = Toast
         const btns = all('.cleaner-action-button');
         const text = btns[0].innerText;
         $.post(ajaxurl, { action: 'g3_scan_trash' }, (res) => {
@@ -26,33 +26,33 @@ $renderer->form($panel, $panelTab);
                         btn.innerText = `${btn.innerText} (${count})`;
                     }
                 }
-            } else {
-                error(res.data.message);
             }
+        }).fail((res) => {
+            error(res.responseJSON.data.message);
         })
         const deletePosts = (dataAction, action) => {
             $(document).on('click', `[data-action="${dataAction}"]`, function (e) {
                 const t = $(e.currentTarget);
-                const loader = `<span class="g3-loader-wrap"><span class="icon-loader"></span></span>`;
-                Toast.action('<?php Message::deleteConfirm(); ?>', {
+                const loader = `<span class="g3-loader-wrap"><span class="j-loader"><span class="loader"></span></span></span>`;
+                confirm('<?php Message::deleteConfirm(); ?>', {
                     text: {
                         cancel: '<?php _e('Cancel'); ?>',
                         action: '<?php _e('Clear'); ?>'
                     },
-                    onAction: () => {
-                        t.prop('disabled', true).html(loader);
+                    onConfirm: () => {
+                        t.prop('disabled', true).css('width', '48px').html(loader);
                         $.post(ajaxurl, { action }, (res) => {
                             if (res.success) {
                                 setTimeout(() => {
                                     success(res.data.message);
                                     t.text(text);
-                                }, 1000);
-                            } else {
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 1000);
-                                error(res.data.message);
+                                }, 800);
                             }
+                        }).fail((res) => {
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                            error(res.responseJSON.data.message);
                         })
                     }
                 })

@@ -354,11 +354,11 @@ class Setting extends Components {
         $keywords    = $seo['seo_keywords'] ?? '';
 
         echo '<div class="flex-container">';
-        echo '<div class="flex-col-1 flex-col-xl-3 flex-col-lg-2 flex-col-md-1 flex-col-sm-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Title') . '</div></div><input class="j-input" type="text" id="seoTitle" name="g3_seo_title" value="' . $title . '"></div></div>';
+        echo '<div class="flex-col-12 flex-col-lg-6"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Title') . '</div></div><input class="j-input" type="text" id="seoTitle" name="g3_seo_title" value="' . $title . '"></div></div>';
         echo '<div class="flex-cols"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Keywords', 'G3') . '</div></div><input class="j-input" placeholder="' . __('Separate tags with commas.', 'G3') . '" type="text" id="seoKeywords" name="g3_seo_keywords" value="' . $keywords . '"></div></div>';
         echo '</div>';
         echo '<div class="flex-container">';
-        echo '<div class="flex-col-1"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Description', 'G3') . '</div></div><input class="j-input" type="text" id="seoDescription" name="g3_seo_description" value="' . $description . '"></div></div>';
+        echo '<div class="flex-col-12"><div class="input-group"><div class="el-addon"><div class="is-text">' . __('Description', 'G3') . '</div></div><input class="j-input" type="text" id="seoDescription" name="g3_seo_description" value="' . $description . '"></div></div>';
         echo '</div>';
 
         /**

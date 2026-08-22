@@ -78,7 +78,7 @@ class FormService extends Service {
         $result = $this->wpdb->insert($this->table, $insertData);
 
         if ($result === false) {
-            error_log('FormService create failed: ' . $this->wpdb->last_error);
+            $this->logger->error('FormService create failed: ' . $this->wpdb->last_error);
             return new WP_Error('db_insert_error', 'Failed to save form data', 500);
         }
 
@@ -132,6 +132,7 @@ class FormService extends Service {
                 $this->deleteCache($id);
             }
         }
+        $this->flushQueryCache();
 
         return $result;
     }
@@ -171,6 +172,8 @@ class FormService extends Service {
             $this->deleteCache($id);
         }
 
+        $this->flushQueryCache();
+
         return true;
     }
 
@@ -195,6 +198,7 @@ class FormService extends Service {
             $this->deleteCache($id);
         }
 
+        $this->flushQueryCache();
         return true;
     }
 
@@ -256,5 +260,10 @@ class FormService extends Service {
     private function deleteCache(int $id): bool
     {
         return wp_cache_delete($id, self::CACHE_GROUP);
+    }
+
+    private function flushQueryCache(): void
+    {
+        wp_cache_flush_group(FormService::QUERY_CACHE_GROUP);
     }
 }

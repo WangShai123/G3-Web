@@ -146,7 +146,11 @@ class RoleListTable extends WP_List_Table {
 
     private function getData(): array
     {
-        $roles = get_option(UserService::ROLE_OPTION_KEY, $this->default);
+        $roles = get_option(UserService::ROLE_OPTION_KEY, []);
+        if (empty($roles)) {
+            update_option(UserService::ROLE_OPTION_KEY, $this->default);
+            return $this->default;
+        }
 
         $items = [];
         foreach ($roles as $slug => $data) {

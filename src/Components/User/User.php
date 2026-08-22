@@ -1,6 +1,8 @@
 <?php
 namespace JEALER\G3\Components;
+use JEALER\G3\Cache\SessionTokens;
 use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Common;
@@ -17,8 +19,10 @@ class User extends Components {
         $this->filter([
             'g3_filter_title'           => [[$this, 'templateTitle'], 10, 1],
             'password_reset_expiration' => [[UserService::class, 'passwordResetExpiration'], 10, 1],
+            // 'session_token_manager'     => [[$this, 'sessionTokensManager'], 10, 1],
         ]);
     }
+
     #[Override]
     protected function init(): void
     {
@@ -167,6 +171,18 @@ class User extends Components {
 
         return $title;
     }
+
+    // public function sessionTokensManager(string $manager)
+    // {
+    //     if (
+    //         !defined('G3_SESSION_TOKENS_MANAGER')
+    //         || G3_SESSION_TOKENS_MANAGER !== true
+    //         || !($this->loader->admin())
+    //     ) return $manager;
+
+    //     return SessionTokens::class;
+    // }
+
     protected function ajax(): void
     {
         $roles = get_option(UserService::ROLE_OPTION_KEY, []);

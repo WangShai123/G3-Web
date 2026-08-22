@@ -8,43 +8,43 @@ use Override;
 use WP_User;
 
 class Mail extends Components {
-    private const LEGACY_TEMPLATE_OPTION_KEY = 'g3_option_mail_template';
 
-    private function default(): array
-    {
-        return [
-            'enable'     => '0',
-            'nickname'   => '',
-            'server'     => '',
-            'port'       => '',
-            'encryption' => '0',
-            'address'    => '',
-            'secret'     => '',
-            'template'   => '0',
-        ];
-    }
     protected function defaultOption(): array
     {
-        return [MailerService::OPTION_KEY => $this->default()];
+        return [MailerService::OPTION_KEY => MailerService::mailDefaults()];
     }
     protected function hooks(): void
     {
         $this->filter([
             'wp_mail_from'                          => [[$this, 'wpMailFrom'], 10, 1],
+
+            /**
+             * 面向用户的通知
+             * @since 1.0.0
+             */
+            // 忘记密码通知
             'retrieve_password_notification_email'  => [[$this, 'retrievePasswordNotificationEmail'], 10, 4],
+            // 新用户注册通知
             'wp_new_user_notification_email'        => [[$this, 'newUserNotificationEmail'], 10, 3],
-            'wp_new_user_notification_email_admin'  => [[$this, 'newUserAdminNotificationEmail'], 10, 3],
+            // 密码变更通知
             'password_change_email'                 => [[$this, 'passwordChangeEmail'], 10, 3],
+            // 邮箱变更通知
             'email_change_email'                    => [[$this, 'emailChangeEmail'], 10, 3],
+
+            /**
+             * 面向管理员的通知
+             * @since 1.0.0
+             */
+            // 新用户注册通知（管理员）
+            'wp_new_user_notification_email_admin'  => [[$this, 'newUserAdminNotificationEmail'], 10, 3],
+            // 用户密码变更通知（管理员）
             'wp_password_change_notification_email' => [[$this, 'adminPasswordChangeEmail'], 10, 3],
+            // 站点管理员邮箱变更通知
             'site_admin_email_change_email'         => [[$this, 'siteAdminEmailChangeEmail'], 10, 3],
+            // 自动更新调试通知
             'automatic_updates_debug_email'         => [[$this, 'automaticUpdatesDebugEmail'], 10, 3],
         ]);
         $this->action(['phpmailer_init' => [[$this, 'smtpInit'], 10, 1]]);
-    }
-    protected function admin(): void
-    {
-        $this->migrateTemplateOption();
     }
     protected function adminMenu(): void
     {
@@ -61,7 +61,7 @@ class Mail extends Components {
         return [
             $this->panel('mail', __('Email', 'G3'))
                 ->tab('set', __('General Settings', 'G3'))
-                ->option(MailerService::OPTION_KEY, $this->default())
+                ->option(MailerService::OPTION_KEY, MailerService::mailDefaults())
                 ->switch('enable', __('System Email', 'G3'), __('The system will use SMTP to send emails.', 'G3'))
                 ->input('nickname', __('Nickname', 'G3'))
                 ->rowClass('field-nickname')
@@ -77,6 +77,14 @@ class Mail extends Components {
                 ->rowClass('field-secret')
                 ->switch('template', __('Custom Email Templates', 'G3'), __('The system will replace the default email templates of the site with custom email templates.', 'G3'))
                 ->html('templates', __('Templates', 'G3'), __('Override mail templates in the current theme directory: <code>templates/mail/*.php</code>. Plugin defaults are in <code>G3-Web/templates/mail/</code>.', 'G3'))
+                ->tab('notifications', __('Notifications'))
+                ->switch('welcome', __('Welcome', 'G3'), __('The system will send a welcome email to new users.', 'G3'))
+                ->switch('comment', __('Comment'), __('The system will send a comment email to users when his/her post is commented on.', 'G3'))
+                ->switch('comment_reply', __('Reply'), __('The system will send a comment reply email to users when his/her comment is replied to.', 'G3'))
+                ->switch('welcome_admin', __('Welcome', 'G3') . '-Admin', __('The system will send an email to admin about new user registered.', 'G3'))
+                ->switch('password_changed_admin', __('Password Changed', 'G3') . '-Admin', __('The system will send an email to admin about someone password changed.', 'G3'))
+                ->switch('automatic_updates_debug', __('Automatic Updates Debug', 'G3') . '-Admin', __('The system will send an email to admin about the automatic updates debug.', 'G3'))
+                ->switch('comment_moderation', __('Comment Moderation', 'G3') . '-Admin', __('The system will send an email to admin about the new comment moderation.', 'G3'))
                 ->tab('test', __('Email Test', 'G3')),
         ];
     }
@@ -242,7 +250,7 @@ class Mail extends Components {
     {
         $mail = MailerService::renderTemplate($template, $variables, [
             'to'      => $fallback['to'] ?? '',
-            'subject' => $fallback['subject'] ?? __('Notification', 'G3'),
+            'subject' => $fallback['subject'] ?? __('Notifications'),
             'message' => $fallback['message'] ?? $fallback['body'] ?? '',
             'body'    => $fallback['body'] ?? $fallback['message'] ?? '',
             'headers' => $fallback['headers'] ?? '',
@@ -261,19 +269,4 @@ class Mail extends Components {
         ], fn($value) => $value !== null));
     }
 
-    private function migrateTemplateOption(): void
-    {
-        $legacy = get_option(self::LEGACY_TEMPLATE_OPTION_KEY, null);
-        if (!is_array($legacy)) {
-            return;
-        }
-
-        $option = $this->option();
-        if (!isset($option['template'])) {
-            $option['template'] = ($legacy['enable'] ?? '0') === '1' ? '1' : '0';
-            update_option(MailerService::OPTION_KEY, $option);
-        }
-
-        delete_option(self::LEGACY_TEMPLATE_OPTION_KEY);
-    }
 }

@@ -44,9 +44,10 @@ class Performance extends Components {
     }
     protected function adminPanels(): array
     {
+        $code       = '<code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code>';
         $eg1        = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code>, <code>*_relationships</code></p>';
         $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? (int) G3_WP_BUILTIN_CACHE_TTL . ' ' . __('hours') : __('None');
-        $msg        = sprintf(__('Configure the constant <code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code> in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $currentTTL);
+        $msg        = sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL);
         $cron       = '<p class="mt-1"><code>define(\'DISABLE_WP_CRON\', true);</code></p>';
         return [
             $this->panel('performance', __('Performance', 'G3'))

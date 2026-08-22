@@ -6,28 +6,30 @@ use JEALER\G3\Services\MailerService;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
+use WP_Session_Tokens;
 use WP_User;
 use WP_Error;
 
 class UserService extends Service {
-    const META_KEY              = 'g3_user_meta';
-    const ROLE_OPTION_KEY       = 'g3_option_roles';
-    const GROUP_OPTION_KEY      = 'g3_option_groups';
-    const MANAGER_OPTION_KEY    = 'g3_option_managers';
-    const PREMIUM_OPTION_KEY    = 'g3_option_premiums';
-    const MEMBERSHIP_OPTION_KEY = 'g3_option_memberships';
-    const DURATION_OPTION_KEY   = 'g3_option_durations';
-    const EXT_TABLE             = 'g3_user_extra';
-    const CARD_TABLE            = 'g3_user_card';
-    const EXTRA_CACHE_GROUP     = 'g3_user_extra';
-    const CARD_CACHE_GROUP      = 'g3_user_card';
-    const QUERY_CACHE_GROUP     = 'g3_user_query';
-    const G3_LANG_COOKIE        = 'g3_user_language';
-    const G3_TIMEZONE_COOKIE    = 'g3_user_timezone';
-    const USER_COOKIE           = 'g3_user';
-    const VISITOR_COOKIE        = 'g3_visitor_id';
-    const VISITOR_SCRIPT_ID     = 'g3-visitor-finger-config';
-    const RESET_PASSWORD_TTL    = 3600;
+    const META_KEY                  = 'g3_user_meta';
+    const ROLE_OPTION_KEY           = 'g3_option_roles';
+    const GROUP_OPTION_KEY          = 'g3_option_groups';
+    const MANAGER_OPTION_KEY        = 'g3_option_managers';
+    const PREMIUM_OPTION_KEY        = 'g3_option_premiums';
+    const MEMBERSHIP_OPTION_KEY     = 'g3_option_memberships';
+    const DURATION_OPTION_KEY       = 'g3_option_durations';
+    const EXT_TABLE                 = 'g3_user_extra';
+    const CARD_TABLE                = 'g3_user_card';
+    const EXTRA_CACHE_GROUP         = 'g3_user_extra';
+    const CARD_CACHE_GROUP          = 'g3_user_card';
+    const QUERY_CACHE_GROUP         = 'g3_user_query';
+    const SESSION_TOKEN_CACHE_GROUP = 'g3_session_tokens';
+    const G3_LANG_COOKIE            = 'g3_user_language';
+    const G3_TIMEZONE_COOKIE        = 'g3_user_timezone';
+    const USER_COOKIE               = 'g3_user';
+    const VISITOR_COOKIE            = 'g3_visitor_id';
+    const VISITOR_SCRIPT_ID         = 'g3-visitor-finger-config';
+    const RESET_PASSWORD_TTL        = 3600;
     private ?WP_User       $user        = null;
     private array          $extra       = [];
     private array          $card        = [];
@@ -42,6 +44,7 @@ class UserService extends Service {
         $this->cardTable   = $this->wpdb->prefix . self::CARD_TABLE;
         $this->mailService = $this->container->get(MailerService::class);
     }
+
 
     public function init(int|WP_User|null $userId = null): ?UserService
     {
@@ -416,7 +419,7 @@ class UserService extends Service {
     private function passwordResetErrorMessage(WP_Error $error): string
     {
         return match ($error->get_error_code()) {
-            'expired_key' => __('<strong>Error:</strong> Your password reset link has expired. Please request a new link below.'),
+            'expired_key' => MailerService::resetLinkExpiredMsg(),
             'invalid_key' => MailerService::resetLinkExpiredMsg(),
             default       => $error->get_error_message() ?: MailerService::resetLinkExpiredMsg(),
         };
@@ -458,6 +461,21 @@ class UserService extends Service {
             [],
             $mail['headers']
         );
+    }
+
+    /**
+     * Revoke User Session Tokens
+     * 
+     * 撤销用户会话令牌
+     * 
+     * @param WP_User|int $id user id
+     * @return void
+     */
+    public function revokeSessionTokens(WP_User|int $id): void
+    {
+        $id       = $this->userId($id);
+        $sessions = WP_Session_Tokens::get_instance($id);
+        $sessions->destroy_all();
     }
 
     /**

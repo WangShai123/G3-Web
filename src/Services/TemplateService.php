@@ -1,7 +1,9 @@
 <?php
 namespace JEALER\G3\Services;
 
-class TemplateService {
+use JEALER\G3\Core\Service\Service;
+
+class TemplateService extends Service {
     public function singleTemplate($template)
     {
         if (!is_single()) {
@@ -10,12 +12,12 @@ class TemplateService {
         $postType = get_post_type();
         $themeDir = get_stylesheet_directory();
 
-        $typeTemplate = $themeDir . "/templates/single/{$postType}.php";
+        $typeTemplate = $themeDir . "/templates/post/{$postType}.php";
         if (file_exists($typeTemplate)) {
             return $typeTemplate;
         }
 
-        $defaultTemplate = $themeDir . '/templates/single/index.php';
+        $defaultTemplate = $themeDir . '/templates/post/index.php';
         if (file_exists($defaultTemplate)) {
             return $defaultTemplate;
         }

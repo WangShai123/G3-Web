@@ -30,6 +30,7 @@ class SystemService extends Service {
     const THEME_OPTION_KEY = 'g3_option_themes';
     // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
+    const THEME_COOKIE       = 'ui-theme';
     public function __construct()
     {
         parent::__construct();

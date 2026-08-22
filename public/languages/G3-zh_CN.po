@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3-Web\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2026-07-23 05:25+0000\n"
+"PO-Revision-Date: 2026-08-13 16:26+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.2; wp-6.9.4; php-8.4.14\n"
+"X-Loco-Version: 2.8.7; wp-6.9.5; php-8.4.14\n"
 "X-Domain: G3"
 
 #: src/Components/Performance/views/tab-fastcgi.php:61
@@ -22,7 +22,7 @@ msgid ""
 "strategy takes precedence over the backend application's caching strategy."
 msgstr "“强制接管”缓存控制权: 忽略后端 PHP-FPM 返回的缓存控制头部信息，确保 Nginx 的缓存策略优先于后端应用的缓存策略。"
 
-#: src/Components/Auth/Auth.php:142
+#: src/Components/Auth/Auth.php:183
 msgid "%d code generation failed."
 msgid_plural "%d codes generation failed."
 msgstr[0] "%d 个邀请码生成失败。"
@@ -69,13 +69,13 @@ msgstr ""
 "3. 创建 <code>object-cache.php</code> 对象存储文件：在 管理后台 > 开发者模式 > 数据刷新 选项页中，点击 "
 "\"生成 object-cache.php 文件\" 按钮，为 WordPress 增加对象缓存功能。"
 
-#: src/Components/Developer/Developer.php:160
+#: src/Components/Developer/Developer.php:184
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
 msgstr "：如果<code>checkbox</code>未勾选，它不会提交任何值。"
 
-#: src/Components/Customer/Customer.php:93
+#: src/Components/Customer/Customer.php:94
 msgid ""
 "<code>CustomerMessageJob</code> removes data older than this many days. "
 "Default: 180."
@@ -106,7 +106,7 @@ msgstr ""
 "<h3>G3-Web 插件启用失败！</h3>G3-Web 需要 PHP 扩展：<b>%s</b>。<br>请安装它，并在 <strong>php."
 "ini</strong> 文件中配置它，然后重启 PHP 服务。"
 
-#: src/Components/Performance/Performance.php:69
+#: src/Components/Performance/Performance.php:70
 msgid ""
 "<p class=\"mt-1\">Disable WordPress's built-in cron jobs to improve "
 "performance.</p><p class=\"mt-1\">You'll find that even if you've configured "
@@ -118,11 +118,27 @@ msgstr ""
 "你会发现：即使你设置和使用了 redis，但是 wordpress 也会偷偷地频繁请求数据库，并不能实现真正的 0 SQL。因为 wordpress "
 "Cron 在作祟。</p>"
 
+#: src/Services/MailerService.php:338
+msgid ""
+"<strong>Error:</strong> Your password reset link appears to be invalid. "
+"Please request a new link."
+msgstr ""
+
 #: src/Components/Setting/Setting.php:226
 msgid ""
 "<strong>Share it to your friends, robots or AI!</strong> You can access the "
 "local sitemap cache file through the current address."
 msgstr "您可以通过当前地址访问本地的 sitemap 缓存文件。<strong>把它分享给您的朋友、机器人或AI！</strong>"
+
+#: templates/mail/payment-success.php:4
+#, php-format
+msgid "[%s] Payment successful"
+msgstr ""
+
+#: templates/mail/site-admin-email-change.php:4
+#, php-format
+msgid "[%s] Site admin email changed"
+msgstr ""
 
 #: src/Components/Developer/views/tab-help.php:13
 #: src/Components/Developer/views/tab-help.php:17
@@ -145,6 +161,7 @@ msgid "Activity Feature"
 msgstr "活动功能"
 
 #: src/Components/Ad/Ad.php:10 src/Components/Ad/Ad.php:11
+#: src/Components/Ad/Ad.php:21
 msgid "Ad"
 msgstr "广告"
 
@@ -154,8 +171,8 @@ msgstr "广告"
 #: src/Components/Announcement/Announcement.php:22
 #: src/Components/Announcement/Announcement.php:23
 #: src/Components/Swiper/Includes/SwiperListTable.php:137
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:56
-#: src/Components/Swiper/views/tab-locations.php:21
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:68
+#: src/Components/Swiper/views/tab-locations.php:67
 #: src/Components/User/Includes/PremiumListTable.php:93
 #: src/Components/User/Includes/ProjectListTable.php:80
 #: src/Components/User/Includes/ManagerListTable.php:94
@@ -163,8 +180,6 @@ msgstr "广告"
 #: src/Components/User/Includes/DurationListTable.php:80
 #: src/Components/User/Includes/CustomListTable.php:77
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:75
-#: src/Components/WechatOA/views/tab-reply.php:17
-#: src/Components/WechatOA/views/tab-reply.php:18
 msgid "Add New"
 msgstr "新建"
 
@@ -195,11 +210,11 @@ msgstr "添加新商品品类"
 msgid "Add Swiper"
 msgstr "添加轮播图"
 
-#: src/Components/Developer/Developer.php:88
+#: src/Components/Developer/Developer.php:90
 msgid "Admin Bar"
 msgstr "管理工具栏"
 
-#: src/Components/Security/Security.php:84
+#: src/Components/Security/Security.php:83
 msgid "Admin Login URL"
 msgstr "后台登录地址"
 
@@ -215,22 +230,11 @@ msgstr "管理员"
 msgid "Ads Management"
 msgstr "广告管理"
 
-#: src/Components/Post/Post.php:148
+#: src/Components/Post/Post.php:140
 msgid ""
 "After being enabled, it will display the local time based on the user's time "
 "zone, rather than the time zone set in the system settings."
 msgstr "启用后，它会让时间数据，根据用户时区显示为当地时间，而非系统设置中的时区时间。"
-
-#: src/Components/Mail/Mail.php:88
-msgid ""
-"After successful user registration, send an email notification to the user."
-msgstr "用户注册成功后，发送邮件通知用户"
-
-#: src/Components/Mail/Mail.php:90
-msgid ""
-"After the user retrieves the password, send an email notification to the "
-"user."
-msgstr "用户找回密码后，发送邮件通知用户"
 
 #: src/Components/Setting/views/tab-llm.php:5
 msgid ""
@@ -280,13 +284,17 @@ msgstr "所有商品品类"
 msgid "All Products"
 msgstr "所有商品"
 
-#: src/Components/Auth/views/tab-invitation.php:22
+#: templates/user/register.php:272
+msgid "Already have an account?"
+msgstr ""
+
+#: src/Components/Auth/views/tab-invitation.php:20
 msgid "Amount"
 msgstr "数量"
 
 #: src/Components/Announcement/Announcement.php:19
-#: src/Components/Customer/Customer.php:68
 #: src/Components/Customer/Customer.php:69
+#: src/Components/Customer/Customer.php:70
 msgid "Announcement"
 msgstr "公告"
 
@@ -330,11 +338,11 @@ msgstr "应用监视器"
 msgid "Apply the configured image style to original image URLs."
 msgstr ""
 
-#: src/Components/Post/Post.php:638
+#: src/Components/Post/Post.php:654
 msgid "Archive Sidebar"
 msgstr "归档页侧边栏"
 
-#: src/Utilities/Message.php:76
+#: src/Utilities/Message.php:81
 msgid "Are you sure you want to change it?"
 msgstr "您确定要更改它吗？"
 
@@ -346,7 +354,7 @@ msgstr "您确定要关闭它吗？"
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr "您确认要创建微信公众号菜单吗？"
 
-#: src/Utilities/Message.php:72
+#: src/Utilities/Message.php:77
 #| msgid "Are you sure you want to delete this menu?"
 msgid "Are you sure you want to delete it?"
 msgstr "您确定要删除它吗？"
@@ -404,33 +412,32 @@ msgid ""
 "the live broadcast."
 msgstr "已授权用户，每季度可以在直播中，获得一次免费的业务顾问服务。"
 
-#: src/Components/Developer/Developer.php:116
+#: src/Components/Developer/Developer.php:140
 msgid "Auto Backup"
 msgstr "自动备份"
 
-#: src/Components/Post/Post.php:141
+#: src/Components/Post/Post.php:133
 msgid "Auto Notice"
 msgstr "自动声明"
 
-#: src/Components/Customer/Customer.php:74
+#: src/Components/Customer/Customer.php:75
 msgid "Automated message created outside working hours. HTML is allowed."
 msgstr "非工作时间自动生成的消息。允许使用 HTML 格式。"
 
-#: src/Components/Post/Post.php:141
+#: src/Components/Mail/Mail.php:86 src/Components/Mail/Mail.php:233
+msgid "Automatic Updates Debug"
+msgstr ""
+
+#: src/Components/Post/Post.php:133
 #| msgid "Automatically add a notice at the end of the article."
 msgid "Automatically add a notice at the end of the article"
 msgstr "在内容底部自动添加版权声明等信息"
 
-#: src/Components/Post/Post.php:142
+#: src/Components/Post/Post.php:134
 msgid ""
 "Automatically add your encoded & invisible brand mark in the article while "
-"saving to protect your content copyright.<br>It will cost several memory "
-"while saving. <a href=\"/wp-admin/admin.php?page=post-reading&g3-"
-"test=robustEncoder\" target=\"_blank\">Test Performance</a>"
-msgstr ""
-"当您保存文章内容时，自动向内容中加入您的品牌标识（标识经过编码后不显示）。<br>保存内容的时，它会消耗一定的内存资源。<a href=\"/wp-"
-"admin/admin.php?page=post-reading&g3-test=robustEncoder\" target=\"_blank\">"
-"性能测试</a>"
+"saving to protect your content copyright."
+msgstr "当您保存文章内容时，自动向内容中加入您的品牌标识（标识经过编码后不显示）。"
 
 #: src/Components/Form/Form.php:65
 msgid ""
@@ -440,6 +447,10 @@ msgstr "当用户提交表单时，系统自动发送通知邮件到您的邮箱
 #: templates/developer/w.php:116
 msgid "Balance Management"
 msgstr "余额管理"
+
+#: src/Components/Wallet/Wallet.php:47
+msgid "Bank transfer fees"
+msgstr ""
 
 #: src/Services/WechatOAService.php:1125
 msgid "Batch insert keywords failed"
@@ -459,13 +470,13 @@ msgid ""
 "relevant <a href=\"%s\">Open Platform</a> settings."
 msgstr "启用相关登录功能前，请确保完成相关<a href=\"%s\">开放平台</a>设置。"
 
-#: src/Components/Post/Post.php:144
+#: src/Components/Post/Post.php:136
 msgid ""
 "Before enabling the knowledge payment service, please ensure that payment "
 "and other related functional configurations have been completed."
 msgstr "启用知识付费业务前，请确保已完成支付等相关功能配置。"
 
-#: src/Components/Performance/Performance.php:55
+#: src/Components/Performance/Performance.php:56
 msgid ""
 "Before enabling this feature, please ensure that the relevant queue "
 "consumption function is already enabled. This is because, after this feature "
@@ -505,7 +516,7 @@ msgstr "禁止访问 wp-config.php 文件"
 msgid "Block access to XML-RPC"
 msgstr "禁止访问 XML-RPC 服务"
 
-#: src/Components/Developer/Developer.php:86
+#: src/Components/Developer/Developer.php:88
 msgid "Block Patterns"
 msgstr "区块样板配置"
 
@@ -528,7 +539,7 @@ msgstr "品牌"
 msgid "Brands"
 msgstr "品牌"
 
-#: src/Components/Developer/Developer.php:125
+#: src/Components/Developer/Developer.php:149
 msgid "Build Theme"
 msgstr "创建主题"
 
@@ -569,13 +580,13 @@ msgstr ""
 "利用 nginx fastcgi 缓存功能，将网页内容缓存为静态 HTML，每一次普通的用户 GET 请求时，nginx 都会优先读取缓存文件，减少与 "
 "php-fpm 的非必要交互。"
 
-#: src/Components/Performance/Performance.php:67
+#: src/Components/Performance/Performance.php:68
 #: src/Components/Developer/views/tab-system.php:61
 #| msgid "Cancle"
 msgid "Cache"
 msgstr "缓存"
 
-#: src/Components/Developer/Developer.php:114
+#: src/Components/Developer/Developer.php:138
 #: src/Components/Setting/Setting.php:187
 #: src/Components/Setting/Setting.php:226
 msgid "Cache Data"
@@ -598,7 +609,7 @@ msgstr "无法删除当前规格选项，它正在被某SKU所使用。"
 msgid "Cannot delete this spec, it is used in some sku or options."
 msgstr "禁止删除该规格，因为它正被某sku或选项所使用。"
 
-#: src/Components/Post/Post.php:777
+#: src/Components/Post/Post.php:789
 msgid "Card Menu"
 msgstr "卡片菜单"
 
@@ -610,23 +621,19 @@ msgstr "购物车"
 msgid "Categories"
 msgstr "分类"
 
-#: src/Components/Developer/Developer.php:148
+#: src/Components/Developer/Developer.php:172
 msgid "Change the direction"
 msgstr "换个方向"
 
-#: src/Components/Customer/Customer.php:67
+#: src/Components/Customer/Customer.php:68
 msgid "Chat window title."
 msgstr "聊天窗口标题。"
 
-#: src/Components/Developer/Developer.php:107
-msgid "Check & Remove the default dashboard widgets."
-msgstr "勾选并移除WordPress默认的仪表盘挂件。"
-
-#: src/Components/Developer/Developer.php:153
+#: src/Components/Developer/Developer.php:177
 msgid "Checkbox field"
 msgstr "多选框字段"
 
-#: src/Components/Developer/Developer.php:97
+#: src/Components/Developer/Developer.php:99
 msgid "Clean the data in wp head."
 msgstr "净化WordPress模板渲染后的头部数据。"
 
@@ -654,7 +661,7 @@ msgstr "点击生成 llms.txt 缓存文件。"
 msgid "Click to generate sitemap cache files."
 msgstr "点击生成站点地图缓存文件。"
 
-#: src/Components/Customer/Customer.php:177
+#: src/Components/Customer/Customer.php:178
 msgid "Closed"
 msgstr "已关闭"
 
@@ -666,6 +673,10 @@ msgstr "文件云存储"
 #: src/Components/Comment/widgets/CommentWidget.php:65
 msgid "Comment List"
 msgstr "评论列表"
+
+#: src/Components/Mail/Mail.php:87
+msgid "Comment Moderation"
+msgstr ""
 
 #: templates/developer/w.php:110
 msgid "Community System"
@@ -688,28 +699,26 @@ msgstr "配置"
 msgid "Configuration Guide"
 msgstr "配置指南"
 
-#: src/Components/Performance/Performance.php:49
+#: src/Components/Performance/Performance.php:50
 #, php-format
-#| msgid ""
-#| "Configure the constant <code>define(\"G3_WP_BUILTIN_CACHE_TTL\", 24);"
-#| "</code> in <code>wp-config</code> to set cache expiration for some built-"
-#| "in functions in WordPress to avoid redundant junk data. Default: 24 hours."
-#| " Current value: %d hours."
 msgid ""
-"Configure the constant <code>define(\"G3_WP_BUILTIN_CACHE_TTL\", 24);</code> "
-"in <code>wp-config</code> to set cache expiration for some built-in "
-"functions in WordPress to avoid redundant junk data. Default: 24 hours. "
-"Current value: %s."
+"Configure the constant %s in <code>wp-config</code> to set cache expiration "
+"for some built-in functions in WordPress to avoid redundant junk data. "
+"Default: 24 hours. Current value: %s."
 msgstr ""
-"在 <code>wp-config</code> 中配置常量 <code>define('G3_WP_BUILTIN_CACHE_TTL', 24);"
-"</code> 为一些 WordPress 内置的功能设置缓存过期时间，避免垃圾数据冗余。默认值：24小时。当前配置：%s。"
+"在 <code>wp-config</code> 中配置常量 %s。为一些 WordPress "
+"内置的功能设置缓存过期时间，避免垃圾数据冗余。默认值：24小时。当前配置：%s。"
 
-#: src/Components/Form/views/page-list.php:55
+#: src/Components/Form/views/page-list.php:57
 #: src/Components/WechatOA/views/tab-message.php:46
 msgid "Confirm"
 msgstr "确认"
 
-#: src/Components/Performance/Performance.php:80
+#: templates/user/register.php:256
+msgid "Confirm password"
+msgstr ""
+
+#: src/Components/Performance/Performance.php:81
 msgid "Consumer"
 msgstr "消费者"
 
@@ -718,12 +727,12 @@ msgstr "消费者"
 msgid "Contact us"
 msgstr "联系我们"
 
-#: templates/developer/w.php:106 src/Components/Post/Post.php:705
+#: templates/developer/w.php:106 src/Components/Post/Post.php:717
 #: src/Components/Share/Share.php:55
 msgid "Content Distribution"
 msgstr "内容分发"
 
-#: src/Components/Security/Security.php:97
+#: src/Components/Security/Security.php:96
 msgid "Content Security Policy"
 msgstr "内容安全策略"
 
@@ -735,11 +744,11 @@ msgstr "继续访问"
 msgid "Copied to clipboard!"
 msgstr "成功复制到剪贴板！"
 
-#: src/Components/Post/Post.php:140
+#: src/Components/Post/Post.php:132
 msgid "Copyright Notice"
 msgstr "版权声明"
 
-#: src/Components/Post/Post.php:140
+#: src/Components/Post/Post.php:132
 msgid ""
 "Copyright notice to display on each post & page. Suggest: All publicly "
 "displayed data on this platform is sourced from the public internet and is "
@@ -751,20 +760,20 @@ msgid ""
 msgstr ""
 "版权声明将显示在每篇文章和页面。建议：本平台内的所有公开展示数据均来自于公开互联网，且仅做功能测试数据所用。它们并不代表本平台的观点。本平台对其文字、图片与其他内容的真实性、及时性、完整性和准确性以及其权利属性均不作任何保证和承诺，请访客和相关方自行核实。"
 
-#: src/Components/Post/Post.php:142
+#: src/Components/Post/Post.php:134 src/Components/Post/Post.php:452
 msgid "Copyright Protection"
 msgstr "版权保护"
 
 #: src/Components/Setting/Setting.php:191
-#: src/Components/Post/widgets/PostWidget.php:75
+#: src/Components/Post/widgets/PostWidget.php:78
 msgid "Count"
 msgstr "数量"
 
-#: src/Components/Developer/Developer.php:132
+#: src/Components/Developer/Developer.php:156
 msgid "Counter input"
 msgstr "计数器输入框"
 
-#: src/Components/Post/Post.php:582 src/Components/Post/Post.php:603
+#: src/Components/Post/Post.php:598 src/Components/Post/Post.php:619
 msgid "Cover"
 msgstr "封面图"
 
@@ -772,11 +781,15 @@ msgstr "封面图"
 msgid "Cover Image"
 msgstr "封面图"
 
+#: templates/user/register.php:207 templates/user/register.php:347
+msgid "Create account"
+msgstr ""
+
 #: src/Utilities/Message.php:47
 msgid "Created"
 msgstr "创建成功"
 
-#: src/Components/Form/Includes/FormListTable.php:41
+#: src/Components/Form/Includes/FormListTable.php:45
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:38
 msgid "Created At"
 msgstr "创建时间"
@@ -785,7 +798,7 @@ msgstr "创建时间"
 msgid "Creator"
 msgstr "创建者"
 
-#: src/Components/Wallet/Wallet.php:39
+#: src/Components/Wallet/Wallet.php:49
 msgid "Credits"
 msgstr "积分"
 
@@ -793,11 +806,11 @@ msgstr "积分"
 msgid "Credits System"
 msgstr "积分系统"
 
-#: src/Components/Wallet/Wallet.php:41
+#: src/Components/Wallet/Wallet.php:50
 msgid "Cryptocurrency"
 msgstr "加密货币"
 
-#: src/Components/Auth/Auth.php:83
+#: src/Components/Auth/Auth.php:70
 msgid "Currency Pay"
 msgstr "货币支付"
 
@@ -813,7 +826,7 @@ msgstr "自定义"
 msgid "Custom Admin"
 msgstr "自定义管理后台"
 
-#: src/Components/Security/Security.php:83
+#: src/Components/Security/Security.php:82
 #| msgid "Custom Admin Login URL"
 msgid "Custom Admin Login"
 msgstr "自定义管理登录地址"
@@ -826,7 +839,7 @@ msgstr "自定义代码"
 msgid "Custom Email Template"
 msgstr "自定义邮件模板"
 
-#: src/Components/Mail/Mail.php:87
+#: src/Components/Mail/Mail.php:78
 msgid "Custom Email Templates"
 msgstr "自定义邮件模板"
 
@@ -838,11 +851,11 @@ msgstr "自定义数据已删除"
 msgid "Custom field updated."
 msgstr "自定义数据已更新"
 
-#: src/Components/User/User.php:54
+#: src/Components/User/User.php:59
 msgid "Custom Group"
 msgstr "自定义组"
 
-#: src/Components/Post/Post.php:686
+#: src/Components/Post/Post.php:698
 msgid "Custom interaction data"
 msgstr "自定义交互数据"
 
@@ -854,9 +867,8 @@ msgstr "自定义回复"
 #: src/Components/Customer/Customer.php:37
 #: src/Components/Customer/Customer.php:46
 #: src/Components/Customer/Customer.php:47
-#: src/Components/Customer/Customer.php:58
-#: src/Components/Customer/Customer.php:63
-#: src/Components/Customer/Customer.php:141
+#: src/Components/Customer/Customer.php:64
+#: src/Components/Customer/Customer.php:142
 msgid "Customer Service"
 msgstr "客服"
 
@@ -864,7 +876,7 @@ msgstr "客服"
 msgid "Customize the title that will be displayed when shared on WeChat."
 msgstr "自定义内容被分享到微信后显示的标题"
 
-#: src/Components/Themes/Themes.php:77
+#: src/Components/Themes/Themes.php:78
 msgid "Dark Scheme"
 msgstr "深色配色"
 
@@ -876,14 +888,14 @@ msgstr "数据刷新成功"
 msgid "Data Missing"
 msgstr "数据缺失"
 
-#: src/Components/User/User.php:207 src/Components/User/User.php:243
-#: src/Components/User/User.php:263 src/Components/User/User.php:278
-#: src/Components/User/User.php:299 src/Components/User/User.php:314
-#: src/Components/User/User.php:334
+#: src/Components/User/User.php:225 src/Components/User/User.php:261
+#: src/Components/User/User.php:281 src/Components/User/User.php:296
+#: src/Components/User/User.php:317 src/Components/User/User.php:332
+#: src/Components/User/User.php:352
 msgid "Data missing"
 msgstr "数据缺失"
 
-#: src/Components/Post/widgets/PostWidget.php:68
+#: src/Components/Post/widgets/PostWidget.php:71
 msgid "Data Type"
 msgstr "数据类型"
 
@@ -891,18 +903,18 @@ msgstr "数据类型"
 msgid "Database Queries"
 msgstr "数据库查询"
 
-#: src/Components/Auth/Auth.php:71 src/Components/Auth/Auth.php:72
-#: src/Components/Auth/Auth.php:73 src/Components/Auth/Auth.php:74
-#: src/Components/Auth/Auth.php:75 src/Components/Auth/Auth.php:76
-#: src/Components/Auth/Auth.php:77
+#: src/Components/Auth/Auth.php:58 src/Components/Auth/Auth.php:59
+#: src/Components/Auth/Auth.php:60 src/Components/Auth/Auth.php:61
+#: src/Components/Auth/Auth.php:62 src/Components/Auth/Auth.php:63
+#: src/Components/Auth/Auth.php:64
 msgid "Days"
 msgstr "日"
 
-#: src/Components/WechatOA/views/tab-message.php:97
+#: src/Components/WechatOA/views/tab-message.php:100
 msgid "Days must be greater than 0"
 msgstr "天数必需大于0"
 
-#: src/Components/Customer/Customer.php:86
+#: src/Components/Customer/Customer.php:87
 msgid "Days when agents are expected to be online."
 msgstr "客服服务工作日。"
 
@@ -914,7 +926,7 @@ msgstr "默认头像"
 msgid "Default Cover"
 msgstr "默认封面图"
 
-#: src/Components/Customer/Customer.php:92
+#: src/Components/Customer/Customer.php:93
 msgid "Default display name for anonymous visitors."
 msgstr "匿名访客的默认显示名称。"
 
@@ -941,7 +953,7 @@ msgstr "默认消息"
 msgid "Define cache switch"
 msgstr "定义缓存开关"
 
-#: src/Components/Post/Post.php:138
+#: src/Components/Post/Post.php:130
 msgid ""
 "Defines how long a visit from the same user must wait before it counts as a "
 "new view."
@@ -959,12 +971,12 @@ msgid "Delay"
 msgstr "延迟"
 
 #: src/Components/Swiper/Swiper.php:152
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:107
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:119
 msgid "Delete Failed"
 msgstr "删除失败"
 
 #: src/Components/WechatOA/Includes/WechatOAMessageListTable.php:82
-#: src/Components/WechatOA/views/tab-message.php:79
+#: src/Components/WechatOA/views/tab-message.php:123
 msgid "Delete History Data"
 msgstr "删除历史数据"
 
@@ -972,9 +984,9 @@ msgstr "删除历史数据"
 #: src/Services/OrdersService.php:131
 #: src/Components/Announcement/Announcement.php:90
 #: src/Components/Developer/Includes/CronListTable.php:306
-#: src/Components/Form/Includes/FormListTable.php:151
+#: src/Components/Form/Includes/FormListTable.php:166
 #: src/Components/Swiper/Includes/SwiperListTable.php:152
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:104
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:116
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:175
 #: src/Components/User/Includes/PremiumListTable.php:114
 #: src/Components/User/Includes/ProjectListTable.php:132
@@ -1011,25 +1023,25 @@ msgstr "描述"
 msgid "Design"
 msgstr "设计"
 
-#: src/Components/Post/Post.php:744
+#: src/Components/Post/Post.php:756
 msgid "Desktop Footer Menu"
 msgstr "桌面主题底部菜单"
 
-#: src/Components/Post/Post.php:745
+#: src/Components/Post/Post.php:757
 msgid "Desktop Footer Secondary Menu"
 msgstr "桌面主题底部次级菜单"
 
-#: src/Components/Post/Post.php:742
+#: src/Components/Post/Post.php:754
 msgid "Desktop Header Menu"
 msgstr "桌面主题头部菜单"
 
-#: src/Components/Post/Post.php:743
+#: src/Components/Post/Post.php:755
 msgid "Desktop Header Secondary Menu"
 msgstr "桌面主题头部次级菜单"
 
-#: templates/developer/w.php:136 src/Components/Developer/Developer.php:77
-#: src/Components/Developer/Developer.php:244
-#: src/Components/Developer/Developer.php:245
+#: templates/developer/w.php:136 src/Components/Developer/Developer.php:79
+#: src/Components/Developer/Developer.php:269
+#: src/Components/Developer/Developer.php:270
 #| msgid "Development Mode"
 msgid "Developer Mode"
 msgstr "开发者模式"
@@ -1042,7 +1054,7 @@ msgstr "开发"
 msgid "Digital Product"
 msgstr "数字类商品"
 
-#: src/Utilities/Element.php:91 src/Components/Auth/Auth.php:62
+#: src/Utilities/Element.php:91
 msgid "Disable"
 msgstr "禁用"
 
@@ -1052,7 +1064,7 @@ msgid ""
 "avoid some mistakes."
 msgstr "禁用一些不常用的WordPress功能，可以让管理后台更整洁快速，并避免一些错误。"
 
-#: src/Components/Security/Security.php:94
+#: src/Components/Security/Security.php:93
 msgid ""
 "Disable the WordPress built-in REST API to avoid exposing sensitive "
 "information. Only admin can visit the build-in REST API."
@@ -1064,7 +1076,7 @@ msgid ""
 "the speed of the backend access."
 msgstr "禁用WordPress自动更新相关功能，可以显著地提升管理后台的访问速度。"
 
-#: src/Components/Post/Post.php:337
+#: src/Components/Post/Post.php:330
 msgid "Dislike"
 msgstr "讨厌"
 
@@ -1072,7 +1084,7 @@ msgstr "讨厌"
 msgid "Display Items"
 msgstr "显示选项"
 
-#: src/Components/Post/Post.php:817
+#: src/Components/Post/Post.php:829
 msgid "Display Type"
 msgstr "显示类型"
 
@@ -1137,7 +1149,7 @@ msgstr "通过 AOP 配置和AOP注解，轻松实现拦截、日志等切面逻�
 msgid "Edit Brand"
 msgstr "编辑品牌"
 
-#: src/Components/Customer/Customer.php:182
+#: src/Components/Customer/Customer.php:183
 msgid "Edit Conversation Title"
 msgstr "编辑会话标题"
 
@@ -1161,7 +1173,7 @@ msgstr "编辑轮播图"
 msgid "Elapsed Time"
 msgstr "耗时"
 
-#: src/Components/Mail/Mail.php:58 src/Components/Mail/Mail.php:69
+#: src/Components/Mail/Mail.php:51 src/Components/Mail/Mail.php:62
 msgid "Email"
 msgstr "邮件"
 
@@ -1169,44 +1181,33 @@ msgstr "邮件"
 msgid "Email Notification"
 msgstr "邮件通知"
 
-#: src/Components/Performance/Performance.php:55
+#: src/Components/Performance/Performance.php:56
 msgid "Email Queue"
 msgstr "邮件队列"
 
-#: src/Components/Mail/Mail.php:85
-msgid "Email Templates"
-msgstr "邮件模板"
-
-#: src/Components/Mail/Mail.php:94
+#: src/Components/Mail/Mail.php:88
 msgid "Email Test"
 msgstr "邮件测试"
 
-#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:160
+#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:184
 #: src/Components/OSS/OSS.php:67 src/Components/OSS/OSS.php:87
 msgid "Enable"
 msgstr "启用"
 
-#: src/Components/Post/Post.php:146
+#: src/Components/Post/Post.php:138
 msgid ""
 "Enable language switching based on user preferences. Only support Chinese "
 "and English."
 msgstr "根据用户偏好启用语言切换功能。仅支持中文和英文。"
 
-#: src/Components/Wallet/Wallet.php:37
-msgid "Enable Recharge, if you want users can recharge wallet."
-msgstr "如果您想让用户拥有钱包充值功能，请启用它。"
-
 #: src/Components/Form/Form.php:63
 msgid "Enable the contact form on the front-end of your website."
 msgstr "用户可以通过前端表单联系我们。"
 
-#: src/Components/Wallet/Wallet.php:35
-msgid "Enable Wallet, if you want balance feature."
-msgstr "如果您想要余额管理功能，请启用它。"
-
-#: src/Components/User/views/tab-level.php:58
+#: src/Components/User/views/tab-level.php:62
 #: src/Components/User/views/tab-level.php:168
-#: src/Components/User/views/tab-level.php:198
+#: src/Components/User/views/tab-level.php:205
+#: src/Components/User/views/tab-level.php:243
 msgid "End Credits"
 msgstr "结束积分"
 
@@ -1216,13 +1217,13 @@ msgstr ""
 "在这里输入您想要自定义输出的任何 <code>HTML</code>、<code>CSS</code>、<code>JavaScript</code> "
 "代码。"
 
-#: src/Components/WechatOA/views/tab-reply.php:27
-#: src/Components/WechatOA/views/tab-reply.php:109
+#: src/Components/WechatOA/views/tab-reply.php:22
+#: src/Components/WechatOA/views/tab-reply.php:118
 msgid "Enter keywords please"
 msgstr "请输入关键词"
 
-#: src/Components/WechatOA/views/tab-reply.php:35
-#: src/Components/WechatOA/views/tab-reply.php:118
+#: src/Components/WechatOA/views/tab-reply.php:32
+#: src/Components/WechatOA/views/tab-reply.php:129
 msgid "Enter reply please"
 msgstr "请输入回复内容"
 
@@ -1262,12 +1263,12 @@ msgstr "事件回复"
 msgid "Expired"
 msgstr "已过期"
 
-#: src/Components/Form/Includes/FormListTable.php:37
+#: src/Components/Form/Includes/FormListTable.php:42
 msgid "Extra Data"
 msgstr "扩展数据"
 
 #: src/Utilities/Response.php:89 src/Utilities/Message.php:67
-#: src/Components/Auth/Auth.php:126
+#: src/Components/Auth/Auth.php:167
 msgid "Failed"
 msgstr "失败"
 
@@ -1293,36 +1294,31 @@ msgstr "订单删除失败"
 msgid "Failed to generate LLM cache."
 msgstr "LLM缓存生成失败。"
 
-#: src/Components/Developer/Developer.php:461
+#: src/Components/Developer/Developer.php:486
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Controllers/AuthController.php:417
+#: src/Controllers/AuthController.php:533
 msgid "Failed to generate WeChat auth URL."
 msgstr "微信授权URL创建失败。"
 
-#: src/Services/MailerService.php:67
-msgid "Failed to load PHPMailer library."
-msgstr "PHPMailer库加载失败。"
-
-#: src/Components/Auth/Auth.php:106
+#: src/Components/Auth/Auth.php:147
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr "失败。建议一次性创建数量为1-20."
 
-#: src/Components/Customer/Customer.php:76
+#: src/Components/Customer/Customer.php:77
 msgid ""
 "Fallback message returned when customer service automation or business "
 "handling fails. HTML is allowed."
 msgstr "当业务系统出现故障时，系统自动返回的回退消息。允许使用HTML格式。"
 
-#: src/Components/Post/Post.php:334
+#: src/Components/Post/Post.php:327
 msgid "Favorite"
 msgstr "收藏"
 
-#: src/Controllers/UserController.php:43
 #: src/Components/Performance/widgets/MonitorWidget.php:102
 msgid "Feature Disabled"
 msgstr "该功能已被禁用"
@@ -1367,7 +1363,7 @@ msgstr "数据 %s 必需是 %s 的其中之一。"
 msgid "File Cache"
 msgstr "文件缓存"
 
-#: src/Components/Developer/Developer.php:130
+#: src/Components/Developer/Developer.php:154
 msgid "File upload"
 msgstr "文件上传"
 
@@ -1388,25 +1384,25 @@ msgstr "金融"
 msgid "Flexible Payment Terms"
 msgstr "灵活的付款方式"
 
-#: src/Components/Developer/Developer.php:373
+#: src/Components/Developer/Developer.php:398
 msgid "Flush all the cache data."
 msgstr "清空所有缓存数据。"
 
-#: src/Components/Developer/Developer.php:355
+#: src/Components/Developer/Developer.php:380
 msgid "Flush and fix the rewrite rules."
 msgstr "修复刷新WordPress重写规则。"
 
-#: src/Components/Developer/Developer.php:367
+#: src/Components/Developer/Developer.php:392
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr "清空当前设置选项数据，并恢复成上一次备份的数据。备份文件目录："
 
-#: src/Components/Developer/Developer.php:372
+#: src/Components/Developer/Developer.php:397
 msgid "Flush Cache"
 msgstr "清空缓存"
 
-#: src/Components/Developer/Developer.php:111
+#: src/Components/Developer/Developer.php:135
 msgid "Flush Data"
 msgstr "数据刷新"
 
@@ -1414,15 +1410,15 @@ msgstr "数据刷新"
 msgid "Flush Menus Online"
 msgstr "清空线上菜单"
 
-#: src/Components/Developer/Developer.php:360
+#: src/Components/Developer/Developer.php:385
 msgid "Flush REST routes cache"
 msgstr "刷新 REST 路由缓存"
 
-#: src/Components/Developer/Developer.php:354
+#: src/Components/Developer/Developer.php:379
 msgid "Flush Rewrite Rules"
 msgstr "刷新重写规则"
 
-#: src/Components/Developer/Developer.php:366
+#: src/Components/Developer/Developer.php:391
 msgid "Flush Setting Options"
 msgstr "刷新设置选项"
 
@@ -1506,11 +1502,11 @@ msgstr "禁止访问，因为请求过于频繁。请在 %s 秒后重试。"
 #: src/Components/Form/Form.php:35 src/Components/Form/Form.php:36
 #: src/Components/Form/Form.php:44 src/Components/Form/Form.php:45
 #: src/Components/Form/Form.php:60
-#: src/Components/Form/Includes/FormListTable.php:159
+#: src/Components/Form/Includes/FormListTable.php:174
 msgid "Form"
 msgstr "表单"
 
-#: src/Components/Developer/Developer.php:127
+#: src/Components/Developer/Developer.php:151
 msgid "Form Demo"
 msgstr "表单演示"
 
@@ -1540,11 +1536,11 @@ msgstr "从 PHP 配置文件（如 enable-php-83.conf）中确认和修改这个
 msgid "Frontend Editor"
 msgstr "前端编辑器"
 
-#: src/Components/Customer/Customer.php:70
+#: src/Components/Customer/Customer.php:71
 msgid "Frontend tip shown before conversation messages. HTML is allowed."
 msgstr "对话消息前显示的提示信息。允许使用HTML格式。"
 
-#: src/Components/Developer/Developer.php:760
+#: src/Components/Developer/Developer.php:786
 msgid "G3 License Code"
 msgstr "G3 授权码"
 
@@ -1592,7 +1588,7 @@ msgstr ""
 "G3-Web 会在 Redis 中建立 3 个数据库，分别用来缓存常规数据和队列任务。常规数据存储在数据库 0 中，队列任务存储在数据库 1 "
 "中，通知服务存储在数据库 2 中。"
 
-#: src/Components/Post/Post.php:775
+#: src/Components/Post/Post.php:787
 msgid "General Menu"
 msgstr "常规菜单"
 
@@ -1600,13 +1596,13 @@ msgstr "常规菜单"
 msgid "General Product"
 msgstr "常规商品"
 
-#: src/Components/Mail/Mail.php:70
+#: src/Components/Mail/Mail.php:63
 msgid "General Settings"
 msgstr "常规设置"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:92
-#: src/Components/Auth/views/tab-invitation.php:17
-#: src/Components/Auth/views/tab-invitation.php:18
+#: src/Components/Auth/views/tab-invitation.php:51
+#: src/Components/Auth/views/tab-invitation.php:52
 msgid "Generate Invitation Code"
 msgstr "生成邀请码"
 
@@ -1614,7 +1610,7 @@ msgstr "生成邀请码"
 msgid "Generate LLM Cache"
 msgstr "生成 LLM 缓存"
 
-#: src/Components/Developer/Developer.php:377
+#: src/Components/Developer/Developer.php:402
 msgid "Generate object-cache.php"
 msgstr "生成 object-cache.php 文件"
 
@@ -1622,7 +1618,7 @@ msgstr "生成 object-cache.php 文件"
 msgid "Generate Sitemap"
 msgstr "生成站点地图"
 
-#: src/Components/Developer/Developer.php:378
+#: src/Components/Developer/Developer.php:403
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1644,7 +1640,7 @@ msgstr "全局规格"
 msgid "Guest"
 msgstr "访客"
 
-#: src/Components/Customer/Customer.php:92
+#: src/Components/Customer/Customer.php:93
 msgid "Guest Name"
 msgstr "访客名称"
 
@@ -1652,21 +1648,21 @@ msgstr "访客名称"
 msgid "Header Code"
 msgstr "页头区代码"
 
-#: src/Components/Customer/Customer.php:95
+#: src/Components/Customer/Customer.php:96
 msgid "Heartbeat"
 msgstr "心跳"
 
-#: src/Components/Customer/Customer.php:95
+#: src/Components/Customer/Customer.php:96
 msgid ""
 "Heartbeat interval in seconds. It is only used to keep the SSE connection "
 "alive. Default: 45, range: 30-60."
 msgstr "心跳间隔（以秒为单位）。该参数仅用于保持SSE连接活跃。默认值：45，范围：30-60。"
 
-#: src/Components/Developer/Developer.php:87
+#: src/Components/Developer/Developer.php:89
 msgid "Help Link"
 msgstr "顶部帮助链接"
 
-#: src/Components/Post/Post.php:629
+#: src/Components/Post/Post.php:645
 msgid "Homepage Sidebar"
 msgstr "首页侧边栏"
 
@@ -1679,7 +1675,7 @@ msgid ""
 "How to estimate the actual number of PHP files in your WordPress project?"
 msgstr "如何估算您的 WordPress 项目中实际 PHP 文件数量？"
 
-#: src/Components/Developer/Developer.php:163
+#: src/Components/Developer/Developer.php:187
 msgid "HTML Demo"
 msgstr "HTML演示"
 
@@ -1698,6 +1694,10 @@ msgstr "https://www.jealer.com/g3-system/"
 #: src/Components/Setting/Setting.php:160
 msgid "ICP Code"
 msgstr "ICP备案号"
+
+#: src/Services/UserService.php:329
+msgid "If the account exists, a password reset email has been sent."
+msgstr ""
 
 #: src/Components/Share/Share.php:89
 msgid "If the title is empty, the title of the post will be used."
@@ -1718,7 +1718,7 @@ msgstr ""
 "如果您想隐藏开发者模式的菜单，请在您的主题中定义常量 <code>define(\"G3_HIDE_DEVELOPER_MODE\", true);"
 "</code>"
 
-#: src/Components/Performance/Performance.php:70
+#: src/Components/Performance/Performance.php:71
 msgid ""
 "If you want to use scheduled tasks, please use the Queue and Job services "
 "provided by G3-Web, which combine systemd or supervisor for high-performance "
@@ -1727,7 +1727,7 @@ msgstr ""
 "如果您想使用定时任务，请使用 G3-Web 提供的 Queue 和 Job 服务，它是结合 systemd 或 supervisor "
 "的系统级的高性能和高可维护的功能。"
 
-#: src/Utilities/Response.php:78
+#: src/Utilities/Response.php:78 src/Utilities/Message.php:72
 msgid "Illegal request"
 msgstr "非法请求"
 
@@ -1735,7 +1735,7 @@ msgstr "非法请求"
 msgid "Image Style"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:131
+#: src/Components/Developer/Developer.php:155
 msgid "Image upload & preview"
 msgstr "图片上传和预览"
 
@@ -1759,7 +1759,7 @@ msgstr ""
 "在模板页面中，绝大部分数据都交由前端 JavaScript 利用 rest-api 和 客户端缓存（如 localStorage, "
 "indexDB）来处理和交互。减少服务器压力，降低流量传输，提升页面加载速度和用户体验。"
 
-#: src/Components/Security/Security.php:91
+#: src/Components/Security/Security.php:90
 #, php-format
 #| msgid ""
 #| "In the site map settings page, manually trigger to generate the site map "
@@ -1782,7 +1782,7 @@ msgid ""
 "subscribe the official account and visit."
 msgstr "在微信客户端中，公众号菜单每5分钟自动刷新一次。若您想即时手动刷新菜单，请重新订阅公众号后访问。"
 
-#: src/Components/Developer/Developer.php:129
+#: src/Components/Developer/Developer.php:153
 msgid "Input field"
 msgstr "输入框"
 
@@ -1804,8 +1804,12 @@ msgstr "安装并激活 <a href=\"%s\">G3WebDesktop</a> 主题来预览桌面端
 msgid "Internal Endpoint"
 msgstr ""
 
-#: src/Controllers/AuthController.php:219
-#: src/Controllers/AuthController.php:287
+#: src/Controllers/AuthController.php:229
+msgid "Invalid email address."
+msgstr ""
+
+#: src/Controllers/AuthController.php:335
+#: src/Controllers/AuthController.php:403
 msgid "Invalid Hash"
 msgstr "非法Hash"
 
@@ -1825,12 +1829,16 @@ msgstr "链接地址不正确"
 msgid "Invalid settings request."
 msgstr "无效的设置请求。"
 
-#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:144
+#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:146
 msgid "Invalid username or password."
 msgstr "用户名或密码不正确。"
 
-#: src/Components/Auth/Auth.php:63 src/Components/Auth/Auth.php:92
-#: src/Components/Auth/Auth.php:132
+#: src/Controllers/AuthController.php:221
+msgid "Invalid username."
+msgstr ""
+
+#: src/Components/Auth/Auth.php:50 src/Components/Auth/Auth.php:79
+#: src/Components/Auth/Auth.php:173
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:36
 msgid "Invitation Code"
 msgstr "邀请码"
@@ -1844,7 +1852,7 @@ msgid ""
 "the registration code first."
 msgstr "邀请码功能不可用。请先设置邀请码为注册码。"
 
-#: src/Components/Auth/Auth.php:67
+#: src/Components/Auth/Auth.php:54
 msgid "Invite-Only Registration"
 msgstr "强制邀请码注册"
 
@@ -1860,7 +1868,7 @@ msgstr "每页条数"
 msgid "JEALER"
 msgstr "JEALER"
 
-#: templates/developer/w.php:135 src/Components/Performance/Performance.php:71
+#: templates/developer/w.php:135 src/Components/Performance/Performance.php:72
 msgid "Junk Cleaner"
 msgstr "垃圾清理"
 
@@ -1894,7 +1902,7 @@ msgid "Latest Comments"
 msgstr "最新评论"
 
 #: src/Components/WechatOA/WechatOA.php:80
-#: src/Components/Post/widgets/PostWidget.php:71
+#: src/Components/Post/widgets/PostWidget.php:74
 msgid "Latest Posts"
 msgstr "最新文章"
 
@@ -1915,16 +1923,16 @@ msgstr ""
 "您可以通过 <a href=\"%s\" target=\"_blank\">在线文档</a> 和 <a href=\"%s\" "
 "target=\"_blank\">在线课程</a>，了解更多关于 G3-Web 插件的信息。"
 
-#: src/Components/User/User.php:53
+#: src/Components/User/User.php:58
 msgid "Level Group"
 msgstr "等级组"
 
-#: src/Components/Developer/Developer.php:665
-#: src/Components/Developer/Developer.php:668
+#: src/Components/Developer/Developer.php:690
+#: src/Components/Developer/Developer.php:693
 msgid "License Expired"
 msgstr "授权已过期"
 
-#: src/Components/Post/Post.php:336
+#: src/Components/Post/Post.php:329
 msgid "Like"
 msgstr "喜欢"
 
@@ -1941,7 +1949,7 @@ msgstr "限制用户"
 msgid "Linked SKU"
 msgstr "关联 SKU"
 
-#: src/Components/Post/Post.php:776
+#: src/Components/Post/Post.php:788
 msgid "List Card Menu"
 msgstr "列表卡片菜单"
 
@@ -1985,26 +1993,22 @@ msgstr "登出成功"
 msgid "Logged-in users are not cached"
 msgstr "已登录用户不缓存"
 
-#: templates/user/test.php:9 src/Services/AuthService.php:472
-#: src/Components/Security/Security.php:84 src/Components/Auth/Auth.php:38
-#: src/Components/Auth/Auth.php:39 src/Components/Auth/Auth.php:58
-#: src/Components/User/User.php:159
+#: templates/user/register.php:273 templates/user/reset-password.php:34
+#: src/Services/AuthService.php:492 src/Components/Security/Security.php:83
+#: src/Components/Auth/Auth.php:25 src/Components/Auth/Auth.php:26
+#: src/Components/Auth/Auth.php:44 src/Components/User/User.php:164
 msgid "Login"
 msgstr "登录"
 
-#: src/Components/Auth/Auth.php:90
+#: src/Components/Auth/Auth.php:77
 msgid "Login via Wechat Client"
 msgstr "微信客户端登录"
-
-#: src/Services/MailerService.php:76
-msgid "Mailer service is not configured."
-msgstr "邮件服务未配置成功。"
 
 #: src/Components/Swiper/Swiper.php:40
 msgid "Manage Locations"
 msgstr "管理位置"
 
-#: src/Components/User/User.php:55
+#: src/Components/User/User.php:60
 msgid "Manager Group"
 msgstr "管理组"
 
@@ -2027,26 +2031,26 @@ msgstr "搜索关键词的最大长度"
 msgid "Media Library"
 msgstr "素材库"
 
-#: src/Components/User/User.php:40 src/Components/User/User.php:41
-#: src/Components/User/User.php:63
+#: src/Components/User/User.php:45 src/Components/User/User.php:46
+#: src/Components/User/User.php:68
 msgid "Membership"
 msgstr "会员"
 
-#: src/Components/User/User.php:67
+#: src/Components/User/User.php:72
 msgid "Membership Card"
 msgstr "会员卡"
 
-#: src/Components/User/User.php:66
+#: src/Components/User/User.php:71
 #: src/Components/User/Includes/ProjectListTable.php:36
 #: src/Components/User/Includes/DurationListTable.php:40
-#: src/Components/User/views/tab-projects.php:45
-#: src/Components/User/views/tab-projects.php:106
-#: src/Components/User/views/tab-duration.php:33
-#: src/Components/User/views/tab-duration.php:117
+#: src/Components/User/views/tab-projects.php:44
+#: src/Components/User/views/tab-projects.php:119
+#: src/Components/User/views/tab-duration.php:34
+#: src/Components/User/views/tab-duration.php:134
 msgid "Membership Duration"
 msgstr "会员时长"
 
-#: src/Components/Developer/Developer.php:694
+#: src/Components/Developer/Developer.php:720
 msgid "Membership Feature"
 msgstr "会员专属功能"
 
@@ -2058,7 +2062,7 @@ msgstr "会员订单"
 msgid "Membership Product"
 msgstr "会员类商品"
 
-#: src/Components/User/User.php:65
+#: src/Components/User/User.php:70
 #| msgid "Membership Project"
 msgid "Membership Projects"
 msgstr "会员项目"
@@ -2071,13 +2075,13 @@ msgstr "会员管理系统"
 msgid "Memory Usage"
 msgstr "内存占用"
 
-#: src/Components/Post/Post.php:787
+#: src/Components/Post/Post.php:799
 msgid "Menu Type"
 msgstr "菜单类型"
 
-#: src/Components/Customer/Customer.php:72
-#: src/Components/Customer/Customer.php:74
-#: src/Components/Customer/Customer.php:76
+#: src/Components/Customer/Customer.php:73
+#: src/Components/Customer/Customer.php:75
+#: src/Components/Customer/Customer.php:77
 msgid "Message"
 msgstr "消息"
 
@@ -2107,11 +2111,11 @@ msgstr "消息已收到，感谢您的反馈。"
 msgid "Messages"
 msgstr "消息"
 
-#: src/Components/Developer/Developer.php:382
+#: src/Components/Developer/Developer.php:407
 msgid "Migrate"
 msgstr "迁移"
 
-#: src/Components/Developer/Developer.php:383
+#: src/Components/Developer/Developer.php:408
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2123,13 +2127,13 @@ msgstr ""
 msgid "Mini Program"
 msgstr "小程序"
 
-#: src/Components/Customer/Customer.php:96
+#: src/Components/Customer/Customer.php:97
 msgid ""
 "Minutes without messages before the system marks a conversation as timeout. "
 "Default: 120."
 msgstr "当一定时间无消息交互，系统将自动把会话标记为超时。单位分钟，默认值：120。"
 
-#: src/Components/Post/Post.php:746
+#: src/Components/Post/Post.php:758
 msgid "Mobile Menu"
 msgstr "手机菜单"
 
@@ -2145,7 +2149,7 @@ msgstr "修改系统默认头像"
 msgid "Modify the default system cover."
 msgstr "修改系统默认封面图"
 
-#: src/Components/Post/widgets/PostWidget.php:43
+#: src/Components/Post/widgets/PostWidget.php:46
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:42
 msgid "More"
 msgstr "更多"
@@ -2163,33 +2167,37 @@ msgstr ""
 msgid "Multi-theme Mode"
 msgstr "多主题模式"
 
-#: src/Services/PostService.php:888 src/Components/User/User.php:146
+#: src/Services/PostService.php:888 src/Components/User/User.php:151
 msgid "My Homepage"
 msgstr "我的主页"
 
-#: src/Components/User/User.php:147
+#: src/Components/User/User.php:152
 msgid "My Messages"
 msgstr "我的消息"
 
-#: src/Components/User/User.php:148
+#: src/Components/User/User.php:153
 msgid "My Orders"
 msgstr "我的订单"
 
-#: src/Components/User/User.php:150
+#: src/Components/User/User.php:155
 msgid "My Profile"
 msgstr "我的资料"
 
-#: src/Components/User/User.php:151
+#: src/Components/User/User.php:156
 msgid "My Settings"
 msgstr "我的设置"
 
-#: src/Components/User/User.php:149
+#: src/Components/User/User.php:154
 msgid "My Wallet"
 msgstr "我的钱包"
 
 #: src/Components/Product/Product.php:462
 msgid "Name or Key already exists."
 msgstr "名称或KEY已存在。"
+
+#: src/Components/Auth/Auth.php:47
+msgid "Native Auth Override"
+msgstr ""
 
 #: src/Components/Announcement/Announcement.php:24
 msgid "New Announcement"
@@ -2198,6 +2206,10 @@ msgstr "新公告"
 #: src/Components/Product/Product.php:196
 msgid "New Brand Name"
 msgstr "新品牌名称"
+
+#: templates/mail/site-admin-email-change.php:10
+msgid "New Email"
+msgstr ""
 
 #: src/Components/Product/Product.php:109
 msgid "New Product"
@@ -2236,7 +2248,7 @@ msgstr ""
 "Nginx 会根据请求协议（如 http/https）、请求方法（GET/POST）、主机名和完整的 URI 来生成一个唯一的 MD5 "
 "哈希值作为缓存文件名。"
 
-#: src/Components/Mail/Mail.php:73
+#: src/Components/Mail/Mail.php:66
 msgid "Nickname"
 msgstr "昵称"
 
@@ -2244,16 +2256,16 @@ msgstr "昵称"
 msgid "No brands found."
 msgstr "未发现任何品牌"
 
-#: src/Components/Customer/Customer.php:168
+#: src/Components/Customer/Customer.php:169
 msgid "No conversations"
 msgstr "无会话"
 
 #: src/Core/Admin/PanelRenderer.php:115
-#: src/Components/Swiper/views/tab-locations.php:92
+#: src/Components/Swiper/views/tab-locations.php:45
 msgid "No data changed"
 msgstr "无数据变更"
 
-#: src/Components/Mail/Mail.php:79
+#: src/Components/Mail/Mail.php:72
 msgid "No Encryption"
 msgstr "不加密"
 
@@ -2261,7 +2273,7 @@ msgstr "不加密"
 msgid "No items selected."
 msgstr "未选中任何数据"
 
-#: src/Components/Post/Post.php:125
+#: src/Components/Post/Post.php:117
 msgid "No Limit"
 msgstr "无限制"
 
@@ -2288,15 +2300,15 @@ msgstr "回收站里未发现任何商品。"
 msgid "No products found."
 msgstr "未发现商品。"
 
-#: src/Components/Themes/Themes.php:95
+#: src/Components/Themes/Themes.php:97
 msgid "None"
 msgstr "无"
 
-#: templates/developer/w.php:130 src/Components/Developer/Developer.php:119
+#: templates/developer/w.php:130 src/Components/Developer/Developer.php:143
 msgid "Object Cache"
 msgstr "对象缓存"
 
-#: src/Components/Developer/Developer.php:469
+#: src/Components/Developer/Developer.php:494
 #| msgid "object_cache.php file already exists."
 msgid "object-cache.php file already exists."
 msgstr "对象缓存文件 object-cache.php 已存在。"
@@ -2311,15 +2323,19 @@ msgstr "当然，如果您拥有完整的 JavaScript 技能，推荐您使用无
 msgid "Official Account Type"
 msgstr "公众号类型"
 
-#: src/Components/Customer/Customer.php:74
+#: src/Components/Customer/Customer.php:75
 msgid "Offline"
 msgstr "离线"
 
-#: src/Components/Customer/Customer.php:173
+#: templates/mail/site-admin-email-change.php:8
+msgid "Old Email"
+msgstr ""
+
+#: src/Components/Customer/Customer.php:174
 msgid "On Hold"
 msgstr "暂停"
 
-#: src/Components/Developer/Developer.php:676
+#: src/Components/Developer/Developer.php:702
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
@@ -2339,11 +2355,11 @@ msgstr "在线课程"
 msgid "Only one cloud storage provider can be enabled at the same time."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:160
+#: src/Components/Developer/Developer.php:184
 msgid "Only one option"
 msgstr "仅一个选项"
 
-#: src/Components/Auth/Auth.php:79
+#: src/Components/Auth/Auth.php:66
 msgid "onSale"
 msgstr "销售"
 
@@ -2359,6 +2375,10 @@ msgstr "打开方式"
 #: src/Components/OpenPlatform/OpenPlatform.php:44
 msgid "Open Platform"
 msgstr "开放平台"
+
+#: templates/mail/site-admin-email-change.php:16
+msgid "Open Settings"
+msgstr ""
 
 #: src/Components/Performance/views/tab-theme.php:47
 msgid ""
@@ -2385,7 +2405,7 @@ msgid ""
 "<code>image/resize,w_1200</code>."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:69
+#: src/Components/Customer/Customer.php:70
 msgid "Optional URL opened when the announcement is clicked."
 msgstr "点击公告时打开的（可选）URL。"
 
@@ -2415,11 +2435,6 @@ msgstr "订单类型"
 msgid "Orders"
 msgstr "订单"
 
-#: src/Components/Mail/Mail.php:92
-#| msgid "Order Payment Receipt Template"
-msgid "Orders Payment Receipt Template"
-msgstr "订单支付凭证模板"
-
 #: templates/developer/w.php:114
 #| msgid "Order System"
 msgid "Orders System"
@@ -2434,6 +2449,13 @@ msgstr ""
 msgid "Over 30 Subsystem Components"
 msgstr "超过30个子系统组件"
 
+#: src/Components/Mail/Mail.php:79
+msgid ""
+"Override mail templates in the current theme directory: <code>"
+"templates/mail/*.php</code>. Plugin defaults are in <code>G3-"
+"Web/templates/mail/</code>."
+msgstr ""
+
 #: src/Services/PostService.php:565 src/Services/PostService.php:591
 #, php-format
 #| msgid "Page $s"
@@ -2444,7 +2466,7 @@ msgstr "第%s页"
 msgid "Page Comments"
 msgstr "页面评论"
 
-#: src/Components/Post/Post.php:665
+#: src/Components/Post/Post.php:681
 msgid "Page Sidebar"
 msgstr "页面页侧边栏"
 
@@ -2456,7 +2478,7 @@ msgstr "已支付"
 msgid "Paid Amount"
 msgstr "实付金额"
 
-#: src/Components/Post/Post.php:144
+#: src/Components/Post/Post.php:136
 msgid "Paid Reading"
 msgstr "付费阅读"
 
@@ -2493,9 +2515,9 @@ msgstr "父级商品："
 msgid "Part of the advanced features need to be activated."
 msgstr "部分高级功能需要获得激活授权后才可用。"
 
-#: src/Components/Mail/Mail.php:90
-msgid "Password Recovery Notification Template"
-msgstr "找回密码通知模板"
+#: src/Components/Mail/Mail.php:85
+msgid "Password Changed"
+msgstr ""
 
 #: src/Components/OSS/OSS.php:77 src/Components/OSS/OSS.php:94
 msgid "Path Prefix"
@@ -2505,7 +2527,7 @@ msgstr ""
 msgid "Payment Link"
 msgstr "支付链接"
 
-#: src/Components/Auth/Auth.php:81
+#: src/Components/Auth/Auth.php:68
 msgid "Payment Method"
 msgstr "支付方式"
 
@@ -2513,8 +2535,8 @@ msgstr "支付方式"
 msgid "Payment System"
 msgstr "支付系统"
 
-#: src/Components/Customer/Customer.php:175
-#: src/Components/Form/Includes/FormListTable.php:179
+#: src/Components/Customer/Customer.php:176
+#: src/Components/Form/Includes/FormListTable.php:194
 msgid "Pending"
 msgstr "待处理"
 
@@ -2530,15 +2552,19 @@ msgstr "基于浏览器指纹对用户进行身份识别，统计在线人数。
 
 #: src/Components/Performance/Performance.php:37
 #: src/Components/Performance/Performance.php:38
-#: src/Components/Performance/Performance.php:52
+#: src/Components/Performance/Performance.php:53
 msgid "Performance"
 msgstr "性能"
 
-#: src/Components/Developer/Developer.php:96
+#: src/Components/Developer/Developer.php:98
 msgid "Permalinks"
 msgstr "固定链接"
 
-#: templates/form/form.php:29
+#: src/Components/Wallet/Wallet.php:48
+msgid "Personal income tax rate"
+msgstr ""
+
+#: templates/form/form.php:28
 msgid "Phone"
 msgstr "手机号"
 
@@ -2555,27 +2581,23 @@ msgstr "PHP 处理块"
 msgid "php-fpm processes the response, returns the response to nginx"
 msgstr "php-fpm 处理响应结果，并传递给Nginx"
 
-#: src/Services/MailerService.php:63
-msgid "PHPMailer library not found."
-msgstr "PHPMailer库不存在。"
-
-#: src/Components/Form/Form.php:63 src/Components/Security/Security.php:84
+#: src/Components/Form/Form.php:63 src/Components/Security/Security.php:83
 msgid ""
 "Please <a href=\"?page=developer-mode&tab=flush\">flush rewrite rules</a> "
 "after setting."
 msgstr "请在设置后<a href=\"?page=developer-mode&tab=flush\">刷新重写规则</a>。"
 
-#: src/Components/Developer/Developer.php:716
+#: src/Components/Developer/Developer.php:742
 msgid "Please enter a valid license code."
 msgstr "请输入正确的授权码。"
 
-#: src/Components/Mail/Mail.php:81
+#: src/Components/Mail/Mail.php:74
 msgid ""
 "Please enter the email address from which the sending operation will be "
 "executed."
 msgstr "请填写执行发件操作的电子邮箱地址。"
 
-#: src/Components/Developer/Developer.php:770
+#: src/Components/Developer/Developer.php:796
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2589,19 +2611,19 @@ msgstr ""
 msgid "Please fill in the complete data"
 msgstr "请填写完整的数据"
 
-#: src/Components/Mail/Mail.php:83
+#: src/Components/Mail/Mail.php:76
 msgid ""
 "Please fill in the email password or authorization code according to the "
 "service rules of the email provider."
 msgstr "请根据邮箱提供商的服务规则，填写邮箱密码或授权码。"
 
-#: src/Components/Mail/Mail.php:75
+#: src/Components/Mail/Mail.php:68
 msgid ""
 "Please fill in the SMTP address of the mail server, for example <code>smtp.x."
 "com</code>."
 msgstr "请填写邮件服务器的SMTP地址，如<code>smtp.x.com</code>。"
 
-#: src/Components/Mail/Mail.php:77
+#: src/Components/Mail/Mail.php:70
 #| msgid ""
 #| "Please fill in the SMTP port of the mail server, for example <code>"
 #| "25</code>."
@@ -2623,7 +2645,7 @@ msgstr "请输入选项"
 msgid "Please Select"
 msgstr "请选择"
 
-#: src/Components/Mail/Mail.php:79
+#: src/Components/Mail/Mail.php:72
 msgid ""
 "Please select the appropriate encryption method based on the configuration "
 "of the mail server."
@@ -2633,19 +2655,19 @@ msgstr "请根据邮件服务器的配置，选择合适的加密方式。"
 msgid "Please set status data again"
 msgstr "请重新设置状态数据"
 
-#: src/Components/Developer/Developer.php:83
+#: src/Components/Developer/Developer.php:85
 msgid "Plugin Editor"
 msgstr "插件编辑器"
 
-#: src/Components/Developer/Developer.php:95
+#: src/Components/Developer/Developer.php:97
 msgid "Plugins Page"
 msgstr "插件页"
 
-#: src/Components/Auth/Auth.php:82
+#: src/Components/Auth/Auth.php:69
 msgid "Points Pay"
 msgstr "积分支付"
 
-#: src/Components/Mail/Mail.php:77
+#: src/Components/Mail/Mail.php:70
 msgid "Port"
 msgstr "端口"
 
@@ -2657,7 +2679,7 @@ msgstr "文章评论"
 msgid "Post Extension"
 msgstr "内容扩展"
 
-#: src/Components/Post/widgets/PostWidget.php:15
+#: src/Components/Post/widgets/PostWidget.php:17
 msgid "Post List"
 msgstr "文章列表"
 
@@ -2665,7 +2687,7 @@ msgstr "文章列表"
 msgid "POST requests are not cached"
 msgstr "POST 请求不缓存"
 
-#: src/Components/Post/Post.php:656
+#: src/Components/Post/Post.php:672
 msgid "Post Sidebar"
 msgstr "文章页侧边栏"
 
@@ -2678,11 +2700,11 @@ msgstr ""
 "Post meta 的 key 为空。请在 wp-config.php 文件中，使用 <strong>"
 "G3_OLD_POST_VIEW_META_KEY</strong> 常量，配置一个有效的 Post meta 的 Key 以进行迁移。"
 
-#: src/Components/Post/widgets/PostWidget.php:56
+#: src/Components/Post/widgets/PostWidget.php:59
 msgid "Posts List"
 msgstr "文章列表"
 
-#: src/Components/User/User.php:56
+#: src/Components/User/User.php:61
 msgid "Premium Config"
 msgstr "认证配置"
 
@@ -2693,7 +2715,7 @@ msgid ""
 "parameters."
 msgstr "阻止 query-string 中出现危险的 PHP ini override 参数。"
 
-#: src/Components/Security/Security.php:96
+#: src/Components/Security/Security.php:95
 msgid "Prevent XMLRPC Attacks"
 msgstr "防范XMLRPC攻击"
 
@@ -2702,15 +2724,15 @@ msgstr "防范XMLRPC攻击"
 msgid "Preview Product"
 msgstr "浏览商品"
 
-#: src/Components/Auth/Auth.php:85
+#: src/Components/Auth/Auth.php:72
 #: src/Components/User/Includes/ProjectListTable.php:37
-#: src/Components/User/views/tab-projects.php:58
-#: src/Components/User/views/tab-projects.php:120
+#: src/Components/User/views/tab-projects.php:59
+#: src/Components/User/views/tab-projects.php:135
 #: src/Components/Product/Includes/SkuListTable.php:31
 msgid "Price"
 msgstr "价格"
 
-#: src/Components/Form/Includes/FormListTable.php:180
+#: src/Components/Form/Includes/FormListTable.php:195
 msgid "Processed"
 msgstr "已处理"
 
@@ -2857,20 +2879,20 @@ msgstr ""
 msgid "QQ Zone"
 msgstr "QQ空间"
 
-#: src/Controllers/AuthController.php:298
+#: src/Controllers/AuthController.php:414
 msgid "QRCode expired, Please refresh the page and try again."
 msgstr "二维码已过期，请刷新页面重试。"
 
-#: src/Components/Performance/Performance.php:67
+#: src/Components/Performance/Performance.php:68
 msgid "Query"
 msgstr "查询"
 
-#: src/Controllers/AuthController.php:307
+#: src/Controllers/AuthController.php:423
 msgid "Quest pending"
 msgstr "请求等待中"
 
-#: src/Components/Performance/Performance.php:70
-#: src/Components/Performance/Performance.php:79
+#: src/Components/Performance/Performance.php:71
+#: src/Components/Performance/Performance.php:80
 #: src/Components/Mail/views/tab-test.php:27
 msgid "Queue"
 msgstr "队列"
@@ -2883,7 +2905,7 @@ msgstr "队列服务"
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr "快速创建完整项目结构的 G3 Web 主题工程。"
 
-#: src/Components/Developer/Developer.php:141
+#: src/Components/Developer/Developer.php:165
 msgid "Radio field"
 msgstr "单选框"
 
@@ -2898,11 +2920,11 @@ msgid ""
 "files manually for better performance."
 msgstr "实时数据访问不再生成缓存文件，请手动生成缓存文件，以获得更好的性能。"
 
-#: src/Components/Developer/Developer.php:361
+#: src/Components/Developer/Developer.php:386
 msgid "Rebuild the REST route cache file."
 msgstr "重建 REST 路由缓存文件。"
 
-#: src/Components/Wallet/Wallet.php:37
+#: src/Components/Wallet/Wallet.php:43
 msgid "Recharge"
 msgstr "充值"
 
@@ -2925,11 +2947,11 @@ msgid ""
 "improve data query speed and response speed."
 msgstr "Redis 是 G3-Web 的默认数据缓存驱动，我们期望您减少与数据库之间的非必要的直接连接，利用内存缓存来提升数据查询速度和响应速度。"
 
-#: src/Components/Auth/Auth.php:64
+#: src/Components/Auth/Auth.php:51
 msgid "Referral Code"
 msgstr "推荐码"
 
-#: src/Components/Developer/Developer.php:882
+#: src/Components/Developer/Developer.php:940
 #| msgid "Refreshed!"
 msgid "Refreshed"
 msgstr "刷新成功"
@@ -2942,13 +2964,21 @@ msgstr "已退款"
 msgid "Region"
 msgstr ""
 
-#: src/Components/User/User.php:160
+#: src/Components/User/User.php:165
 msgid "Register"
 msgstr "注册"
 
-#: src/Components/Auth/Auth.php:61
+#: src/Components/Auth/Auth.php:48
 msgid "Registration Code"
 msgstr "注册码"
+
+#: templates/user/register.php:330 templates/user/register.php:338
+msgid "Registration failed. Please try again."
+msgstr ""
+
+#: templates/user/register.php:333 src/Controllers/AuthController.php:269
+msgid "Registration successful."
+msgstr ""
 
 #: src/Components/Product/Includes/SkuListTable.php:30
 msgid "Regular Price"
@@ -2963,11 +2993,11 @@ msgstr "移除封面图"
 msgid "Remove sensitive data from response headers, such as: X-Powered-By."
 msgstr "移除响应头中的敏感数据，比如: X-Powered-By。"
 
-#: src/Components/Security/Security.php:87
+#: src/Components/Security/Security.php:86
 msgid "Remove the default sitemap of WordPress and use the G3 sitemap instead."
 msgstr "移除 WordPress 默认站点地图，转而使用 G3 站点地图。"
 
-#: src/Components/Security/Security.php:88
+#: src/Components/Security/Security.php:87
 #| msgid ""
 #| "Remove the default users site map of WordPress to avoid exposing user ID "
 #| "and login name security risks."
@@ -2976,14 +3006,20 @@ msgid ""
 "ID and login name security risks."
 msgstr "移除 WordPress 默认的用户站点地图模块，以规避用户 ID 和登录名暴露的安全风险。"
 
-#: src/Components/Security/Security.php:96
+#: src/Components/Security/Security.php:95
 #| msgid "Disable the XML-RPC API to block access to xmlrpc.php."
 msgid "Remove the XML-RPC API to block access to xmlrpc.php."
 msgstr "移除 XML-RPC API 禁止访问 xmlrpc.php 规避安全风险。"
 
-#: src/Components/Security/Security.php:85
+#: src/Components/Security/Security.php:84
 msgid "Rename the currently uploaded file using a timestamp."
 msgstr "使用时间戳重置当前上传文件的文件名。"
+
+#: src/Components/Auth/Auth.php:47
+msgid ""
+"Replace WordPress native login, registration and password reset URLs with "
+"the custom auth pages."
+msgstr ""
 
 #: src/Services/WechatOAService.php:874
 msgid "Reply content cannot be empty"
@@ -2993,24 +3029,33 @@ msgstr "回复内容不能为空"
 msgid "Request body should be valid JSON."
 msgstr "请求体应该是有效的JSON。"
 
-#: templates/form/form.php:48
-#: src/Components/User/Includes/RoleListTable.php:179
+#: templates/form/form.php:46 src/Components/Swiper/views/tab-locations.php:38
+#: src/Components/Auth/views/tab-invitation.php:27
+#: src/Components/User/Includes/RoleListTable.php:183
+#: src/Components/User/views/tab-level.php:69
+#: src/Components/User/views/tab-projects.php:65
+#: src/Components/User/views/tab-custom.php:33
+#: src/Components/User/views/tab-premium.php:33
+#: src/Components/User/views/tab-duration.php:76
+#: src/Components/User/views/tab-manager.php:31
+#: src/Components/WechatOA/views/tab-message.php:95
+#: src/Components/WechatOA/views/tab-reply.php:58
 msgid "Reset"
 msgstr "重置"
 
-#: src/Components/User/User.php:161
+#: src/Components/User/User.php:166 src/Components/User/User.php:167
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: src/Components/Security/Security.php:87
+#: src/Components/Security/Security.php:86
 msgid "Reset SiteMap"
 msgstr "重置站点地图"
 
-#: src/Components/Security/Security.php:85
+#: src/Components/Security/Security.php:84
 msgid "Reset Upload File Names"
 msgstr "重置上传文件名"
 
-#: src/Components/Customer/Customer.php:93
+#: src/Components/Customer/Customer.php:94
 msgid "Retention Days"
 msgstr "保留天数"
 
@@ -3022,7 +3067,7 @@ msgstr "获取最新公告列表数据。"
 msgid "Retrieve the data for the comment list."
 msgstr "获取最新评论列表数据。"
 
-#: src/Components/Post/widgets/PostWidget.php:18
+#: src/Components/Post/widgets/PostWidget.php:20
 msgid "Retrieve the data for the post list."
 msgstr "获取最新文章列表数据。"
 
@@ -3043,13 +3088,13 @@ msgstr "重写"
 msgid "Rewrite Rule"
 msgstr "重写规则"
 
-#: src/Components/Developer/Developer.php:112
-#: src/Components/Developer/Developer.php:123
+#: src/Components/Developer/Developer.php:136
+#: src/Components/Developer/Developer.php:147
 #: src/Components/Developer/Includes/RewriteRulesTable.php:11
 msgid "Rewrite Rules"
 msgstr "重写规则"
 
-#: src/Components/Developer/Developer.php:113
+#: src/Components/Developer/Developer.php:137
 msgid "Route"
 msgstr "路由"
 
@@ -3076,7 +3121,7 @@ msgstr "默哀模式"
 msgid "Safe Reminder"
 msgstr "安全提醒"
 
-#: src/Components/Security/Security.php:95
+#: src/Components/Security/Security.php:94
 msgid "Safe Session"
 msgstr "安全会话"
 
@@ -3134,22 +3179,22 @@ msgstr "搜索商品"
 msgid "Search results for %s"
 msgstr "%s 的搜索结果："
 
-#: src/Components/Post/Post.php:647
+#: src/Components/Post/Post.php:663
 msgid "Search Sidebar"
 msgstr "搜索页侧边栏"
 
-#: src/Components/User/views/tab-duration.php:46
-#: src/Components/User/views/tab-duration.php:131
+#: src/Components/User/views/tab-duration.php:48
+#: src/Components/User/views/tab-duration.php:149
 msgid "Second"
 msgstr "秒"
 
+#: src/Components/Security/Security.php:67
 #: src/Components/Security/Security.php:68
-#: src/Components/Security/Security.php:69
-#: src/Components/Security/Security.php:80
+#: src/Components/Security/Security.php:79
 msgid "Security"
 msgstr "安全"
 
-#: src/Components/Developer/Developer.php:709
+#: src/Components/Developer/Developer.php:735
 msgid "Security check failed. Please try again."
 msgstr "安全检查失败。请重试。"
 
@@ -3157,27 +3202,23 @@ msgstr "安全检查失败。请重试。"
 msgid "Security Extension"
 msgstr "安全扩展"
 
-#: src/Components/Developer/Developer.php:134
+#: src/Components/Developer/Developer.php:158
 msgid "Select field"
 msgstr "选择器"
 
-#: src/Components/Customer/Customer.php:143
+#: src/Components/Customer/Customer.php:144
 msgid "Send"
 msgstr "发送"
-
-#: src/Components/Mail/Mail.php:92
-msgid "Send an email notification to the user after successful payment."
-msgstr "用户支付成功后，发送邮件通知用户。"
 
 #: src/Components/Mail/views/tab-test.php:58
 msgid "Send Test Email"
 msgstr "发送测试邮件"
 
-#: src/Components/Mail/Mail.php:81
+#: src/Components/Mail/Mail.php:74
 msgid "Sender's Email Address"
 msgstr "发件箱地址"
 
-#: src/Components/Mail/Mail.php:83
+#: src/Components/Mail/Mail.php:76
 msgid "Sender's Email Secret"
 msgstr "发件箱密钥"
 
@@ -3196,7 +3237,7 @@ msgstr "SEO和社交传播"
 msgid "Separate tags with commas."
 msgstr "多个标签请用英文逗号( , )分隔"
 
-#: src/Components/Mail/Mail.php:75
+#: src/Components/Mail/Mail.php:68
 msgid "Server"
 msgstr "服务器"
 
@@ -3208,24 +3249,24 @@ msgstr "服务号"
 msgid "Set cover image"
 msgstr "设置封面图"
 
-#: src/Components/Developer/Developer.php:108
-msgid "Set the data which will be displayed in the left footer area."
-msgstr "设置管理后台页面左下角显示的数据。"
-
-#: src/Components/Developer/Developer.php:109
-msgid "Set the data which will be displayed in the right footer area."
-msgstr "设置管理后台页面右下角显示的数据。"
+#: src/Components/Developer/Developer.php:132
+#: src/Components/Developer/Developer.php:133
+#, php-format
+msgid ""
+"Set the data which will be displayed in the %s area. It will display default "
+"data when empty."
+msgstr "设置管理后台页面%s显示的数据。若清空则显示默认数据。"
 
 #: src/Components/Performance/views/tab-redis.php:67
 #| msgid "Set the maximum memory as needed, such as 256MB."
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr "按需设置最大内存，如：512MB."
 
-#: src/Components/Developer/Developer.php:115
+#: src/Components/Developer/Developer.php:139
 msgid "Setting Options"
 msgstr "设置选项"
 
-#: src/Components/Post/Post.php:335 src/Components/Share/Share.php:35
+#: src/Components/Post/Post.php:328 src/Components/Share/Share.php:35
 #: src/Components/Share/Share.php:36 src/Components/Share/Share.php:52
 msgid "Share"
 msgstr "分享"
@@ -3251,7 +3292,7 @@ msgstr "已配送"
 msgid "Shop"
 msgstr "商城"
 
-#: src/Components/Post/Post.php:747
+#: src/Components/Post/Post.php:759
 msgid "Shop Menu"
 msgstr "商城菜单"
 
@@ -3268,7 +3309,7 @@ msgstr "商城系统"
 msgid "Sina WeiBo"
 msgstr "新浪微博"
 
-#: src/Components/Developer/Developer.php:84
+#: src/Components/Developer/Developer.php:86
 msgid "Site Health"
 msgstr "站点健康"
 
@@ -3280,7 +3321,7 @@ msgstr "站点地图"
 msgid "Sitemap generation is disabled."
 msgstr "站点地图生成器已被禁用。"
 
-#: src/Components/Security/Security.php:90
+#: src/Components/Security/Security.php:89
 #: src/Components/Setting/Setting.php:198
 msgid "SiteMap Generator"
 msgstr "站点地图生成器"
@@ -3290,7 +3331,7 @@ msgstr "站点地图生成器"
 msgid "SKU System"
 msgstr "库存管理系统"
 
-#: src/Components/User/User.php:357 src/Components/User/User.php:399
+#: src/Components/User/User.php:375 src/Components/User/User.php:417
 msgid "Slug Param only allows English letters, numbers, and underscores"
 msgstr "别名参数仅允许英文字母、数字和下划线"
 
@@ -3303,7 +3344,7 @@ msgstr "别名：仅支持英文字母"
 msgid "SMS"
 msgstr "短信"
 
-#: src/Components/Mail/Mail.php:79
+#: src/Components/Mail/Mail.php:72
 msgid "SMTP Encryption"
 msgstr "SMTP加密方式"
 
@@ -3311,7 +3352,7 @@ msgstr "SMTP加密方式"
 msgid "Social Accounts"
 msgstr "社交账号"
 
-#: templates/developer/w.php:124 src/Components/Auth/Auth.php:86
+#: templates/developer/w.php:124 src/Components/Auth/Auth.php:73
 msgid "Social Login"
 msgstr "社交登录"
 
@@ -3343,12 +3384,13 @@ msgstr "规格"
 msgid "Sponsor"
 msgstr "赞助"
 
-#: src/Components/User/User.php:215
+#: src/Components/User/User.php:233
 msgid "Start and end credits must be positive integers."
 msgstr "起始和结束积分必需为正整数。"
 
-#: src/Components/User/views/tab-level.php:52
-#: src/Components/User/views/tab-level.php:191
+#: src/Components/User/views/tab-level.php:54
+#: src/Components/User/views/tab-level.php:159
+#: src/Components/User/views/tab-level.php:234
 msgid "Start Credits"
 msgstr "起始积分"
 
@@ -3358,7 +3400,7 @@ msgid ""
 "multi-page XML sitemaps has been loaded as a default core feature."
 msgstr "从WP5.5版本开始，多层级多页面的XML站点地图功能已经作为核心功能默认载入。"
 
-#: src/Components/Form/Includes/FormListTable.php:40
+#: src/Components/Form/Includes/FormListTable.php:44
 #: src/Components/Swiper/views/page-edit.php:146
 #: src/Components/Swiper/views/page-edit.php:149
 #: src/Components/Swiper/views/page-edit.php:151
@@ -3369,8 +3411,7 @@ msgstr "从WP5.5版本开始，多层级多页面的XML站点地图功能已经�
 msgid "Status"
 msgstr "状态"
 
-#: src/Components/Ad/Ad.php:21 src/Components/User/views/tab-card.php:5
-#: src/Components/Wallet/views/tab-withdrawal.php:5
+#: src/Components/Ad/Ad.php:22 src/Components/User/views/tab-card.php:5
 #: src/Components/Wallet/views/tab-cryptocurrency.php:5
 msgid "Stay tuned, coming soon!"
 msgstr "敬请期待，即将发布！"
@@ -3408,15 +3449,11 @@ msgstr "订阅号"
 msgid "Swiper"
 msgstr "轮播图"
 
-#: src/Components/Developer/Developer.php:161
+#: src/Components/Developer/Developer.php:185
 msgid "Switch"
 msgstr "开关"
 
-#: src/Controllers/UserController.php:62
-msgid "Switched"
-msgstr "切换成功"
-
-#: src/Components/Developer/Developer.php:122
+#: src/Components/Developer/Developer.php:146
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-html.php:52
@@ -3433,13 +3470,17 @@ msgstr "系统管理员"
 msgid "System Camera"
 msgstr "系统相机"
 
-#: src/Components/Mail/Mail.php:72
+#: src/Components/Mail/Mail.php:65
 msgid "System Email"
 msgstr "系统邮件"
 
-#: src/Services/AuthService.php:451
+#: src/Services/AuthService.php:471
 msgid "System Generated"
 msgstr "系统生成"
+
+#: templates/user/register.php:220
+msgid "Take a minute to get an account."
+msgstr ""
 
 #: src/Utilities/Element.php:43 src/Core/Admin/PanelRenderer.php:64
 #: src/Core/Admin/PanelRenderer.php:135
@@ -3448,11 +3489,15 @@ msgstr "系统生成"
 msgid "Template file does not exist: %s"
 msgstr "模板文件不存在：%s"
 
+#: src/Components/Mail/Mail.php:79
+msgid "Templates"
+msgstr ""
+
 #: src/Components/Mail/views/tab-test.php:56
 msgid "Test Email Address"
 msgstr "测试邮箱地址"
 
-#: src/Components/Developer/Developer.php:133
+#: src/Components/Developer/Developer.php:157
 msgid "Textarea"
 msgstr "文本域"
 
@@ -3462,7 +3507,7 @@ msgid ""
 "contributions to the world."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:159
+#: src/Components/Developer/Developer.php:183
 msgid "the <code>value</code> is an array."
 msgstr "<code>value</code> 的值是个数组。"
 
@@ -3472,7 +3517,7 @@ msgid ""
 "sure you have a backup before performing the action."
 msgstr "下面的系列操作将强制刷新 重写规则、配置选项、缓存数据，操作前请先备份对应数据。"
 
-#: src/Components/Customer/Customer.php:68
+#: src/Components/Customer/Customer.php:69
 msgid ""
 "The announcement prompt that is fixedly displayed in front of the chat "
 "window. HTML is allowed."
@@ -3514,7 +3559,7 @@ msgid ""
 "white, and gray colors."
 msgstr "全站将沉浸在只有黑白灰颜色的默哀模式中。"
 
-#: src/Components/Auth/Auth.php:78
+#: src/Components/Auth/Auth.php:65
 msgid "The expiration of the invitation code."
 msgstr "邀请码的过期时间。"
 
@@ -3590,11 +3635,15 @@ msgid ""
 "2000</code>."
 msgstr "每个内容类型所生成的内容数量。<br>默认：<code>2000</code>。"
 
-#: src/Components/Auth/Auth.php:84
+#: templates/mail/reset-password.php:10
+msgid "The password reset link is valid for %d minutes."
+msgstr ""
+
+#: src/Components/Auth/Auth.php:71
 msgid "The payment method used to pay for the invitation code."
 msgstr "用来购买邀请码的支付方式。"
 
-#: src/Components/Auth/Auth.php:85
+#: src/Components/Auth/Auth.php:72
 msgid "The price of the invitation code."
 msgstr "邀请码的价格。"
 
@@ -3612,53 +3661,92 @@ msgid ""
 msgstr ""
 "OPCache的作用是通过预编译PHP代码，从而提高PHP代码的执行效率。所以，我们配置OPCache的核心目标是减少文件读取次数和编译的开销，在内存使用、缓存命中、代码更新机制之间找到平衡。"
 
-#: src/Components/User/User.php:176 src/Components/User/User.php:183
+#: src/Components/User/User.php:194 src/Components/User/User.php:201
 msgid "The role name has been initialized."
 msgstr "角色名称已被初始化。"
 
-#: src/Components/User/User.php:212 src/Components/User/User.php:246
-#: src/Components/User/User.php:281 src/Components/User/User.php:317
+#: src/Components/User/User.php:230 src/Components/User/User.php:264
+#: src/Components/User/User.php:299 src/Components/User/User.php:335
 msgid "The role slug can only contain English and numbers."
 msgstr "角色别名仅支持英文字母和数字。"
 
-#: src/Components/User/User.php:222
+#: templates/mail/site-admin-email-change.php:7
+#, php-format
+msgid "The site administrator email address on %s was changed."
+msgstr ""
+
+#: src/Components/User/User.php:240
 msgid "The start credits must be less than the end credits."
 msgstr "起始积分必需小于结束积分。"
 
-#: src/Components/Security/Security.php:83
+#: src/Components/Security/Security.php:82
 msgid ""
 "The system will replace <code>\"wp-login.php\"</code> with the new address "
 "<code>\"/oa/$url\"</code> below."
 msgstr ""
 "系统将使用下方配置的新地址 <code>\"/oa/$url\"</code> 来替代 <code>\"wp-login.php\"</code>。"
 
-#: src/Components/Mail/Mail.php:87
+#: src/Components/Mail/Mail.php:78
 msgid ""
 "The system will replace the default email templates of the site with custom "
 "email templates."
 msgstr "系统将使用自定义邮件模板来替代默认模板。"
 
-#: src/Components/Mail/Mail.php:72
+#: src/Components/Mail/Mail.php:82
+msgid ""
+"The system will send a comment email to users when his/her post is commented "
+"on."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:83
+msgid ""
+"The system will send a comment reply email to users when his/her comment is "
+"replied to."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:81
+msgid "The system will send a welcome email to new users."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:84
+msgid "The system will send an email to admin about new user registered."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:85
+msgid "The system will send an email to admin about someone password changed."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:86
+msgid ""
+"The system will send an email to admin about the automatic updates debug."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:87
+msgid ""
+"The system will send an email to admin about the new comment moderation."
+msgstr ""
+
+#: src/Components/Mail/Mail.php:65
 msgid "The system will use SMTP to send emails."
 msgstr "系统将使用 SMTP 来发送邮件。"
 
-#: src/Utilities/Message.php:81
+#: src/Utilities/Message.php:86
 #, php-format
 msgid ""
 "The template \"%s\" is not implemented yet. Please complete your own theme."
 msgstr "模板 \"%s\" 尚未实现。请完成您的主题设计和开发。"
 
-#: src/Components/Themes/Themes.php:76
+#: src/Components/Themes/Themes.php:77
 #| msgid ""
 #| "The theme mode is automatically determined based on the cookie <code>jui-"
-#| "theme</code>. The HTML element will have classes such as <code>dark</code>"
-#| ", <code>j-theme-indigo</code>, etc."
+#| "theme</code>. The frontend template HTML element will have classes such "
+#| "as <code>dark</code>, <code>j-theme-indigo</code>, etc."
 msgid ""
-"The theme mode is automatically determined based on the cookie <code>jui-"
+"The theme mode is automatically determined based on the cookie <code>ui-"
 "theme</code>. The frontend template HTML element will have classes such as "
 "<code>dark</code>, <code>j-theme-indigo</code>, etc."
 msgstr ""
-"根据 cookie <code>jui-theme</code> 主题数据，自动为前端模板 HTML 添加 class，如 <code>"
+"根据 cookie <code>ui-theme</code> 主题数据，自动为前端模板 HTML 添加 class，如 <code>"
 "dark</code>, <code>j-theme-indigo</code> 等。"
 
 #: src/Components/Themes/views/page-general.php:5
@@ -3668,15 +3756,19 @@ msgid ""
 "the main theme will be used first by default."
 msgstr "您在 外观-主题 页面中配置的主题是系统的主主题。当对应多主题模式的选项为空时，默认优先使用主主题。"
 
+#: templates/user/register.php:311 src/Controllers/AuthController.php:253
+msgid "The two passwords do not match."
+msgstr ""
+
 #: templates/developer/redirect.php:11
 msgid "The URL you visited is illegal."
 msgstr "您正在访问不合法的网络地址。"
 
-#: src/Components/Themes/Themes.php:76
+#: src/Components/Themes/Themes.php:77
 msgid "Theme Assembly"
 msgstr "主题装配"
 
-#: src/Components/Developer/Developer.php:85
+#: src/Components/Developer/Developer.php:87
 msgid "Theme Customize"
 msgstr "主题自定义"
 
@@ -3684,20 +3776,20 @@ msgstr "主题自定义"
 msgid "Theme Description"
 msgstr "主题描述"
 
-#: src/Components/Developer/Developer.php:82
+#: src/Components/Developer/Developer.php:84
 msgid "Theme Editor"
 msgstr "主题编辑器"
 
-#: src/Components/Themes/Themes.php:74
+#: src/Components/Themes/Themes.php:75
 msgid "Theme for low-end browsers"
 msgstr "低端浏览器主题"
 
-#: src/Components/Themes/Themes.php:75
+#: src/Components/Themes/Themes.php:76
 msgid "Theme for mobile"
 msgstr "手机端主题"
 
-#: src/Components/Themes/Themes.php:54 src/Components/Themes/Themes.php:55
-#: src/Components/Themes/Themes.php:71 src/Components/Themes/Themes.php:72
+#: src/Components/Themes/Themes.php:55 src/Components/Themes/Themes.php:56
+#: src/Components/Themes/Themes.php:72 src/Components/Themes/Themes.php:73
 msgid "Theme Mode"
 msgstr "主题模式"
 
@@ -3708,6 +3800,15 @@ msgstr "主题名称"
 #: src/Components/Developer/views/tab-theme.php:39
 msgid "Theme URL"
 msgstr "主题项目网址"
+
+#: src/Controllers/AuthController.php:245
+msgid "This email address is already registered."
+msgstr ""
+
+#: src/Services/MailerService.php:172
+#, php-format
+msgid "This email was sent from %s."
+msgstr ""
 
 #: src/Components/Performance/views/tab-fastcgi.php:5
 msgid ""
@@ -3742,7 +3843,11 @@ msgstr "当前标签页是关于队列配置和相关网站性能建议。"
 msgid "This tab is for Redis Cache advice."
 msgstr "当前标签页是关于 Redis 缓存配置建议。"
 
-#: src/Services/AuthService.php:327
+#: src/Controllers/AuthController.php:237
+msgid "This username is already registered."
+msgstr ""
+
+#: src/Services/AuthService.php:347
 msgid "This WeChat account is already bound to another user."
 msgstr "当前微信账号已经绑定给了其他用户。"
 
@@ -3750,21 +3855,21 @@ msgstr "当前微信账号已经绑定给了其他用户。"
 msgid "Tiktok Order"
 msgstr "抖音订单"
 
-#: src/Components/User/views/tab-duration.php:39
-#: src/Components/User/views/tab-duration.php:124
+#: src/Components/User/views/tab-duration.php:42
+#: src/Components/User/views/tab-duration.php:143
 msgid "Time Unit"
 msgstr "时间单位"
 
-#: src/Components/Customer/Customer.php:96
-#: src/Components/Customer/Customer.php:178
+#: src/Components/Customer/Customer.php:97
+#: src/Components/Customer/Customer.php:179
 msgid "Timeout"
 msgstr "超时"
 
 #: templates/developer/w.php:18 src/Utilities/Element.php:691
-#: src/Components/Developer/Developer.php:159
-#: src/Components/Developer/Developer.php:160
+#: src/Components/Developer/Developer.php:183
+#: src/Components/Developer/Developer.php:184
 #: src/Components/Setting/Setting.php:449
-#: src/Components/Customer/Customer.php:70
+#: src/Components/Customer/Customer.php:71
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
 msgstr "提示"
@@ -3773,7 +3878,7 @@ msgstr "提示"
 msgid "Tip Order"
 msgstr "知识付费订单"
 
-#: src/Components/Post/Post.php:339
+#: src/Components/Post/Post.php:332
 msgid ""
 "Tip: You can customize the interaction data according to your operational "
 "needs."
@@ -3783,11 +3888,11 @@ msgstr "提示：您可以根据运营需求自定义交互数据。"
 msgid "Tips for First Time Users"
 msgstr "新用户提示"
 
-#: src/Components/Post/Post.php:123
+#: src/Components/Post/Post.php:115
 msgid "To add view statistics function to each post & page."
 msgstr "向所有内容和页面添加浏览量统计功能"
 
-#: src/Components/Developer/Developer.php:94
+#: src/Components/Developer/Developer.php:96
 #| msgid "No %s Page"
 msgid "Tools Page"
 msgstr "工具页"
@@ -3808,11 +3913,11 @@ msgstr "传统网页应用工作流程："
 msgid "Transaction System"
 msgstr "交易系统"
 
-#: src/Components/Developer/Developer.php:81
+#: src/Components/Developer/Developer.php:83
 msgid "Translations API"
 msgstr "翻译 API"
 
-#: src/Components/Performance/Performance.php:74
+#: src/Components/Performance/Performance.php:75
 msgid "Trash"
 msgstr "回收站"
 
@@ -3821,7 +3926,7 @@ msgstr "回收站"
 msgid "Type"
 msgstr "类型"
 
-#: src/Components/Customer/Customer.php:144
+#: src/Components/Customer/Customer.php:145
 msgid "Type a message..."
 msgstr "输入消息..."
 
@@ -3832,8 +3937,8 @@ msgstr "输入消息..."
 msgid "Unauthorized"
 msgstr "未授权"
 
-#: src/Services/UserService.php:121
-#: src/Components/Form/Includes/FormListTable.php:181
+#: src/Services/UserService.php:492
+#: src/Components/Form/Includes/FormListTable.php:196
 #: src/Components/User/Includes/ManagerListTable.php:160
 msgid "Unknown"
 msgstr "未知"
@@ -3894,8 +3999,8 @@ msgstr "上传到商品"
 msgid "URLs with query parameters are not cached"
 msgstr "带查询参数的 URL 不缓存"
 
-#: src/Components/Developer/Developer.php:98
-#: src/Components/Developer/Developer.php:99
+#: src/Components/Developer/Developer.php:100
+#: src/Components/Developer/Developer.php:101
 #, php-format
 msgid "Use %s instead of built-in %s"
 msgstr "使用 %s 代替内置的 %s"
@@ -3904,7 +4009,7 @@ msgstr "使用 %s 代替内置的 %s"
 msgid "Use as cover image"
 msgstr "用作封面图"
 
-#: src/Components/Security/Security.php:97
+#: src/Components/Security/Security.php:96
 msgid ""
 "Use Content Security Policy (CSP) to prevent cross-site scripting attacks. "
 "Before enabling, please ensure that there are no external resource "
@@ -3943,7 +4048,7 @@ msgstr ""
 "使用上述方法查看 OPCache 状态，关注 <code>num_cached_scripts</code> 和 <code>"
 "max_cached_keys</code> 两个参数的值，它们分别表示 当前已经缓存了多少个脚本 和 当前最大支持多少个脚本。"
 
-#: src/Components/Themes/Themes.php:77
+#: src/Components/Themes/Themes.php:78
 msgid "Use the dark color scheme as the default theme color scheme."
 msgstr "使用深色方案作为默认主题配色方案。"
 
@@ -3971,29 +4076,29 @@ msgstr "使用时间"
 msgid "Useful Development Features"
 msgstr "便捷的开发特性"
 
-#: src/Services/AuthService.php:452
+#: src/Services/AuthService.php:472
 msgid "User Bought"
 msgstr "用户购买"
 
-#: src/Components/Customer/Customer.php:179
+#: src/Components/Customer/Customer.php:180
 msgid "User Profile"
 msgstr "用户资料"
 
-#: src/Components/Mail/Mail.php:88
-msgid "User Registration Notification Template"
-msgstr "用户注册通知模板"
+#: src/Controllers/AuthController.php:207
+msgid "User registration is currently disabled."
+msgstr ""
 
 #: src/Components/Performance/views/tab-fastcgi.php:22
 msgid "User visits the website"
 msgstr "用户访问网站"
 
-#: src/Components/Auth/Auth.php:90
+#: src/Components/Auth/Auth.php:77
 msgid ""
 "Users can complete the login automatically while browsing your website with "
 "Wechat client."
 msgstr "当用户在通过微信客户端浏览您的网站时，可以自动完成登录。"
 
-#: src/Components/Auth/Auth.php:88
+#: src/Components/Auth/Auth.php:75
 msgid "Users can subscribe your WeChat official account to complete the login."
 msgstr "用户通过订阅您的微信公众号来完成登录。"
 
@@ -4063,7 +4168,7 @@ msgstr "用户点击后跳转到指定URL且特定权限控制的图文消息。
 msgid "Users click and view the article of the specified URL."
 msgstr "用户点击后跳转到指定URL的图文消息。"
 
-#: src/Components/Security/Security.php:88
+#: src/Components/Security/Security.php:87
 msgid "Users SiteMap"
 msgstr "用户站点地图"
 
@@ -4094,8 +4199,8 @@ msgstr "认证服务号"
 msgid "Verified Subscription Account"
 msgstr "认证订阅号"
 
-#: src/Components/Developer/Developer.php:739
-#: src/Components/Developer/Developer.php:778
+#: src/Components/Developer/Developer.php:765
+#: src/Components/Developer/Developer.php:804
 msgid "Verify License"
 msgstr "验证授权"
 
@@ -4103,7 +4208,7 @@ msgstr "验证授权"
 msgid "Verify OPcache Efficiency & Fill"
 msgstr "验证 OPcache 是否生效 & 是否装满"
 
-#: src/Components/Post/Post.php:333
+#: src/Components/Post/Post.php:326
 msgid "View"
 msgstr "浏览"
 
@@ -4113,16 +4218,20 @@ msgstr "浏览"
 msgid "View count migration completed: %d records in %.2f seconds."
 msgstr "浏览量数据迁移完成：迁移了 %d 条记录，耗时 %.2f 秒。"
 
-#: src/Components/Post/Post.php:124
+#: src/Components/Post/Post.php:116
 msgid "View Interval"
 msgstr "浏览统计间隔"
+
+#: templates/mail/payment-success.php:13
+msgid "View Orders"
+msgstr ""
 
 #: src/Components/Product/Product.php:111
 #: src/Components/Product/Product.php:259
 msgid "View Product"
 msgstr "查看商品"
 
-#: src/Components/Post/Post.php:123
+#: src/Components/Post/Post.php:115
 #| msgid "Page view statistics"
 msgid "View Statistics"
 msgstr "浏览量统计"
@@ -4132,24 +4241,24 @@ msgstr "浏览量统计"
 msgid "View URL"
 msgstr "浏览 URL"
 
-#: src/Components/Post/Post.php:513 src/Components/Post/Post.php:527
+#: src/Components/Post/Post.php:529 src/Components/Post/Post.php:543
 msgid "Views"
 msgstr "浏览量"
 
-#: src/Components/Developer/Developer.php:120
+#: src/Components/Developer/Developer.php:144
 msgid "Views Migration"
 msgstr "浏览数迁移"
 
-#: src/Components/Post/Post.php:806
+#: src/Components/Post/Post.php:818
 msgid "Visible only when logged in"
 msgstr "仅登录可见"
 
-#: src/Components/Post/Post.php:807
+#: src/Components/Post/Post.php:819
 msgid "Visible only when not logged in"
 msgstr "仅未登录可见"
 
-#: src/Components/Wallet/Wallet.php:21 src/Components/Wallet/Wallet.php:32
-#: src/Components/Wallet/Wallet.php:35
+#: src/Components/Wallet/Wallet.php:19 src/Components/Wallet/Wallet.php:20
+#: src/Components/Wallet/Wallet.php:38 src/Components/Wallet/Wallet.php:41
 msgid "Wallet"
 msgstr "钱包"
 
@@ -4198,8 +4307,8 @@ msgstr "微信公众号素材库"
 msgid "Wechat OA Service"
 msgstr "微信公众号服务"
 
-#: src/Controllers/AuthController.php:208
-#: src/Controllers/AuthController.php:276
+#: src/Controllers/AuthController.php:324
+#: src/Controllers/AuthController.php:392
 #| msgid "WeChat OA Subscription login is not available"
 msgid "WeChat OA Subscription Login is not available"
 msgstr "微信公众号订阅登录未启用"
@@ -4217,12 +4326,12 @@ msgstr "微信公众号服务未启用"
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr "微信公众号支持 13 种菜单类型："
 
-#: src/Controllers/AuthController.php:406 src/Services/WechatOAService.php:1779
-#: src/Services/AuthService.php:246
+#: src/Controllers/AuthController.php:522 src/Services/WechatOAService.php:1779
+#: src/Services/AuthService.php:266
 msgid "WeChat service is not available."
 msgstr "微信服务未启用。"
 
-#: src/Components/Auth/Auth.php:88
+#: src/Components/Auth/Auth.php:75
 #| msgid "WeChat Subscription Login"
 msgid "WeChat Subscribe Login"
 msgstr "微信订阅登录"
@@ -4231,14 +4340,14 @@ msgstr "微信订阅登录"
 msgid "WeChat Title"
 msgstr "微信标题"
 
-#: src/Components/User/views/tab-duration.php:62
-#: src/Components/User/views/tab-duration.php:147
+#: src/Components/User/views/tab-duration.php:64
+#: src/Components/User/views/tab-duration.php:165
 msgid "Week"
 msgstr "周"
 
-#: src/Components/Developer/Developer.php:787
-#: src/Components/Developer/Developer.php:788
-#: src/Components/Customer/Customer.php:72
+#: templates/user/register.php:213 src/Components/Developer/Developer.php:813
+#: src/Components/Developer/Developer.php:814 src/Components/Mail/Mail.php:81
+#: src/Components/Mail/Mail.php:84 src/Components/Customer/Customer.php:73
 msgid "Welcome"
 msgstr "欢迎"
 
@@ -4246,11 +4355,11 @@ msgstr "欢迎"
 msgid "Welcome back, my friend."
 msgstr "欢迎回来，我的朋友。"
 
-#: src/Components/Customer/Customer.php:72
+#: src/Components/Customer/Customer.php:73
 msgid "Welcome message shown when a visitor opens the chat. HTML is allowed."
 msgstr "当访客打开聊天窗口时，会显示欢迎消息。允许使用HTML。"
 
-#: src/Components/Developer/Developer.php:101
+#: src/Components/Developer/Developer.php:104
 msgid "Welcome Panel"
 msgstr "欢迎面板"
 
@@ -4263,7 +4372,7 @@ msgstr "欢迎！"
 msgid "Welcome! Thanks for your attention."
 msgstr "欢迎！感谢您的关注。"
 
-#: src/Components/Customer/Customer.php:66
+#: src/Components/Customer/Customer.php:67
 msgid ""
 "When enabled, a floating customer service icon is shown on the frontend and "
 "the service console is available in admin."
@@ -4281,14 +4390,14 @@ msgid ""
 "WeChat official account media library."
 msgstr "发布内容时，自动同步内容到微信公众号素材库。"
 
-#: src/Components/Developer/Developer.php:117
+#: src/Components/Developer/Developer.php:141
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
 "database to avoid data pollution.<br>The backup file directory: "
 msgstr "当 G3-Web 插件被卸载时，系统会自动备份相关选项配置数据，并清空数据库中相关 option 数据，避免数据污染。<br>备份文件目录："
 
-#: src/Components/Security/Security.php:95
+#: src/Components/Security/Security.php:94
 msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."
@@ -4300,13 +4409,13 @@ msgid ""
 "the mini program."
 msgstr "当想跳转小程序时，需要填写小程序的 App ID。"
 
-#: src/Components/Auth/Auth.php:65
+#: src/Components/Auth/Auth.php:52
 msgid ""
 "Whether to allow to register by registration code, The referral code is used "
 "as the user slug."
 msgstr "是否启用注册码注册，推荐码通常是指用户别名。"
 
-#: src/Components/Auth/Auth.php:79
+#: src/Components/Auth/Auth.php:66
 msgid "Whether to allow to sale the invitation code."
 msgstr "是否允许售卖邀请码。"
 
@@ -4319,7 +4428,7 @@ msgstr "是否在内容编辑页面显示内容分发模块。"
 msgid "Whether to enable cart feature."
 msgstr "是否启用购物车功能。"
 
-#: src/Components/Auth/Auth.php:67
+#: src/Components/Auth/Auth.php:54
 #| msgid ""
 #| "This platform enforces mandatory invite-only registration, users without "
 #| "an invitation cannot sign up."
@@ -4332,11 +4441,11 @@ msgstr "是否实行强制邀请注册，未收到邀请的用户无法注册。
 msgid "Whether to support the product of download type."
 msgstr "是否支持下载类型商品。"
 
-#: src/Components/Wallet/Wallet.php:40
+#: src/Components/Wallet/Wallet.php:45
 msgid "Withdrawal"
 msgstr "提现"
 
-#: src/Components/Developer/Developer.php:80
+#: src/Components/Developer/Developer.php:82
 msgid "WordPress Auto Update"
 msgstr "WordPress自动更新"
 
@@ -4345,15 +4454,15 @@ msgid ""
 "WordPress supports building Web applications using pure front-end skills."
 msgstr "WordPress 支持纯前端构建 Web 应用。"
 
-#: src/Components/Customer/Customer.php:90
+#: src/Components/Customer/Customer.php:91
 msgid "Work End"
 msgstr "下班时间"
 
-#: src/Components/Customer/Customer.php:88
+#: src/Components/Customer/Customer.php:89
 msgid "Work Start"
 msgstr "上班时间"
 
-#: src/Components/Customer/Customer.php:78
+#: src/Components/Customer/Customer.php:79
 msgid "Working Days"
 msgstr "工作日"
 
@@ -4362,24 +4471,28 @@ msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr "您即将离开本站，请注意您的账号和财产安全。"
 
+#: src/Controllers/AuthController.php:199
+msgid "You are already logged in."
+msgstr ""
+
 #: src/Components/Setting/Setting.php:172
 msgid "You can add custom SEO data for each page."
 msgstr "您可以为每一个页面自定义SEO数据。"
 
-#: src/Components/Post/Post.php:640
+#: src/Components/Post/Post.php:656
 #| msgid "You can add widgets to archive page sidebar."
 msgid "You can add widgets to archive sidebar."
 msgstr "您可以添加小工具到归档页侧边栏。"
 
-#: src/Components/Post/Post.php:631
+#: src/Components/Post/Post.php:647
 msgid "You can add widgets to homepage sidebar."
 msgstr "您可以添加小工具到首页侧边栏。"
 
-#: src/Components/Post/Post.php:667
+#: src/Components/Post/Post.php:683
 msgid "You can add widgets to page sidebar."
 msgstr "您可以添加小工具到页面侧边栏。"
 
-#: src/Components/Post/Post.php:658
+#: src/Components/Post/Post.php:674
 #| msgid "You can add widgets to post page sidebar."
 msgid "You can add widgets to post sidebar."
 msgstr "您可以添加小工具到文章页侧边栏。"
@@ -4389,7 +4502,7 @@ msgstr "您可以添加小工具到文章页侧边栏。"
 msgid "You can add widgets to product sidebar."
 msgstr "您可以添加小工具到商品页侧边栏。"
 
-#: src/Components/Post/Post.php:649
+#: src/Components/Post/Post.php:665
 #| msgid "You can add widgets to search page sidebar."
 msgid "You can add widgets to search sidebar."
 msgstr "您可以添加小工具到搜索页侧边栏。"
@@ -4399,7 +4512,7 @@ msgstr "您可以添加小工具到搜索页侧边栏。"
 msgid "You can add widgets to shop sidebar."
 msgstr "您可以添加小工具到商城页侧边栏。"
 
-#: src/Components/Themes/Themes.php:74
+#: src/Components/Themes/Themes.php:75
 msgid ""
 "You can choose a theme for low-end browsers that do not support ES2015 "
 "standard."
@@ -4424,7 +4537,7 @@ msgid ""
 "<code>/templates/form/index.php</code>."
 msgstr "您可以通过覆盖模板文件 <code>/templates/form/index.php</code> 来自定义联系表单的模板。"
 
-#: src/Components/Themes/Themes.php:88
+#: src/Components/Themes/Themes.php:90
 msgid ""
 "You can manually add the above script to the head tag of the theme template "
 "to replace the automatic theme assembly function set above."
@@ -4436,10 +4549,14 @@ msgid ""
 "receive content from your platform."
 msgstr "您可以把RSS地址提供给合作伙伴或用户，用来订阅获取您平台内容。"
 
-#: src/Components/Themes/Themes.php:75
+#: src/Components/Themes/Themes.php:76
 #| msgid "Select a theme for mobile devices."
 msgid "You can Select a theme for mobile devices."
 msgstr "您可以为手机设备选择一个主题。"
+
+#: templates/mail/payment-success.php:8
+msgid "You can sign in to your account to view the order details."
+msgstr ""
 
 #: src/Components/Setting/Setting.php:221
 msgid ""
@@ -4461,10 +4578,14 @@ msgstr "您的G3-Web已经激活。"
 msgid "Your G3-Web expires in %s"
 msgstr "您的 G3-Web 过期时间：%s"
 
-#: src/Controllers/ContactController.php:67
+#: src/Controllers/ContactController.php:66
 msgid ""
 "Your message has been sent successfully. We will get back to you shortly."
 msgstr "您的消息已经发送成功。我们会尽快与您联系。"
+
+#: templates/mail/payment-success.php:7
+msgid "Your payment has been received successfully."
+msgstr ""
 
 #: src/Components/OSS/OSS.php:287
 msgid "同一时间只能启用一个云存储"

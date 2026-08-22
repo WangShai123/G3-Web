@@ -188,8 +188,8 @@ get_header();
         }
 
         .g3-auth-visual {
-            min-height: 230px;
-            padding: 28px;
+            min-height: 200px;
+            padding: 24px;
         }
 
         .g3-auth-copy h1 {
@@ -210,9 +210,8 @@ get_header();
                 <span><?php echo get_bloginfo('name'); ?></span>
             </div>
             <div class="g3-auth-copy">
-                <h1><?php esc_html_e('Register For This Site'); ?></h1>
-                <p><?php esc_html_e('Join the site with a secure account and continue directly after registration.', 'G3'); ?>
-                </p>
+                <h1><?php _e('Welcome', 'G3'); ?></h1>
+                <p><?php _e('Register For This Site'); ?></p>
             </div>
         </div>
 

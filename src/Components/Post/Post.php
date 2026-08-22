@@ -10,7 +10,7 @@ use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\PostService;
-use JEALER\G3\Utilities\RobustEncoder;
+use JEALER\G3\Services\CopyrightService;
 use JEALER\G3\Utilities\System;
 use Override;
 use Exception;
@@ -75,7 +75,7 @@ class Post extends Components {
     }
     protected function admin(): void
     {
-        add_action('save_post', [$this, 'savePostPro']);
+        add_action('save_post', [$this, 'savePostPro'], 10, 2);
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
         add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
@@ -85,14 +85,6 @@ class Post extends Components {
     protected function prepareInAdmin()
     {
         add_action('wp_nav_menu_item_custom_fields', [$this, 'initMenuItemFields'], 10, 4);
-
-        if (isset($_GET['page']) && $_GET['page'] === 'post-reading' && current_user_can('manage_options')) {
-            require_once __DIR__ . '/views/page-robustEncoder.php';
-            if (isset($_GET['g3-test']) && $_GET['g3-test'] === 'robustEncoder') {
-                g3TestRobustEncoderPerformance();
-                exit;
-            }
-        }
     }
     protected function adminMenu(): void
     {
@@ -139,7 +131,7 @@ class Post extends Components {
                 ->rowClass('advanced')
                 ->textarea('notice', __('Copyright Notice', 'G3'), __('Copyright notice to display on each post & page. Suggest: All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'))
                 ->switch('autoNotice', __('Auto Notice', 'G3'), __('Automatically add a notice at the end of the article', 'G3'))
-                ->switch('copyright', __('Copyright Protection', 'G3'), __('Automatically add your encoded & invisible brand mark in the article while saving to protect your content copyright.<br>It will cost several memory while saving. <a href="/wp-admin/admin.php?page=post-reading&g3-test=robustEncoder" target="_blank">Test Performance</a>', 'G3'))
+                ->switch('copyright', __('Copyright Protection', 'G3'), __('Automatically add your encoded & invisible brand mark in the article while saving to protect your content copyright.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('paidReading', __('Paid Reading', 'G3'), __('Before enabling the knowledge payment service, please ensure that payment and other related functional configurations have been completed.', 'G3'))
                 ->rowClass('advanced')
@@ -153,9 +145,10 @@ class Post extends Components {
     {
         $option = $this->option();
         if (!is_admin() && $this->loader->admin() && ($option['language'] ?? '0') === '1') {
-            $cookie = UserService::G3_LANG_COOKIE;
-            $v      = sanitize_text_field($_COOKIE[$cookie] ?? '');
-            $v      = System::normalizeLocale($v);
+            $cookie      = UserService::G3_LANG_COOKIE;
+            $cookieValue = System::parseStorageCookie($_COOKIE[$cookie] ?? '');
+            $v           = sanitize_text_field($cookieValue['val'] ?? '');
+            $v           = System::normalizeLocale($v);
             if ($v !== null) {
                 return $v;
             }
@@ -360,19 +353,6 @@ class Post extends Components {
         $gallery        = $_POST['g3_post_gallery'] ?? [];
         $property       = $_POST['g3_post_property'] ?? [];
 
-        // auto save seo data if empty
-        // if (trim($seoTitle) === '') {
-        //     $seoTitle = $post->post_title ?? '';
-        // }
-        // if (trim($seoDescription) === '') {
-        //     $content        = wp_strip_all_tags($post->post_content ?? '');
-        //     $seoDescription = Common::truncate($content, 150);
-        // }
-        // if (trim($seoKeywords) === '') {
-        //     $tags        = wp_get_post_terms($post->ID, 'post_tag', ['fields' => 'names']);
-        //     $seoKeywords = !empty($tags) && !is_wp_error($tags) ? implode(',', $tags) : '';
-        // }
-
         /** @var PostService $postService */
         $postService = $this->container->get(PostService::class);
         $ext         = [];
@@ -395,11 +375,11 @@ class Post extends Components {
         wp_cache_flush_group(MenuService::MENU_HTML_CACHE_GROUP);
         wp_cache_flush_group(MenuService::MENU_JSON_CACHE_GROUP);
     }
-    public function savePostPro($postId): void
+    public function savePostPro($postId, $post): void
     {
-        $this->copyrightProtected($postId);
+        $this->copyrightProtected($postId, $post);
     }
-    private function copyrightProtected($postId): void
+    private function copyrightProtected($postId, $post): void
     {
         if (($this->option()['copyright'] ?? '0') !== '1') {
             return;
@@ -421,87 +401,123 @@ class Post extends Components {
         }
         $processed_posts[$postId] = true;
 
-        $post = get_post($postId);
-        if (!$post) {
-            return;
-        }
 
-        // 忽略列表检查
-        $ignoreList = [
+        $ignoreList       = [
             'revision',
             'nav_menu_item',
-            'product',
             'attachment',
             'customize_changeset',
             'oembed_cache',
             'user_request',
-            'wp_block'
+            'wp_block',
         ];
+        $customIgnoreList = [];
 
+        /**
+         * Custom Filter: g3_filter_copyright_ignore_list
+         * 
+         * @param array $customIgnoreList
+         * @return array
+         */
+        $customIgnoreList = apply_filters('g3_filter_copyright_ignore_list', $customIgnoreList);
+
+        $ignoreList = array_merge($ignoreList, $customIgnoreList);
         if (in_array($post->post_type, $ignoreList, true)) {
             return;
         }
 
-        // 检查内容长度，避免处理空内容或过短内容
-        if (empty($post->post_content) || mb_strlen($post->post_content, 'UTF-8') < 100) {
+        $validLength = 100;
+
+        /**
+         * Custom Filter: g3_filter_copyright_valid_length
+         * 
+         * @param int $validLength
+         * @return int
+         */
+        $validLength = apply_filters('g3_filter_copyright_valid_length', $validLength);
+        $length      = mb_strlen($post->post_content, 'UTF-8');
+        if (empty($post->post_content) || $length < $validLength) {
+            $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
+                'postType'    => $post->post_type,
+                'postId'      => $postId,
+                'length'      => $length,
+                'validLength' => $validLength,
+            ]);
             return;
         }
 
-        // 检查是否已经有幽灵块，避免重复处理
-        if (RobustEncoder::hasGhostBlocks($post->post_content)) {
-            $ghost_count = RobustEncoder::getGhostBlockCount($post->post_content);
-            // 如果已经有足够的幽灵块，跳过处理（现在插入多个块）
-            if ($ghost_count >= 2) {
-                return;
-            }
-        }
-
         try {
+            // payload
             $siteData = json_encode([
-                'siteName' => get_bloginfo('name'),
-                'siteUrl'  => home_url(),
-                'time'     => time(),
-                'postId'   => $postId,
+                'notice' => __('Copyright Protection', 'G3'),
+                'name'   => get_bloginfo('name'),
+                'site'   => home_url(),
+                'id'     => $postId,
+                'time'   => time(),
             ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
+            /**
+             * Custom Filter: g3_filter_copyright_payload
+             * 
+             * @param string $siteData
+             * @param int $postId
+             * @return string
+             */
+            $siteData = apply_filters('g3_filter_copyright_payload', $siteData, $postId);
+
             if ($siteData === false) {
+                $this->logger->error('Copyright payload encoding failed.', [
+                    'post_id' => $postId,
+                    'payload' => $siteData,
+                ]);
                 return;
             }
 
-            // 清除旧幽灵块
-            $cleanContent = RobustEncoder::removeAllGhostBlocks($post->post_content);
+            /** @var CopyrightService $copyrightService */
+            $copyrightService = $this->container->get(CopyrightService::class);
+            $cleanContent     = $copyrightService->clean($post->post_content);
+            wp_cache_delete($postId, CopyrightService::CACHE_GROUP);
 
-            // 检查清理后的内容长度
             if (mb_strlen($cleanContent, 'UTF-8') < 50) {
                 return;
             }
 
-            // 分散嵌入新数据
-            $newContent = RobustEncoder::embedPayloadIntoContent($cleanContent, $siteData);
+            $newContent = $copyrightService->embed($cleanContent, $siteData);
 
-            // 检查内容是否实际发生了变化
+            // check if the content has changed
             if ($newContent === $post->post_content) {
+                $this->logger->info('Copyright Protection content has not changed, no need to update.', [
+                    'postType' => $post->post_type,
+                    'postId'   => $postId,
+                ]);
                 return;
             }
 
-            // 防止循环调用
+            // remove the hook to avoid infinite loop
             remove_action('save_post', [$this, 'copyrightProtected'], 10);
 
-            // 使用更高效的更新方式
             $updated = wp_update_post([
                 'ID'           => $postId,
                 'post_content' => $newContent
             ], false); // false = 不触发wp_error
 
-            // 恢复钩子
+            // restore the hook to continue processing
             add_action('save_post', [$this, 'copyrightProtected'], 10, 1);
 
             if (is_wp_error($updated)) {
-                error_log('[G3 RobustEncoder] Failed to update post ' . $postId . ': ' . $updated->get_error_message());
+                $this->logger->error('Failed to update copyright protected post.', [
+                    'postType' => $post->post_type,
+                    'postId'   => $postId,
+                    'error'    => $updated->get_error_message(),
+                ]);
             }
         }
         catch (Exception $e) {
-            error_log('[G3 RobustEncoder] Exception in copyrightProtected ' . $postId . ': ' . $e->getMessage());
+            $this->logger->error('Exception in copyright protected post update.', [
+                'postType'  => $post->post_type,
+                'postId'    => $postId,
+                'exception' => $e,
+            ]);
         }
     }
     public function addViewsColumn(array $columns): array
@@ -673,10 +689,6 @@ HTML;
     }
     protected function widgets(): void
     {
-        // remove WP widget: recent posts
-        unregister_widget('WP_Widget_Recent_Posts');
-
-        // register custom widget
         SidebarService::registerWidget('PostWidget', __DIR__);
     }
     protected function metaBox(): void

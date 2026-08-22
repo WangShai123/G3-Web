@@ -8,69 +8,73 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Toast, Modal } = jui;
-        const { success, error } = Toast;
-        const editor = new Modal({
-            text: {
-                title: '<?php _e('Edit'); ?>',
-                cancel: '<?php _e('Cancel'); ?>',
-                confirm: '<?php _e('Submit'); ?>',
-            },
+        const { Toast, createModal, createForm } = jui;
+        const { success, error, confirm } = Toast;
+        const f = createForm({
             fields: [
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'name',
                     type: 'text',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Slug'); ?>',
-                    name: 'slug',
                     type: 'text',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'slug',
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Membership Duration', 'G3'); ?>',
-                    name: 'duration',
                     type: 'number',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        name: 'duration',
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Time Unit', 'G3'); ?>',
-                    name: 'unit',
                     type: 'select',
-                    required: true,
-                    value: 'minute',
-                    options: [
-                        {
-                            text: '<?php _e('Second', 'G3'); ?>',
-                            value: 'second'
-                        },
-                        {
-                            text: '<?php _e('Minute'); ?>',
-                            value: 'minute'
-                        },
-                        {
-                            text: '<?php _e('Hour'); ?>',
-                            value: 'hour'
-                        },
-                        {
-                            text: '<?php _e('Day'); ?>',
-                            value: 'day'
-                        },
-                        {
-                            text: '<?php _e('Week', 'G3'); ?>',
-                            value: 'week'
-                        },
-                        {
-                            text: '<?php _e('Month'); ?>',
-                            value: 'month'
-                        },
-                    ],
+                    payload: {
+                        label: '<?php _e('Time Unit', 'G3'); ?>',
+                        name: 'unit',
+                        required: true,
+                        value: 'minute',
+                        options: [
+                            {
+                                text: '<?php _e('Second', 'G3'); ?>',
+                                value: 'second'
+                            },
+                            {
+                                text: '<?php _e('Minute'); ?>',
+                                value: 'minute'
+                            },
+                            {
+                                text: '<?php _e('Hour'); ?>',
+                                value: 'hour'
+                            },
+                            {
+                                text: '<?php _e('Day'); ?>',
+                                value: 'day'
+                            },
+                            {
+                                text: '<?php _e('Week', 'G3'); ?>',
+                                value: 'week'
+                            },
+                            {
+                                text: '<?php _e('Month'); ?>',
+                                value: 'month'
+                            },
+                        ],
+                    }
                 }
             ],
+            buttons: "reverse",
+            buttonsPosition: "end",
             onSubmit: (data) => {
-                editor.state.loading = true;
                 $.post(ajaxurl, {
                     action: 'g3_edit_membership_duration',
                     data
@@ -79,18 +83,23 @@ $table->display();
                         success(res.data.message);
                         setTimeout(() => {
                             location.reload();
-                        }, 1000);
-                    } else {
-                        error(res.data.message);
+                        }, 800);
                     }
-                }).done(() => {
-                    editor.state.loading = false
+                }).fail((res) => {
+                    error(res.responseJSON.data.message);
                 });
             },
+        }).build()
+        const editor = createModal({
+            text: {
+                title: '<?php _e('Edit'); ?>',
+            },
+            content: f.element,
+            footer: false,
             onHidden: () => {
-                editor.reset()
+                f.reset()
             }
-        });
+        }).build();
         $(document).on('click', '.add-duration', (e) => {
             e.preventDefault();
             editor.show();
@@ -98,72 +107,80 @@ $table->display();
         $(document).on('click', '.edit-duration', (e) => {
             e.preventDefault();
             const t = $(e.currentTarget);
-            editor.setFields([
+            f.setFields([
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'name',
                     type: 'text',
-                    value: t.data('name'),
-                    required: true
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        value: t.data('name'),
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Slug'); ?>',
-                    name: 'slug',
                     type: 'text',
-                    value: t.data('slug'),
-                    required: true
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'slug',
+                        value: t.data('slug'),
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Membership Duration', 'G3'); ?>',
-                    name: 'duration',
                     type: 'number',
-                    value: t.data('duration'),
-                    required: true
+                    payload: {
+                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        name: 'duration',
+                        value: t.data('duration'),
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Time Unit', 'G3'); ?>',
-                    name: 'unit',
                     type: 'select',
-                    required: true,
-                    value: 'second',
-                    options: [
-                        {
-                            text: '<?php _e('Second', 'G3'); ?>',
-                            value: 'second'
-                        },
-                        {
-                            text: '<?php _e('Minute'); ?>',
-                            value: 'minute'
-                        },
-                        {
-                            text: '<?php _e('Hour'); ?>',
-                            value: 'hour'
-                        },
-                        {
-                            text: '<?php _e('Day'); ?>',
-                            value: 'day'
-                        },
-                        {
-                            text: '<?php _e('Week', 'G3'); ?>',
-                            value: 'week'
-                        },
-                        {
-                            text: '<?php _e('Month'); ?>',
-                            value: 'month'
-                        },
-                    ],
+                    payload: {
+                        label: '<?php _e('Time Unit', 'G3'); ?>',
+                        name: 'unit',
+                        required: true,
+                        value: 'second',
+                        options: [
+                            {
+                                text: '<?php _e('Second', 'G3'); ?>',
+                                value: 'second'
+                            },
+                            {
+                                text: '<?php _e('Minute'); ?>',
+                                value: 'minute'
+                            },
+                            {
+                                text: '<?php _e('Hour'); ?>',
+                                value: 'hour'
+                            },
+                            {
+                                text: '<?php _e('Day'); ?>',
+                                value: 'day'
+                            },
+                            {
+                                text: '<?php _e('Week', 'G3'); ?>',
+                                value: 'week'
+                            },
+                            {
+                                text: '<?php _e('Month'); ?>',
+                                value: 'month'
+                            },
+                        ],
+                    }
                 }
             ])
             editor.show()
         })
         $(document).on('click', '.delete-duration', (e) => {
             const t = $(e.currentTarget);
-            Toast.action('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php Message::deleteConfirm(); ?>', {
                 text: {
                     cancel: '<?php _e('Cancel'); ?>',
                     action: '<?php _e('Delete'); ?>',
                 },
-                onAction: () => {
+                onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_membership_duration',
                         data: {
@@ -174,30 +191,13 @@ $table->display();
                             success(res.data.message);
                             setTimeout(() => {
                                 location.reload();
-                            }, 1000);
-                        } else {
-                            error(res.data.message);
+                            }, 800);
                         }
-                    })
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message);
+                    });
                 }
             });
-            // if (confirm('<?php Message::deleteConfirm(); ?>')) {
-            //     $.post(ajaxurl, {
-            //         action: 'g3_delete_membership_duration',
-            //         data: {
-            //             slug: $(e.currentTarget).data('slug')
-            //         }
-            //     }, (res) => {
-            //         if (res.success) {
-            //             success(res.data.message);
-            //             setTimeout(() => {
-            //                 location.reload();
-            //             }, 1000);
-            //         } else {
-            //             error(res.data.message);
-            //         }
-            //     })
-            // }
         })
     })
 </script>

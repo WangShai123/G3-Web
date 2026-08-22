@@ -12,24 +12,10 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class Auth extends Components {
-    private function optionDefaults(): array
+    protected function defaultOption(): array
     {
         return [
-            'code'        => '0',
-            'override'    => '0',
-            'force'       => '0',
-            'expire'      => '7',
-            'allowToSale' => '0',
-            'payment'     => '1',
-            'price'       => '10.00',
-        ];
-    }
-
-    private function wechatDefaults(): array
-    {
-        return [
-            'subscribe' => '0',
-            'client'    => '0',
+            AuthService::OPTION_KEY => AuthService::optionDefaults(),
         ];
     }
     protected function adminMenu()
@@ -40,34 +26,25 @@ class Auth extends Components {
             __('Login', 'G3'),
             'manage_options',
             'auth-settings',
-            // [$this, 'render'],
-            fn() => $this->createPanel(),
+            [$this, 'render'],
             2
         );
     }
-    protected function hooks(): void
+    public function render(): void
     {
-        $this->filter([
-            'login_url'        => [[$this, 'loginUrl'], 10, 3],
-            'lostpassword_url' => [[$this, 'lostPasswordUrl'], 10, 2],
-            'register_url'     => [[$this, 'registerUrl'], 10, 1],
-        ]);
+        $this->createPanel();
     }
     protected function adminPanelPage(): string
     {
         return 'auth-settings';
-    }
-    public function render()
-    {
-        $this->createPanel();
     }
     protected function adminPanels(): array
     {
         return [
             $this->panel('auth-settings', __('Login', 'G3'))
                 ->tab('general', __('General'))
-                ->option(AuthService::OPTION_KEY, $this->optionDefaults())
-                ->switch('override', __('Auth Route Override', 'G3'), __('Replace WordPress native login, registration and password reset URLs with the custom auth pages.', 'G3'))
+                ->option(AuthService::OPTION_KEY, AuthService::optionDefaults())
+                ->switch('override', __('Native Auth Override', 'G3'), __('Replace WordPress native login, registration and password reset URLs with the custom auth pages.', 'G3'))
                 ->select('code', __('Registration Code', 'G3'), [
                     '0' => __('Disabled'),
                     '1' => __('Invitation Code', 'G3'),
@@ -94,13 +71,21 @@ class Auth extends Components {
                 ], __('The payment method used to pay for the invitation code.', 'G3'))
                 ->input('price', __('Price', 'G3'), __('The price of the invitation code.', 'G3'))
                 ->tab('social', __('Social Login', 'G3'))
-                ->option(AuthService::WECHAT_OPTION_KEY, $this->wechatDefaults())
+                ->option(AuthService::WECHAT_OPTION_KEY, AuthService::wechatDefaults())
                 ->switch('subscribe', __('WeChat Subscribe Login', 'G3'), __('Users can subscribe your WeChat official account to complete the login.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('client', __('Login via Wechat Client', 'G3'), __('Users can complete the login automatically while browsing your website with Wechat client.', 'G3'))
                 ->rowClass('advanced')
                 ->tab('invitation', __('Invitation Code', 'G3'))
         ];
+    }
+    protected function hooks(): void
+    {
+        $this->filter([
+            'login_url'        => [[$this, 'loginUrl'], 10, 3],
+            'lostpassword_url' => [[$this, 'lostPasswordUrl'], 10, 2],
+            'register_url'     => [[$this, 'registerUrl'], 10, 1],
+        ]);
     }
     public static function onAuthOverride(): bool
     {
@@ -109,7 +94,7 @@ class Auth extends Components {
     }
     public function loginUrl(string $loginUrl, string $redirect = '', bool $forceReauth = false): string
     {
-        if (!self::onAuthOverride()) {
+        if ($this->option()['override'] ?? '0' !== '1') {
             return $loginUrl;
         }
 
@@ -125,7 +110,7 @@ class Auth extends Components {
     }
     public function lostPasswordUrl(string $lostPasswordUrl, string $redirect = ''): string
     {
-        if (!self::onAuthOverride()) {
+        if ($this->option()['override'] ?? '0' !== '1') {
             return $lostPasswordUrl;
         }
 
@@ -138,7 +123,10 @@ class Auth extends Components {
     }
     public function registerUrl(string $registerUrl): string
     {
-        return self::onAuthOverride() ? home_url('/user/register/') : $registerUrl;
+        if ($this->option()['override'] ?? '0' !== '1') {
+            return $registerUrl;
+        }
+        return home_url('/user/register/');
     }
     private static function optionData(): array
     {

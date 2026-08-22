@@ -60,7 +60,6 @@ class ContactController extends Controller {
             // MailerService::send()
         }
 
-
         return rest_ensure_response([
             'success' => true,
             'code'    => 200,

@@ -69,7 +69,7 @@ class Orders extends Components {
             }
         });
         add_action('wp_ajax_g3_ship_order', function () {
-
+            // @todo
         });
     }
 }

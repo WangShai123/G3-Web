@@ -8,103 +8,125 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Toast, Modal } = jui;
+        const { Toast, createModal, createForm } = jui;
+        const { success, error, confirm } = Toast;
         $(document).on('click', '.reset-role', (e) => {
             let slug = $(e.currentTarget).data('slug');
             if (slug === 'abandon' || slug === 'beginner') {
-                if (confirm('<?php _e('Are you sure you want to reset the current role name?', 'G3'); ?>')) {
-                    $.post(ajaxurl, {
-                        action: 'g3_reset_role',
-                        slug
-                    }, (res) => {
-                        if (res.success) {
-                            Toast.success(res.data.message);
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            Toast.error(res.data.message);
-                        }
-                    });
-                }
+                confirm('<?php _e('Are you sure you want to reset the current role name?', 'G3'); ?>', {
+                    onConfirm: () => {
+                        $.post(ajaxurl, {
+                            action: 'g3_reset_role',
+                            slug
+                        }, (res) => {
+                            if (res.success) {
+                                success(res.data.message);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 800);
+                            }
+                        }).fail((res) => {
+                            error(res.responseJSON.data.message);
+                        });
+                    }
+                })
             }
         })
-        const editor = new Modal({
+
+        const f = createForm({
+            fields: [
+                {
+                    type: 'text',
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        required: true
+                    }
+                },
+                {
+                    type: 'text',
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'slug',
+                        required: true
+                    }
+                },
+                {
+                    type: 'number',
+                    payload: {
+                        label: '<?php _e('Start Credits', 'G3'); ?>',
+                        name: 'start',
+                        required: true
+                    }
+                },
+                {
+                    type: 'number',
+                    payload: {
+                        label: '<?php _e('End Credits', 'G3'); ?>',
+                        name: 'end',
+                        required: true
+                    }
+                }
+            ],
+            buttons: "reverse",
+            buttonsPosition: "end",
+            onSubmit: (data) => {
+                $.post(ajaxurl, {
+                    action: 'g3_edit_role',
+                    data
+                }, (res) => {
+                    f.state.submitting = true;
+                    setTimeout(() => {
+                        Toast.success(res.data.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                        f.state.submitting = false;
+                        editor.hide();
+                    }, 800);
+                }).fail((res) => {
+                    f.state.submitting = false;
+                    Toast.error(res.responseJSON.data.message);
+                });
+            },
+        }).build();
+        const editor = createModal({
             text: {
                 title: '<?php _e('Edit'); ?>',
                 cancel: '<?php _e('Cancel'); ?>',
                 confirm: '<?php _e('Submit'); ?>',
             },
-            fields: [
-                {
-                    label: '<?php _e('Name'); ?>',
-                    type: 'text',
-                    name: 'name',
-                    required: true
-                },
-                {
-                    label: '<?php _e('Slug'); ?>',
-                    type: 'text',
-                    name: 'slug',
-                    required: true
-                },
-                {
-                    label: '<?php _e('Start Credits', 'G3'); ?>',
-                    type: 'number',
-                    name: 'start',
-                    required: true
-                },
-                {
-                    label: '<?php _e('End Credits', 'G3'); ?>',
-                    type: 'number',
-                    name: 'end',
-                    required: true
-                }
-            ],
-            onSubmit: (data) => {
-                editor.state.loading = true;
-                $.post(ajaxurl, {
-                    action: 'g3_edit_role',
-                    data: data
-                }, (res) => {
-                    setTimeout(() => {
-                        if (res.success) {
-                            Toast.success(res.data.message);
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            Toast.error(res.data.message);
-                        }
-                        editor.state.loading = false;
-                    }, 300);
-                })
-            },
+            footer: false,
+            content: f.element,
             onHidden: () => {
-                editor.reset()
+                console.log(f)
+                f.resetFields();
             }
-        });
+        }).build();
+
         $(document).on('click', '.add-role', (e) => {
             e.preventDefault();
             editor.show();
         });
         $(document).on('click', '.delete-role', (e) => {
             const slug = $(e.currentTarget).data('slug');
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                $.post(ajaxurl, {
-                    action: 'g3_delete_role',
-                    slug
-                }, (res) => {
-                    if (res.success) {
-                        Toast.success(res.data.message)
-                        setTimeout(() => {
-                            location.reload();
-                        }, 800)
-                    } else {
-                        Toast.error(res.data.message);
-                    }
-                })
-            }
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_role',
+                        slug
+                    }, (res) => {
+                        if (res.success) {
+                            Toast.success(res.data.message)
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800)
+                        }
+                    }).fail((res) => {
+                        Toast.error(res.responseJSON.data.message);
+                    })
+                }
+            });
         });
         $(document).on('click', '.edit-role', (e) => {
             const target = $(e.currentTarget);
@@ -113,92 +135,116 @@ $table->display();
             const start = target.data('start');
             const end = target.data('end');
             if (slug === 'abandon') {
-                editor.setFields([
+                f.setFields([
                     {
-                        label: '<?php _e('Name'); ?>',
                         type: 'text',
-                        name: 'name',
-                        required: true,
-                        value: name
+                        payload: {
+                            label: '<?php _e('Name'); ?>',
+                            name: 'name',
+                            required: true,
+                            value: name
+                        }
                     },
                     {
-                        name: 'slug',
                         type: 'text',
-                        value: slug,
-                        type: 'hidden',
-                        readonly: true
+                        payload: {
+                            label: '<?php _e('Slug'); ?>',
+                            name: 'slug',
+                            value: slug,
+                            readonly: true
+                        }
                     },
                     {
-                        name: 'start',
-                        type: 'number',
-                        value: start,
-                        type: 'hidden',
-                        readonly: true
+                        type: 'text',
+                        payload: {
+                            label: '<?php _e('Start Credits', 'G3'); ?>',
+                            name: 'start',
+                            value: start,
+                            readonly: true
+                        }
                     },
                     {
-                        name: 'end',
                         type: 'number',
-                        value: end,
-                        type: 'hidden',
-                        readonly: true
+                        payload: {
+                            label: '<?php _e('End Credits', 'G3'); ?>',
+                            name: 'end',
+                            value: end,
+                            readonly: true
+                        }
                     }
                 ])
             } else if (slug === 'beginner') {
-                editor.setFields([
+                f.setFields([
                     {
-                        label: '<?php _e('Name'); ?>',
                         type: 'text',
-                        name: 'name',
-                        required: true,
-                        value: name
+                        payload: {
+                            label: '<?php _e('Name'); ?>',
+                            name: 'name',
+                            required: true,
+                            value: name
+                        }
                     },
                     {
-                        name: 'slug',
                         type: 'hidden',
-                        value: slug,
-                        readonly: true,
+                        payload: {
+                            name: 'slug',
+                            value: slug,
+                            readonly: true,
+                        }
                     },
                     {
-                        name: 'start',
                         type: 'hidden',
-                        value: '0',
-                        readonly: true
+                        payload: {
+                            name: 'start',
+                            value: '0',
+                            readonly: true
+                        }
                     },
                     {
-                        label: '<?php _e('End Credits', 'G3'); ?>',
-                        name: 'end',
                         type: 'number',
-                        value: end,
+                        payload: {
+                            label: '<?php _e('End Credits', 'G3'); ?>',
+                            name: 'end',
+                            value: end,
+                        }
                     }
                 ])
             } else {
-                editor.setFields([
+                f.setFields([
                     {
-                        label: '<?php _e('Name'); ?>',
                         type: 'text',
-                        name: 'name',
-                        required: true,
-                        value: name
+                        payload: {
+                            label: '<?php _e('Name'); ?>',
+                            name: 'name',
+                            required: true,
+                            value: name
+                        }
                     },
                     {
-                        label: '<?php _e('Slug'); ?>',
-                        name: 'slug',
                         type: 'text',
-                        value: slug,
-                        required: true,
+                        payload: {
+                            label: '<?php _e('Slug'); ?>',
+                            name: 'slug',
+                            value: slug,
+                            required: true,
+                        }
                     },
                     {
-                        label: '<?php _e('Start Credits', 'G3'); ?>',
-                        name: 'start',
                         type: 'number',
-                        value: start,
-                        required: true,
+                        payload: {
+                            label: '<?php _e('Start Credits', 'G3'); ?>',
+                            name: 'start',
+                            value: start,
+                            required: true,
+                        }
                     },
                     {
-                        label: '<?php _e('End Credits', 'G3'); ?>',
-                        name: 'end',
                         type: 'number',
-                        value: end,
+                        payload: {
+                            label: '<?php _e('End Credits', 'G3'); ?>',
+                            name: 'end',
+                            value: end,
+                        }
                     }
                 ])
             }

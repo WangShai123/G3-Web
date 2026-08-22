@@ -7,7 +7,6 @@ use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
-use JEALER\G3\Utilities\Session;
 use JEALER\G3\Services\SystemService;
 use Override;
 use WP_Error;

@@ -44,7 +44,9 @@ class Developer extends Components {
             'themeInstall'    => '0',
             'posts'           => '0',
             'pages'           => '0',
-            'dashboard'       => ['0', '1', '2', '3', '4', '5'],
+            'menus'           => '0',
+            'dashboard'       => [0, 1, 2, 3, 4, 5],
+            'widgets'         => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
             'footerThanks'    => G3_NAME,
             'footerUpgrade'   => G3_VERSION,
         ];
@@ -95,8 +97,9 @@ class Developer extends Components {
                 ->switch('pluginsPage', __('Plugins Page', 'G3'))
                 ->switch('permalink', __('Permalinks', 'G3'))
                 ->switch('wpHead', 'WP Head', __('Clean the data in wp head.', 'G3'))
-                ->switch('posts', __('Posts'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Posts', 'posts'))
-                ->switch('pages', __('Pages'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Pages', 'pages'))
+                ->switch('posts', __('Posts'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Posts', 'posts') . '. ' . __('Slug') . ': <code>posts</code>.')
+                ->switch('pages', __('Pages'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Pages', 'pages') . '. ' . __('Slug') . ': <code>pages</code>.')
+                // ->switch('menus', __('Menus'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Menus', __('Menus') . '.'))
                 ->checkbox('dashboard', __('Dashboard'), [
                     '0' => __('Welcome Panel', 'G3'),
                     '1' => __('Site Health Status'),
@@ -104,9 +107,30 @@ class Developer extends Components {
                     '3' => __('Activity'),
                     '4' => __('Quick Draft'),
                     '5' => __('WordPress Events and News')
-                ], __('Check & Remove the default dashboard widgets.', 'G3'), false)
-                ->input('footerThanks', __('Footer Thanks'), __('Set the data which will be displayed in the left footer area.', 'G3'))
-                ->input('footerUpgrade', __('Footer Upgrade'), __('Set the data which will be displayed in the right footer area.', 'G3'))
+                ], '', true)
+                ->checkbox('widgets', __('Widgets'), [
+                    '0'  => 'RSS',
+                    '1'  => __('Block'),
+                    '2'  => __('Meta'),
+                    '3'  => __('Navigation Menus'),
+                    '4'  => __('Gallery'),
+                    '5'  => __('Image'),
+                    '6'  => __('Video'),
+                    '7'  => __('Audio'),
+                    '8'  => __('Links'),
+                    '9'  => __('Text'),
+                    '10' => __('Pages'),
+                    '11' => __('Archives'),
+                    '12' => __('Calendar'),
+                    '13' => __('Categories'),
+                    '14' => __('Recent Posts'),
+                    '15' => __('Recent Comments'),
+                    '16' => __('Tag Cloud'),
+                    '17' => __('Search'),
+                    '18' => __('Custom HTML'),
+                ], '', true)
+                ->input('footerThanks', __('Footer Thanks'), sprintf(__('Set the data which will be displayed in the %s area. It will display default data when empty.', 'G3'), __('Bottom Left')))
+                ->input('footerUpgrade', __('Footer Upgrade'), sprintf(__('Set the data which will be displayed in the %s area. It will display default data when empty.', 'G3'), __('Bottom Right')))
 
                 ->tab('flush', __('Flush Data', 'G3'))
                 ->callback('g3_flush_rewrite_rules', __('Rewrite Rules', 'G3'), [$this, '_flushRewriteButton'])
@@ -196,6 +220,7 @@ class Developer extends Components {
             'login_head'     => [[$this, 'handleLoginHead']],
             'admin_head'     => [[$this, 'helpLinkHandle']],
             'admin_bar_menu' => [[$this, 'adminBarMenuHandle'], 999, 1],
+            'widgets_init'   => [[$this, 'defaultWidgets']],
         ]);
     }
     protected function form(): void
@@ -673,6 +698,7 @@ class Developer extends Components {
     }
     public function x(): void
     {
+        if (!is_admin()) return;
         $msg = sprintf(__('One more step. <a href="%s">Verify your G3-Web authorization</a> to access all services.', 'G3'), admin_url('index.php?page=g3-verify-license'));
         wp_admin_notice($msg, ['type' => 'error']);
         add_action("admin_bar_menu", [$this, "noticeInAdminBar"], 999);
@@ -847,25 +873,57 @@ class Developer extends Components {
     protected function dashboard(): void
     {
         $option = $this->option();
-        $v      = $option['dashboard'] ?? ['0', '1', '2', '3', '4', '5'];
+        $v      = $option['dashboard'] ?? [];
         $v      = is_array($v) ? $v : [];
-        if (in_array('0', $v, true)) {
+        if (!in_array('0', $v, true)) {
             remove_action('welcome_panel', 'wp_welcome_panel');
         }
-        if (in_array('1', $v, true)) {
+        if (!in_array('1', $v, true)) {
             remove_meta_box('dashboard_site_health', 'dashboard', 'normal');
         }
-        if (in_array('2', $v, true)) {
+        if (!in_array('2', $v, true)) {
             remove_meta_box('dashboard_right_now', 'dashboard', 'normal');
         }
-        if (in_array('3', $v, true)) {
+        if (!in_array('3', $v, true)) {
             remove_meta_box('dashboard_activity', 'dashboard', 'normal');
         }
-        if (in_array('4', $v, true)) {
+        if (!in_array('4', $v, true)) {
             remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
         }
-        if (in_array('5', $v, true)) {
+        if (!in_array('5', $v, true)) {
             remove_meta_box('dashboard_primary', 'dashboard', 'side');
+        }
+    }
+    public function defaultWidgets(): void
+    {
+        $option = $this->option();
+        $v      = $option['widgets'] ?? [];
+        $v      = is_array($v) ? $v : [];
+        $map    = [
+            '0'  => 'WP_Widget_RSS',
+            '1'  => 'WP_Widget_Block',
+            '2'  => 'WP_Widget_Meta',
+            '3'  => 'WP_Nav_Menu_Widget',
+            '4'  => 'WP_Widget_Media_Gallery',
+            '5'  => 'WP_Widget_Media_Image',
+            '6'  => 'WP_Widget_Media_Video',
+            '7'  => 'WP_Widget_Media_Audio',
+            '8'  => 'WP_Widget_Links',
+            '9'  => 'WP_Widget_Text',
+            '10' => 'WP_Widget_Pages',
+            '11' => 'WP_Widget_Archives',
+            '12' => 'WP_Widget_Calendar',
+            '13' => "WP_Widget_Categories",
+            '14' => 'WP_Widget_Recent_Posts',
+            '15' => 'WP_Widget_Recent_Comments',
+            '16' => 'WP_Widget_Tag_Cloud',
+            '17' => 'WP_Widget_Search',
+            '18' => 'WP_Widget_Custom_HTML'
+        ];
+        foreach ($map as $key => $value) {
+            if (!in_array($key, $v, true)) {
+                unregister_widget($value);
+            }
         }
     }
     public function ajax(): void

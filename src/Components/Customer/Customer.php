@@ -25,8 +25,8 @@ class Customer extends Components {
             return;
         }
 
-        Frontend::css('g3.customer.admin');
-        Frontend::umd('g3.customer.admin');
+        Frontend::css('g3.admin.customer');
+        Frontend::umd('g3.admin.customer');
     }
 
     protected function adminMenu(): void
@@ -55,7 +55,8 @@ class Customer extends Components {
     }
     public function customerConsolePage(): void
     {
-        echo '<div class="wrap"><h1 class="wp-heading-inline">' . __('Customer Service', 'G3') . '</h1><div id="g3-customer-admin-root" class="mt-4"></div></div>' . Frontend::configScript('g3-customer-admin-config', $this->adminConfig());
+        // <h1 class="wp-heading-inline">' . __('Customer Service', 'G3') . '</h1>
+        echo '<div class="wrap"><div id="g3-customer-admin-root" class="mt-4"></div></div>' . Frontend::configScript('g3-customer-admin-config', $this->adminConfig());
     }
     protected function adminPanels(): array
     {

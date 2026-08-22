@@ -1,12 +1,14 @@
 <?php
+use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Image;
 
 class PostWidget extends WP_Widget {
-    private int $count;
-    private int $type;
-    private int $category;
+    private int    $count;
+    private int    $type;
+    private int    $category;
+    private string $buildIn;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class PostWidget extends WP_Widget {
         $this->count    = 5;
         $this->category = 0;
         $this->type     = 0;
+        $this->buildIn  = get_option(SystemService::SETTING_OPTION_KEY)['posts'] ?? '0';
     }
     public function widget($args, $instance)
     {
@@ -104,7 +107,7 @@ class PostWidget extends WP_Widget {
         $posts = [];
 
         $args = [
-            'post_type'      => 'post',
+            'post_type'      => $this->buildIn === '1' ? 'site-post' : 'post',
             'posts_per_page' => $count,
             'order'          => 'DESC',
         ];

@@ -33,69 +33,82 @@ echo Element::tip(
 <script>
     jQuery(document).ready(function ($) {
         const { Toast } = jui
-        const { success, error } = Toast;
+        const { success, error, confirm } = Toast;
         $('.action-delete').on('click', function (e) {
             e.preventDefault()
             let id = $(this).attr('data-id')
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                $.post(ajaxurl, {
-                    action: 'g3_delete_wechatOA_menu',
-                    id
-                }, function (res) {
-                    if (res.success) {
-                        success(res.data.message, 1000)
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 1000)
-                    } else {
-                        error(res.data.message, 2000)
-                    }
-                })
-            }
+
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_wechatOA_menu',
+                        id
+                    }, function (res) {
+                        if (res.success) {
+                            success(res.data.message, 1000)
+                            setTimeout(() => {
+                                location.reload()
+                            }, 800)
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    })
+                }
+            })
         })
+
         $('#create-wechat-oa-menu').on('click', function (e) {
             const oldText = $(this).text()
             e.preventDefault()
-            if (confirm('<?php _e('Are you sure you want to create this menu for WeChat Official Account?', 'G3'); ?>')) {
-                $(this).attr('disabled', true)
-                $(this).html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>')
-                $.post(ajaxurl, {
-                    action: 'g3_create_wechatOA_menus',
-                    nonce: '<?php echo wp_create_nonce('g3_create_wechatOA_menus'); ?>'
-                }, function (res) {
-                    if (res.success) {
-                        success(res.data.message, 2000)
-                    } else {
-                        error(res.data.message, 2000)
-                    }
-                    setTimeout(function () {
-                        $('#create-wechat-oa-menu').removeAttr('disabled')
-                        $('#create-wechat-oa-menu').text(oldText)
-                    }, 1000)
-                })
-            }
+            const that = $(this)
+            confirm('<?php _e('Are you sure you want to create this menu for WeChat Official Account?', 'G3'); ?>', {
+                onConfirm: () => {
+                    that.attr('disabled', true);
+                    that.html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>')
+                    $.post(ajaxurl, {
+                        action: 'g3_create_wechatOA_menus',
+                        nonce: '<?php echo wp_create_nonce('g3_create_wechatOA_menus'); ?>'
+                    }, function (res) {
+                        if (res.success) {
+                            success(res.data.message)
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    }).always(() => {
+                        setTimeout(function () {
+                            $('#create-wechat-oa-menu').removeAttr('disabled')
+                            $('#create-wechat-oa-menu').text(oldText)
+                        }, 800)
+                    })
+                }
+            })
         })
+
         $('#flush-wechat-oa-menu').on('click', function (e) {
             const oldText = $(this).text()
             e.preventDefault()
-            if (confirm('<?php _e('Are you sure you want to flush the menus online?', 'G3'); ?>')) {
-                $(this).attr('disabled', true)
-                $(this).html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>')
-                $.post(ajaxurl, {
-                    action: 'g3_flush_wechatOA_menus',
-                    nonce: '<?php echo wp_create_nonce('g3_flush_wechatOA_menus'); ?>'
-                }, function (res) {
-                    if (res.success) {
-                        success(res.data.message, 2000)
-                    } else {
-                        error(res.data.message, 2000)
-                    }
-                    setTimeout(function () {
-                        $('#flush-wechat-oa-menu').removeAttr('disabled')
-                        $('#flush-wechat-oa-menu').text(oldText)
-                    }, 1000)
-                })
-            }
+            const that = $(this);
+            confirm('<?php _e('Are you sure you want to flush the menus online?', 'G3'); ?>', {
+                onConfirm: () => {
+                    that.attr('disabled', true)
+                    that.html('<div class="animate-spin" style="width:24px"><?php echo Image::icon('loader'); ?></div>')
+                    $.post(ajaxurl, {
+                        action: 'g3_flush_wechatOA_menus',
+                        nonce: '<?php echo wp_create_nonce('g3_flush_wechatOA_menus'); ?>'
+                    }, function (res) {
+                        if (res.success) {
+                            success(res.data.message)
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    }).always(() => {
+                        setTimeout(function () {
+                            $('#flush-wechat-oa-menu').removeAttr('disabled')
+                            $('#flush-wechat-oa-menu').text(oldText)
+                        }, 800)
+                    })
+                }
+            })
         })
     })
 </script>

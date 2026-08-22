@@ -127,8 +127,11 @@ class Aspects {
      * @param string $method 方法名
      * @param array $args 方法参数
      * @return mixed 方法返回值
+     * @throws Throwable
+     * @since 1.0.0
+     * @author Wang Shai
      */
-    public function invoke(object $target, string $method, array $args)
+    public function invoke(object $target, string $method, array $args): mixed
     {
         $class   = \get_class($target);
         $advices = $this->match('method', $class, $method);

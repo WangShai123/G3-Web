@@ -1325,14 +1325,10 @@ class DBService {
          * 
          * 日志表
          *  - id: 主键
-         *  - type: 日志类型
          *  - level: 日志级别
-         *  - module: 业务模块名称
          *  - message: 日志信息
-         *  - user_id: 用户ID
-         *  - ip_address: IP地址
-         *  - meta: 日志元数据
-         *  - created_at: 创建时间
+         *  - context: 上下文 JSON
+         *  - created_at: UTC 创建时间
          * 
          * @since 1.0.0
          */
@@ -1340,19 +1336,13 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `type` VARCHAR(64) NOT NULL,
-                `level` VARCHAR(64) NOT NULL DEFAULT 'info',
-                `module` VARCHAR(64) DEFAULT NULL,
+                `level` VARCHAR(10) NOT NULL,
                 `message` TEXT NOT NULL,
-                `user_id` BIGINT UNSIGNED DEFAULT NULL,
-                `ip_address` VARCHAR(64) DEFAULT NULL,
-                `meta` TEXT DEFAULT NULL,
+                `context` JSON DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
-                KEY `type` (`type`),
-                KEY `level` (`level`),
-                KEY `module` (`module`),
-                KEY `created_at` (`created_at`)
+                KEY `idx_level` (`level`),
+                KEY `idx_created_at` (`created_at`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);

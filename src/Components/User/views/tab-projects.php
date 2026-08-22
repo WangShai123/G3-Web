@@ -19,129 +19,144 @@ $durations = get_option(UserService::DURATION_OPTION_KEY, []);
 </style>
 <script>
     jQuery(document).ready(function ($) {
-        const { Toast, Modal } = jui;
-        const { success, error } = Toast;
-        const editor = new Modal({
-            text: {
-                title: '<?php _e('Edit'); ?>',
-                cancel: '<?php _e('Cancel'); ?>',
-                confirm: '<?php _e('Submit'); ?>'
-            },
+        const { Toast, createModal, createForm } = jui;
+        const { success, error, confirm } = Toast;
+        const f = createForm({
             fields: [
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'name',
                     type: 'select',
-                    options: [
-                        <?php foreach ($groups as $slug => $group) :
-                            echo "{
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        options: [
+                            <?php foreach ($groups as $slug => $group) :
+                                echo "{
                                 text: '{$group['name']}',
                                 value: '{$slug}'
                             },";
-                        endforeach; ?>
-                    ]
+                            endforeach; ?>
+                        ]
+                    }
                 },
                 {
-                    label: '<?php _e('Membership Duration', 'G3'); ?>',
-                    name: 'duration',
                     type: 'select',
-                    options: [
-                        <?php foreach ($durations as $slug => $duration) :
-                            echo "{
+                    payload: {
+                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        name: 'duration',
+                        options: [
+                            <?php foreach ($durations as $slug => $duration) :
+                                echo "{
                                 text: '{$duration['name']}',
                                 value: '{$slug}'
                             },";
-                        endforeach; ?>
-                    ]
+                            endforeach; ?>
+                        ]
+                    }
                 },
                 {
-                    label: '<?php _e('Price', 'G3'); ?>',
-                    name: 'price',
-                    type: 'number'
+                    type: 'number',
+                    payload: {
+                        label: '<?php _e('Price', 'G3'); ?>',
+                        name: 'price',
+                    }
                 }
             ],
+            buttons: "reverse",
+            buttonsPosition: "end",
             onSubmit: (data) => {
-                editor.state.loading = true;
                 $.post(ajaxurl, {
                     action: 'g3_edit_membership_project',
-                    data: data
+                    data
                 }, (res) => {
                     if (res.success) {
                         success(res.data.message);
                         setTimeout(() => {
                             location.reload();
-                        }, 1000);
-                    } else {
-                        error(res.data.message);
+                        }, 800);
                     }
-                }).done(() => {
-                    editor.state.loading = false
+                }).fail((res) => {
+                    error(res.responseJSON.data.message);
                 });
             },
+        }).build();
+        const editor = createModal({
+            text: {
+                title: '<?php _e('Edit'); ?>',
+            },
+            content: f.element,
+            footer: false,
             onHidden: () => {
-                editor.reset()
+                f.reset()
             }
-        })
-        $(document).on('click', '.add-project', (e) => {
+        }).build();
+        $(document).on('click', '.add-project', () => {
             editor.show()
         })
         $(document).on('click', '.edit-project', (e) => {
             const t = $(e.currentTarget)
-            editor.setFields([
+            f.setFields([
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'slug',
                     type: 'select',
-                    value: t.data('name'),
-                    options: [
-                        <?php foreach ($groups as $slug => $group) :
-                            echo "{
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'slug',
+                        value: t.data('name'),
+                        options: [
+                            <?php foreach ($groups as $slug => $group) :
+                                echo "{
                                 text: '{$group['name']}',
                                 value: '{$slug}'
                             },";
-                        endforeach; ?>
-                    ]
+                            endforeach; ?>
+                        ]
+                    }
                 },
                 {
-                    label: '<?php _e('Membership Duration', 'G3'); ?>',
-                    name: 'duration',
                     type: 'select',
-                    value: t.data('duration'),
-                    options: [
-                        <?php foreach ($durations as $slug => $duration) :
-                            echo "{
+                    payload: {
+                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        name: 'duration',
+                        value: t.data('duration'),
+                        options: [
+                            <?php foreach ($durations as $slug => $duration) :
+                                echo "{
                                 text: '{$duration['name']}',
                                 value: '{$slug}'
                             },";
-                        endforeach; ?>
-                    ]
+                            endforeach; ?>
+                        ]
+                    }
                 },
                 {
-                    label: '<?php _e('Price', 'G3'); ?>',
-                    name: 'price',
                     type: 'number',
-                    value: t.data('price')
+                    payload: {
+                        label: '<?php _e('Price', 'G3'); ?>',
+                        name: 'price',
+                        value: t.data('price')
+                    }
                 }
             ])
             editor.show()
         })
         $(document).on('click', '.delete-project', (e) => {
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                const id = $(e.currentTarget).data('id')
-                $.post(ajaxurl, {
-                    action: 'g3_delete_membership_project',
-                    data: { id }
-                }, (res) => {
-                    if (res.success) {
-                        success(res.data.message);
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        error(res.data.message);
-                    }
-                })
-            }
+            const id = $(e.currentTarget).data('id')
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_membership_project',
+                        data: { id }
+                    }, (res) => {
+                        if (res.success) {
+                            success(res.data.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800);
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message);
+                    })
+                }
+            });
         })
         $(document).on('click', '.copy-payLink', (e) => {
             Toast.info('todo...')

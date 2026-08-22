@@ -8,47 +8,57 @@ $table->display();
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Modal, Toast } = jui;
-        const { success, error } = Toast;
-        const editor = new Modal({
-            text: {
-                title: '<?php _e('Edit'); ?>',
-                cancel: '<?php _e('Cancel'); ?>',
-                confirm: '<?php _e('Submit'); ?>',
-            },
+        const { createModal, Toast, createForm } = jui;
+        const { success, error, confirm } = Toast;
+        const f = createForm({
             fields: [
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'name',
                     type: 'text',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        required: true
+                    }
                 },
                 {
-                    label: '<?php _e('Slug'); ?>',
-                    name: 'slug',
                     type: 'text',
-                    required: true
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'slug',
+                        required: true
+                    }
                 }
             ],
+            buttons: "reverse",
+            buttonsPosition: "end",
             onSubmit: (data) => {
                 $.post(ajaxurl, {
                     action: 'g3_edit_premium_config',
-                    data: data
+                    data
                 }, (res) => {
                     if (res.success) {
                         success(res.data.message);
                         setTimeout(() => {
                             location.reload();
                         }, 1000);
-                    } else {
-                        error(res.data.message);
                     }
-                });
+                }).fail((res) => {
+                    error(res.responseJSON.data.message);
+                })
             },
+        }).build();
+        const editor = createModal({
+            text: {
+                title: '<?php _e('Edit'); ?>',
+                cancel: '<?php _e('Cancel'); ?>',
+                confirm: '<?php _e('Submit'); ?>',
+            },
+            content: f.element,
+            footer: false,
             onHidden: () => {
-                editor.reset()
+                f.reset()
             }
-        });
+        }).build();
         $(document).on('click', '.add-config', (e) => {
             e.preventDefault();
             editor.show();
@@ -56,41 +66,47 @@ $table->display();
         $(document).on('click', '.edit-config', (e) => {
             const name = $(e.currentTarget).data('name');
             const slug = $(e.currentTarget).data('slug');
-            editor.setFields([
+            f.setFields([
                 {
-                    label: '<?php _e('Name'); ?>',
-                    name: 'name',
                     type: 'text',
-                    required: true,
-                    value: name
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        required: true,
+                        value: name
+                    }
                 },
                 {
-                    label: '<?php _e('Slug'); ?>',
-                    name: 'slug',
                     type: 'text',
-                    required: true,
-                    value: slug
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'slug',
+                        required: true,
+                        value: slug
+                    }
                 }
             ]);
             editor.show();
         });
         $(document).on('click', '.delete-config', (e) => {
             const slug = $(e.currentTarget).data('slug');
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
-                $.post(ajaxurl, {
-                    action: 'g3_delete_premium_config',
-                    slug: slug
-                }, (res) => {
-                    if (res.success) {
-                        success(res.data.message);
-                        setTimeout(() => {
-                            location.reload();
-                        }, 800);
-                    } else {
-                        error(res.data.message);
-                    }
-                })
-            }
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'g3_delete_premium_config',
+                        slug
+                    }, (res) => {
+                        if (res.success) {
+                            success(res.data.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800);
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message);
+                    })
+                }
+            });
         });
     })
 </script>

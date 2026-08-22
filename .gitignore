@@ -20,6 +20,7 @@ vite.config.ts
 
 **/*.md
 !/README.md
+!/README_zh.md
 
 assets/css/*.css
 !assets/css/*.min.css
@@ -33,6 +34,22 @@ assets/js/es/*.js
 
 public/js/es/fingerprint.js
 public/js/es/infinitegrid.esm.js
+
+vendor/bin
+vendor/phpstan
+vendor/phpunit
+vendor/phar-io
+vendor/nikic
+vendor/myclabs
+vendor/sebastian
+vendor/staabm
+vendor/theseer
+vendor/wp-phpunit
+.circleci/
+.phpcs.xml.dist
+phpunit.xml.dist
+bin/install-wp-tests.sh
+
 
 vendor/**/*/LICENSE
 vendor/**/*/*.yml

@@ -58,6 +58,9 @@ class CustomListTable extends WP_List_Table {
 
     public function column_cb($item): string
     {
+        if (!isset($item['slug'])) return '';
+
+        if ($item['slug'] === 'vip') return '';
         return sprintf(
             '<input type="checkbox" name="slug[]" value="%s" />',
             $item["slug"]
@@ -121,7 +124,12 @@ class CustomListTable extends WP_List_Table {
 
     private function getData(): array
     {
-        return get_option(UserService::GROUP_OPTION_KEY, $this->default);
+        $roles = get_option(UserService::GROUP_OPTION_KEY, []);
+        if (empty($roles)) {
+            update_option(UserService::GROUP_OPTION_KEY, $this->default);
+            return $this->default;
+        }
+        return $roles;
     }
 
     private function getCount(): int
@@ -131,7 +139,9 @@ class CustomListTable extends WP_List_Table {
 
     private function renderAction($item): string
     {
-        $delete = ($this->getCount() > 1) ? sprintf(
+        if (!isset($item['slug'])) return '';
+
+        $delete = $item['slug'] !== 'vip' ? sprintf(
             '<span class="delete-role color-error cursor-pointer" data-slug="%s">%s</span>',
             $item['slug'],
             __('Delete')

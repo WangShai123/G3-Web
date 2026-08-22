@@ -25,8 +25,12 @@ class FormListTable extends WP_List_Table {
         $this->table     = $wpdb->prefix . FormService::TABLE;
         $this->container = Container::run();
         $this->service   = $this->container->get(FormService::class);
-        $option          = get_option(FormService::FORM_OPTION_KEY, []);
-        $this->perPage   = (int) (is_array($option) ? ($option['perPage'] ?? 20) : 20);
+        $this->perPage   = $this->getPerPage();
+    }
+    private function getPerPage(): int
+    {
+        $perPage = (int) get_option(FormService::FORM_OPTION_KEY)['perPage'] ?? 20;
+        return $perPage > 0 ? $perPage : 20;
     }
     public function get_columns(): array
     {
@@ -34,8 +38,8 @@ class FormListTable extends WP_List_Table {
             'cb'         => '<input type="checkbox" />',
             'title'      => __('Title'),
             'content'    => __('Content'),
-            'ext'        => __('Extra Data', 'G3'),
             'email'      => __('Email'),
+            'ext'        => __('Extra Data', 'G3'),
             'ip'         => 'IP',
             'status'     => __('Status', 'G3'),
             'created_at' => __('Created At', 'G3'),
@@ -139,7 +143,14 @@ class FormListTable extends WP_List_Table {
     public function column_title($item): string
     {
         $actions = [
-            'view' => sprintf('<span data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"content"}, __('View')),
+            'view'  => sprintf('<span data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"content"}, __('View')),
+            'reply' => sprintf(
+                '<a class="reply-field" href="mailto:%s?subject=%s&body=%s">%s</a>',
+                htmlspecialchars($item->{"email"}, ENT_QUOTES, 'UTF-8'),
+                urlencode($item->{"title"}),
+                urlencode($item->{"content"}),
+                htmlspecialchars(__('Reply'), ENT_QUOTES, 'UTF-8')
+            ),
         ];
 
         return sprintf('%1$s %2$s', $item->{"title"}, $this->row_actions($actions));

@@ -4,6 +4,7 @@ use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Components\Themes\Includes\Themes as ThemesClass;
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\System;
 use Override;
 use WP_Error;
 
@@ -73,7 +74,7 @@ class Themes extends Components {
                 ->option(SystemService::THEME_OPTION_KEY, $this->optionDefaults())
                 ->select('low', __('Theme for low-end browsers', 'G3'), $this->projects, __('You can choose a theme for low-end browsers that do not support ES2015 standard.', 'G3'))
                 ->select('mobile', __('Theme for mobile', 'G3'), $this->projects, __('You can Select a theme for mobile devices.', 'G3'))
-                ->switch('theme', __('Theme Assembly', 'G3'), __('The theme mode is automatically determined based on the cookie <code>jui-theme</code>. The frontend template HTML element will have classes such as <code>dark</code>, <code>j-theme-indigo</code>, etc.', 'G3'))
+                ->switch('theme', __('Theme Assembly', 'G3'), __('The theme mode is automatically determined based on the cookie <code>ui-theme</code>. The frontend template HTML element will have classes such as <code>dark</code>, <code>j-theme-indigo</code>, etc.', 'G3'))
                 ->switch('default', __('Dark Scheme', 'G3'), __('Use the dark color scheme as the default theme color scheme.', 'G3'))
                 ->callback('script', 'Head Script', fn() => $this->renderHeadScript())
         ];
@@ -84,7 +85,8 @@ class Themes extends Components {
     }
     private function renderHeadScript()
     {
-        $script = "<script>(function(d,k){var m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));if(!m)return;try{var o=JSON.parse(m[1]),r=o.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):o.mode,h=d.documentElement;h.classList.add(r||'dark','j-theme-'+(o.theme||'indigo'),'j-radius-'+(o.radius||'sm'),'j-shadow-'+(o.shadow||'sm'),'j-font-'+(o.font||'sm'));}catch(e){}})(document,'jui-theme');</script>";
+        // $script = "(function(d,k){var v={mode:'dark',theme:'indigo',radius:'sm',shadow:'sm',font:'sm'},m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)')),o=v;if(m){try{o=Object.assign({},v,JSON.parse(decodeURIComponent(m[1])))}catch(e){o=v}}else{d.cookie=k+'='+JSON.stringify(v)+'; expires='+new Date(Date.now()+864e5).toUTCString()+'; path=/; sameSite=Lax'}try{var r=o.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):o.mode,h=d.documentElement;h.classList.add(r||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font))}catch(e){}})(document,'ui-theme');";
+        $script = "(function(d,k){var v={mode:'light',theme:'indigo',radius:'sm',shadow:'sm',font:'sm'},m=d.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)')),o=v;if(m){try{var r=JSON.parse(decodeURIComponent(m[1]));if(r&&typeof r.val==='object')o=Object.assign({},v,r.val);}catch(e){o=v;}}try{var c=o.mode==='auto'?matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light':o.mode,h=d.documentElement;h.classList.add(c||'dark','j-theme-'+(o.theme||v.theme),'j-radius-'+(o.radius||v.radius),'j-shadow-'+(o.shadow||v.shadow),'j-font-'+(o.font||v.font));}catch(e){}})(document,'ui-theme');";
         $des    = __('You can manually add the above script to the head tag of the theme template to replace the automatic theme assembly function set above.', 'G3');
         return '<pre style="text-wrap:auto;padding:8px;margin-bottom:8px;background:#e5e4e3" id="headScript">' . esc_html($script) . '</pre><p>' . $des . '</p><p><button class="j-button is-sm is-outline" type="button" id="copyScript">' . __('Copy') . '</button></p>';
     }
@@ -168,10 +170,18 @@ class Themes extends Components {
     }
     private function getConfigJson(): array
     {
-        $option  = get_option(SystemService::THEME_OPTION_KEY, []);
-        $scheme  = is_array($option) && ($option['default'] ?? '1') !== '1' ? 'light' : 'dark';
-        $default = '{"mode":"' . $scheme . '","theme":"indigo","radius":"sm","shadow":"sm","font":"sm","render":"' . $scheme . '"}';
-        $cookie  = $_COOKIE['jui-theme'] ?? $default;
-        return json_decode(stripslashes($cookie), true);
+        $option  = get_option(SystemService::THEME_OPTION_KEY, [])['default'] ?? '0';
+        $scheme  = $option === '1' ? 'dark' : 'light';
+        $default = [
+            'mode'   => $scheme,
+            'theme'  => 'indigo',
+            'radius' => 'sm',
+            'shadow' => 'sm',
+            'font'   => 'sm',
+            'render' => $scheme,
+        ];
+        $cookie  = $_COOKIE[SystemService::THEME_COOKIE] ?? '';
+        $result  = System::parseStorageCookie($cookie)['val'] ?? $default;
+        return $result;
     }
 }

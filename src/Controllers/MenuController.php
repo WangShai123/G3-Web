@@ -30,22 +30,23 @@ class MenuController extends Controller {
     #[RestRouter(
         namespace: 'api/menu',
         route: 'v1/query',
-        methods: 'POST'
+        methods: 'GET'
     )]
-    #[Schema([
-        'type'       => 'object',
-        'required'   => ['location'],
-        'properties' => [
-            'location' => [
-                'type'      => 'string',
-                'minLength' => 1,
-            ]
-        ]
-    ])]
+    // #[Schema([
+    //     'type'       => 'object',
+    //     'required'   => ['location'],
+    //     'properties' => [
+    //         'location' => [
+    //             'type'      => 'string',
+    //             'minLength' => 1,
+    //         ]
+    //     ]
+    // ])]
     #[Middleware(RateLimitMiddleware::class, [20, 60])]
     public function handler(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        $params = $request->get_json_params();
+        // $params = $request->get_json_params();
+        $params = $request->get_query_params();
 
         $location = $params['location'] ?? '';
         $cacheKey = $location;

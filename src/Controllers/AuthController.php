@@ -96,7 +96,7 @@ class AuthController extends Controller {
     }
 
     /**
-     * Custom Admin Login API
+     * User Login API
      * 
      * @param WP_REST_Request $request
      * @return WP_Error|WP_REST_Response
@@ -124,7 +124,7 @@ class AuthController extends Controller {
             ]
         ]
     ])]
-    #[Middleware(RateLimitMiddleware::class, [10, 300])]
+    // #[Middleware(RateLimitMiddleware::class, [10, 300])]
     public function userLogin(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data     = $request->get_json_params();
@@ -137,6 +137,8 @@ class AuthController extends Controller {
         } else {
             $user = get_user_by('login', $username);
         }
+
+        sleep(1);
 
         if (!$user || !wp_check_password($password, $user->data->user_pass, $user->ID)) {
             return new WP_Error(

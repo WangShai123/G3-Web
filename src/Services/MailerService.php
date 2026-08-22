@@ -18,12 +18,67 @@ class MailerService extends Service {
     private array $performance = [];
 
     // Option key for mail options
-    const OPTION_KEY = 'g3_option_mail';
+    const OPTION_KEY              = 'g3_option_mail';
+    const NOTIFICATION_OPTION_KEY = 'g3_option_mail_notification';
 
     public function __construct()
     {
         parent::__construct();
         $this->performance = get_option(SystemService::PERFORMANCE_OPTION_KEY, []);
+    }
+
+    public static function mailDefaults(): array
+    {
+        return [
+            'enable'     => '0',
+            'nickname'   => '',
+            'server'     => '',
+            'port'       => '',
+            'encryption' => '0',
+            'address'    => '',
+            'secret'     => '',
+            'template'   => '0',
+        ];
+    }
+    public static function notificationDefaults(): array
+    {
+        return [
+            /**
+             * User notifications
+             */
+            // 新用户注册通知 wp_new_user_notification_email
+            'welcome'                 => '0',
+            // 密码修改通知 password_change_email
+            // 'password_changed'        => '0',
+            // 邮箱修改通知 email_change_email
+            // 'email_changed'           => '0',
+            // 评论通知 comment_notification
+            'comment'                 => '0',
+            // 评论回复通知 comment_reply_to_user
+            'comment_reply'           => '0',
+            // 用户请求导出或删除个人数据的确认邮件 user_request_action_email
+            // 'user_request_action'     => '0',
+            // 用户个人数据删除请求被成功处理的结果通知 user_erasure_fulfillment_email
+            // 'user_request_deleted'    => '0',
+            // 用户个人数据导出请求被成功处理的结果通知 user_erasure_complete_email
+            // 'user_request_exported'   => '0',
+
+            /**
+             * Admin notifications
+             */
+            // 新用户注册通知 wp_new_user_notification_email_admin
+            'welcome_admin'           => '0',
+            // 用户密码修改通知 wp_password_change_notification_email
+            'password_changed_admin'  => '0',
+            // 系统邮箱修改确认通知 site_admin_email_change_email
+            // 'system_email_change_confirm' => '0',
+            // 系统升级调试通知 automatic_updates_debug_email
+            'automatic_updates_debug' => '0',
+            // 评论审核通知 comment_moderation
+            'comment_moderation'      => '0',
+            // 用户确认导出或删除个人数据 user_confirmed_action_email
+            // 'user_confirmed_action'       => '0',
+        ];
     }
 
     public function sendMail(string $mailTo, string $subject, string $messages, array $attachments = [], array $headers = [], int $delay = 0): bool|string

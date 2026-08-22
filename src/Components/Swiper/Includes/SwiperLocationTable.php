@@ -10,16 +10,28 @@ class SwiperLocationTable extends WP_List_Table {
     {
         parent::__construct();
         $this->key       = SwiperService::LOCATION_OPTION_KEY;
-        $this->locations = get_option($this->key, []);
+        $this->locations = $this->getLocations();
     }
     public function get_columns()
     {
         return [
             'cb'     => '<input type="checkbox" />',
-            'key'    => __('Slug'),
             'name'   => __('Name'),
+            'key'    => __('Slug'),
             'action' => __('Action')
         ];
+    }
+    private function getLocations(): array
+    {
+        $data = get_option($this->key, []);
+        if (empty($data)) {
+            $default = [
+                'home' => __('Home'),
+            ];
+            update_option($this->key, $default);
+            return $default;
+        }
+        return $data;
     }
     public function prepare_items()
     {

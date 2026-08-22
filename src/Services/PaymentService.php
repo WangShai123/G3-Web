@@ -1,36 +1,25 @@
 <?php
-
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 
-/**
- * Payment Service
- * 
- * 支付服务
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
-class PaymentService {
-
-    /**
-     * Wallet Option Key
-     * 
-     * 钱包配置项键名
-     */
+class PaymentService extends Service {
+    // Wallet Option Key
     const WALLET_OPTION_KEY = 'g3_option_wallet';
-
-    /**
-     * Payment Log Table
-     * 
-     * 支付记录表
-     */
+    // Payment Log Table
     const TABLE = 'g3_payment_log';
-
-    private $wpdb;
 
     public function __construct()
     {
-        global $wpdb;
-        $this->wpdb = $wpdb;
+        parent::__construct();
+    }
+    public static function optionDefaults(): array
+    {
+        return [
+            'enable'     => '0',
+            'recharge'   => '0',
+            'withdrawal' => '0',
+            'bank_fee'   => '5',
+            'tax_rate'   => '20',
+        ];
     }
 }

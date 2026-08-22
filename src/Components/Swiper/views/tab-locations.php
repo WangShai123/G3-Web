@@ -13,126 +13,109 @@ echo '</form>';
 
 <script>
     jQuery(document).ready(function ($) {
-        const { Modal, Toast } = jui;
-        const { success, warning, error } = Toast;
-        $('.addLocation').on('click', function () {
-            const m = new Modal({
-                text: {
-                    title: '<?php _e('Add New', 'G3'); ?>',
-                    confirm: '<?php _e('Submit'); ?>',
-                    cancel: '<?php _e('Cancel'); ?>',
-                },
-                fields: [
-                    {
-                        label: '<?php _e('Slug'); ?>',
-                        name: 'key',
-                        type: 'text',
-                        required: true
-                    },
-                    {
+        const { createModal, createForm, Toast } = jui;
+        const { success, warning, error, confirm } = Toast;
+        const f = createForm({
+            fields: [
+                {
+                    type: 'text',
+                    payload: {
                         label: '<?php _e('Name'); ?>',
                         name: 'name',
-                        type: 'text',
                         required: true
                     }
-                ],
-                onSubmit: async (data) => {
-                    $.post(ajaxurl, {
-                        action: 'edit_swiper_location',
-                        key: data.key,
-                        name: data.name
-                    }, function (res) {
-                        m.setState({ loading: true })
-                        setTimeout(function () {
-                            if (res.success) {
-                                success(res.data.message, 800)
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 800)
-                                m.hide();
-                            } else {
-                                error(res.data.message, 2000)
-                            }
-                            m.setState({ loading: false })
-                        }, 300);
-                    })
                 },
-            });
-            m.show();
-        });
-
-        $('.editLocation').on('click', function () {
-            const key = $(this).data('key');
-            const name = $(this).data('name');
-            const m = new Modal({
-                text: {
-                    title: '<?php _e('Edit'); ?>',
-                    confirm: '<?php _e('Submit'); ?>',
-                    cancel: '<?php _e('Cancel'); ?>',
-                },
-                fields: [
-                    {
+                {
+                    type: 'text',
+                    payload: {
                         label: '<?php _e('Slug'); ?>',
                         name: 'key',
-                        type: 'text',
-                        value: key
-                    },
-                    {
-                        label: '<?php _e('Name'); ?>',
-                        name: 'name',
-                        type: 'text',
-                        value: name
+                        required: true
                     }
-                ],
-                escClose: true,
-                onSubmit: function (data) {
-                    const newKey = (data.key || '').trim();
-                    const newName = (data.name || '').trim();
-                    if (String(key) === newKey && String(name) === newName) {
-                        warning('<?php _e('No data changed', 'G3'); ?>', 1500);
-                        return;
-                    }
-                    $.post(ajaxurl, {
-                        action: 'edit_swiper_location',
-                        key: newKey,
-                        name: newName
-                    }, function (res) {
-                        m.state.loading = true
-                        setTimeout(() => {
-                            if (res.success) {
-                                success(res.data.message, 800)
-                                setTimeout(function () {
-                                    m.hide();
-                                    window.location.reload();
-                                }, 800)
-                            } else {
-                                error(res.data.message, 2000)
-                            }
-                            m.state.loading = false
-                        }, 300)
-                    })
+                },
+            ],
+            buttons: "reverse",
+            buttonsPosition: "end",
+            onSubmit: async (data) => {
+                const newKey = (data.key || '').trim();
+                const newName = (data.name || '').trim();
+                if (String(key) === newKey && String(name) === newName) {
+                    warning('<?php _e('No data changed', 'G3'); ?>', 1500);
+                    return;
                 }
-            });
-            m.show();
-        });
-
-        $('.deleteLocation').on('click', function () {
-            const key = $(this).data('key');
-            if (confirm('<?php Message::deleteConfirm(); ?>')) {
                 $.post(ajaxurl, {
-                    action: 'delete_swiper_location',
-                    key: key
+                    action: 'edit_swiper_location',
+                    key: data.key,
+                    name: data.name
                 }, function (res) {
                     if (res.success) {
                         success(res.data.message, 800)
                         setTimeout(function () {
                             window.location.reload();
                         }, 800)
-                    } else {
-                        error(res.data.message, 2000)
+                        m.hide();
                     }
+                }).fail((res) => {
+                    error(res.responseJSON.data.message)
                 })
-            }
+            },
+        }).build();
+        const m = createModal({
+            text: {
+                title: '<?php _e('Add New', 'G3'); ?>',
+            },
+            content: f.element,
+            footer: false,
+            bgClose: true,
+            onHidden: () => { f.reset() }
+        }).build();
+        $('.addLocation').on('click', function () {
+            m.show();
+        });
+
+        $('.editLocation').on('click', function () {
+            const key = $(this).data('key');
+            const name = $(this).data('name');
+            f.setFields([
+                {
+                    type: 'text',
+                    payload: {
+                        label: '<?php _e('Name'); ?>',
+                        name: 'name',
+                        value: name
+                    }
+                },
+                {
+                    type: 'text',
+                    payload: {
+                        label: '<?php _e('Slug'); ?>',
+                        name: 'key',
+                        value: key
+                    }
+                },
+            ]);
+            m.show();
+        });
+
+        $('.deleteLocation').on('click', function () {
+            const key = $(this).data('key');
+            confirm('<?php Message::deleteConfirm(); ?>', {
+                onConfirm: () => {
+                    $.post(ajaxurl, {
+                        action: 'delete_swiper_location',
+                        key: key
+                    }, function (res) {
+                        if (res.success) {
+                            success(res.data.message, 800)
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 800)
+                        }
+                    }).fail((res) => {
+                        error(res.responseJSON.data.message)
+                    })
+                }
+            })
         })
     });
 </script>

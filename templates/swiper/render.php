@@ -29,8 +29,8 @@ $json = json_encode($args, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP 
 
 $script = <<<HTML
 <script type="module">
-       import {Swiper} from 'jui';
-    new Swiper(".{$containerClass}", {$json}).build();
+    import {createSwiper,q} from 'jui';
+    q(".{$containerClass}").appendChild(createSwiper({$json}).build().element);
 </script>
 HTML;
 

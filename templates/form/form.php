@@ -10,41 +10,39 @@ Frontend::esm('g3.form');
     <h2>
         <?php _e('Contact us', 'G3'); ?>
     </h2>
-    <form class="j-form is-vertical is-item-vertical" id="contact-form" data-form="contact">
+    <form class="j-form is-vertical is-item-vertical" id="g3-contact-form" data-form="contact">
         <div class="form-item">
             <label for="title" class="item-label is-required"><?php _e('Title') ?>
             </label>
             <div class="form-control">
-                <input type="text" class="j-input" id="title" name="title" placeholder="Enter title" />
+                <input type="text" class="j-input is-lg" id="title" name="title" placeholder="" />
             </div>
         </div>
         <div class="form-item">
             <label for="email" class="item-label is-required"><?php _e('Email') ?></label>
             <div class="form-control">
-                <input type="email" class="j-input" id="email" name="email" placeholder="Enter email"
-                    autocomplete="email" />
+                <input type="email" class="j-input is-lg" id="email" name="email" placeholder="" autocomplete="email" />
             </div>
         </div>
         <div class="form-item">
             <label for="phone" class="item-label"><?php _e('Phone', 'G3') ?>
             </label>
             <div class="form-control">
-                <input type="tel" class="j-input" id="phone" name="phone" placeholder="Enter phone"
-                    autocomplete="tel" />
+                <input type="tel" class="j-input is-lg" id="phone" name="phone" placeholder="" autocomplete="tel" />
             </div>
         </div>
         <div class="form-item">
-            <label for="content" class="item-label is-required"><?php _e('Content') ?>
+            <label for="content" class="item-label is-required"><?php _e('Details') ?>
             </label>
             <div class="form-control">
-                <textarea class="j-textarea" id="content" name="content" placeholder="Enter content"></textarea>
+                <textarea class="j-textarea" id="content" name="content" placeholder="Leave a message"></textarea>
             </div>
         </div>
         <div class="form-buttons">
-            <button type="submit" class="j-button is-primary" id="submit-contact">
+            <button type="submit" class="j-button is-primary is-lg" id="submit-contact">
                 <?php _e('Submit') ?>
             </button>
-            <button type="reset" class="j-button is-ghost">
+            <button type="reset" class="j-button is-ghost is-lg">
                 <?php _e('Reset', 'G3') ?>
             </button>
         </div>
@@ -58,7 +56,7 @@ Frontend::esm('g3.form');
         flex-direction: column;
     }
 
-    #contact-form {
+    #g3-contact-form {
         width: 100%;
         max-width: 480px;
         border: 1px solid var(--ui-border);
@@ -68,7 +66,7 @@ Frontend::esm('g3.form');
 
     @media (min-width: 768px) {
         .contact-form-container {
-            padding-block: 80px;
+            padding-block: 60px;
         }
     }
 </style>

@@ -12,78 +12,76 @@ echo Element::tip(
 <section class="mt-4">
     <form class="j-form is-vertical is-item-vertical">
         <!-- Theme Name -->
-        <div class="form-item">
-            <label for="name" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="name" class="field-legend is-required">
                 <?php echo __('Theme Name', 'G3'); ?>
             </label>
-            <div class="form-control">
+            <div class="field-control">
                 <input type="text" class="j-input" id="name" placeholder="Enter theme name" autocomplete="name"
                     required />
             </div>
-        </div>
+        </fieldset>
 
         <!-- Folder -->
-        <div class="form-item">
-            <label for="folder" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="folder" class="field-legend is-required">
                 <?php echo __('Folder Name', 'G3'); ?>
             </label>
-            <div class="form-control">
-                <input type="text" class="j-input" id="folder" placeholder="Enter folder name" autocomplete="off"
-                    required />
+            <div class="field-control">
+                <input type="text" class="j-input" id="folder" placeholder="Enter folder name" required />
             </div>
-        </div>
+        </fieldset>
 
         <!-- URL -->
-        <div class="form-item">
-            <label for="url" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="url" class="field-legend is-required">
                 <?php echo __('Theme URL', 'G3'); ?>
             </label>
-            <div class="form-control">
+            <div class="field-control">
                 <input type="url" class="j-input" id="url" placeholder="eg: https://g3system.com" autocomplete="url" />
             </div>
-        </div>
+        </fieldset>
 
         <!-- Description -->
-        <div class="form-item">
-            <label for="description" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="description" class="field-legend is-required">
                 <?php echo __('Theme Description', 'G3'); ?>
             </label>
-            <div class="form-control">
-                <textarea class="j-input" id="description" placeholder="Enter description" autocomplete="off"
-                    rows="3"></textarea>
+            <div class="field-control">
+                <input type="text" class="j-input" id="description" placeholder="Enter description" />
             </div>
-        </div>
+        </fieldset>
 
         <!-- Author -->
-        <div class="form-item">
-            <label for="author" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="author" class="field-legend is-required">
                 <?php echo __('Author'); ?>
             </label>
-            <div class="form-control">
+            <div class="field-control">
                 <input type="text" class="j-input" id="author" placeholder="Enter author name" autocomplete="name" />
             </div>
-        </div>
+        </fieldset>
 
         <!-- Author URL -->
-        <div class="form-item">
-            <label for="authorUrl" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="authorUrl" class="field-legend is-required">
                 <?php echo __('Author URL', 'G3'); ?>
             </label>
-            <div class="form-control">
+            <div class="field-control">
                 <input type="url" class="j-input" id="authorUrl" placeholder="eg: https://g3system.com"
                     autocomplete="url" />
             </div>
-        </div>
+        </fieldset>
 
         <!-- Version -->
-        <div class="form-item">
-            <label for="version" class="item-label is-required">
+        <fieldset class="form-field">
+            <label for="version" class="field-legend is-required">
                 <?php echo __('Version'); ?>
             </label>
-            <div class="form-control">
+            <div class="field-control">
                 <input type="text" class="j-input" id="version" placeholder="1.0.0" autocomplete="off" required />
             </div>
-        </div>
+        </fieldset>
 
         <div class="form-buttons">
             <button type="button" class="j-button is-primary" id="createTheme"><?php echo __('Submit'); ?></button>
@@ -103,7 +101,7 @@ echo Element::tip(
         max-width: 320px;
     }
 
-    form.j-form .form-item textarea {
+    form.j-form .form-field textarea {
         resize: none;
     }
 </style>

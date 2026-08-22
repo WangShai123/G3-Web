@@ -31,11 +31,20 @@ class CustomerMessageJob extends Job {
 
         $timeouts = $service->markTimeoutConversations((int) ($option['timeoutMinutes'] ?? 120));
         $result   = $service->cleanupBeforeDays($days);
-        error_log('[G3 CustomerMessageJob] Timeout conversations: ' . $timeouts . '; cleanup result: ' . wp_json_encode($result, JSON_UNESCAPED_UNICODE));
+        $this->logger->info('Customer conversations cleanup completed.', [
+            'module'                 => 'customer',
+            'timeout_conversations'  => $timeouts,
+            'cleanup_result'         => $result,
+            'retention_days'         => $days,
+        ]);
     }
 
     public function failed(array $data, Throwable $exception): void
     {
-        error_log('[G3 CustomerMessageJob] Cleanup failed: ' . $exception->getMessage());
+        $this->logger->error('Customer conversations cleanup failed.', [
+            'module'    => 'customer',
+            'data'      => $data,
+            'exception' => $exception,
+        ]);
     }
 }
