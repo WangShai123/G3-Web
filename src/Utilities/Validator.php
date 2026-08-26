@@ -80,9 +80,6 @@ final class Validator {
             $headers = @get_headers($pathOrUrl, 1);
 
             // check if URL is valid
-            // if (!$headers || strpos($headers[0], '200') === false) {
-            //     return false;
-            // }
             if (!self::isURL($pathOrUrl)) {
                 return false;
             }

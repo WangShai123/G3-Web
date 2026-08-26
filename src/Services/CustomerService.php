@@ -1,33 +1,25 @@
 <?php
 namespace JEALER\G3\Services;
-use JEALER\G3\Core\Container\Container;
+
+use JEALER\G3\Core\Customer\CustomerConversation;
 use JEALER\G3\Core\IM\IM;
 use JEALER\G3\Core\Service\Service;
-use JEALER\G3\Utilities\Date;
-use JEALER\G3\Utilities\State;
-use JEALER\G3\Utilities\System;
-use Redis;
 use Throwable;
 use WP_Error;
-use wpdb;
 
 class CustomerService extends Service {
     public const OPTION_KEY      = 'g3_option_customer_service';
     public const COOKIE_GUEST_ID = 'g3_cs_guest_id';
     public const CACHE_GROUP     = 'g3_customer_service';
 
-    private string $conversationsTable;
-    private string $participantsTable;
-    private string $messagesTable;
-    private string $eventsTable;
+    private IMService $im;
+    private string $customerConversationsTable;
 
     public function __construct()
     {
         parent::__construct();
-        $this->conversationsTable = $this->wpdb->prefix . 'g3_im_conversations';
-        $this->participantsTable  = $this->wpdb->prefix . 'g3_im_participants';
-        $this->messagesTable      = $this->wpdb->prefix . 'g3_im_messages';
-        $this->eventsTable        = $this->wpdb->prefix . 'g3_im_events';
+        $this->im                         = $this->container->get(IMService::class);
+        $this->customerConversationsTable = $this->wpdb->prefix . 'g3_customer_conversations';
     }
 
     public static function defaultOption(): array
@@ -81,30 +73,6 @@ class CustomerService extends Service {
         ];
     }
 
-    public function guestId(bool $create = true): string
-    {
-        $guestId = isset($_COOKIE[self::COOKIE_GUEST_ID])
-            ? sanitize_text_field(wp_unslash($_COOKIE[self::COOKIE_GUEST_ID]))
-            : '';
-
-        if ($guestId !== '' && preg_match('/^[a-zA-Z0-9_\-]{16,64}$/', $guestId)) {
-            return $guestId;
-        }
-
-        if (!$create) {
-            return '';
-        }
-
-        $guestId = function_exists('wp_generate_uuid4')
-            ? str_replace('-', '', wp_generate_uuid4())
-            : bin2hex(random_bytes(16));
-
-        $this->setGuestCookie($guestId);
-        $_COOKIE[self::COOKIE_GUEST_ID] = $guestId;
-
-        return $guestId;
-    }
-
     public function startConversation(array $data): array|WP_Error
     {
         if (!$this->enabled()) {
@@ -116,11 +84,17 @@ class CustomerService extends Service {
         $created      = false;
 
         if (!$conversation) {
-            $conversationId = $this->createConversation($identity, $data);
+            $conversationId = $this->im->createConversation($identity, [
+                'type'    => IM::TYPE_CUSTOMER_SERVICE,
+                'subject' => $data['subject'] ?? '',
+                'source'  => $data['source'] ?? 'web',
+                'meta'    => $data['meta'] ?? [],
+            ]);
             if (is_wp_error($conversationId)) {
                 return $conversationId;
             }
-            $conversation = $this->getConversation($conversationId);
+            $this->createCustomerConversation($conversationId, $identity);
+            $conversation = $this->getCustomerConversation($conversationId);
             $created      = true;
         }
 
@@ -128,21 +102,21 @@ class CustomerService extends Service {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
 
-        $content = trim((string) ($data['content'] ?? ''));
         if ($created) {
             $this->createOfflineMessage((int) $conversation['id']);
         }
 
+        $content = trim((string) ($data['content'] ?? ''));
         if ($content !== '') {
-            $message = $this->addMessage((int) $conversation['id'], $identity, $content, IM::MESSAGE_TEXT);
+            $message = $this->sendMessage((int) $conversation['id'], $identity, $content, IM::MESSAGE_TEXT, false);
             if (is_wp_error($message)) {
                 return $message;
             }
         }
 
         return [
-            'conversation' => $this->formatConversation($this->getConversation((int) $conversation['id']) ?: $conversation),
-            'messages'     => $this->messages((int) $conversation['id'], 0, 50),
+            'conversation' => $this->getCustomerConversation((int) $conversation['id']),
+            'messages'     => $this->im->messages((int) $conversation['id'], 0, 50),
         ];
     }
 
@@ -153,27 +127,34 @@ class CustomerService extends Service {
         }
 
         $identity = $this->customerIdentity();
-        if (!$this->canAccessConversation($conversationId, $identity)) {
+        if (!$this->canAccessCustomerConversation($conversationId, $identity)) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $conversation = $this->getConversation($conversationId);
+        $conversation = $this->getCustomerConversation($conversationId);
         if (!$conversation) {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
 
         if ($this->finalStatus((string) $conversation['status'])) {
-            $conversationId = $this->createConversation($identity, [
+            $conversationId = $this->im->createConversation($identity, [
+                'type'   => IM::TYPE_CUSTOMER_SERVICE,
                 'source' => $conversation['source'] ?? 'web',
-                'meta'   => $this->decode($conversation['meta'] ?? ''),
+                'meta'   => $this->decodeMeta($conversation['meta'] ?? null),
             ]);
             if (is_wp_error($conversationId)) {
                 return $conversationId;
             }
+            $this->createCustomerConversation($conversationId, $identity);
             $this->createOfflineMessage($conversationId);
         }
 
-        return $this->addMessage($conversationId, $identity, (string) ($data['content'] ?? ''), (string) ($data['message_type'] ?? IM::MESSAGE_TEXT));
+        $msgType = $this->requestMessageType($data);
+        if (is_wp_error($msgType)) {
+            return $msgType;
+        }
+
+        return $this->sendMessage($conversationId, $identity, (string) ($data['content'] ?? ''), $msgType, false);
     }
 
     public function sendAgentMessage(int $conversationId, array $data): array|WP_Error
@@ -183,7 +164,7 @@ class CustomerService extends Service {
         }
 
         $identity     = $this->agentIdentity();
-        $conversation = $this->getConversation($conversationId);
+        $conversation = $this->getCustomerConversation($conversationId);
         if (!$conversation) {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
@@ -192,107 +173,46 @@ class CustomerService extends Service {
             $this->assignConversation($conversationId, $this->currentUserId());
         }
 
-        $message = $this->addMessage($conversationId, $identity, (string) ($data['content'] ?? ''), (string) ($data['message_type'] ?? IM::MESSAGE_TEXT));
-        if (!is_wp_error($message) && in_array((string) $conversation['status'], [IM::STATUS_PENDING, IM::STATUS_BOT_HANDLED], true)) {
-            $this->setConversationStatus($conversationId, IM::STATUS_HANDLED, $identity);
+        $msgType = $this->requestMessageType($data);
+        if (is_wp_error($msgType)) {
+            return $msgType;
         }
 
-        return $message;
+        return $this->sendMessage($conversationId, $identity, (string) ($data['content'] ?? ''), $msgType, true);
     }
-    /**
-     * Get paginated customer service conversation list
-     * 
-     * 分页获取客服对话列表
-     *
-     * @param array $args {
-     *     @type string $status 对话状态筛选：pending/bot-handled/handled/onHold/closed/timeout
-     *     @type int $cursor 分页游标，从指定ID之前的记录开始查询
-     *     @type int $limit 每页数量，范围1-100，默认30
-     *     @type string $search 搜索关键词，匹配主题、消息摘要或客户访客ID
-     * }
-     * @return array|WP_Error 成功返回包含items、next_cursor、has_more的数组，失败返回WP_Error
-     * @example
-     *     // 获取待处理对话列表
-     *     $result = $customerService->listConversations(['status' => 'pending']);
-     *     // 获取搜索结果
-     *     $result = $customerService->listConversations(['search' => '订单问题']);
-     * @throws WP_Error 无权限时返回403错误
-     * @since 1.0.0
-     * @author WangShai
-     */
+
     public function listConversations(array $args = []): array|WP_Error
     {
         if (!$this->canManage()) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $status = (string) ($args['status'] ?? '');
-        $cursor = max(0, (int) ($args['cursor'] ?? 0));
-        $limit  = min(100, max(1, (int) ($args['limit'] ?? 30)));
-        $search = trim((string) ($args['search'] ?? ''));
-
-        $where  = ["`type` = %s"];
-        $params = [IM::TYPE_CUSTOMER_SERVICE];
-
-        if (in_array($status, $this->conversationStatuses(), true)) {
-            $where[]  = "`status` = %s";
-            $params[] = $status;
+        if (isset($args['status']) && !in_array((string) $args['status'], $this->conversationStatuses(), true)) {
+            unset($args['status']);
         }
 
-        if ($cursor > 0) {
-            $where[]  = "`id` < %d";
-            $params[] = $cursor;
-        }
-
-        if ($search !== '') {
-            $like    = '%' . $this->wpdb->esc_like($search) . '%';
-            $where[] = "(`subject` LIKE %s OR `last_message_excerpt` LIKE %s OR `customer_guest_id` LIKE %s)";
-            array_push($params, $like, $like, $like);
-        }
-
-        $params[] = $limit + 1;
-        $sql      = "SELECT * FROM {$this->conversationsTable} WHERE " . implode(' AND ', $where) . " ORDER BY `last_message_at` DESC, `id` DESC LIMIT %d";
-        $rows     = $this->wpdb->get_results($this->wpdb->prepare($sql, $params), ARRAY_A) ?: [];
-
-        $hasMore = count($rows) > $limit;
-        if ($hasMore) {
-            array_pop($rows);
-        }
-
-        $items = array_map(fn(array $row): array => $this->formatConversation($row), $rows);
-
-        $last = $items ? $items[array_key_last($items)] : null;
-
-        return [
-            'items'       => $items,
-            'next_cursor' => $hasMore && $last ? (int) $last['id'] : null,
-            'has_more'    => $hasMore,
-        ];
+        return $this->listCustomerConversations($args);
     }
 
     public function getConversationForViewer(int $conversationId): array|WP_Error
     {
         $identity = $this->canManage() ? null : $this->customerIdentity(false);
-        if (!$this->canManage() && (!$identity || !$this->canAccessConversation($conversationId, $identity))) {
+        if (!$this->canManage() && (!$identity || !$this->canAccessCustomerConversation($conversationId, $identity))) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $conversation = $this->getConversation($conversationId);
-        if (!$conversation) {
-            return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
-        }
-
-        return $this->formatConversation($conversation);
+        $conversation = $this->getCustomerConversation($conversationId);
+        return $conversation ?: new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
     }
 
     public function messagesForViewer(int $conversationId, int $afterId = 0, int $limit = 50): array|WP_Error
     {
         $identity = $this->canManage() ? null : $this->customerIdentity(false);
-        if (!$this->canManage() && (!$identity || !$this->canAccessConversation($conversationId, $identity))) {
+        if (!$this->canManage() && (!$identity || !$this->canAccessCustomerConversation($conversationId, $identity))) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        return $this->messages($conversationId, $afterId, $limit);
+        return $this->im->messages($conversationId, $afterId, $limit);
     }
 
     public function updateConversation(int $conversationId, array $data): array|WP_Error
@@ -301,159 +221,94 @@ class CustomerService extends Service {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $update = [];
-        if (isset($data['status'])) {
-            $status = (string) $data['status'];
-            if (!in_array($status, [IM::STATUS_PENDING, IM::STATUS_HANDLED, IM::STATUS_ON_HOLD, IM::STATUS_CLOSED], true)) {
-                return new WP_Error('invalid_status', 'Invalid status.', ['status' => 400]);
-            }
-            $update['status']    = $status;
-            $update['closed_at'] = $status === IM::STATUS_CLOSED ? Date::utcDateTime() : null;
-        }
-
-        if (array_key_exists('assignee_user_id', $data)) {
-            $update['assignee_user_id'] = $data['assignee_user_id'] ? (int) $data['assignee_user_id'] : null;
-        }
-
-        if (isset($data['priority'])) {
-            $update['priority'] = max(0, min(9, (int) $data['priority']));
+        if (isset($data['status']) && !in_array((string) $data['status'], $this->conversationStatuses(), true)) {
+            return new WP_Error('invalid_status', 'Invalid status.', ['status' => 400]);
         }
 
         if (array_key_exists('subject', $data)) {
-            $subject = trim(sanitize_text_field((string) $data['subject']));
-            if ($subject === '') {
-                return new WP_Error('invalid_subject', 'Conversation title cannot be empty.', ['status' => 400]);
+            $result = $this->im->updateConversation($conversationId, ['subject' => $data['subject']], $this->agentIdentity());
+            if (is_wp_error($result)) {
+                return $result;
             }
-            $update['subject'] = mb_substr($subject, 0, 255);
         }
 
-        if (!$update) {
-            return $this->getConversationForViewer($conversationId);
+        if (isset($data['status'])) {
+            return $this->updateCustomerStatus($conversationId, (string) $data['status'], $this->agentIdentity(), $data);
         }
 
-        $update['updated_at'] = Date::utcDateTime();
-        $result               = $this->wpdb->update($this->conversationsTable, $update, ['id' => $conversationId]);
-        if ($result === false) {
-            return new WP_Error('db_update_error', 'Failed to update conversation.', ['status' => 500]);
-        }
-
-        $conversation = $this->getConversation($conversationId);
-        $eventType    = isset($update['status']) ? IM::EVENT_CONVERSATION_STATUS_CHANGED : IM::EVENT_CONVERSATION_UPDATED;
-        $this->publishEvent($eventType, $conversationId, null, $this->agentIdentity(), [
-            'update'       => $update,
-            'conversation' => $conversation ? $this->formatConversation($conversation) : null,
-        ]);
-
-        return $this->getConversationForViewer($conversationId);
+        $conversation = $this->getCustomerConversation($conversationId);
+        return $conversation ?: new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
     }
 
-    public function createStreamSession(array $data): array|WP_Error
+    public function createViewerStreamSession(array $data): array|WP_Error
     {
-        $scope     = (string) ($data['scope'] ?? 'viewer');
-        $afterId   = max(0, (int) ($data['after_id'] ?? 0));
-        $heartbeat = min(60, max(30, (int) ($this->option()['heartbeatSeconds'] ?? 45)));
-
-        if ($scope === 'admin') {
-            if (!$this->canManage()) {
-                return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
-            }
-
-            return $this->notifications()->createSession($this->adminChannel(), $afterId, $heartbeat);
-        }
-
+        $afterId        = max(0, (int) ($data['after_id'] ?? 0));
+        $heartbeat      = min(60, max(30, (int) ($this->option()['heartbeatSeconds'] ?? 45)));
         $conversationId = max(0, (int) ($data['conversation_id'] ?? 0));
-        if ($conversationId <= 0) {
-            return new WP_Error('conversation_required', 'Conversation is required.', ['status' => 400]);
-        }
-
-        $identity = $this->customerIdentity(false);
-        if (!$identity || !$this->canAccessConversation($conversationId, $identity)) {
+        $identity       = $this->customerIdentity(false);
+        if ($conversationId <= 0 || !$identity || !$this->canAccessCustomerConversation($conversationId, $identity)) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        return $this->notifications()->createSession($this->viewerChannel($conversationId), $afterId, $heartbeat);
+        return $this->im->createStreamSession(IM::TYPE_CUSTOMER_SERVICE, 'viewer', $conversationId, $afterId, $heartbeat);
+    }
+
+    public function createAdminStreamSession(array $data): array|WP_Error
+    {
+        if (!$this->canManage()) {
+            return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
+        }
+
+        $afterId   = max(0, (int) ($data['after_id'] ?? 0));
+        $heartbeat = min(60, max(30, (int) ($this->option()['heartbeatSeconds'] ?? 45)));
+
+        return $this->im->createStreamSession(IM::TYPE_CUSTOMER_SERVICE, 'admin', null, $afterId, $heartbeat);
     }
 
     public function markRead(int $conversationId, int $messageId = 0): array|WP_Error
     {
         $identity = $this->canManage() ? $this->agentIdentity() : $this->customerIdentity(false);
-        if (!$identity || (!$this->canManage() && !$this->canAccessConversation($conversationId, $identity))) {
+        if (!$identity || (!$this->canManage() && !$this->im->canAccessConversation($conversationId, $identity))) {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        if ($messageId <= 0) {
-            $messageId = (int) $this->wpdb->get_var(
-                $this->wpdb->prepare("SELECT MAX(`id`) FROM {$this->messagesTable} WHERE `conversation_id` = %d", $conversationId)
-            );
-        }
-
-        $this->ensureParticipant($conversationId, $identity);
-        $this->wpdb->query($this->wpdb->prepare(
-            "UPDATE {$this->participantsTable}
-             SET `last_read_message_id` = GREATEST(`last_read_message_id`, %d), `last_seen_at` = %s
-             WHERE `conversation_id` = %d AND `actor_type` = %s AND `actor_id` = %s",
-            $messageId,
-            Date::utcDateTime(),
-            $conversationId,
-            $identity['actor_type'],
-            $identity['actor_id']
-        ));
-
+        $result = $this->im->markRead($conversationId, $messageId, $identity);
         $counter = $identity['role'] === IM::ROLE_AGENT ? 'unread_agent' : 'unread_customer';
-        $this->wpdb->update($this->conversationsTable, [$counter => 0], ['id' => $conversationId]);
-        $this->publishEvent(IM::EVENT_PARTICIPANT_READ, $conversationId, $messageId, $identity, ['message_id' => $messageId]);
+        $this->wpdb->update($this->customerConversationsTable, [
+            $counter     => 0,
+            'updated_at' => gmdate('Y-m-d H:i:s'),
+        ], ['conversation_id' => $conversationId]);
 
-        return ['message_id' => $messageId];
+        return $result;
     }
 
     public function eventsForViewer(int $afterId = 0, ?int $conversationId = null, int $limit = 50): array|WP_Error
     {
-        $limit = min(200, max(1, $limit));
-
         if (!$this->canManage()) {
             if (!$conversationId) {
                 return new WP_Error('conversation_required', 'Conversation is required.', ['status' => 400]);
             }
             $identity = $this->customerIdentity(false);
-            if (!$identity || !$this->canAccessConversation($conversationId, $identity)) {
+            if (!$identity || !$this->canAccessCustomerConversation($conversationId, $identity)) {
                 return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
             }
         }
 
-        $where  = ['`id` > %d'];
-        $params = [max(0, $afterId)];
-
-        if ($conversationId) {
-            $where[]  = '(`conversation_id` = %d OR `conversation_id` IS NULL)';
-            $params[] = $conversationId;
-        }
-
-        $params[] = $limit;
-        $sql      = "SELECT * FROM {$this->eventsTable} WHERE " . implode(' AND ', $where) . " ORDER BY `id` ASC LIMIT %d";
-        $rows     = $this->wpdb->get_results($this->wpdb->prepare($sql, $params), ARRAY_A) ?: [];
-
-        return array_map(fn(array $row): array => $this->formatEvent($row), $rows);
+        return $this->im->events($afterId, $conversationId, $limit);
     }
 
     public function latestEventId(): int
     {
         try {
-            return $this->notifications()->latestId($this->adminChannel());
-        }
-        catch (Throwable) {
+            return $this->im->latestEventId(IM::TYPE_CUSTOMER_SERVICE);
+        } catch (Throwable) {
             return 0;
         }
     }
 
     public function touchPresence(string $scope, int|string $id): void
     {
-        try {
-            $redis = $this->container->get(Redis::class);
-            $redis->connect('127.0.0.1', 6379, 0.2);
-            $redis->setex('g3:customer:presence:' . $scope . ':' . $id, 60, (string) time());
-        }
-        catch (Throwable) {
-        }
+        $this->im->touchPresence($scope, $id);
     }
 
     public function canManage(): bool
@@ -467,14 +322,14 @@ class CustomerService extends Service {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $conversation = $this->getConversation($conversationId);
+        $conversation = $this->getCustomerConversation($conversationId);
         if (!$conversation) {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
 
         $user = !empty($conversation['customer_user_id']) ? get_userdata((int) $conversation['customer_user_id']) : null;
         return [
-            'conversation' => $this->formatConversation($conversation),
+            'conversation' => $conversation,
             'user'         => $user ? [
                 'id'           => (int) $user->ID,
                 'login'        => $user->user_login,
@@ -483,9 +338,9 @@ class CustomerService extends Service {
                 'registered'   => $user->user_registered,
             ] : null,
             'guest'        => empty($conversation['customer_user_id']) ? [
-                'id'         => $conversation['customer_guest_id'],
-                'ip_address' => $conversation['ip_address'],
-                'user_agent' => $conversation['user_agent'],
+                'id'         => $conversation['customer_guest_id'] ?? null,
+                'ip_address' => $conversation['ip_address'] ?? null,
+                'user_agent' => $conversation['user_agent'] ?? null,
             ] : null,
         ];
     }
@@ -531,301 +386,436 @@ class CustomerService extends Service {
     {
         $days   = max(1, min(3650, $days));
         $cutoff = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
-
-        $ids = $this->wpdb->get_col($this->wpdb->prepare(
-            "SELECT `id`
-             FROM {$this->conversationsTable}
-             WHERE `type` = %s
-               AND (
-                    (`updated_at` IS NOT NULL AND `updated_at` < %s)
-                    OR (`updated_at` IS NULL AND `created_at` < %s)
-               )
-             ORDER BY `updated_at` ASC, `id` ASC
+        $ids    = $this->wpdb->get_col($this->wpdb->prepare(
+            "SELECT cc.`conversation_id`
+             FROM {$this->customerConversationsTable} cc
+             INNER JOIN {$this->wpdb->prefix}g3_im_conversations c ON c.`id` = cc.`conversation_id`
+             WHERE (cc.`updated_at` IS NOT NULL AND cc.`updated_at` < %s)
+                OR (cc.`updated_at` IS NULL AND cc.`created_at` < %s)
              LIMIT 1000",
-            IM::TYPE_CUSTOMER_SERVICE,
             $cutoff,
             $cutoff
         )) ?: [];
 
-        if (!$ids) {
-            return [
-                'cutoff'        => $cutoff,
-                'conversations' => 0,
-                'messages'      => 0,
-                'participants'  => 0,
-                'events'        => 0,
-            ];
+        if ($ids) {
+            $ids          = array_map('intval', $ids);
+            $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+            $this->wpdb->query($this->wpdb->prepare(
+                "DELETE FROM {$this->customerConversationsTable} WHERE `conversation_id` IN ({$placeholders})",
+                $ids
+            ));
         }
 
-        $ids          = array_map('intval', $ids);
-        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-
-        $messages = (int) $this->wpdb->query($this->wpdb->prepare(
-            "DELETE FROM {$this->messagesTable} WHERE `conversation_id` IN ({$placeholders})",
-            $ids
-        ));
-
-        $participants = (int) $this->wpdb->query($this->wpdb->prepare(
-            "DELETE FROM {$this->participantsTable} WHERE `conversation_id` IN ({$placeholders})",
-            $ids
-        ));
-
-        $events = (int) $this->wpdb->query($this->wpdb->prepare(
-            "DELETE FROM {$this->eventsTable} WHERE `conversation_id` IN ({$placeholders})",
-            $ids
-        ));
-
-        $conversations = (int) $this->wpdb->query($this->wpdb->prepare(
-            "DELETE FROM {$this->conversationsTable} WHERE `id` IN ({$placeholders})",
-            $ids
-        ));
-
-        return [
-            'cutoff'        => $cutoff,
-            'conversations' => max(0, $conversations),
-            'messages'      => max(0, $messages),
-            'participants'  => max(0, $participants),
-            'events'        => max(0, $events),
-        ];
+        return $this->im->cleanupBeforeDays(IM::TYPE_CUSTOMER_SERVICE, $days);
     }
 
     public function markTimeoutConversations(int $minutes = 0, int $limit = 200): int
     {
         $minutes = $minutes > 0 ? $minutes : (int) ($this->option()['timeoutMinutes'] ?? 120);
+        return $this->markCustomerTimeoutConversations($minutes, $limit);
+    }
+
+    public function guestId(bool $create = true): string
+    {
+        $guestId = isset($_COOKIE[self::COOKIE_GUEST_ID])
+            ? sanitize_text_field(wp_unslash($_COOKIE[self::COOKIE_GUEST_ID]))
+            : '';
+
+        if ($guestId !== '' && preg_match('/^[a-zA-Z0-9_\-]{16,64}$/', $guestId)) {
+            return $guestId;
+        }
+
+        if (!$create) {
+            return '';
+        }
+
+        $guestId = function_exists('wp_generate_uuid4')
+            ? str_replace('-', '', wp_generate_uuid4())
+            : bin2hex(random_bytes(16));
+
+        $this->setGuestCookie($guestId);
+        $_COOKIE[self::COOKIE_GUEST_ID] = $guestId;
+
+        return $guestId;
+    }
+
+    private function findOpenCustomerConversation(array $identity): ?array
+    {
+        $statuses     = $this->openStatuses();
+        $placeholders = implode(',', array_fill(0, count($statuses), '%s'));
+        $where        = $identity['actor_type'] === IM::ACTOR_USER && !empty($identity['user_id'])
+            ? 'cc.`customer_user_id` = %d'
+            : 'cc.`customer_guest_id` = %s';
+        $actor        = $identity['actor_type'] === IM::ACTOR_USER && !empty($identity['user_id'])
+            ? (int) $identity['user_id']
+            : (string) $identity['actor_id'];
+
+        $row = $this->wpdb->get_row($this->wpdb->prepare(
+            "SELECT c.*, cc.*
+             FROM {$this->wpdb->prefix}g3_im_conversations c
+             INNER JOIN {$this->customerConversationsTable} cc ON cc.`conversation_id` = c.`id`
+             WHERE c.`type` = %s
+               AND c.`state` = %s
+               AND cc.`status` IN ({$placeholders})
+               AND {$where}
+             ORDER BY c.`updated_at` DESC, c.`id` DESC
+             LIMIT 1",
+            array_merge([IM::TYPE_CUSTOMER_SERVICE, IM::CONVERSATION_OPEN], $statuses, [$actor])
+        ), ARRAY_A);
+
+        return is_array($row) ? $this->formatCustomerConversation($row) : null;
+    }
+
+    private function createCustomerConversation(int $conversationId, array $identity): void
+    {
+        $now = gmdate('Y-m-d H:i:s');
+        $this->wpdb->insert($this->customerConversationsTable, [
+            'conversation_id'    => $conversationId,
+            'customer_user_id'   => $identity['actor_type'] === IM::ACTOR_USER ? ($identity['user_id'] ?: null) : null,
+            'customer_guest_id'  => $identity['actor_type'] === IM::ACTOR_GUEST ? $identity['actor_id'] : null,
+            'status'             => CustomerConversation::STATUS_PENDING,
+            'wrap_lock_mode'     => CustomerConversation::WRAP_LOCK_NONE,
+            'last_customer_msg_at' => null,
+            'created_at'         => $now,
+            'updated_at'         => $now,
+        ]);
+    }
+
+    private function listCustomerConversations(array $args): array
+    {
+        $status = (string) ($args['status'] ?? '');
+        $cursor = max(0, (int) ($args['cursor'] ?? 0));
+        $limit  = min(100, max(1, (int) ($args['limit'] ?? 30)));
+        $search = trim((string) ($args['search'] ?? ''));
+
+        $where  = ['c.`type` = %s'];
+        $params = [IM::TYPE_CUSTOMER_SERVICE];
+
+        if ($status !== '') {
+            $where[]  = 'cc.`status` = %s';
+            $params[] = sanitize_key($status);
+        }
+        if ($cursor > 0) {
+            $where[]  = 'c.`id` < %d';
+            $params[] = $cursor;
+        }
+        if ($search !== '') {
+            $like    = '%' . $this->wpdb->esc_like($search) . '%';
+            $where[] = '(c.`subject` LIKE %s OR c.`last_msg_preview` LIKE %s OR cc.`customer_guest_id` LIKE %s)';
+            array_push($params, $like, $like, $like);
+        }
+
+        $params[] = $limit + 1;
+        $rows     = $this->wpdb->get_results($this->wpdb->prepare(
+            "SELECT c.*, cc.*
+             FROM {$this->wpdb->prefix}g3_im_conversations c
+             INNER JOIN {$this->customerConversationsTable} cc ON cc.`conversation_id` = c.`id`
+             WHERE " . implode(' AND ', $where) . "
+             ORDER BY COALESCE(c.`last_message_at`, c.`updated_at`, c.`created_at`) DESC, c.`id` DESC
+             LIMIT %d",
+            $params
+        ), ARRAY_A) ?: [];
+
+        $hasMore = count($rows) > $limit;
+        if ($hasMore) {
+            array_pop($rows);
+        }
+
+        $items = array_map(fn(array $row): array => $this->formatCustomerConversation($row), $rows);
+        $last  = $items ? $items[array_key_last($items)] : null;
+
+        return [
+            'items'       => $items,
+            'next_cursor' => $hasMore && $last ? (int) $last['id'] : null,
+            'has_more'    => $hasMore,
+        ];
+    }
+
+    private function getCustomerConversation(int $conversationId): ?array
+    {
+        $row = $this->wpdb->get_row($this->wpdb->prepare(
+            "SELECT c.*, cc.*
+             FROM {$this->wpdb->prefix}g3_im_conversations c
+             INNER JOIN {$this->customerConversationsTable} cc ON cc.`conversation_id` = c.`id`
+             WHERE c.`id` = %d",
+            $conversationId
+        ), ARRAY_A);
+
+        return is_array($row) ? $this->formatCustomerConversation($row) : null;
+    }
+
+    private function canAccessCustomerConversation(int $conversationId, array $identity): bool
+    {
+        if ($identity['actor_type'] === IM::ACTOR_USER) {
+            return (bool) $this->wpdb->get_var($this->wpdb->prepare(
+                "SELECT 1 FROM {$this->customerConversationsTable}
+                 WHERE `conversation_id` = %d AND `customer_user_id` = %d
+                 LIMIT 1",
+                $conversationId,
+                (int) ($identity['user_id'] ?? 0)
+            ));
+        }
+
+        return (bool) $this->wpdb->get_var($this->wpdb->prepare(
+            "SELECT 1 FROM {$this->customerConversationsTable}
+             WHERE `conversation_id` = %d AND `customer_guest_id` = %s
+             LIMIT 1",
+            $conversationId,
+            (string) ($identity['actor_id'] ?? '')
+        ));
+    }
+
+    private function assignConversation(int $conversationId, int $userId): void
+    {
+        $this->wpdb->update($this->customerConversationsTable, [
+            'assignee_user_id' => $userId > 0 ? $userId : null,
+            'updated_at'       => gmdate('Y-m-d H:i:s'),
+        ], ['conversation_id' => $conversationId]);
+    }
+
+    private function updateCustomerStatus(int $conversationId, string $status, array $identity, array $data = []): array|WP_Error
+    {
+        if (!in_array($status, $this->conversationStatuses(), true)) {
+            return new WP_Error('invalid_status', 'Invalid status.', ['status' => 400]);
+        }
+
+        $current = $this->getCustomerConversation($conversationId);
+        if (!$current) {
+            return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
+        }
+
+        $now         = gmdate('Y-m-d H:i:s');
+        $targetState = $status === CustomerConversation::STATUS_CLOSED ? IM::CONVERSATION_CLOSED : IM::CONVERSATION_OPEN;
+        $update      = [
+            'status'     => $status,
+            'updated_at' => $now,
+        ];
+
+        if ($status === CustomerConversation::STATUS_CLOSED) {
+            $update['closed_at']    = $now;
+            $update['close_reason'] = sanitize_key((string) ($data['close_reason'] ?? CustomerConversation::CLOSE_BY_AGENT));
+        } else {
+            $update['closed_at']    = null;
+            $update['close_reason'] = null;
+        }
+
+        if (($current['state'] ?? '') !== $targetState) {
+            $this->im->updateConversation($conversationId, ['state' => $targetState], $identity);
+        }
+
+        if ($status === CustomerConversation::STATUS_WRAP_UP) {
+            $update['wrap_lock_mode']  = sanitize_key((string) ($data['wrap_lock_mode'] ?? CustomerConversation::WRAP_LOCK_NONE));
+            $update['wrap_lock_until'] = isset($data['wrap_lock_until']) ? sanitize_text_field((string) $data['wrap_lock_until']) : null;
+        }
+
+        $result = $this->wpdb->update($this->customerConversationsTable, $update, ['conversation_id' => $conversationId]);
+        if ($result === false) {
+            return new WP_Error('db_update_error', 'Failed to update customer conversation.', ['status' => 500]);
+        }
+
+        $conversation = $this->getCustomerConversation($conversationId);
+        if ($conversation) {
+            $this->im->publishConversationEvent(IM::EVENT_CONVERSATION_STATUS_CHANGED, $conversationId, $identity, $conversation);
+        }
+
+        return $conversation ?: new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
+    }
+
+    private function markCustomerTimeoutConversations(int $minutes, int $limit): int
+    {
         $minutes = max(1, min(14400, $minutes));
         $limit   = min(1000, max(1, $limit));
         $cutoff  = gmdate('Y-m-d H:i:s', time() - ($minutes * MINUTE_IN_SECONDS));
 
-        $statuses     = [IM::STATUS_PENDING, IM::STATUS_BOT_HANDLED, IM::STATUS_HANDLED, IM::STATUS_ON_HOLD];
-        $placeholders = implode(',', array_fill(0, count($statuses), '%s'));
-        $ids          = $this->wpdb->get_col($this->wpdb->prepare(
-            "SELECT `id`
-             FROM {$this->conversationsTable}
-             WHERE `type` = %s
-               AND `status` IN ({$placeholders})
-               AND COALESCE(`last_message_at`, `updated_at`, `created_at`) < %s
-             ORDER BY COALESCE(`last_message_at`, `updated_at`, `created_at`) ASC
+        $ids = $this->wpdb->get_col($this->wpdb->prepare(
+            "SELECT cc.`conversation_id`
+             FROM {$this->customerConversationsTable} cc
+             INNER JOIN {$this->wpdb->prefix}g3_im_conversations c ON c.`id` = cc.`conversation_id`
+             WHERE cc.`status` IN (%s, %s, %s)
+               AND COALESCE(c.`last_message_at`, cc.`updated_at`, cc.`created_at`) < %s
+             ORDER BY COALESCE(c.`last_message_at`, cc.`updated_at`, cc.`created_at`) ASC
              LIMIT %d",
-            array_merge([IM::TYPE_CUSTOMER_SERVICE], $statuses, [$cutoff, $limit])
+            CustomerConversation::STATUS_PENDING,
+            CustomerConversation::STATUS_ACTIVE,
+            CustomerConversation::STATUS_WRAP_UP,
+            $cutoff,
+            $limit
         )) ?: [];
 
-        if (!$ids) {
-            return 0;
-        }
-
-        $identity = $this->systemIdentity();
         foreach (array_map('intval', $ids) as $id) {
-            $this->setConversationStatus($id, IM::STATUS_TIMEOUT, $identity);
+            $this->updateCustomerStatus($id, CustomerConversation::STATUS_CLOSED, $this->systemIdentity(), [
+                'close_reason' => CustomerConversation::CLOSE_BY_TIMEOUT,
+            ]);
         }
 
         return count($ids);
     }
 
-    private function createConversation(array $identity, array $data): int|WP_Error
+    private function afterMessageCommitted(int $conversationId, array $identity, array $message, ?array $conversation): ?array
     {
-        $now     = Date::utcDateTime();
-        $subject = sanitize_text_field((string) ($data['subject'] ?? ''));
-        if ($subject === '') {
-            $subject = $identity['display_name'];
-        }
-
-        $insert = [
-            'type'              => IM::TYPE_CUSTOMER_SERVICE,
-            'subject'           => mb_substr($subject, 0, 255),
-            'customer_user_id'  => $identity['user_id'],
-            'customer_guest_id' => $identity['actor_type'] === IM::ACTOR_GUEST ? $identity['actor_id'] : null,
-            'status'            => IM::STATUS_PENDING,
-            'source'            => sanitize_key((string) ($data['source'] ?? 'web')),
-            'ip_address'        => System::ip() ?: null,
-            'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? mb_substr(sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 0, 255) : null,
-            'meta'              => $this->encode($this->sanitizeMeta($data['meta'] ?? [])),
-            'created_at'        => $now,
-            'updated_at'        => $now,
+        $now      = gmdate('Y-m-d H:i:s');
+        $isAgent  = $identity['role'] === IM::ROLE_AGENT;
+        $isSystem = $identity['role'] === IM::ROLE_SYSTEM;
+        $update   = [
+            'updated_at' => $now,
         ];
 
-        $result = $this->wpdb->insert($this->conversationsTable, $insert);
-        if ($result === false) {
-            return new WP_Error('db_insert_error', 'Failed to create conversation.', ['status' => 500]);
+        if ($isAgent || $isSystem) {
+            $update['last_agent_msg_at'] = $now;
+            $update['unread_customer']   = $this->rawSqlIncrement('unread_customer');
+            if ($isAgent) {
+                $row = $this->customerConversationRow($conversationId);
+                if ($row && empty($row['first_response_at'])) {
+                    $update['first_response_at'] = $now;
+                }
+                if ($row && (string) $row['status'] === CustomerConversation::STATUS_PENDING) {
+                    $update['status'] = CustomerConversation::STATUS_ACTIVE;
+                }
+            }
+        } else {
+            $update['last_customer_msg_at'] = $now;
+            $update['unread_agent']         = $this->rawSqlIncrement('unread_agent');
         }
 
-        $conversationId = (int) $this->wpdb->insert_id;
-        $this->ensureParticipant($conversationId, $identity);
-        $this->publishEvent(IM::EVENT_CONVERSATION_CREATED, $conversationId, null, $identity, ['conversation_id' => $conversationId]);
-
-        return $conversationId;
+        $this->updateCustomerConversationColumns($conversationId, $update);
+        return $this->getCustomerConversation($conversationId) ?: $conversation;
     }
 
-    private function addMessage(int $conversationId, array $identity, string $content, string $messageType): array|WP_Error
+    private function customerConversationRow(int $conversationId): ?array
     {
-        $trusted = in_array($identity['role'] ?? '', [IM::ROLE_AGENT, IM::ROLE_SYSTEM], true);
-        $content = $this->sanitizeMessageContent($content, $trusted);
-        if ($content === '') {
-            return new WP_Error('empty_message', __('Message content cannot be empty.', 'G3'), ['status' => 400]);
-        }
-        if (mb_strlen(wp_strip_all_tags($content)) > 5000) {
-            return new WP_Error('message_too_long', __('Message is too long.', 'G3'), ['status' => 400]);
-        }
-
-        $messageType = sanitize_key($messageType) ?: IM::MESSAGE_TEXT;
-        $now         = Date::utcDateTime();
-        $this->ensureParticipant($conversationId, $identity);
-
-        $result = $this->wpdb->insert($this->messagesTable, [
-            'conversation_id' => $conversationId,
-            'sender_type'     => $identity['actor_type'],
-            'sender_id'       => $identity['actor_id'],
-            'sender_user_id'  => $identity['user_id'],
-            'sender_name'     => $identity['display_name'],
-            'message_type'    => $messageType,
-            'content'         => $content,
-            'created_at'      => $now,
-        ]);
-
-        if ($result === false) {
-            return new WP_Error('db_insert_error', 'Failed to save message.', ['status' => 500]);
-        }
-
-        $messageId   = (int) $this->wpdb->insert_id;
-        $outbound    = in_array($identity['role'], [IM::ROLE_AGENT, IM::ROLE_SYSTEM], true);
-        $unreadField = $outbound ? 'unread_customer' : 'unread_agent';
-        $excerpt     = mb_substr(wp_strip_all_tags($content), 0, 120);
-
-        $this->wpdb->query($this->wpdb->prepare(
-            "UPDATE {$this->conversationsTable}
-             SET `last_message_id` = %d,
-                 `last_message_excerpt` = %s,
-                 `last_message_at` = %s,
-                 `updated_at` = %s,
-                 `$unreadField` = `$unreadField` + 1
-             WHERE `id` = %d",
-            $messageId,
-            $excerpt,
-            $now,
-            $now,
+        $row = $this->wpdb->get_row($this->wpdb->prepare(
+            "SELECT * FROM {$this->customerConversationsTable} WHERE `conversation_id` = %d",
             $conversationId
-        ));
+        ), ARRAY_A);
 
-        $message      = $this->getMessage($messageId);
-        $conversation = $this->getConversation($conversationId);
-        $this->publishEvent(IM::EVENT_MESSAGE_CREATED, $conversationId, $messageId, $identity, [
-            'message'      => $message,
-            'conversation' => $conversation ? $this->formatConversation($conversation) : null,
-        ]);
-
-        return $message ?: new WP_Error('message_not_found', __('Message not found.', 'G3'), ['status' => 404]);
-    }
-
-    private function messages(int $conversationId, int $afterId = 0, int $limit = 50): array
-    {
-        $limit = min(100, max(1, $limit));
-        $rows  = $this->wpdb->get_results(
-            $this->wpdb->prepare(
-                "SELECT * FROM {$this->messagesTable}
-                 WHERE `conversation_id` = %d AND `id` > %d AND `deleted_at` IS NULL
-                 ORDER BY `id` ASC LIMIT %d",
-                $conversationId,
-                max(0, $afterId),
-                $limit
-            ),
-            ARRAY_A
-        ) ?: [];
-
-        return array_map(fn(array $row): array => $this->formatMessage($row), $rows);
-    }
-
-    private function getConversation(int $conversationId): ?array
-    {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM {$this->conversationsTable} WHERE `id` = %d", $conversationId),
-            ARRAY_A
-        );
         return is_array($row) ? $row : null;
     }
 
-    private function getMessage(int $messageId): ?array
+    private function rawSqlIncrement(string $column): array
     {
-        $row = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM {$this->messagesTable} WHERE `id` = %d", $messageId),
-            ARRAY_A
-        );
-        return is_array($row) ? $this->formatMessage($row) : null;
+        return ['__increment' => $column];
+    }
+
+    private function updateCustomerConversationColumns(int $conversationId, array $columns): void
+    {
+        if (!$columns) {
+            return;
+        }
+
+        $sets   = [];
+        $params = [];
+        foreach ($columns as $column => $value) {
+            $column = sanitize_key((string) $column);
+            if ($column === '') {
+                continue;
+            }
+
+            if (is_array($value) && isset($value['__increment'])) {
+                $sets[] = "`$column` = `$column` + 1";
+                continue;
+            }
+
+            $sets[]   = "`$column` = %s";
+            $params[] = $value;
+        }
+
+        if (!$sets) {
+            return;
+        }
+
+        $params[] = $conversationId;
+        $this->wpdb->query($this->wpdb->prepare(
+            "UPDATE {$this->customerConversationsTable} SET " . implode(', ', $sets) . " WHERE `conversation_id` = %d",
+            $params
+        ));
+    }
+
+    private function formatCustomerConversation(array $row): array
+    {
+        $status = (string) ($row['status'] ?? CustomerConversation::STATUS_PENDING);
+        return [
+            'id'                   => (int) ($row['id'] ?? $row['conversation_id']),
+            'conversation_id'      => (int) ($row['conversation_id'] ?? $row['id']),
+            'type'                 => (string) ($row['type'] ?? IM::TYPE_CUSTOMER_SERVICE),
+            'subject'              => $row['subject'] ?? null,
+            'state'                => (string) ($row['state'] ?? IM::CONVERSATION_OPEN),
+            'status'               => $status,
+            'customer_user_id'     => isset($row['customer_user_id']) && $row['customer_user_id'] !== null ? (int) $row['customer_user_id'] : null,
+            'customer_guest_id'    => $row['customer_guest_id'] ?? null,
+            'assignee_user_id'     => isset($row['assignee_user_id']) && $row['assignee_user_id'] !== null ? (int) $row['assignee_user_id'] : null,
+            'close_reason'         => $row['close_reason'] ?? null,
+            'wrap_lock_mode'       => $row['wrap_lock_mode'] ?? CustomerConversation::WRAP_LOCK_NONE,
+            'wrap_lock_until'      => $row['wrap_lock_until'] ?? null,
+            'first_response_at'    => $row['first_response_at'] ?? null,
+            'last_customer_msg_at' => $row['last_customer_msg_at'] ?? null,
+            'last_agent_msg_at'    => $row['last_agent_msg_at'] ?? null,
+            'priority'             => (int) ($row['priority'] ?? 0),
+            'source'               => (string) ($row['source'] ?? 'web'),
+            'ip_address'           => $row['ip_address'] ?? null,
+            'user_agent'           => $row['user_agent'] ?? null,
+            'last_message_id'      => isset($row['last_message_id']) && $row['last_message_id'] !== null ? (int) $row['last_message_id'] : null,
+            'last_msg_seq'         => (int) ($row['last_msg_seq'] ?? 0),
+            'last_msg_type'        => $row['last_msg_type'] ?? null,
+            'last_msg_preview'     => $row['last_msg_preview'] ?? null,
+            'last_message_at'      => $row['last_message_at'] ?? null,
+            'last_message_at_utc'  => $row['last_message_at'] ?? null,
+            'unread_customer'      => (int) ($row['unread_customer'] ?? 0),
+            'unread_agent'         => (int) ($row['unread_agent'] ?? 0),
+            'meta'                 => $this->decodeMeta($row['meta'] ?? null),
+            'created_at'           => $row['created_at'] ?? null,
+            'created_at_utc'       => $row['created_at'] ?? null,
+            'updated_at'           => $row['updated_at'] ?? null,
+            'updated_at_utc'       => $row['updated_at'] ?? null,
+            'closed_at'            => $row['closed_at'] ?? null,
+            'closed_at_utc'        => $row['closed_at'] ?? null,
+        ];
+    }
+
+    private function sendMessage(int $conversationId, array $identity, string $content, string $messageType, bool $trusted): array|WP_Error
+    {
+        $bodyText = $this->sanitizeMessageContent($content, $trusted);
+        if ($bodyText === '') {
+            return new WP_Error('empty_message', __('Message content cannot be empty.', 'G3'), ['status' => 400]);
+        }
+
+        $body = [
+            'version' => 1,
+            'text'    => $bodyText,
+            'format'  => $trusted ? 'html' : 'plain',
+        ];
+
+        return $this->im->sendMessage($conversationId, $identity, $messageType, $body, [
+            'preview'      => mb_substr(wp_strip_all_tags($bodyText), 0, 255),
+            'after_commit' => fn(array $message, ?array $conversation): ?array => $this->afterMessageCommitted($conversationId, $identity, $message, $conversation),
+        ]);
+    }
+
+    private function requestMessageType(array $data): string|WP_Error
+    {
+        $msgType = sanitize_key((string) ($data['msg_type'] ?? IM::MESSAGE_TEXT));
+        if ($msgType === '') {
+            $msgType = IM::MESSAGE_TEXT;
+        }
+
+        if ($msgType !== IM::MESSAGE_TEXT) {
+            return new WP_Error('invalid_msg_type', 'Unsupported message type.', ['status' => 400]);
+        }
+
+        return $msgType;
     }
 
     private function createOfflineMessage(int $conversationId): void
     {
-        $option = $this->option();
-
-        if (!$this->z()) {
+        if (!$this->z() || $this->withinWorkingHours()) {
             return;
         }
 
-        if ($this->withinWorkingHours()) {
+        $offline = trim((string) ($this->option()['offlineMessage'] ?? ''));
+        if ($offline === '') {
             return;
         }
 
-        $offline = trim((string) ($option['offlineMessage'] ?? ''));
-        if ($offline !== '') {
-            $identity = $this->systemIdentity();
-            $message  = $this->addMessage($conversationId, $identity, $offline, IM::MESSAGE_OFFLINE);
-            if (!is_wp_error($message)) {
-                $this->setConversationStatus($conversationId, IM::STATUS_BOT_HANDLED, $identity);
-            }
-        }
-    }
-
-    private function findOpenCustomerConversation(array $identity): ?array
-    {
-        if ($identity['actor_type'] === IM::ACTOR_USER && $identity['user_id']) {
-            $row = $this->wpdb->get_row(
-                $this->wpdb->prepare(
-                    "SELECT * FROM {$this->conversationsTable}
-                     WHERE `type` = %s AND `customer_user_id` = %d AND `status` IN (%s, %s, %s, %s)
-                     ORDER BY `updated_at` DESC, `id` DESC LIMIT 1",
-                    IM::TYPE_CUSTOMER_SERVICE,
-                    $identity['user_id'],
-                    IM::STATUS_PENDING,
-                    IM::STATUS_BOT_HANDLED,
-                    IM::STATUS_HANDLED,
-                    IM::STATUS_ON_HOLD
-                ),
-                ARRAY_A
-            );
-        } else {
-            $row = $this->wpdb->get_row(
-                $this->wpdb->prepare(
-                    "SELECT * FROM {$this->conversationsTable}
-                     WHERE `type` = %s AND `customer_guest_id` = %s AND `status` IN (%s, %s, %s, %s)
-                     ORDER BY `updated_at` DESC, `id` DESC LIMIT 1",
-                    IM::TYPE_CUSTOMER_SERVICE,
-                    $identity['actor_id'],
-                    IM::STATUS_PENDING,
-                    IM::STATUS_BOT_HANDLED,
-                    IM::STATUS_HANDLED,
-                    IM::STATUS_ON_HOLD
-                ),
-                ARRAY_A
-            );
-        }
-
-        return is_array($row) ? $row : null;
-    }
-
-    private function canAccessConversation(int $conversationId, array $identity): bool
-    {
-        if ($this->canManage()) {
-            return true;
-        }
-
-        $conversation = $this->getConversation($conversationId);
-        if (!$conversation) {
-            return false;
-        }
-
-        if ($identity['actor_type'] === IM::ACTOR_USER) {
-            return (int) ($conversation['customer_user_id'] ?? 0) === (int) $identity['user_id'];
-        }
-
-        return hash_equals((string) ($conversation['customer_guest_id'] ?? ''), (string) $identity['actor_id']);
+        $this->sendMessage($conversationId, $this->systemIdentity(), $offline, IM::MESSAGE_OFFLINE, true);
     }
 
     private function customerIdentity(bool $createGuest = true): ?array
@@ -882,229 +872,6 @@ class CustomerService extends Service {
         ];
     }
 
-    private function ensureParticipant(int $conversationId, array $identity): void
-    {
-        $this->wpdb->query($this->wpdb->prepare(
-            "INSERT INTO {$this->participantsTable}
-                (`conversation_id`, `actor_type`, `actor_id`, `user_id`, `role`, `display_name`, `avatar`, `last_seen_at`, `created_at`)
-             VALUES (%d, %s, %s, %d, %s, %s, %s, %s, %s)
-             ON DUPLICATE KEY UPDATE
-                `display_name` = VALUES(`display_name`),
-                `avatar` = VALUES(`avatar`),
-                `last_seen_at` = VALUES(`last_seen_at`)",
-            $conversationId,
-            $identity['actor_type'],
-            $identity['actor_id'],
-            $identity['user_id'] ?: 0,
-            $identity['role'],
-            $identity['display_name'],
-            $identity['avatar'],
-            Date::utcDateTime(),
-            Date::utcDateTime()
-        ));
-    }
-
-    private function assignConversation(int $conversationId, int $userId): void
-    {
-        $this->wpdb->update($this->conversationsTable, [
-            'assignee_user_id' => $userId,
-            'updated_at'       => Date::utcDateTime(),
-        ], ['id' => $conversationId]);
-    }
-
-    private function setConversationStatus(int $conversationId, string $status, array $identity): void
-    {
-        if (!in_array($status, $this->conversationStatuses(), true)) {
-            return;
-        }
-
-        $update = [
-            'status'     => $status,
-            'updated_at' => Date::utcDateTime(),
-            'closed_at'  => $this->finalStatus($status) ? Date::utcDateTime() : null,
-        ];
-
-        $this->wpdb->update($this->conversationsTable, $update, ['id' => $conversationId]);
-        $conversation = $this->getConversation($conversationId);
-        $this->publishEvent(IM::EVENT_CONVERSATION_STATUS_CHANGED, $conversationId, null, $identity, [
-            'update'       => $update,
-            'conversation' => $conversation ? $this->formatConversation($conversation) : null,
-        ]);
-    }
-
-    private function publishEvent(string $type, ?int $conversationId, ?int $messageId, array $identity, array $payload): void
-    {
-        $this->wpdb->insert($this->eventsTable, [
-            'conversation_id' => $conversationId,
-            'event_type'      => $type,
-            'message_id'      => $messageId,
-            'actor_type'      => $identity['actor_type'],
-            'actor_id'        => $identity['actor_id'],
-            'payload'         => $this->encode($payload),
-            'created_at'      => Date::utcDateTime(),
-        ]);
-
-        $eventId = (int) $this->wpdb->insert_id;
-        $event   = [
-            'id'              => $eventId,
-            'conversation_id' => $conversationId,
-            'event_type'      => $type,
-            'message_id'      => $messageId,
-            'actor_type'      => $identity['actor_type'],
-            'actor_id'        => $identity['actor_id'],
-            'payload'         => $payload,
-            'created_at'      => Date::utcDateTime(),
-        ];
-
-        $notificationPayload = array_replace($payload, ['event' => $event]);
-        $meta                = [
-            'target_type' => 'customer_conversation',
-            'target_id'   => $conversationId ? (string) $conversationId : null,
-            'actor_type'  => $identity['actor_type'],
-            'actor_id'    => $identity['actor_id'],
-        ];
-
-        $this->notifications()->publish($this->adminChannel(), $type, $notificationPayload, $meta);
-        if ($conversationId) {
-            $this->notifications()->publish($this->viewerChannel($conversationId), $type, $notificationPayload, $meta);
-        }
-    }
-
-    private function formatConversation(array $row): array
-    {
-        return [
-            'id'                   => (int) $row['id'],
-            'type'                 => $row['type'],
-            'subject'              => $row['subject'],
-            'customer_user_id'     => $row['customer_user_id'] !== null ? (int) $row['customer_user_id'] : null,
-            'customer_guest_id'    => $row['customer_guest_id'],
-            'assignee_user_id'     => $row['assignee_user_id'] !== null ? (int) $row['assignee_user_id'] : null,
-            'status'               => $row['status'],
-            'priority'             => (int) $row['priority'],
-            'source'               => $row['source'],
-            'last_message_id'      => $row['last_message_id'] !== null ? (int) $row['last_message_id'] : null,
-            'last_message_excerpt' => $row['last_message_excerpt'],
-            'last_message_at'      => $this->formatDateTime($row['last_message_at'] ?? null),
-            'last_message_at_utc'  => $row['last_message_at'],
-            'unread_customer'      => (int) $row['unread_customer'],
-            'unread_agent'         => (int) $row['unread_agent'],
-            'meta'                 => $this->decode($row['meta'] ?? ''),
-            'created_at'           => $this->formatDateTime($row['created_at'] ?? null),
-            'created_at_utc'       => $row['created_at'],
-            'updated_at'           => $this->formatDateTime($row['updated_at'] ?? null),
-            'updated_at_utc'       => $row['updated_at'],
-            'closed_at'            => $this->formatDateTime($row['closed_at'] ?? null),
-            'closed_at_utc'        => $row['closed_at'],
-        ];
-    }
-
-    private function formatMessage(array $row): array
-    {
-        return [
-            'id'              => (int) $row['id'],
-            'conversation_id' => (int) $row['conversation_id'],
-            'sender_type'     => $row['sender_type'],
-            'sender_id'       => $row['sender_id'],
-            'sender_user_id'  => $row['sender_user_id'] !== null ? (int) $row['sender_user_id'] : null,
-            'sender_name'     => $row['sender_name'],
-            'message_type'    => $row['message_type'],
-            'content'         => $row['content'],
-            'payload'         => $this->decode($row['payload'] ?? ''),
-            'status'          => (int) $row['status'],
-            'trusted_html'    => in_array($row['sender_type'], [IM::ACTOR_AGENT, IM::ACTOR_SYSTEM], true),
-            'created_at'      => $this->formatDateTime($row['created_at'] ?? null),
-            'created_at_utc'  => $row['created_at'],
-        ];
-    }
-
-    private function formatEvent(array $row): array
-    {
-        return [
-            'id'              => (int) $row['id'],
-            'conversation_id' => $row['conversation_id'] !== null ? (int) $row['conversation_id'] : null,
-            'event_type'      => $row['event_type'],
-            'message_id'      => $row['message_id'] !== null ? (int) $row['message_id'] : null,
-            'actor_type'      => $row['actor_type'],
-            'actor_id'        => $row['actor_id'],
-            'payload'         => $this->decode($row['payload'] ?? ''),
-            'created_at'      => $this->formatDateTime($row['created_at'] ?? null),
-            'created_at_utc'  => $row['created_at'],
-        ];
-    }
-
-    private function formatDateTime(?string $value): ?string
-    {
-        if (!$value) {
-            return null;
-        }
-
-        $timestamp = strtotime($value . ' UTC');
-        if (!$timestamp) {
-            return $value;
-        }
-
-        $formatted = Date::dateTime($timestamp);
-        return is_string($formatted) ? $formatted : $value;
-    }
-
-    private function z(): bool
-    {
-        try {
-            return $this->container->get('loader')->admin();
-        }
-        catch (Throwable) {
-            return false;
-        }
-    }
-
-    private function notifications(): NotificationService
-    {
-        return $this->container->get(NotificationService::class);
-    }
-
-    private function adminChannel(): string
-    {
-        return 'customer.admin';
-    }
-
-    private function viewerChannel(int $conversationId): string
-    {
-        return 'customer.viewer.' . $conversationId;
-    }
-
-    private function finalStatus(string $status): bool
-    {
-        return in_array($status, [IM::STATUS_CLOSED, IM::STATUS_TIMEOUT], true);
-    }
-
-    private function conversationStatuses(): array
-    {
-        return [
-            IM::STATUS_PENDING,
-            IM::STATUS_BOT_HANDLED,
-            IM::STATUS_HANDLED,
-            IM::STATUS_ON_HOLD,
-            IM::STATUS_CLOSED,
-            IM::STATUS_TIMEOUT,
-        ];
-    }
-
-    private function sanitizeMeta(mixed $meta): array
-    {
-        if (!is_array($meta)) {
-            return [];
-        }
-
-        $clean = [];
-        foreach (array_slice($meta, 0, 20, true) as $key => $value) {
-            if (!is_scalar($value) && $value !== null) {
-                continue;
-            }
-            $clean[sanitize_key((string) $key)] = is_string($value) ? sanitize_text_field($value) : $value;
-        }
-        return $clean;
-    }
-
     private function sanitizeMessageContent(string $content, bool $trusted): string
     {
         $content = trim($content);
@@ -1113,6 +880,44 @@ class CustomerService extends Service {
         }
 
         return trim(sanitize_textarea_field($content));
+    }
+
+    private function decodeMeta(mixed $meta): array
+    {
+        if (is_array($meta)) {
+            return $meta;
+        }
+
+        if (!is_string($meta) || $meta === '') {
+            return [];
+        }
+
+        $decoded = json_decode($meta, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    private function openStatuses(): array
+    {
+        return [
+            CustomerConversation::STATUS_PENDING,
+            CustomerConversation::STATUS_ACTIVE,
+            CustomerConversation::STATUS_WRAP_UP,
+        ];
+    }
+
+    private function conversationStatuses(): array
+    {
+        return [
+            CustomerConversation::STATUS_PENDING,
+            CustomerConversation::STATUS_ACTIVE,
+            CustomerConversation::STATUS_WRAP_UP,
+            CustomerConversation::STATUS_CLOSED,
+        ];
+    }
+
+    private function finalStatus(string $status): bool
+    {
+        return $status === CustomerConversation::STATUS_CLOSED;
     }
 
     private function normalizeTime(string $value, string $fallback): string
@@ -1125,23 +930,13 @@ class CustomerService extends Service {
         return $value;
     }
 
-    private function encode(mixed $value): ?string
+    private function z(): bool
     {
-        if ($value === null || $value === []) {
-            return null;
+        try {
+            return $this->container->get('loader')->admin();
+        } catch (Throwable) {
+            return false;
         }
-
-        return wp_json_encode($value, JSON_UNESCAPED_UNICODE);
-    }
-
-    private function decode(?string $value): array
-    {
-        if (!$value) {
-            return [];
-        }
-
-        $decoded = json_decode($value, true);
-        return is_array($decoded) ? $decoded : [];
     }
 
     private function setGuestCookie(string $guestId): void

@@ -4,8 +4,8 @@ use JEALER\G3\Core\Service\Service;
 use WP_Post;
 
 class CopyrightService extends Service {
-    const CACHE_GROUP     = 'g3_copyright';
-    private const WATERMARK_CHARS = [
+    const CACHE_GROUP = 'g3_copyright';
+    private const MAPS        = [
         "\u{200B}",
         "\u{200C}",
         "\u{200D}",
@@ -23,7 +23,7 @@ class CopyrightService extends Service {
 
     public function init(): void
     {
-        $this->chars = self::WATERMARK_CHARS;
+        $this->chars = self::MAPS;
     }
 
     public function clean(string $text): string
@@ -31,13 +31,13 @@ class CopyrightService extends Service {
         return preg_replace(self::CLEAN_PATTERN, '', $text) ?? $text;
     }
 
-    public function embed(string $text, string $copyright): string
+    public function embed(string $text, string $payload): string
     {
         $cleanText = $this->clean($text);
-        if (empty($copyright)) return $cleanText;
+        if (empty($payload)) return $cleanText;
 
         // 直接获取 UTF-8 字节流，并转为二进制字符串
-        $bytes     = unpack('C*', $copyright); // 获取每个字节的十进制值
+        $bytes     = unpack('C*', $payload); // 获取每个字节的十进制值
         $binaryStr = '';
         foreach ($bytes as $byte) {
             $binaryStr .= str_pad(decbin($byte), 8, '0', STR_PAD_LEFT);
@@ -81,16 +81,16 @@ class CopyrightService extends Service {
 
     public function decrypt(int $id): string
     {
-        $copyright = wp_cache_get($id, self::CACHE_GROUP);
-        if (false === $copyright) {
+        $result = wp_cache_get($id, self::CACHE_GROUP);
+        if (false === $result) {
             $post = get_post($id);
             if ($post instanceof WP_Post) {
-                $copyright = $this->extract($post->post_content);
-                wp_cache_set($id, $copyright, self::CACHE_GROUP, DAY_IN_SECONDS);
+                $result = $this->extract($post->post_content);
+                wp_cache_set($id, $result, self::CACHE_GROUP, DAY_IN_SECONDS);
             } else {
-                $copyright = 'Copyright info not found.';
+                $result = 'Copyright info not found.';
             }
         }
-        return $copyright;
+        return $result;
     }
 }

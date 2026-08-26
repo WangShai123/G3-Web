@@ -1,12 +1,12 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
+use JEALER\G3\Utilities\Type;
 use Redis;
 use Throwable;
 use WP_Error;
 
 class NotificationService extends Service {
-    public const REDIS_DB = 3;
     private string $table;
 
     public function __construct()
@@ -31,7 +31,7 @@ class NotificationService extends Service {
             'target_id'   => isset($meta['target_id']) ? (string) $meta['target_id'] : null,
             'actor_type'  => isset($meta['actor_type']) ? sanitize_key((string) $meta['actor_type']) : null,
             'actor_id'    => isset($meta['actor_id']) ? (string) $meta['actor_id'] : null,
-            'payload'     => $this->encode($payload),
+            'payload'     => Type::arrayToJson($payload),
             'created_at'  => gmdate('Y-m-d H:i:s'),
         ]);
 
@@ -222,7 +222,7 @@ class NotificationService extends Service {
         try {
             $redis = $this->container->get(Redis::class);
             $redis->connect('127.0.0.1', 6379, 0.2);
-            $redis->select(self::REDIS_DB);
+            $redis->select(DBService::NOTIFICATION_REDIS_DB);
             return $redis;
         }
         catch (Throwable) {
@@ -309,7 +309,7 @@ class NotificationService extends Service {
             'target_id'   => $row['target_id'],
             'actor_type'  => $row['actor_type'],
             'actor_id'    => $row['actor_id'],
-            'payload'     => $this->decode($row['payload'] ?? ''),
+            'payload'     => Type::jsonToArray($row['payload'] ?? ''),
             'created_at'  => $row['created_at'],
         ];
     }
@@ -336,24 +336,5 @@ class NotificationService extends Service {
         echo 'event: ' . $event . "\n";
         echo 'data: ' . wp_json_encode($data, JSON_UNESCAPED_UNICODE) . "\n\n";
         flush();
-    }
-
-    private function encode(mixed $value): ?string
-    {
-        if ($value === null || $value === []) {
-            return null;
-        }
-
-        return wp_json_encode($value, JSON_UNESCAPED_UNICODE);
-    }
-
-    private function decode(?string $value): array
-    {
-        if (!$value) {
-            return [];
-        }
-
-        $decoded = json_decode($value, true);
-        return is_array($decoded) ? $decoded : [];
     }
 }

@@ -1,23 +1,17 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 use wpdb;
 
-class DBService {
-    private wpdb             $wpdb;
-    private static DBService $instance;
+class DBService extends Service {
+
+    const QUEUE_REDIS_DB        = 1;
+    const IM_REDIS_DB           = 2;
+    const NOTIFICATION_REDIS_DB = 3;
 
     public function __construct()
     {
-        global $wpdb;
-        $this->wpdb = $wpdb;
-    }
-
-    public static function run(): DBService
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+        parent::__construct();
     }
 
     public function initTables(): void
@@ -57,14 +51,28 @@ class DBService {
     private function initUserTable(wpdb $wpdb, string $charset): void
     {
         /**
+         * WordPress Users
+         * - ID
+         * - user_login
+         * - user_pass
+         * - user_email
+         * - user_url
+         * - user_nicename
+         * - display_name
+         * - user_registered
+         * 
+         */
+
+        /**
          * User Extra Table
          * 
          * 用户额外信息表
          *  - user_id: 用户ID
-         *  - role: 管理角色 别名
-         *  - group: 自定义分组 别名 
+         *  - level: 用户等级 别名
+         *  - custom: 自定义角色 别名
+         *  - manager: 管理角色 别名
          *  - premium: 认证等级 别名
-         *  - status: 状态 别名
+         *  - status: 状态
          *  - view_count: 访问次数
          *  - third_party_ids: 第三方ID
          *      - wx_openId: 微信 openId
@@ -77,16 +85,18 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `role` VARCHAR(32) DEFAULT NULL,
-                `group` VARCHAR(64) DEFAULT NULL,
+                `level` VARCHAR(64) DEFAULT NULL,
+                `custom` VARCHAR(64) DEFAULT NULL,
+                `manager` VARCHAR(64) DEFAULT NULL,
                 `premium` VARCHAR(64) DEFAULT NULL,
-                `status` VARCHAR(32) DEFAULT NULL,
+                `status` TINYINT NOT NULL DEFAULT 0,
                 `view_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
-                `third_party_ids` LONGTEXT DEFAULT NULL,
+                `third_party_ids` JSON DEFAULT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`user_id`),
-                KEY `idx_role` (`role`),
-                KEY `idx_group` (`group`),
+                KEY `idx_level` (`level`),
+                KEY `idx_custom` (`custom`),
+                KEY `idx_manager` (`manager`),
                 KEY `idx_premium` (`premium`),
                 KEY `idx_status` (`status`),
                 KEY `idx_view_count` (`view_count`)
@@ -126,15 +136,15 @@ class DBService {
                 `city` VARCHAR(64) DEFAULT NULL,
                 `district` VARCHAR(64) DEFAULT NULL,
                 `address` VARCHAR(255) DEFAULT NULL,
-                `social_account` LONGTEXT DEFAULT NULL,
+                `social_account` JSON DEFAULT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`user_id`),
+                KEY `idx_city` (`city`),
+                KEY `idx_country` (`country`),
+                KEY `idx_district` (`district`),
                 KEY `idx_gender` (`gender`),
                 KEY `idx_phone` (`phone`),
-                KEY `idx_country` (`country`),
-                KEY `idx_province` (`province`),
-                KEY `idx_city` (`city`),
-                KEY `idx_district` (`district`)
+                KEY `idx_province` (`province`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -184,12 +194,14 @@ class DBService {
          *  - dislike_count: 点踩数
          *  - share_count: 分享数
          *  - favorite_count: 收藏数
-         *  - gallery: 相册集
-         *  - property: 属性集（JSON）如商品属性
+         *  - reading_time: 阅读时间（秒）
          *  - seo_title: SEO标题
          *  - seo_description: SEO描述
          *  - seo_keywords: SEO关键词
+         *  - gallery: 相册集
+         *  - property: 属性集（JSON）如商品属性
          *  - ext: 额外字段
+         *  - updated_at: 更新时间
          * 
          * @since 1.0.0
          */
@@ -202,12 +214,13 @@ class DBService {
                 `dislike_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `share_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `favorite_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `reading_time` INT UNSIGNED DEFAULT 0,
                 `seo_title` VARCHAR(255) DEFAULT NULL,
                 `seo_description` VARCHAR(255) DEFAULT NULL,
                 `seo_keywords` VARCHAR(255) DEFAULT NULL,
-                `gallery` LONGTEXT DEFAULT NULL,
-                `property` LONGTEXT DEFAULT NULL,
-                `ext` LONGTEXT DEFAULT NULL,
+                `gallery` JSON DEFAULT NULL,
+                `property` JSON DEFAULT NULL,
+                `ext` JSON DEFAULT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`post_id`),
                 KEY `idx_view_count` (`view_count`),
@@ -218,8 +231,6 @@ class DBService {
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
-
-            // backup: CONSTRAINT `fk_post_id` FOREIGN KEY (`post_id`) REFERENCES `{$wpdb->prefix}posts`(`ID`) ON DELETE CASCADE
         }
     }
 
@@ -256,7 +267,7 @@ class DBService {
          *  - weight: 重量
          *  - size: 尺寸
          *  - unit: 单位
-         *  - content: 库存实际内容
+         *  - content: 库存实际内容（JSON 配置）
          *  - created_at: 创建时间
          *  - updated_at: 更新时间
          * 
@@ -288,8 +299,8 @@ class DBService {
                 `size` DECIMAL(12,2) DEFAULT NULL,
                 `unit` VARCHAR(16) DEFAULT NULL,
 
-                -- content: 存 URL / 序列化配置
-                `content` TEXT DEFAULT NULL,
+                -- content: 存 URL / JSON 配置
+                `content` JSON DEFAULT NULL,
 
                 -- time
                 `created_at` DATETIME NOT NULL,
@@ -553,7 +564,7 @@ class DBService {
                 -- 快照 对账
                 `product_title` VARCHAR(255) DEFAULT NULL,
                 `product_image` VARCHAR(255) DEFAULT NULL,
-                `spec_info` TEXT DEFAULT NULL,
+                `spec_info` JSON DEFAULT NULL,
                 `quantity` INT NOT NULL DEFAULT 1,
                 `unit_price` DECIMAL(12,2) NOT NULL,
                 `total_price` DECIMAL(12,2) NOT NULL,
@@ -673,8 +684,8 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT NOT NULL,
-                `order_id` BIGINT DEFAULT NULL,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `order_id` BIGINT UNSIGNED DEFAULT NULL,
                 `type` TINYINT NOT NULL,
                 `amount` DECIMAL(12,2) NOT NULL,
                 `before_balance` DECIMAL(12,2) NOT NULL,
@@ -709,14 +720,14 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_id` BIGINT DEFAULT NULL,
-                `user_id` BIGINT NOT NULL,
+                `order_id` BIGINT UNSIGNED DEFAULT NULL,
+                `user_id` BIGINT UNSIGNED NOT NULL,
                 `pay_amount` DECIMAL(12,2) NOT NULL,
                 `pay_method` TINYINT NOT NULL,
                 `transaction_id` VARCHAR(255) DEFAULT NULL,
                 `status` TINYINT NOT NULL,
                 `paid_at` DATETIME DEFAULT NULL,
-                `raw_response` LONGTEXT DEFAULT NULL,
+                `raw_response` JSON DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 UNIQUE KEY `idx_order_id` (`order_id`),
@@ -736,7 +747,7 @@ class DBService {
          *  - fee: 手续费
          *  - actual_amount: 实际到账金额
          *  - account_type: 提现账户类型
-         *  - account_info: 提现账户信息（JSON存储，如卡号后四位、支付宝账号）需加密存储
+         *  - account_info: 提现账户信息（JSON存储，如卡号后四位、支付宝账号）加密存储
          *  - status: 状态, 0: pending, 1: approved, 2: rejected, 3: paid
          *  - admin_remark: 管理员备注
          *  - applied_at: 申请时间
@@ -748,12 +759,12 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT NOT NULL,
+                `user_id` BIGINT UNSIGNED NOT NULL,
                 `amount` DECIMAL(12,2) NOT NULL,
                 `fee` DECIMAL(12,2) NOT NULL,
                 `actual_amount` DECIMAL(12,2) NOT NULL,
                 `account_type` TINYINT NOT NULL,
-                `account_info` LONGTEXT NOT NULL,
+                `account_info` JSON NOT NULL,
                 `status` TINYINT NOT NULL,
                 `admin_remark` VARCHAR(255) DEFAULT NULL,
                 `applied_at` DATETIME NOT NULL,
@@ -799,9 +810,9 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT NOT NULL,
-                `parent_id` BIGINT NOT NULL,
-                `root_id` BIGINT NOT NULL,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `parent_id` BIGINT UNSIGNED NOT NULL,
+                `root_id` BIGINT UNSIGNED NOT NULL,
                 `level` TINYINT NOT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
@@ -1000,9 +1011,9 @@ class DBService {
          * 
          * 表单表
          *  - id: 主键
-         *  - title: 标题
-         *  - content: 内容
+         *  - name: 姓名
          *  - email: 邮箱
+         *  - content: 内容
          *  - ext: 扩展数据
          *  - ip: IP
          *  - status: 状态
@@ -1012,10 +1023,10 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `title` VARCHAR(255) NOT NULL,
-                `content` TEXT NOT NULL,
+                `name` VARCHAR(128) NOT NULL,
                 `email` VARCHAR(255) NOT NULL,
-                `ext` TEXT DEFAULT NULL,
+                `content` TEXT NOT NULL,
+                `ext` JSON DEFAULT NULL,
                 `ip` VARCHAR(255) NOT NULL,
                 `status` TINYINT NOT NULL DEFAULT 0,
                 `created_at` DATETIME NOT NULL,
@@ -1059,7 +1070,7 @@ class DBService {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `parent` INT NOT NULL,
+                `parent` BIGINT UNSIGNED NOT NULL,
                 `name` VARCHAR(128) NOT NULL,
                 `sort` TINYINT NOT NULL,
                 `type` TINYINT NOT NULL,
@@ -1094,7 +1105,7 @@ class DBService {
                 `openid` VARCHAR(64) NOT NULL,
                 `nickname` VARCHAR(128) NOT NULL,
                 `type` VARCHAR(32) NOT NULL,
-                `content` LONGTEXT NOT NULL,
+                `content` TEXT NOT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_openid` (`openid`),
@@ -1123,7 +1134,7 @@ class DBService {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `type` VARCHAR(32) NOT NULL,
-                `content` LONGTEXT NOT NULL,
+                `content` TEXT NOT NULL,
                 `status` TINYINT NOT NULL DEFAULT 1,
                 `created_at` DATETIME NOT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
@@ -1175,30 +1186,54 @@ class DBService {
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `type` VARCHAR(32) NOT NULL DEFAULT 'customer_service',
                 `subject` VARCHAR(255) DEFAULT NULL,
-                `customer_user_id` BIGINT UNSIGNED DEFAULT NULL,
-                `customer_guest_id` VARCHAR(64) DEFAULT NULL,
-                `assignee_user_id` BIGINT UNSIGNED DEFAULT NULL,
-                `status` VARCHAR(24) NOT NULL DEFAULT 'pending',
+                `state` VARCHAR(24) NOT NULL DEFAULT 'open',
                 `priority` TINYINT UNSIGNED NOT NULL DEFAULT 0,
                 `source` VARCHAR(32) NOT NULL DEFAULT 'web',
                 `last_message_id` BIGINT UNSIGNED DEFAULT NULL,
-                `last_message_excerpt` VARCHAR(255) DEFAULT NULL,
+                `last_msg_seq` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `last_msg_type` VARCHAR(32) DEFAULT NULL,
+                `last_msg_preview` VARCHAR(255) DEFAULT NULL,
                 `last_message_at` DATETIME DEFAULT NULL,
-                `unread_customer` INT UNSIGNED NOT NULL DEFAULT 0,
-                `unread_agent` INT UNSIGNED NOT NULL DEFAULT 0,
                 `ip_address` VARCHAR(64) DEFAULT NULL,
                 `user_agent` VARCHAR(255) DEFAULT NULL,
-                `meta` LONGTEXT DEFAULT NULL,
+                `meta` JSON DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 `closed_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                KEY `idx_type_status_last` (`type`, `status`, `last_message_at`),
+                KEY `idx_type_state_last` (`type`, `state`, `last_message_at`),
                 KEY `idx_type_updated` (`type`, `updated_at`),
-                KEY `idx_customer_user` (`customer_user_id`, `type`, `status`),
-                KEY `idx_customer_guest` (`customer_guest_id`, `type`, `status`),
-                KEY `idx_assignee_status` (`assignee_user_id`, `status`, `last_message_at`),
                 KEY `idx_last_message` (`last_message_id`)
+            ) ENGINE=InnoDB $charset;";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        $table = $wpdb->prefix . 'g3_customer_conversations';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `conversation_id` BIGINT UNSIGNED NOT NULL,
+                `customer_user_id` BIGINT UNSIGNED DEFAULT NULL,
+                `customer_guest_id` VARCHAR(64) DEFAULT NULL,
+                `assignee_user_id` BIGINT UNSIGNED DEFAULT NULL,
+                `status` VARCHAR(24) NOT NULL DEFAULT 'pending',
+                `close_reason` VARCHAR(32) DEFAULT NULL,
+                `wrap_lock_mode` VARCHAR(24) NOT NULL DEFAULT 'none',
+                `wrap_lock_until` DATETIME DEFAULT NULL,
+                `first_response_at` DATETIME DEFAULT NULL,
+                `last_customer_msg_at` DATETIME DEFAULT NULL,
+                `last_agent_msg_at` DATETIME DEFAULT NULL,
+                `unread_customer` INT UNSIGNED NOT NULL DEFAULT 0,
+                `unread_agent` INT UNSIGNED NOT NULL DEFAULT 0,
+                `meta` JSON DEFAULT NULL,
+                `created_at` DATETIME NOT NULL,
+                `updated_at` DATETIME DEFAULT NULL,
+                `closed_at` DATETIME DEFAULT NULL,
+                PRIMARY KEY (`conversation_id`),
+                KEY `idx_customer_user` (`customer_user_id`, `status`, `updated_at`),
+                KEY `idx_customer_guest` (`customer_guest_id`, `status`, `updated_at`),
+                KEY `idx_assignee_status` (`assignee_user_id`, `status`, `updated_at`),
+                KEY `idx_status_updated` (`status`, `updated_at`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -1232,19 +1267,24 @@ class DBService {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `conversation_id` BIGINT UNSIGNED NOT NULL,
+                `msg_seq` BIGINT UNSIGNED NOT NULL,
+                `msg_type` VARCHAR(32) NOT NULL DEFAULT 'text',
                 `sender_type` VARCHAR(24) NOT NULL,
                 `sender_id` VARCHAR(64) NOT NULL,
                 `sender_user_id` BIGINT UNSIGNED DEFAULT NULL,
                 `sender_name` VARCHAR(120) DEFAULT NULL,
-                `message_type` VARCHAR(32) NOT NULL DEFAULT 'text',
-                `content` MEDIUMTEXT NOT NULL,
-                `payload` LONGTEXT DEFAULT NULL,
+                `content` JSON NOT NULL,
+                `preview` VARCHAR(255) DEFAULT NULL,
+                `search_text` MEDIUMTEXT DEFAULT NULL,
                 `status` TINYINT UNSIGNED NOT NULL DEFAULT 1,
                 `created_at` DATETIME NOT NULL,
                 `deleted_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`id`),
+                UNIQUE KEY `uniq_conversation_seq` (`conversation_id`, `msg_seq`),
                 KEY `idx_conversation_id` (`conversation_id`, `id`),
+                KEY `idx_conversation_seq` (`conversation_id`, `msg_seq`),
                 KEY `idx_conversation_created` (`conversation_id`, `created_at`),
+                KEY `idx_msg_type_created` (`msg_type`, `created_at`),
                 KEY `idx_sender` (`sender_type`, `sender_id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset;";
@@ -1261,7 +1301,7 @@ class DBService {
                 `message_id` BIGINT UNSIGNED DEFAULT NULL,
                 `actor_type` VARCHAR(24) DEFAULT NULL,
                 `actor_id` VARCHAR(64) DEFAULT NULL,
-                `payload` LONGTEXT DEFAULT NULL,
+                `payload` JSON DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_conversation_id` (`conversation_id`, `id`),
@@ -1305,7 +1345,7 @@ class DBService {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `queue` VARCHAR(255) NOT NULL DEFAULT 'default',
-                `payload` LONGTEXT NOT NULL,
+                `payload` JSON NOT NULL,
                 `attempts` TINYINT UNSIGNED NOT NULL DEFAULT 0,
                 `reserved_at` DATETIME DEFAULT NULL,
                 `available_at` DATETIME NOT NULL,
@@ -1375,7 +1415,7 @@ class DBService {
                 `target` TINYINT NOT NULL DEFAULT 0,
                 `media` VARCHAR(255) NOT NULL,
                 `location` VARCHAR(255) NOT NULL,
-                `sort` INT NOT NULL DEFAULT 1,
+                `sort` INT UNSIGNED NOT NULL DEFAULT 1,
                 `status` TINYINT NOT NULL,
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `created_at` DATETIME NOT NULL,
@@ -1400,7 +1440,7 @@ class DBService {
                 `target_id` VARCHAR(64) DEFAULT NULL,
                 `actor_type` VARCHAR(24) DEFAULT NULL,
                 `actor_id` VARCHAR(64) DEFAULT NULL,
-                `payload` LONGTEXT DEFAULT NULL,
+                `payload` JSON DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_channel_id` (`channel`, `id`),

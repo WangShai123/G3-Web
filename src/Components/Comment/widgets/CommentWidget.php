@@ -160,7 +160,7 @@ class CommentWidget extends WP_Widget {
                 'comment_id' => $comment->comment_ID,
                 'user_id'    => $comment->user_id,
                 'post_link'  => get_permalink($comment->comment_post_ID),
-                'avatar'     => UserService::getMeta($comment->user_id, UserService::META_KEY, 'avatar', []),
+                // 'avatar'     => ,
                 'nickname'   => $comment->comment_author,
                 'content'    => mb_substr(strip_tags($comment->comment_content), 0, $length, 'utf-8'),
                 'time'       => Date::humanTime(strtotime($comment->comment_date))

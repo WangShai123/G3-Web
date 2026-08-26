@@ -8,8 +8,8 @@ use JEALER\G3\Service;
 use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\PostService;
-use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Message as Lang;
+use JEALER\G3\Utilities\Type;
 use WP_Error;
 use Exception;
 use Closure;
@@ -1647,13 +1647,13 @@ class WechatOAService {
      * 
      * 渲染菜单类型
      * 
-     * @param string $type Menu type
-     * @return string Formatted menu type
+     * @param string $type
+     * @return string
      */
     public static function renderMenuType(string $type): string
     {
         return match ($type) {
-            '1'     => __('View URL', 'G3'),                // view
+            '1'     => __('View', 'G3') . ' URL',           // view
             '2'     => __('Click Event', 'G3'),             // click
             '3'     => __('Scan Code', 'G3'),               // scancode_push
             '4'     => __('Scan & Alert', 'G3'),            // scancode_waitmsg
@@ -1737,7 +1737,7 @@ class WechatOAService {
 
             $excerpt = $post->post_excerpt;
             if (empty($excerpt)) {
-                $excerpt = Common::truncate($post->post_content, 20);
+                $excerpt = Type::truncate($post->post_content, 20);
             }
 
             $articles[] = [

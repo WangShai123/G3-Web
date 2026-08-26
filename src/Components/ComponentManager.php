@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\System;
 
 class ComponentManager {
     private static ?self $instance = null;
@@ -10,7 +10,7 @@ class ComponentManager {
     private function __construct()
     {
         // core lifecycle dispatch hooks
-        if (Common::themeModeAvailable()) {
+        if (System::themeModeAvailable()) {
             add_action('after_setup_theme', [$this, 'dispatchPrepareDataActions']);
         } else {
             add_action('plugins_loaded', [$this, 'dispatchPrepareDataActions']);

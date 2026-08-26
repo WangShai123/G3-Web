@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Core\Queue;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Services\DBService;
 use Redis;
 
 /**
@@ -37,7 +38,7 @@ class RedisQueue implements QueueInterface {
         }
 
         if (isset($config['database'])) {
-            $this->redis->select($config['database']);
+            $this->redis->select($config['database'] ?? DBService::QUEUE_REDIS_DB);
         }
 
         $this->prefix = $config['prefix'] ?? 'g3_queue:';

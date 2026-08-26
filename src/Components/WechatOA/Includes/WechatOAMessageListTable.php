@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3\Components\WechatOA\Includes;
+use JEALER\G3\Utilities\Type;
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
-use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Validator;
 
 class WechatOAMessageListTable extends WP_List_Table {
@@ -58,11 +58,11 @@ class WechatOAMessageListTable extends WP_List_Table {
     public function column_default($item, $column_name): mixed
     {
         return match ($column_name) {
-            'openid'     => Common::truncate($item->openid, 20),
-            'nickname'   => !empty($item->nickname) ? Common::truncate($item->nickname, 20) : '-',
+            'openid'     => Type::truncate($item->openid, 20),
+            'nickname'   => !empty($item->nickname) ? Type::truncate($item->nickname, 20) : '-',
             'type'       => $item->type,
             // 'content' => $this->renderContent($item->content),
-            'content'    => Common::truncateHtml($item->content, 50),
+            'content'    => Type::truncateHtml($item->content, 50),
             'created_at' => wp_date('Y-m-d H:i:s', strtotime($item->created_at)),
             default      => isset($item->$column_name) ? $item->$column_name : '-',
         };
@@ -179,7 +179,7 @@ class WechatOAMessageListTable extends WP_List_Table {
         if (Validator::isImage($content)) {
             return '<img src="' . $content . '" alt="Image" width="160" height="80" />';
         }
-        $content = Common::truncateHtml($content, 50);
+        $content = Type::truncateHtml($content, 50);
         return $content;
     }
     private function getData($args): array

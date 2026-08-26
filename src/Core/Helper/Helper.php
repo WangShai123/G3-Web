@@ -8,7 +8,6 @@ use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\ValueDefinition;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\SystemService;
-use JEALER\G3\Utilities\Common;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\System;
 use WP_Error;
@@ -62,7 +61,7 @@ final class Helper {
     }
     public function initRewriteRouter(): void
     {
-        if (!Common::themeModeAvailable()) {
+        if (!System::themeModeAvailable()) {
             return;
         }
         if ($this->rewrite === null) {
@@ -235,7 +234,7 @@ final class Helper {
     }
     public function getRewrite(): ?RewriteRouter
     {
-        if ($this->rewrite === null && Common::themeModeAvailable()) {
+        if ($this->rewrite === null && System::themeModeAvailable()) {
             if (!$this->container->has('rewrite')) {
                 $this->container->setRawDefinition('rewrite', RewriteRouter::class);
             }

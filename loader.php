@@ -7,24 +7,26 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  * 
- * @link              https://www.jealer.com/g3-system/
+ * @link              https://www.jealer.com/g3-web
  * @since             1.0.0
  * @package           G3
  * 
  * @wordpress-plugin
  * 
- * Plugin Name: G3-Web
- * Plugin URI: https://www.jealer.com/g3-system/
- * Description: G3-Web helps you develop stronger wordpress theme. Dependencies: PHP 8.3+, WordPress 6.5+, Redis, fileinfo, %postname% permalink structure.
- * Version: 1.0.0
+ * Plugin Name:       G3-Web
+ * Plugin URI:        https://www.jealer.com/g3-web
+ * Description:       G3-Web helps you for rapid application development. Requires PHP 8.3+, WordPress 6.5+, Redis, fileinfo extension, and %postname% permalink structure.
+ * Version:           1.0.0
  * Requires at least: 6.5
- * Requires PHP: 8.3
- * Author: JEALER
- * Author URI: https://www.jealer.com/
- * Sponsor: https://www.jealer.com/sponsor/
- * Text Domain: G3
- * Domain Path: /public/languages
- * License: GPLv2 or later
+ * Requires PHP:      8.3
+ * Author:            JEALER
+ * Author URI:        https://www.jealer.com/
+ * Text Domain:       G3
+ * Domain Path:       /public/languages
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Sponsor:           https://www.jealer.com/sponsor/
  */
 
 /**

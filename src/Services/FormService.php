@@ -2,6 +2,7 @@
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Utilities\Type;
 use WP_Error;
 use wpdb;
 
@@ -11,7 +12,7 @@ class FormService extends Service {
     const FORM_OPTION_KEY   = 'g3_option_form';
     const CACHE_GROUP       = 'g3_forms';
     const QUERY_CACHE_GROUP = 'g3_form_queries';
-    private array $allowedFields = ['title', 'content', 'email', 'ext', 'status'];
+    private array $allowedFields = ['name', 'content', 'email', 'ext', 'status'];
     public function __construct()
     {
         parent::__construct();
@@ -20,9 +21,9 @@ class FormService extends Service {
 
     public function create(array $data): int|WP_Error
     {
-        // check: title, content, email
-        if (!isset($data['title']) || !isset($data['content']) || !isset($data['email'])) {
-            return new WP_Error('invalid_data', 'Invalid data: title, content, and email are required', 400);
+        // check: name, content, email
+        if (!isset($data['name']) || !isset($data['content']) || !isset($data['email'])) {
+            return new WP_Error('invalid_data', 'Invalid data: name, content, and email are required', 400);
         }
         // check: email
         $email = sanitize_email($data['email']);
@@ -32,13 +33,13 @@ class FormService extends Service {
         if (strlen($email) > 100) {
             return new WP_Error('email_too_long', 'Email is too long', 400);
         }
-        // check: title
-        $title = sanitize_text_field($data['title']);
-        if (empty($title)) {
-            return new WP_Error('invalid_title', 'Title cannot be empty after sanitization', 400);
+        // check: name
+        $name = sanitize_text_field($data['name']);
+        if (empty($name)) {
+            return new WP_Error('invalid_name', 'Name cannot be empty after sanitization', 400);
         }
-        if (strlen($title) > 255) {
-            return new WP_Error('title_too_long', 'Title is too long (max 255 chars)', 400);
+        if (strlen($name) > 128) {
+            return new WP_Error('name_too_long', 'Name is too long (max 128 chars)', 400);
         }
         // check: content
         // $content = wp_kses_post($data['content']);
@@ -54,7 +55,7 @@ class FormService extends Service {
             if (count($data['ext']) > 20) {
                 return new WP_Error('ext_too_large', 'Ext data is too large', 400);
             }
-            $ext = maybe_serialize($data['ext']);
+            $ext = Type::arrayToJson($data['ext']);
         }
         // check: ip
         $ip = System::ip();
@@ -63,7 +64,7 @@ class FormService extends Service {
         }
 
         $insertData = [
-            'title'      => $title,
+            'name'       => $name,
             'content'    => $content,
             'email'      => $email,
             'ip'         => $ip,
@@ -83,7 +84,8 @@ class FormService extends Service {
         }
 
         $insertId = (int) $this->wpdb->insert_id;
-        $this->setCache($insertId, array_merge(['id' => $insertId], $insertData));
+        // $this->setCache($insertId, array_merge(['id' => $insertId], $insertData));
+        $this->flushQueryCache();
 
         return $insertId;
     }
@@ -105,7 +107,7 @@ class FormService extends Service {
         }
 
         if (isset($row['ext']) && !empty($row['ext'])) {
-            $row['ext'] = maybe_unserialize($row['ext']);
+            $row['ext'] = Type::jsonToArray($row['ext']);
         }
 
         $this->setCache($id, $row);
@@ -225,7 +227,7 @@ class FormService extends Service {
                 continue;
             }
 
-            if ($key === 'title') {
+            if ($key === 'name') {
                 $value = sanitize_text_field((string) $value);
             } elseif ($key === 'content') {
                 $value = sanitize_textarea_field((string) $value);
@@ -235,7 +237,7 @@ class FormService extends Service {
                     continue;
                 }
             } elseif ($key === 'ext' && is_array($value)) {
-                $value = maybe_serialize($value);
+                $value = Type::arrayToJson($value);
             } elseif ($key === 'status') {
                 $value = (string) ((int) $value);
             }

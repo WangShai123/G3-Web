@@ -4,11 +4,13 @@ use JEALER\G3\Components\Auth;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\MailerService;
 use JEALER\G3\Utilities\Message;
+use JEALER\G3\Utilities\Type;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Services\SystemService;
 use WP_Session_Tokens;
 use WP_User;
 use WP_Error;
+use stdClass;
 
 class UserService extends Service {
     const META_KEY                  = 'g3_user_meta';
@@ -30,7 +32,7 @@ class UserService extends Service {
     const VISITOR_COOKIE            = 'g3_visitor_id';
     const VISITOR_SCRIPT_ID         = 'g3-visitor-finger-config';
     const RESET_PASSWORD_TTL        = 3600;
-    private ?WP_User       $user        = null;
+    private array          $user        = [];
     private array          $extra       = [];
     private array          $card        = [];
     public string          $extTable;
@@ -45,7 +47,14 @@ class UserService extends Service {
         $this->mailService = $this->container->get(MailerService::class);
     }
 
-
+    /**
+     * init user data
+     * 
+     * 初始化用户数据
+     * 
+     * @param  int|WP_User|null $userId 
+     * @return UserService|null
+     */
     public function init(int|WP_User|null $userId = null): ?UserService
     {
         if ($userId === null) {
@@ -54,10 +63,10 @@ class UserService extends Service {
         $user = $userId instanceof WP_User ? $userId : get_user($userId);
 
         if ($user instanceof WP_User) {
-            $this->user  = $user;
+            $this->user  = $this->normalizeUser((array) $user);
             $this->extra = $this->getExtra($userId);
             $this->card  = $this->getCard($userId);
-            $this->cache = array_merge($this->normalizeUserData((array) $this->user), $this->extra, $this->card);
+            $this->cache = array_merge($this->user, $this->extra, $this->card);
             return $this;
         }
         return null;
@@ -71,13 +80,15 @@ class UserService extends Service {
         $cached = wp_cache_get($userId, self::EXTRA_CACHE_GROUP);
         if (is_array($cached)) return $cached;
 
-        $row   = $this->wpdb->get_row(
+        $row = $this->wpdb->get_row(
             $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `user_id` = %d", $userId),
             ARRAY_A
         );
+
         $extra = $this->normalizeExtra(is_array($row) ? $row : ['user_id' => $userId]);
         // cache for 1 week
         $result = wp_cache_set($userId, $extra, self::EXTRA_CACHE_GROUP, WEEK_IN_SECONDS);
+
         if (false === $result) {
             return new WP_Error('cache_failed', 'cache failed for user extra data', [
                 'status'  => 500,
@@ -86,6 +97,7 @@ class UserService extends Service {
         }
         return $extra;
     }
+
     public function getCard(int|WP_User $id): array|WP_Error
     {
         $userId = $this->userId($id);
@@ -94,13 +106,15 @@ class UserService extends Service {
         $cached = wp_cache_get($userId, self::CARD_CACHE_GROUP);
         if (is_array($cached)) return $cached;
 
-        $row  = $this->wpdb->get_row(
+        $row = $this->wpdb->get_row(
             $this->wpdb->prepare("SELECT * FROM `{$this->cardTable}` WHERE `user_id` = %d", $userId),
             ARRAY_A
         );
+
         $card = $this->normalizeCard(is_array($row) ? $row : ['user_id' => $userId]);
         // cache for 1 week
         $result = wp_cache_set($userId, $card, self::CARD_CACHE_GROUP, WEEK_IN_SECONDS);
+
         if (false === $result) {
             return new WP_Error('cache_failed', 'cache failed for user card data', [
                 'status'  => 500,
@@ -109,17 +123,26 @@ class UserService extends Service {
         }
         return $card;
     }
+
+    public function card(): array
+    {
+        return $this->card;
+    }
+
     private function normalizeExtra(array $row): array
     {
         return [
             'user_id'         => (int) ($row['user_id'] ?? 0),
-            'role'            => (string) ($row['role'] ?? ''),
-            'group'           => (string) ($row['group'] ?? ''),
+            'level'           => (string) ($row['level'] ?? ''),
+            'custom'          => (string) ($row['custom'] ?? ''),
+            'manager'         => (string) ($row['manager'] ?? ''),
             'premium'         => (string) ($row['premium'] ?? ''),
-            'visit'           => (int) ($row['visit'] ?? 0),
-            'third_party_ids' => (array) ($row['third_party_ids'] ?? [])
+            'view_count'      => (int) ($row['view_count'] ?? 0),
+            'status'          => (int) ($row['status'] ?? 0),
+            'third_party_ids' => Type::jsonToArray($row['third_party_ids'] ?? '')
         ];
     }
+
     private function normalizeCard(array $row): array
     {
         return [
@@ -128,23 +151,36 @@ class UserService extends Service {
             'description'    => (string) ($row['description'] ?? ''),
             'gender'         => (int) ($row['gender'] ?? 0),
             'phone'          => (string) ($row['phone'] ?? ''),
-            'country'        => (string) ($row['country'] ?? ''),
-            'province'       => (string) ($row['province'] ?? ''),
-            'city'           => (string) ($row['city'] ?? ''),
-            'district'       => (string) ($row['district'] ?? ''),
             'address'        => (string) ($row['address'] ?? ''),
-            'social_account' => (array) ($row['social_account'] ?? []),
+            'district'       => (string) ($row['district'] ?? ''),
+            'city'           => (string) ($row['city'] ?? ''),
+            'province'       => (string) ($row['province'] ?? ''),
+            'country'        => (string) ($row['country'] ?? ''),
+            'social_account' => Type::jsonToArray($row['social_account'] ?? ''),
         ];
     }
-    private function normalizeUserData(array $userData, ?array $unset = null): array
+
+    private function normalizeUser(array $user): array
     {
-        // @todo
-        $userlessKeys = [
-            ''
+        $data = $user['data'] ?? new stdClass();
+        $url  = site_url('/user/' . $data->user_nicename);
+
+        $respect = [
+            'user_id'        => (int) ($data->ID ?? 0),
+            'login'          => (string) ($data->user_login ?? ''),
+            'password'       => (string) ($data->user_pass ?? ''),
+            'email'          => (string) ($data->user_email ?? ''),
+            'slug'           => (string) ($data->user_nicename ?? ''),
+            'url'            => $url,
+            'nickname'       => (string) ($data->display_name ?? ''),
+            'roles'          => (array) ($user['roles'] ?? []),
+            'activation_key' => (string) ($data->user_activation_key ?? ''),
+            'registered_at'  => (string) ($data->user_registered ?? ''),
         ];
 
-        return [];
+        return $respect;
     }
+
     private function userId(int|WP_User $id): int
     {
         if ($id instanceof WP_User) {
@@ -155,77 +191,13 @@ class UserService extends Service {
     }
 
     /**
-     * Get user meta data
-     * 
-     * 获取用户元数据
-     * @deprecated
-     * @todo 待删除
-     * 
-     * @param int|object $id userId / WP_User
-     * @param string $metaKey meta key
-     * @param string $arrayKey array key if meta value is array
-     * @param mixed $default default value if meta not exists
-     * @return mixed meta value
-     */
-    public static function getMeta(int|object $id, string $metaKey, string $arrayKey = '', mixed $default = null): mixed
-    {
-        if (\is_object($id)) {
-            if ($id instanceof WP_User) {
-                $id = $id->ID;
-            } else {
-                return $default;
-            }
-        }
-
-        $metaValue = get_user_meta($id, $metaKey, true);
-
-        if (is_array($metaValue) && $arrayKey !== null && isset($metaValue[$arrayKey])) {
-            return $metaValue[$arrayKey];
-        }
-
-        return ($metaValue !== '' && $metaValue !== null) ? $metaValue : $default;
-    }
-
-    /**
      * Get Default Avatar URL
-     * 
-     * 获取默认头像 URL
-     * @deprecated
-     * @todo 待删除
-     *
-     * @return string avatar url
+     * @return string
      */
-    public static function getDefaultAvatarUrl(): string
+    public static function getDefaultAvatar(): string
     {
         $default = get_option(SystemService::OPTION_KEY)['avatar'] ?? '';
         return Validator::isImage($default) ? $default : G3_IMG_URL . '/avatar.png';
-    }
-
-    /**
-     * Get Avatar URL
-     * 
-     * 获取用户头像 URL
-     * @deprecated
-     * @todo 待删除
-     *
-     * @param int $userId user id
-     * @return string avatar url
-     */
-    public static function getAvatarUrl($userId = 0): string
-    {
-        if (!$userId) {
-            $userId = get_current_user_id();
-        } else {
-            $userId = absint($userId);
-        }
-
-        $userAvatar = self::getMeta($userId, self::META_KEY, 'avatar', []);
-
-        if (!$userAvatar || !Validator::isImage($userAvatar)) {
-            $userAvatar = self::getDefaultAvatarUrl();
-        }
-
-        return $userAvatar;
     }
 
     public static function resetPasswordUrl(WP_User $user, string $key): string
@@ -478,20 +450,4 @@ class UserService extends Service {
         $sessions->destroy_all();
     }
 
-    /**
-     * Render User Status
-     * 
-     * 渲染用户状态
-     * 
-     * @param int $statusId status id
-     * @return string status text
-     */
-    public static function renderStatus(int $statusId): string
-    {
-        return match ($statusId) {
-            100     => __('Unknown', 'G3'),
-            101     => __('Pending'),
-            default => __('Active')
-        };
-    }
 }

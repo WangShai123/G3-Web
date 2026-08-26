@@ -3,6 +3,7 @@ namespace JEALER\G3\Core\Queue;
 use JEALER\G3\Core\Queue\QueueInterface;
 use DateTime;
 use DateTimeZone;
+use JEALER\G3\Utilities\Type;
 use wpdb;
 use Exception;
 
@@ -43,7 +44,7 @@ class DatabaseQueue implements QueueInterface {
             $sql = "CREATE TABLE IF NOT EXISTS `$this->table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `queue` VARCHAR(255) NOT NULL DEFAULT 'default',
-                `payload` LONGTEXT NOT NULL,
+                `payload` JSON NOT NULL,
                 `attempts` TINYINT UNSIGNED NOT NULL DEFAULT 0,
                 `reserved_at` DATETIME NULL DEFAULT NULL,
                 `available_at` DATETIME NOT NULL,
@@ -132,7 +133,7 @@ class DatabaseQueue implements QueueInterface {
         $now         = $this->getCurrentUtcDateTime();
         $availableAt = $this->createDelayedDateTime($delay);
 
-        $payload = json_encode([
+        $payload = Type::arrayToJson([
             'job'        => $job,
             'data'       => $data,
             'attempts'   => 0,
@@ -197,7 +198,7 @@ class DatabaseQueue implements QueueInterface {
 
             // 如果更新成功，返回任务数据
             if ($updated) {
-                $payload = json_decode($job['payload'], true);
+                $payload = Type::jsonToArray($job['payload']);
 
                 // 添加数据库中的时间信息
                 $payload['database_info'] = [

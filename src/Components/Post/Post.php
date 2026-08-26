@@ -30,6 +30,7 @@ class Post extends Components {
             'trashed_post'           => [[$this, 'actionOnTrash'], 10, 1],
             'before_delete_post'     => [[$this, 'actionBeforeDelete'], 10, 1],
             'delete_post'            => [[$this, 'actionOnDelete'], 10, 2],
+            'wp_footer'              => [[$this, 'renderFrontRoot']]
         ]);
     }
     private function default(): array
@@ -41,7 +42,7 @@ class Post extends Components {
             'autoNotice'   => '0',
             'copyright'    => '0',
             'paidReading'  => '0',
-            'language'     => '0',
+            'language'     => '1',
             'timezone'     => '0',
         ];
     }
@@ -139,7 +140,18 @@ class Post extends Components {
                 ->rowClass('advanced')
                 ->switch('timezone', __('Timezone'), __('After being enabled, it will display the local time based on the user\'s time zone, rather than the time zone set in the system settings.', 'G3'))
                 ->rowClass('advanced')
+                ->html('readingTime', __('Reading Time', 'G3'), '<code>PostService::calculateReadingTime()</code>')
         ];
+    }
+
+    public function renderFrontRoot(): void
+    {
+        $option = $this->option();
+        if (!is_admin() && $this->loader->admin() && ($option['language'] ?? '0') === '1') {
+            echo Frontend::configScript('g3-language-config', [
+                'language' => '1'
+            ]);
+        }
     }
     public function toggleLocale($locale): string
     {
@@ -355,6 +367,7 @@ class Post extends Components {
 
         /** @var PostService $postService */
         $postService = $this->container->get(PostService::class);
+        $readingTime = $postService->calculateReadingTime($post->post_content);
         $ext         = [];
         $test        = $postService->setExtra($postId, [
             'view_count'      => (int) $viewCount,
@@ -362,6 +375,7 @@ class Post extends Components {
             'dislike_count'   => (int) $dislikeCount,
             'share_count'     => (int) $shareCount,
             'favorite_count'  => (int) $favoriteCount,
+            'reading_time'    => $readingTime,
             'seo_title'       => $seoTitle,
             'seo_description' => $seoDescription,
             'seo_keywords'    => $seoKeywords,
@@ -370,6 +384,7 @@ class Post extends Components {
             'ext'             => array_values($ext)
         ]);
     }
+
     public function flushMenuCache($menuId): void
     {
         wp_cache_flush_group(MenuService::MENU_HTML_CACHE_GROUP);
@@ -381,9 +396,7 @@ class Post extends Components {
     }
     private function copyrightProtected($postId, $post): void
     {
-        if (($this->option()['copyright'] ?? '0') !== '1') {
-            return;
-        }
+        if (($this->option()['copyright'] ?? '0') !== '1') return;
 
         // 防止无限循环和权限检查
         if (
@@ -426,49 +439,48 @@ class Post extends Components {
             return;
         }
 
-        $validLength = 100;
+        $position = 100;
 
         /**
-         * Custom Filter: g3_filter_copyright_valid_length
+         * Custom Filter: g3_filter_copyright_position
          * 
-         * @param int $validLength
+         * @param int $position
          * @return int
          */
-        $validLength = apply_filters('g3_filter_copyright_valid_length', $validLength);
-        $length      = mb_strlen($post->post_content, 'UTF-8');
-        if (empty($post->post_content) || $length < $validLength) {
+        $position = apply_filters('g3_filter_copyright_position', $position);
+        $length   = mb_strlen($post->post_content, 'UTF-8');
+        if (empty($post->post_content) || $length < $position) {
             $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
-                'postType'    => $post->post_type,
-                'postId'      => $postId,
-                'length'      => $length,
-                'validLength' => $validLength,
+                'module'   => 'Post',
+                'postId'   => $postId,
+                'length'   => $length,
+                'position' => $position,
             ]);
             return;
         }
 
         try {
             // payload
-            $siteData = json_encode([
-                'notice' => __('Copyright Protection', 'G3'),
-                'name'   => get_bloginfo('name'),
-                'site'   => home_url(),
-                'id'     => $postId,
-                'time'   => time(),
+            $payload = json_encode([
+                'site'  => home_url(),
+                'id'    => $postId,
+                'title' => $post->post_title,
+                'time'  => time(),
             ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
             /**
              * Custom Filter: g3_filter_copyright_payload
              * 
-             * @param string $siteData
+             * @param string $payload
              * @param int $postId
              * @return string
              */
-            $siteData = apply_filters('g3_filter_copyright_payload', $siteData, $postId);
+            $payload = apply_filters('g3_filter_copyright_payload', $payload, $postId);
 
-            if ($siteData === false) {
+            if ($payload === false) {
                 $this->logger->error('Copyright payload encoding failed.', [
                     'post_id' => $postId,
-                    'payload' => $siteData,
+                    'payload' => $payload,
                 ]);
                 return;
             }
@@ -478,11 +490,9 @@ class Post extends Components {
             $cleanContent     = $copyrightService->clean($post->post_content);
             wp_cache_delete($postId, CopyrightService::CACHE_GROUP);
 
-            if (mb_strlen($cleanContent, 'UTF-8') < 50) {
-                return;
-            }
+            if (mb_strlen($cleanContent, 'UTF-8') < 50) return;
 
-            $newContent = $copyrightService->embed($cleanContent, $siteData);
+            $newContent = $copyrightService->embed($cleanContent, $payload);
 
             // check if the content has changed
             if ($newContent === $post->post_content) {

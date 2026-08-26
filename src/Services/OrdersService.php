@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Utilities\Type;
 use WP_Error;
 use Exception;
 use wpdb;
@@ -543,7 +544,7 @@ class OrdersService {
                 'sku_id'        => (int) $item['sku_id'],
                 'product_title' => !empty($item['product_title']) ? (string) $item['product_title'] : null,
                 'product_image' => !empty($item['product_image']) ? (string) $item['product_image'] : null,
-                'spec_info'     => !empty($item['spec_info']) ? maybe_serialize($item['spec_info']) : null,
+                'spec_info'     => !empty($item['spec_info']) ? Type::arrayToJson($item['spec_info']) : null,
                 'quantity'      => (int) ($item['quantity'] ?? 1),
                 'unit_price'    => (float) $item['unit_price'],
                 'total_price'   => (float) ($item['total_price'] ?? (float) $item['unit_price'] * ($item['quantity'] ?? 1)),

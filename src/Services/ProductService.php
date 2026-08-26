@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Cache;
 use WP_Error;
 use Exception;
 use wpdb;
@@ -173,7 +173,7 @@ class ProductService extends Service {
      */
     public function updateSpecOption(array $data): bool|int|WP_Error
     {
-        $cacheKey = Common::getCacheKey($data['spec_id'], 'option', 'spec');
+        $cacheKey = Cache::key($data['spec_id'], 'option', 'spec');
         $table    = $this->wpdb->prefix . ProductService::SPECS_OPTIONS_TABLE;
         $id       = $data['id'] ?? 0;
         if ($id > 0) {
@@ -394,7 +394,7 @@ class ProductService extends Service {
             ]
         );
         if ($result) {
-            $key = Common::getCacheKey($productId, 'spec');
+            $key = Cache::key($productId, 'spec');
             wp_cache_delete($key, self::CACHE_GROUP);
         }
         return $result;
@@ -413,7 +413,7 @@ class ProductService extends Service {
         $table  = $this->wpdb->prefix . self::PRODUCT_SPECS_TABLE;
         $result = $this->wpdb->delete($table, ['product_id' => $productId]);
         if ($result) {
-            $key = Common::getCacheKey($productId, 'spec');
+            $key = Cache::key($productId, 'spec');
             wp_cache_delete($key, self::CACHE_GROUP);
         }
         return $result;
@@ -512,7 +512,7 @@ class ProductService extends Service {
      */
     public function getSpecOptionsBySpecId(int $specId, bool $enabled = true): array
     {
-        $cacheKey = Common::getCacheKey($specId, 'option', 'spec');
+        $cacheKey = Cache::key($specId, 'option', 'spec');
         $options  = wp_cache_get($cacheKey, self::CACHE_GROUP);
 
         if ($options === false) {
@@ -542,10 +542,10 @@ class ProductService extends Service {
      */
     public function clearProductCache(int $postId): void
     {
-        wp_cache_delete(Common::getCacheKey($postId, 'product'), self::CACHE_GROUP);
-        wp_cache_delete(Common::getCacheKey($postId, 'option', 'spec'), self::CACHE_GROUP);
+        wp_cache_delete(Cache::key($postId, 'product'), self::CACHE_GROUP);
+        wp_cache_delete(Cache::key($postId, 'option', 'spec'), self::CACHE_GROUP);
         wp_cache_delete($postId, self::SKU_CACHE_GROUP);
-        wp_cache_delete(Common::getCacheKey($postId, 'spec'), self::CACHE_GROUP);
+        wp_cache_delete(Cache::key($postId, 'spec'), self::CACHE_GROUP);
     }
 
     /**
@@ -650,7 +650,7 @@ class ProductService extends Service {
      */
     public function getProductSpecs(int $productId): array
     {
-        $cacheKey  = Common::getCacheKey($productId, 'spec');
+        $cacheKey  = Cache::key($productId, 'spec');
         $relations = wp_cache_get($cacheKey, self::CACHE_GROUP);
 
         if ($relations === false) {

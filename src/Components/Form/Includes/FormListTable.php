@@ -2,7 +2,7 @@
 namespace JEALER\G3\Components\Form\Includes;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\FormService;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Type;
 use WP_List_Table;
 use wpdb;
 
@@ -36,7 +36,7 @@ class FormListTable extends WP_List_Table {
     {
         return [
             'cb'         => '<input type="checkbox" />',
-            'title'      => __('Title'),
+            'name'       => __('Name'),
             'content'    => __('Content'),
             'email'      => __('Email'),
             'ext'        => __('Extra Data', 'G3'),
@@ -69,7 +69,7 @@ class FormListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'content' => Common::truncateHtml($item->{$column_name}, 50),
+            'content' => Type::truncateHtml($item->{$column_name}, 50),
             'ext'     => $this->renderExt($item, $column_name),
             'status'  => $this->renderStatus($item),
             'action'  => $this->renderAction($item),
@@ -140,20 +140,21 @@ class FormListTable extends WP_List_Table {
             $item->{"id"}
         );
     }
-    public function column_title($item): string
+    public function column_name($item): string
     {
         $actions = [
             'view'  => sprintf('<span data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"content"}, __('View')),
             'reply' => sprintf(
                 '<a class="reply-field" href="mailto:%s?subject=%s&body=%s">%s</a>',
                 htmlspecialchars($item->{"email"}, ENT_QUOTES, 'UTF-8'),
-                urlencode($item->{"title"}),
+                urlencode($item->{"name"}),
                 urlencode($item->{"content"}),
-                htmlspecialchars(__('Reply'), ENT_QUOTES, 'UTF-8')
+                // htmlspecialchars(__('Reply'), ENT_QUOTES, 'UTF-8')
+                __('Reply') . __('Email')
             ),
         ];
 
-        return sprintf('%1$s %2$s', $item->{"title"}, $this->row_actions($actions));
+        return sprintf('%1$s %2$s', $item->{"name"}, $this->row_actions($actions));
     }
     public function process_bulk_actions()
     {
@@ -191,13 +192,17 @@ class FormListTable extends WP_List_Table {
     private function renderStatus($item): string
     {
         return match ($item->status) {
-            '0'     => '<span class="color-error">' . __('Pending', 'G3') . '</span>',
+            '0'     => '<span class="mark-error">' . __('Pending', 'G3') . '</span>',
             '1'     => '<span>' . __('Processed', 'G3') . '</span>',
+            '2'     => '<span class="mark-success">' . __('High Intention', 'G3') . '</span>',
+            '3'     => '<span class="mark-warning">' . __('Low Intention', 'G3') . '</span>',
             default => '<span>' . __('Unknown', 'G3') . '</span>',
         };
     }
     private function renderAction($item): string
     {
-        return '<span data-id="' . $item->id . '" data-status="' . $item->status . '" class="change-field-status color-link cursor-pointer">' . __('Change') . '</span> <span data-id="' . $item->id . '" class="delete-field color-error cursor-pointer">' . __('Delete') . '</span>';
+        $change = '<span data-id="' . $item->id . '" data-status="' . $item->status . '" class="change-field-status color-link cursor-pointer">' . __('Change') . '</span> ';
+        $delete = '<span data-id="' . $item->id . '" class="delete-field color-error cursor-pointer">' . __('Delete') . '</span>';
+        return $change . $delete;
     }
 }

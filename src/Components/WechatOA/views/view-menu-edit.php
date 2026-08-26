@@ -153,7 +153,7 @@ $options = [
                 <p><?php _e('Wechat Official Account supports 13 types of menu:', 'G3'); ?></p>
                 <ol>
                     <li>
-                        <p><?php _e('View URL', 'G3'); ?></p>
+                        <p><?php echo __('View', 'G3') . ' URL'; ?></p>
                         <ul>
                             <li><?php _e('Slug'); ?>: <code>view</code></li>
                             <li>

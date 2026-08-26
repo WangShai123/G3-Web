@@ -5,11 +5,14 @@ use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\PageService;
 use JEALER\G3\Traits\Cache;
+use JEALER\G3\Utilities\Type;
 use WP_Error;
 use WP_Post;
 use WP_Query;
 use wpdb;
 use Exception;
+use WP_Term;
+use Closure;
 
 class PostService extends Service {
     // Option Key
@@ -28,8 +31,40 @@ class PostService extends Service {
     const SKU_NAME          = 'g3_post_sku';
     const PROPERTY_NAME     = 'g3_post_property';
     const GALLERY_NAME      = 'g3_post_gallery';
-    private ?WP_Post $post  = null;
-    private array    $extra = [];
+    private array $post  = [];
+    private array $extra = [];
+    private const READING_TECH_KEYWORDS = [
+        'abstract'  => true,
+        'async'     => true,
+        'await'     => true,
+        'break'     => true,
+        'catch'     => true,
+        'const'     => true,
+        'continue'  => true,
+        'die'       => true,
+        'echo'      => true,
+        'eval'      => true,
+        'exit'      => true,
+        'final'     => true,
+        'finally'   => true,
+        'function'  => true,
+        'include'   => true,
+        'interface' => true,
+        'let'       => true,
+        'namespace' => true,
+        'print'     => true,
+        'private'   => true,
+        'protected' => true,
+        'public'    => true,
+        'require'   => true,
+        'return'    => true,
+        'self'      => true,
+        'static'    => true,
+        'throw'     => true,
+        'trait'     => true,
+        'try'       => true,
+        'var'       => true,
+    ];
 
     use Cache;
 
@@ -41,10 +76,11 @@ class PostService extends Service {
 
     /**
      * init post data
+     * 
+     * 初始化文章数据
+     * 
      * @param int|WP_Post|null $postId 
      * @return PostService|null
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function init(int|WP_Post|null $postId = null): ?PostService
     {
@@ -54,9 +90,9 @@ class PostService extends Service {
         $post = $postId instanceof WP_Post ? $postId : get_post($postId);
 
         if ($post instanceof WP_Post) {
-            $this->post  = $post;
+            $this->post  = $this->normalizePost((array) $post);
             $this->extra = $this->getExtra($post->ID);
-            $this->cache = array_merge($this->normalizePostData((array) $this->post), $this->extra);
+            $this->cache = array_merge($this->post, $this->extra);
             return $this;
         }
         return null;
@@ -66,20 +102,14 @@ class PostService extends Service {
      * Get post extra data
      * @param int|WP_Post $id
      * @return array|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function getExtra(int|WP_Post $id): array|WP_Error
     {
         $postId = $this->postId($id);
-        if ($postId <= 0) {
-            return [];
-        }
+        if ($postId <= 0) return [];
 
         $cached = wp_cache_get($postId, self::EXTRA_CACHE_GROUP);
-        if (is_array($cached)) {
-            return $cached;
-        }
+        if (is_array($cached)) return $cached;
 
         $row = $this->wpdb->get_row(
             $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `post_id` = %d", $postId),
@@ -104,8 +134,6 @@ class PostService extends Service {
      * @param int|WP_Post $id
      * @param array $data extra data
      * @return bool|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function setExtra(int|WP_Post $id, array $data): bool|WP_Error
     {
@@ -167,10 +195,8 @@ class PostService extends Service {
 
     /**
      * Delete post extra data
-     * @param int|WP_Post $id postId / WP_Post
+     * @param int|WP_Post $id
      * @return bool|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function deleteExtra(int|WP_Post $id): bool|WP_Error
     {
@@ -211,11 +237,9 @@ class PostService extends Service {
      * 
      * 查询文章列表并合并扩展数据，支持缓存
      * 
-     * @param  array $args WP_Query arguments
-     * @param  array|null $unset Optional array of fields to remove from the post data
+     * @param  array $args
+     * @param  array|null $unset
      * @return array|WP_Error
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function query(?array $args, ?array $unset = null): array|WP_Error
     {
@@ -257,17 +281,16 @@ class PostService extends Service {
                 continue;
             }
 
-            $postData = (array) $post;
-            $extra    = $this->getExtra($post->ID);
+            $extra = $this->getExtra($post->ID);
             if ($extra instanceof WP_Error) {
                 error_log('Failed to get extra data for post ' . $post->ID . ': ' . $extra->get_error_message());
                 $extra = [];
             } else {
                 unset($extra['post_id']);
             }
-
+            $postData  = $this->normalizePost((array) $post);
             $merged    = array_merge($postData, $extra);
-            $merged    = $this->normalizePostData($merged, $unset);
+            $merged    = Type::arrayExcept($merged, $unset);
             $results[] = $merged;
         }
 
@@ -288,8 +311,6 @@ class PostService extends Service {
      * Migrate view count from postmeta to g3_posts_extra table.
      * @param string $key The meta key in postmeta table
      * @return array
-     * @since 1.0.0
-     * @author Wang Shai
      */
     public function migrateViewCount(string $key): array
     {
@@ -370,28 +391,60 @@ class PostService extends Service {
 
         return is_int($id) ? $id : 0;
     }
+
+    private function normalizePost(array $post): array
+    {
+        $respect = [
+            'post_id'          => (int) ($post['ID'] ?? 0),
+            'slug'             => (string) ($post['post_name'] ?? ''),
+            'post_type'        => (string) ($post['post_type'] ?? ''),
+
+            'created_at'       => (string) ($post['post_date_gmt'] ?? ''),
+            'created_at_local' => (string) ($post['post_date'] ?? ''),
+            'updated_at'       => (string) ($post['post_modified_gmt'] ?? ''),
+            'updated_at_local' => (string) ($post['post_modified'] ?? ''),
+
+            'user_id'          => (int) ($post['post_author'] ?? 0),
+            'title'            => (string) ($post['post_title'] ?? ''),
+            'url'              => (string) ($post['guid'] ?? ''),
+            'content'          => (string) ($post['post_content'] ?? ''),
+            'excerpt'          => wp_strip_all_tags($post['post_excerpt'] ?? '', true),
+            'cover'            => get_the_post_thumbnail_url($post['ID']),
+            'taxonomy'         => $this->filterTerms($post),
+
+            'password'         => (string) ($post['post_password'] ?? ''),
+            'status'           => (string) ($post['post_status'] ?? ''),
+            'comment_status'   => (string) ($post['comment_status'] ?? ''),
+            'comment_count'    => (int) ($post['comment_count'] ?? 0),
+        ];
+        return $respect;
+    }
+
     private function normalizeExtra(array $row): array
     {
-        return [
+        $respect = [
             'post_id'         => (int) ($row['post_id'] ?? 0),
             'view_count'      => (int) ($row['view_count'] ?? 0),
             'like_count'      => (int) ($row['like_count'] ?? 0),
             'dislike_count'   => (int) ($row['dislike_count'] ?? 0),
             'share_count'     => (int) ($row['share_count'] ?? 0),
             'favorite_count'  => (int) ($row['favorite_count'] ?? 0),
+            'reading_time'    => (int) ($row['reading_time'] ?? 0),
             'seo_title'       => (string) ($row['seo_title'] ?? ''),
             'seo_description' => (string) ($row['seo_description'] ?? ''),
             'seo_keywords'    => (string) ($row['seo_keywords'] ?? ''),
-            'gallery'         => $this->decodeExtraValue($row['gallery'] ?? null),
-            'property'        => $this->decodeExtraValue($row['property'] ?? null),
-            'ext'             => $this->decodeExtraValue($row['ext'] ?? null),
+            'gallery'         => Type::jsonToArray($row['gallery'] ?? ''),
+            'property'        => Type::jsonToArray($row['property'] ?? ''),
+            'ext'             => Type::jsonToArray($row['ext'] ?? ''),
         ];
+        return $respect;
     }
+
     private function normalizeExtraForSave(array $data): array
     {
         $normalized = [];
 
-        foreach (['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count'] as $key) {
+        foreach (['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count', 'reading_time'] as $key) {
             if (array_key_exists($key, $data)) {
                 $normalized[$key] = max(0, (int) $data[$key]);
             }
@@ -405,93 +458,39 @@ class PostService extends Service {
 
         foreach (['gallery', 'property', 'ext'] as $key) {
             if (array_key_exists($key, $data)) {
-                $normalized[$key] = $this->encodeExtraValue($data[$key]);
+                $normalized[$key] = Type::arrayToJson($data[$key]);
             }
         }
 
         return $normalized;
     }
+
     private function extraFormats(array $keys): array
     {
         $formats = [];
         foreach ($keys as $key) {
-            $formats[] = in_array($key, ['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count'], true) ? '%d' : '%s';
+            $formats[] = in_array($key, ['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count', 'reading_time'], true) ? '%d' : '%s';
         }
 
         return $formats;
     }
-    private function encodeExtraValue(mixed $value): ?string
+
+    private function filterTerms(array $postData): array
     {
-        if ($value === null) {
-            return null;
-        }
+        $result = [];
 
-        if (is_array($value) || is_object($value)) {
-            return wp_json_encode($value, JSON_UNESCAPED_UNICODE) ?: null;
-        }
-
-        return (string) $value;
-    }
-    private function decodeExtraValue(mixed $value): mixed
-    {
-        if ($value === null || $value === '') {
-            return [];
-        }
-
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        $decoded = json_decode($value, true);
-        return json_last_error() === JSON_ERROR_NONE ? $decoded : $value;
-    }
-    private function normalizePostData(array $postData, ?array $unset = null): array
-    {
-        // remove useless keys from the post data
-        $uselessKeys = [
-            'filter',
-            'menu_order',
-            'pinged',
-            'post_content_filtered',
-            'post_mime_type',
-            'post_parent',
-            'ping_status',
-            'to_ping',
-        ];
-        foreach ($uselessKeys as $key) {
-            unset($postData[$key]);
-        }
-
-        /**
-         * usefull keys, contains:
-         * - taxonomy: 所有关联分类法的名称和链接
-         * - user: 作者别名
-         * 
-         * @var array
-         */
-        $usefulKeys = [
-            'taxonomy'  => [],
-            'user'      => [
-                'slug' => '',
-            ],
-            'thumbnail' => '',
-        ];
-
-        $postId   = (int) ($postData['ID'] ?? 0);
-        $postType = (string) ($postData['post_type'] ?? '');
-
-        if ($postId > 0 && $postType !== '') {
-            $taxonomyNames = get_object_taxonomies($postType, 'names');
+        if ($postData['ID'] > 0 && $postData['post_type'] !== '') {
+            $taxonomyNames = get_object_taxonomies($postData['post_type'], 'names');
             if (is_array($taxonomyNames)) {
                 foreach ($taxonomyNames as $taxonomyName) {
-                    $terms = get_the_terms($postId, $taxonomyName);
+                    $terms = get_the_terms($postData['ID'], $taxonomyName);
                     if (empty($terms) || is_wp_error($terms)) {
                         continue;
                     }
 
-                    $usefulKeys['taxonomy'][$taxonomyName] = [];
+                    $result[$taxonomyName] = [];
                     foreach ($terms as $term) {
-                        if (!($term instanceof \WP_Term)) {
+                        if (!($term instanceof WP_Term)) {
                             continue;
                         }
 
@@ -500,48 +499,15 @@ class PostService extends Service {
                             $termLink = '';
                         }
 
-                        $usefulKeys['taxonomy'][$taxonomyName][] = [
+                        $result[$taxonomyName][] = [
                             'name' => $term->name,
                             'link' => (string) $termLink,
                         ];
                     }
                 }
             }
-            $usefulKeys['thumbnail'] = get_the_post_thumbnail_url($postId);
         }
-
-        $authorId = (int) ($postData['post_author'] ?? 0);
-        if ($authorId > 0) {
-            $usefulKeys['user']['slug'] = (string) get_the_author_meta('nickname', $authorId);
-            if ($usefulKeys['user']['slug'] === '') {
-                $usefulKeys['user']['slug'] = (string) get_the_author_meta('user_nicename', $authorId);
-            }
-        }
-
-        // unset specified fields from the post data
-        if ($unset && is_array($unset)) {
-            foreach ($unset as $field) {
-                unset($postData[$field]);
-            }
-        }
-
-        // clean excerpt
-        if (isset($postData['post_excerpt'])) {
-            $postData['post_excerpt'] = wp_strip_all_tags($postData['post_excerpt'] ?? '', true);
-        }
-
-        $postData = array_merge($postData, $usefulKeys);
-
-        return $postData;
-    }
-
-    public function getSeoItems(): array
-    {
-        return [
-            'description' => $this->getDescription(),
-            'keywords'    => $this->getKeywords(),
-            'title'       => $this->getTitle(),
-        ];
+        return $result;
     }
 
     /**
@@ -550,7 +516,6 @@ class PostService extends Service {
      * 获取 SEO 标题
      * 
      * Filter: g3_filter_title
-     * 
      * @return string
      */
     public function getTitle(): string
@@ -568,63 +533,21 @@ class PostService extends Service {
             $title = wp_title('', false);
         }
 
-        //  elseif (is_singular()) {
-        //     $title = $this->getExtra(get_queried_object_id())['seo_title'] ?? '';
-        //     if (empty($title)) {
-        //         $title = get_the_title();
-        //     }
-        // } elseif (is_category() || is_tag() || is_tax()) {
-        //     $title = single_term_title('', false);
-        // } elseif (is_archive()) {
-        //     $title = get_the_archive_title();
-        // } elseif (is_search()) {
-        //     $title = sprintf(__('Search results for %s', 'G3'), get_search_query());
-        // } elseif (is_author()) {
-        //     $title = get_the_author_meta('nickname', get_queried_object_id());
-        // } elseif (is_date()) {
-        //     $title = get_the_date();
-        // } elseif (is_404()) {
-        //     $title = '404';
-        // }
-
         if (!is_404() && $paged > 1) {
             $afterTitle  = ' ' . sprintf(__('Page %s', 'G3'), $paged);
             $title      .= $afterTitle;
         }
 
-
         /**
          * Filter: g3_filter_title
-         * @param  string $title The post title.
-         * @return string The filtered post title.
+         * @param  string $title
+         * @return string
          */
         $title = apply_filters('g3_filter_title', $title);
 
-        /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
-
-        $home = $_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/index.php' || is_home() || $postService->isOaLogin();
+        $home = $_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/index.php' || is_home() || $this->isOaLogin();
 
         return $home ? $title : $title . ' - ' . $siteName;
-    }
-
-    /**
-     * Get Excerpt
-     * 
-     * 获取文章摘要
-     * 
-     * @param  int $maxLength The max length of excerpt.
-     * @param  object $post The post object.
-     * @return string
-     */
-    public function getExcerpt(int $maxLength = 150, $post = null): string
-    {
-        $currentPost = ($post instanceof WP_Post && $post->ID) ? $post : get_post();
-        $excerpt     = $currentPost->post_excerpt;
-        if (empty($excerpt)) {
-            $excerpt = wp_strip_all_tags($currentPost->post_content);
-        }
-        return mb_strimwidth($excerpt, 0, $maxLength, "...");
     }
 
     /**
@@ -642,10 +565,8 @@ class PostService extends Service {
         if (is_home() || is_front_page()) {
             $description = get_bloginfo('description');
         } elseif (is_singular()) {
-            $description = $this->getExtra(get_queried_object_id())['seo_description'] ?? '';
-            if (empty($description)) {
-                $description = $this->getExcerpt();
-            }
+            $post        = $this->init(get_queried_object_id())->cache();
+            $description = empty($post['seo_description']) ? $post['excerpt'] : $post['seo_description'];
         } elseif (is_category() || is_tag() || is_tax()) {
             $description = strip_tags(term_description(get_queried_object_id()));
         } elseif (is_archive()) {
@@ -662,7 +583,7 @@ class PostService extends Service {
 
         /**
          * Filter: g3_filter_description
-         * @param  string $description The post description.
+         * @param  string $description
          * @return string
          */
         $description = trim(apply_filters('g3_filter_description', $description));
@@ -676,7 +597,6 @@ class PostService extends Service {
      * 获取 SEO 关键词
      * 
      * Filter: g3_filter_keywords
-     * 
      * @return string
      */
     public function getKeywords(): string
@@ -686,13 +606,13 @@ class PostService extends Service {
 
         if (is_home() || is_front_page()) {
             $seo      = get_option(SystemService::SEO_OPTION_KEY, []);
-            $keywords = is_array($seo) ? ($seo['keywords'] ?? '') : '';
-            $keywords = !empty($keywords) ? $keywords : $siteName;
+            $keywords = $seo['keywords'] ?? '';
+            $keywords = empty($keywords) ? $siteName : $keywords;
         } elseif (is_singular()) {
-            $keywords = $this->getExtra(get_the_ID())['seo_keywords'] ?? '';
+            $keywords = $this->getExtra(get_queried_object_id())['seo_keywords'] ?? '';
             if (empty($keywords)) {
                 // get post_tag if no data in self::KEYWORDS_KEY
-                $terms = get_the_terms(get_the_ID(), 'post_tag');
+                $terms = get_the_terms(get_queried_object_id(), 'post_tag');
                 if (!empty($terms)) {
                     $keywords = array_column($terms, 'name');
                     $keywords = implode(', ', $keywords);
@@ -742,7 +662,6 @@ class PostService extends Service {
     {
         return get_query_var('g3_var_my') !== null;
     }
-
     public function isOaLogin(): bool
     {
         $security = get_option(SystemService::SECURITY_OPTION_KEY, []);
@@ -935,6 +854,15 @@ class PostService extends Service {
             }
         }
 
+        /**
+         * Custom filter: g3_filter_breadcrumb_items
+         * @param array $items
+         * [
+         *     ["label"=>'', "url"=>'', "active"=>false],
+         *     ...
+         * ]
+         * @return array
+         */
         $items = apply_filters('g3_filter_breadcrumb_items', $items);
         if (!is_array($items) || !$items) {
             return '';
@@ -951,19 +879,151 @@ class PostService extends Service {
             $active = !empty($item['active']);
 
             if ($active) {
-                $html .= '<li class="is-active">';
-                if ($url !== '') {
-                    $html .= '<a href="' . esc_url($url) . '">' . $label . '</a>';
-                } else {
-                    $html .= '<span>' . $label . '</span>';
-                }
-                $html .= '</li>';
+                $html .= '<li class="is-active"><a>' . __('Details') . '</a></li>';
             } else {
                 $html .= '<li><a href="' . esc_url($url !== '' ? $url : '#') . '">' . $label . '</a></li>';
             }
         }
         $html .= '</ul></div>';
 
+        /**
+         * Custom filter: g3_filter_breadcrumb_html
+         * 
+         * @param string $html Breadcrumb HTML
+         * @param array $items Breadcrumb items
+         * @return string Modified breadcrumb HTML
+         */
         return (string) apply_filters('g3_filter_breadcrumb_html', $html, $items);
+    }
+
+    /**
+     * Calculate reading time
+     * 
+     * 计算文章阅读时间（秒）
+     * 
+     * @param string $content Support HTML
+     * @param int $cnSpeed Letters per minute. Default 400
+     * @param int $enSpeed Words per minute. Default 200
+     * @return int Minimum reading time is 1 second
+     * @since 1.0.0
+     */
+    public function calculateReadingTime(string $content, int $cnSpeed = 400, int $enSpeed = 200): int
+    {
+        $prepared = $this->prepareReadingContent($content);
+        $text     = $prepared['text'];
+
+        if ($text === '') {
+            return 0;
+        }
+
+        $stats   = $this->scanReadingText($text, (int) $prepared['code_blocks']);
+        $cnSpeed = $this->readingSpeed($cnSpeed, $stats);
+        $enSpeed = $this->readingSpeed($enSpeed, $stats);
+
+        $totalMinutes = ($stats['cn'] / $cnSpeed) + ($stats['en'] / $enSpeed);
+        $totalSeconds = (int) ceil($totalMinutes * 60);
+
+        return max(1, $totalSeconds);
+    }
+
+    /**
+     * Prepare content for reading-time calculation.
+     */
+    private function prepareReadingContent(string $content): array
+    {
+        $codeBlocks  = 0;
+        $codeBlocks += preg_match_all('/```[\s\S]*?```/u', $content) ?: 0;
+        $codeBlocks += preg_match_all('/<\s*(?:pre|code)\b[^>]*>[\s\S]*?<\s*\/\s*(?:pre|code)\s*>/iu', $content) ?: 0;
+
+        $text = preg_replace('/<\s*(?:script|style)\b[^>]*>[\s\S]*?<\s*\/\s*(?:script|style)\s*>/iu', ' ', $content) ?? '';
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/\[[^\]]+\]/', '', $text) ?? '';
+        $text = preg_replace('/\s+/u', ' ', trim($text)) ?? '';
+
+        return [
+            'text'        => $text,
+            'code_blocks' => $codeBlocks,
+        ];
+    }
+
+    /**
+     * Scan normalized text for Chinese characters, English words and complexity hints.
+     */
+    private function scanReadingText(string $text, int $codeBlocks = 0): array
+    {
+        $cnCount          = preg_match_all('/\p{Han}/u', $text) ?: 0;
+        $punctuationCount = preg_match_all('/[\x{3001}\x{3002}\x{FF01}\x{FF1F}\x{FF1A}\x{FF1B}\x{201C}\x{201D}\x{2018}\x{2019}\x{FF08}\x{FF09}]/u', $text) ?: 0;
+        $codeSymbolCount  = preg_match_all('/[{}()\[\];=<>+*\/]|::|->|=>/u', $text) ?: 0;
+        $enCount          = 0;
+        $technicalTokens  = 0;
+        $camelTokens      = 0;
+
+        preg_match_all('/[A-Za-z]+(?:[\'-][A-Za-z]+)*|[0-9]+(?:\.[0-9]+)?/u', $text, $matches);
+        foreach ($matches[0] as $token) {
+            $enCount += $this->englishTokenWeight($token);
+
+            $lower = strtolower($token);
+            if (isset(self::READING_TECH_KEYWORDS[$lower])) {
+                $technicalTokens++;
+                continue;
+            }
+
+            if (preg_match('/[a-z][A-Z]/', $token)) {
+                $camelTokens++;
+            }
+        }
+
+        $techScore = min(6, ($codeBlocks * 2) + $technicalTokens + $camelTokens);
+
+        return [
+            'cn'                => $cnCount,
+            'en'                => $enCount,
+            'tech_score'        => $techScore + min(2, intdiv($codeSymbolCount, 6)),
+            'punctuation_count' => $punctuationCount,
+            'code_symbol_count' => $codeSymbolCount,
+            'code_blocks'       => $codeBlocks,
+        ];
+    }
+
+    /**
+     * Count English words in text, including camel case words
+     */
+    private function englishTokenWeight(string $token): int
+    {
+        $count = 1;
+
+        if (preg_match('/[a-z][A-Z]/', $token)) {
+            $split  = preg_split(
+                '/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/',
+                $token
+            );
+            $count += max(0, count($split ?: []) - 1);
+        }
+
+        return $count;
+    }
+
+    /**
+     * Adjust reading speed based on text complexity.
+     */
+    private function readingSpeed(int $baseSpeed, array $stats): int
+    {
+        $speed     = max(50, min(1000, $baseSpeed));
+        $techScore = (int) ($stats['tech_score'] ?? 0);
+
+        if ($techScore >= 4) {
+            $speed = (int) ($speed * 0.6);
+        } elseif ($techScore >= 2) {
+            $speed = (int) ($speed * 0.75);
+        } elseif ($techScore >= 1) {
+            $speed = (int) ($speed * 0.9);
+        }
+
+        if ($techScore === 0 && (int) ($stats['punctuation_count'] ?? 0) > 50) {
+            $speed = (int) ($speed * 1.1);
+        }
+
+        return max(50, min(1000, $speed));
     }
 }

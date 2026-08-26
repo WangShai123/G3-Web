@@ -24,8 +24,8 @@ class OSSService extends Service {
             'pathPrefix'      => '',
             'imageStyle'      => '',
             'originProtect'   => '0',
-            'uploadThumb'     => '1',
-            'localSaving'     => '1',
+            'uploadThumb'     => '0',
+            'localSaving'     => '0',
         ];
     }
 

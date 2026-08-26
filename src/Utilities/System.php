@@ -474,4 +474,16 @@ final class System {
 
         return array_values(array_unique(array_filter(array_map('trim', $values), static fn($value) => $value !== '')));
     }
+
+    /**
+     * Check if theme mode is available
+     *
+     * 检查主题模式是否可用
+     *
+     * @return bool
+     */
+    public static function themeModeAvailable(): bool
+    {
+        return !(defined('WP_USE_THEMES') && WP_USE_THEMES === false);
+    }
 }

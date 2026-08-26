@@ -5,7 +5,7 @@ use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\SystemService;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
@@ -121,13 +121,10 @@ class User extends Components {
             return $avatar;
         }
 
-        // get user avatar from meta
-        $userAvatar = UserService::getMeta($user_id, UserService::META_KEY, 'avatar', '');
-
-        // fallback to default avatar
-        $option        = get_option(SystemService::OPTION_KEY, []);
-        $defaultAvatar = is_array($option) ? ($option['avatar'] ?? '') : '';
-        $avatarUrl     = !empty($userAvatar) ? $userAvatar : $defaultAvatar;
+        /**  @var UserService $userService */
+        $userService = $this->container->get(UserService::class);
+        $avatarUrl   = $userService->getCard($user_id)['avatar'] ?? '';
+        $avatarUrl   = empty($avatarUrl) ? UserService::getDefaultAvatar() : $avatarUrl;
 
         // if avatar url is empty, return default avatar
         if (empty($avatarUrl)) {
@@ -143,6 +140,7 @@ class User extends Components {
             $safeAlt
         );
     }
+
     public function templateTitle(string $title): string
     {
         $var = get_query_var('g3_var_my', false);
@@ -379,7 +377,7 @@ class User extends Components {
             $array[$slug] = [
                 'name'     => $name,
                 'slug'     => $slug,
-                'duration' => Common::toSeconds($duration, $unit)
+                'duration' => Date::toSeconds($duration, $unit)
             ];
 
             $result = update_option(UserService::DURATION_OPTION_KEY, $array);

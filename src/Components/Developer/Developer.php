@@ -198,17 +198,16 @@ class Developer extends Components {
         $this->createPanel();
     }
     #[Override]
-    protected function start(): void
+    protected function hooks(): void
     {
         /** @var TemplateService */
         $this->template = $this->container->get(TemplateService::class);
-    }
-    #[Override]
-    protected function hooks(): void
-    {
+
         $this->filter([
-            'single_template'   => [[$this->template, 'singleTemplate'], 10, 1],
-            'category_template' => [[$this->template, 'categoryTemplate'], 10, 1],
+            'single_template'   => [[$this->template, 'singleTemplate'], 10, 3],
+            'category_template' => [[$this->template, 'categoryTemplate'], 10, 3],
+            '404_template'      => [[$this->template, 'notFoundTemplate'], 10, 3],
+
             'map_meta_cap'      => [[$this, 'themeCustomizeHandle'], 20, 4],
             'translations_api'  => [[$this, 'translationsApiHandle'], 10, 3],
             'show_admin_bar'    => [[$this, 'adminBarHandle']],
@@ -313,6 +312,7 @@ class Developer extends Components {
                 'show_in_rest'  => true,
                 'hierarchical'  => true,
                 'supports'      => ['title', 'editor', 'comments', 'author', 'thumbnail', 'page-attributes'],
+                'template'      => [],
                 'rewrite'       => [
                     'slug'       => 'pages',
                     'with_front' => false

@@ -282,16 +282,15 @@ final class PanelRenderer {
             'file'         => Element::uploadInput($optionName, $value, $id, $legend, $description, $field['class']),
             'image'        => Element::imageInput($optionName, $value, $id, $legend, $description, $field['imageSize'], $field['class']),
             'textarea'     => Element::textarea($optionName, $value, $id, $legend, $description, $field['class'] ?: 'large-text code'),
-            'readonly-url' => $this->readonlyUrl($optionName, $value, $id, $field['value']),
+            'readonly-url' => $this->readonlyUrl($id, $field['value']),
             'html'         => $field['html'],
             default        => Element::input($optionName, $value, $id, $legend, $description, $field['inputType'], $field['class']),
         };
     }
 
-    private function readonlyUrl(string $optionName, array $value, string $id, string $fallback): string
+    private function readonlyUrl(string $id, string $url): string
     {
-        $url = $value[$id] ?? $fallback;
-        return '<input name="' . esc_attr($optionName) . '[' . esc_attr($id) . ']" type="url" id="' . esc_attr($id) . '" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
+        return '<input type="url" id="' . esc_attr($id) . '" value="' . esc_url($url) . '" class="regular-text" readonly="readonly">';
     }
 
     private function group(Panel $panel, string $tab): string

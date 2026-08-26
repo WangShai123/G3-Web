@@ -8,26 +8,35 @@ use JEALER\G3\Jobs\EmailJob;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\FormService;
 use JEALER\G3\Services\MailerService;
+use JEALER\G3\Utilities\Date;
+use JEALER\G3\Utilities\System;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
 class ContactController extends Controller {
-    public function __construct(private FormService $service) {}
+    private FormService   $formService;
+    private MailerService $mailerService;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->formService   = $this->service(FormService::class);
+        $this->mailerService = $this->service(MailerService::class);
+    }
     #[RestRouter(
         namespace: 'api/contact',
         route: 'v1/form',
         methods: 'POST'
     )]
-    #[Middleware(RateLimitMiddleware::class, [6, 60])]
+    #[Middleware(RateLimitMiddleware::class, [10, 60])]
     #[Schema([
         'type'       => 'object',
-        'required'   => ['title', 'content', 'email'],
+        'required'   => ['name', 'content', 'email'],
         'properties' => [
-            'title'   => [
+            'name'    => [
                 'type'      => 'string',
                 'minLength' => 1,
-                'maxLength' => 100
+                'maxLength' => 128
             ],
             'email'   => [
                 'type'      => 'string',
@@ -46,18 +55,42 @@ class ContactController extends Controller {
     {
         $data = $request->get_json_params();
 
-        /** @var WP_Error|int $result */
-        $result = $this->service->create($data);
+        $result = $this->formService->create($data);
         if (is_wp_error($result)) {
             return $result;
         }
 
         $formOption = get_option(FormService::FORM_OPTION_KEY, []);
-        $notify     = is_array($formOption) ? ($formOption['email'] ?? '1') : '1';
+        $notify     = $formOption['email'] ?? '0';
         if ($notify === '1') {
-            // @todo: 待改造完所有后台设置
-            // EmailJob::send()
-            // MailerService::send()
+            $contactH3 = __('User Profile', 'G3');
+            $name      = __('Name') . ': ' . $data['name'];
+            $contentH3 = __('Details') . ': ';
+            $content   = $data['content'];
+            $ext       = $data['ext'] ?? [];
+            $strExt    = __('Metadata') . ': ' . json_encode($ext);
+            $dateTime  = __('Time') . ': ' . Date::dateTime(time());
+            $ip        = 'IP: ' . System::ip();
+            $siteUrl   = __('Site') . ': ' . get_bloginfo('url');
+
+            $msg = <<<HTML
+<h3>{$contentH3}</h3>
+<p>{$content}</p>
+<h3>{$contactH3}:</h3>
+<ul>
+    <li>{$name}</li>
+    <li>Email: {$data['email']}</li>
+    <li>{$strExt}</li>
+    <li>{$ip}</li>
+    <li>{$dateTime}</li>
+</ul>
+<p>{$siteUrl}</p>
+HTML;
+
+            $email   = get_option('admin_email');
+            $subject = __('New Message', 'G3') . ' - ' . $data['name'];
+
+            $this->mailerService->sendMail($email, $subject, $msg);
         }
 
         return rest_ensure_response([

@@ -94,7 +94,7 @@ class Customer extends Components {
                 ->number('retentionDays', __('Retention Days', 'G3'), __('<code>CustomerMessageJob</code> removes data older than this many days. Default: 180.', 'G3'))
                 ->rowClass('advanced')
                 ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45, range: 30-60.', 'G3'))
-                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system marks a conversation as timeout. Default: 120.', 'G3'))
+                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason. Default: 120.', 'G3'))
                 ->rowClass('advanced')
         ];
     }
@@ -159,7 +159,7 @@ class Customer extends Components {
         $service = $this->getService(CustomerService::class);
 
         return [
-            'restUrl'       => esc_url_raw(rest_url('api/customer/v1')),
+            'restUrl'       => esc_url_raw(rest_url('api/admin/customer/v1')),
             'notifyRestUrl' => esc_url_raw(rest_url('api/notify/v1')),
             'nonce'         => wp_create_nonce('wp_rest'),
             'audioUrl'      => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
@@ -170,13 +170,11 @@ class Customer extends Components {
                 'placeholder' => __('Leave a Reply'),
                 'send'        => __('Reply'),
                 'close'       => __('Close'),
-                'handled'     => 'Handled',
-                'onHold'      => __('On Hold', 'G3'),
+                'active'      => __('Active', 'G3'),
+                'wrapUp'      => __('Wrap-up', 'G3'),
                 'all'         => __('All'),
                 'pending'     => __('Pending', 'G3'),
-                'botHandled'  => 'Bot Handled',
                 'closed'      => __('Closed', 'G3'),
-                'timeout'     => __('Timeout', 'G3'),
                 'profile'     => __('User Profile', 'G3'),
                 'search'      => __('Search'),
                 'edit'        => __('Edit'),

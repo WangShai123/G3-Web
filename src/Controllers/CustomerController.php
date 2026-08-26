@@ -29,12 +29,12 @@ class CustomerController extends Controller {
     #[Middleware(RateLimitMiddleware::class, [30, 60])]
     public function streamSession(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        $result = $this->service->createStreamSession($request->get_json_params() ?: []);
+        $result = $this->service->createViewerStreamSession($request->get_json_params() ?: []);
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
     #[RestRouter(namespace: 'api/customer', route: 'v1/conversations/start', methods: 'POST')]
-    #[Middleware(RateLimitMiddleware::class, [20, 60])]
+    #[Middleware(RateLimitMiddleware::class, [30, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [
@@ -81,7 +81,7 @@ class CustomerController extends Controller {
         'properties' => [
             'conversation_id' => ['type' => 'integer'],
             'content'         => ['type' => 'string', 'minLength' => 1, 'maxLength' => 5000],
-            'message_type'    => ['type' => 'string', 'maxLength' => 32],
+            'msg_type'        => ['type' => 'string', 'enum' => ['text']],
         ]
     ])]
     public function send(WP_REST_Request $request): WP_Error|WP_REST_Response
@@ -100,7 +100,15 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
-    #[RestRouter(namespace: 'api/customer', route: 'v1/admin/conversations/list', methods: 'POST')]
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/stream/session', methods: 'POST')]
+    #[Middleware(RoleMiddleware::class, ['administrator'])]
+    public function adminStreamSession(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        $result = $this->service->createAdminStreamSession($request->get_json_params() ?: []);
+        return is_wp_error($result) ? $result : $this->ok($result);
+    }
+
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/list', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminConversations(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
@@ -108,7 +116,7 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
-    #[RestRouter(namespace: 'api/customer', route: 'v1/admin/conversations/detail', methods: 'POST')]
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/detail', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminConversation(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
@@ -117,7 +125,30 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
-    #[RestRouter(namespace: 'api/customer', route: 'v1/admin/conversations/update', methods: 'POST')]
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/messages/list', methods: 'POST')]
+    #[Middleware(RoleMiddleware::class, ['administrator'])]
+    public function adminMessages(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        $data   = $request->get_json_params() ?: [];
+        $result = $this->service->messagesForViewer(
+            (int) ($data['conversation_id'] ?? 0),
+            max(0, (int) ($data['after_id'] ?? 0)),
+            min(100, max(1, (int) ($data['limit'] ?? 50)))
+        );
+
+        return is_wp_error($result) ? $result : $this->ok($result);
+    }
+
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/read', methods: 'POST')]
+    #[Middleware(RoleMiddleware::class, ['administrator'])]
+    public function adminRead(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        $data   = $request->get_json_params() ?: [];
+        $result = $this->service->markRead((int) ($data['conversation_id'] ?? 0), (int) ($data['message_id'] ?? 0));
+        return is_wp_error($result) ? $result : $this->ok($result);
+    }
+
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/update', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminUpdate(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
@@ -128,7 +159,7 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
-    #[RestRouter(namespace: 'api/customer', route: 'v1/admin/conversations/messages/send', methods: 'POST')]
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/messages/send', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     #[Schema([
         'type'       => 'object',
@@ -136,7 +167,7 @@ class CustomerController extends Controller {
         'properties' => [
             'conversation_id' => ['type' => 'integer'],
             'content'         => ['type' => 'string', 'minLength' => 1, 'maxLength' => 5000],
-            'message_type'    => ['type' => 'string', 'maxLength' => 32],
+            'msg_type'        => ['type' => 'string', 'enum' => ['text']],
         ]
     ])]
     public function adminSend(WP_REST_Request $request): WP_Error|WP_REST_Response
@@ -146,7 +177,7 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
-    #[RestRouter(namespace: 'api/customer', route: 'v1/admin/conversations/profile', methods: 'POST')]
+    #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/profile', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminProfile(WP_REST_Request $request): WP_Error|WP_REST_Response
     {

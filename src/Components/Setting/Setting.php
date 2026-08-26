@@ -28,10 +28,7 @@ class Setting extends Components {
     private function rssDefaults(): array
     {
         return [
-            'rss'  => '1',
-            'rss1' => '',
-            'rss2' => '',
-            'atom' => '',
+            'rss' => '1',
         ];
     }
 
@@ -47,11 +44,7 @@ class Setting extends Components {
     {
         return [SystemService::OPTION_KEY => SystemService::optionValue()];
     }
-    private static function optionData(string $key): array
-    {
-        $option = get_option($key, []);
-        return is_array($option) ? $option : [];
-    }
+
     protected function system(): void
     {
         $this->rssHandle();
@@ -61,7 +54,7 @@ class Setting extends Components {
         Frontend::css('jui');
         Frontend::umd('jui');
         $this->permalink();
-        if ((self::optionData(SystemService::SEO_OPTION_KEY)['seo'] ?? '1') === '1') {
+        if ((get_option(SystemService::SEO_OPTION_KEY)['seo'] ?? '0') === '1') {
             // SEO: add field in edit form for post
             add_action('add_meta_boxes', [$this, 'initPostbox'], 10, 2);
             // SEO: add field in add form for all taxonomies
@@ -150,17 +143,18 @@ class Setting extends Components {
     }
     protected function adminPanels(): array
     {
+        $code = ': <code>HTML</code>, <code>CSS</code>, <code>JavaScript</code>';
         return [
             $this->panel('g3-settings', __('General'))
                 ->tab('general', __('General'))
                 ->option(SystemService::OPTION_KEY, SystemService::optionValue())
                 ->switch('sad', __('Sad Mod', 'G3'), __('The entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3'))
-                ->image('avatar', __('Default Avatar', 'G3'), __('Modify the default system avatar.', 'G3'))
-                ->image('cover', __('Default Cover', 'G3'), __('Modify the default system cover.', 'G3'))
+                ->image('avatar', __('Default Avatar', 'G3'))
+                ->image('cover', __('Default Cover', 'G3'))
                 ->input('icp', __('ICP Code', 'G3'), __('If you are conducting online business in mainland China, please be sure to input the ICP filing number issued by the Ministry of Industry and Information Technology of the People\'s Republic of China.', 'G3'))
-                ->textarea('headerCode', __('Header Code', 'G3'), __('Enter the HTML, CSS, and JS code that you want to add to the website\'s header here.', 'G3'))
-                ->textarea('footerCode', __('Footer Code', 'G3'), __('Enter the HTML, CSS, and JS code that you want to add to the website\'s footer here.', 'G3'))
-                ->textarea('customCode', __('Custom Code', 'G3'), __('Enter any HTML, CSS, JS code here that you want to customize output.', 'G3'))
+                ->textarea('headerCode', __('Header Code', 'G3'), __('Custom Code', 'G3') . $code)
+                ->textarea('footerCode', __('Footer Code', 'G3'), __('Custom Code', 'G3') . $code)
+                ->textarea('customCode', __('Custom Code', 'G3'), __('Custom Code', 'G3') . $code)
                 ->switch('links', __('Links'), __('The links feature helps you manage your friendship links.', 'G3'))
                 ->switch('redirectLink', __('Redirect Link', 'G3'), __('All outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3'))
                 ->switch('online', __('Online', 'G3') . ' ' . __('Status'), __('Perform user identification and count concurrent online users using browser fingerprints.', 'G3'))
@@ -169,7 +163,7 @@ class Setting extends Components {
                 ->rowClass('advanced')
                 ->tab('seo', 'SEO')
                 ->option(SystemService::SEO_OPTION_KEY, $this->seoDefaults())
-                ->switch('seo', 'SEO', __('You can add custom SEO data for each page.', 'G3'))
+                ->switch('seo', 'SEO')
                 ->input('keywords', __('Home') . ' ' . __('Keywords'), __('Separate tags with commas'))
                 ->tab('rss', 'RSS')
                 ->option(SystemService::RSS_OPTION_KEY, $this->rssDefaults(), false)
@@ -304,7 +298,7 @@ class Setting extends Components {
     }
     public static function onRedirect(): bool
     {
-        $v = self::optionData(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
+        $v = get_option(SystemService::OPTION_KEY)['redirectLink'] ?? '1';
         return $v === '1';
     }
 
@@ -396,7 +390,7 @@ class Setting extends Components {
     }
     public function rssHandle(): void
     {
-        if ((self::optionData(SystemService::RSS_OPTION_KEY)['rss'] ?? '1') !== '1') return;
+        if ((get_option(SystemService::RSS_OPTION_KEY)['rss'] ?? '0') === '1') return;
 
         // remove rss feed links in header
         remove_action('wp_head', 'feed_links', 2);
@@ -459,13 +453,13 @@ class Setting extends Components {
     }
     public static function onLLM(): bool
     {
-        $v = self::optionData(SystemService::LLM_OPTION_KEY)['llm'] ?? '1';
+        $v = get_option(SystemService::LLM_OPTION_KEY)['llm'] ?? '1';
         return $v === '1';
     }
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_generate_llm', function () {
-            if ((self::optionData(SystemService::LLM_OPTION_KEY)['llm'] ?? '1') !== '1') {
+            if ((get_option(SystemService::LLM_OPTION_KEY)['llm'] ?? '1') !== '1') {
                 Response::ajaxError(__('LLM feature is disabled.', 'G3'));
             }
 

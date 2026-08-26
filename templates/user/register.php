@@ -227,7 +227,7 @@ get_header();
                     <label for="g3-register-username" class="item-label is-required"><?php _e('Username'); ?></label>
                     <div class="form-control">
                         <input class="j-input is-lg" id="g3-register-username" name="username" type="text"
-                            autocomplete="username" minlength="3" maxlength="60" required placeholder="">
+                            autocomplete="username" minlength="6" maxlength="60" required placeholder="">
                     </div>
                 </div>
 
@@ -256,7 +256,7 @@ get_header();
                         class="item-label is-required"><?php _e('Confirm password', 'G3'); ?></label>
                     <div class="form-control">
                         <input class="j-input is-lg has-toggle" id="g3-register-confirm-password"
-                            name="confirm_password" type="password" autocomplete="new-password" minlength="8"
+                            name="confirm_password" type="password" autocomplete="new-password" minlength="12"
                             placeholder="" maxlength="128" required>
                     </div>
                 </div>

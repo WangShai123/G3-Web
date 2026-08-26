@@ -44,7 +44,7 @@ get_header();
                         <?php _e('New password'); ?>
                     </label>
                     <div class="form-control">
-                        <input id="password" name="password" type="password" required minlength="8"
+                        <input id="password" name="password" type="password" required minlength="12"
                             autocomplete="new-password" class="j-input is-lg w-full">
                     </div>
                 </div>
@@ -53,7 +53,7 @@ get_header();
                         <?php _e('Confirm new password'); ?>
                     </label>
                     <div class="form-control">
-                        <input id="password_confirm" name="password_confirm" type="password" required minlength="8"
+                        <input id="password_confirm" name="password_confirm" type="password" required minlength="12"
                             autocomplete="new-password" class="j-input is-lg w-full">
                     </div>
                 </div>
