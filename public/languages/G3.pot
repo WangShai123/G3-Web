@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-24 22:32+0000\n"
+"POT-Creation-Date: 2026-08-26 15:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -114,12 +114,6 @@ msgstr ""
 msgid ""
 "<strong>Error:</strong> Your password reset link appears to be invalid. "
 "Please request a new link."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:223
-msgid ""
-"<strong>Share it to your friends, robots or AI!</strong> You can access the "
-"local sitemap cache file through the current address."
 msgstr ""
 
 #: templates/mail/payment-success.php:4
@@ -262,7 +256,7 @@ msgstr ""
 msgid "All Orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:162
+#: src/Components/Setting/Setting.php:159
 msgid ""
 "All outbound links will be intercepted by the system and redirected to the "
 "link middle page instead of the original target url."
@@ -330,7 +324,7 @@ msgstr ""
 msgid "Apply the configured image style to original image URLs."
 msgstr ""
 
-#: src/Components/Post/Post.php:670
+#: src/Components/Post/Post.php:658
 msgid "Archive Sidebar"
 msgstr ""
 
@@ -552,14 +546,15 @@ msgid ""
 "first read the cache file, reducing unnecessary interactions with php-fpm."
 msgstr ""
 
+#: src/Components/Security/Security.php:89
+#: src/Components/Setting/Setting.php:183
+#: src/Components/Setting/Setting.php:192
 #: src/Components/Performance/Performance.php:68
 #: src/Components/Developer/views/tab-system.php:61
 msgid "Cache"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:138
-#: src/Components/Setting/Setting.php:184
-#: src/Components/Setting/Setting.php:223
 msgid "Cache Data"
 msgstr ""
 
@@ -580,7 +575,7 @@ msgstr ""
 msgid "Cannot delete this spec, it is used in some sku or options."
 msgstr ""
 
-#: src/Components/Post/Post.php:805
+#: src/Components/Post/Post.php:793
 msgid "Card Menu"
 msgstr ""
 
@@ -621,14 +616,6 @@ msgstr ""
 #: src/Services/WechatOAService.php:578
 #, php-format
 msgid "Click here to view \"%s\" search results."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:190
-msgid "Click to generate llms.txt cache file."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:195
-msgid "Click to generate sitemap cache files."
 msgstr ""
 
 #: src/Components/Customer/Customer.php:177
@@ -695,7 +682,7 @@ msgstr ""
 msgid "Contact us"
 msgstr ""
 
-#: templates/developer/w.php:106 src/Components/Post/Post.php:733
+#: templates/developer/w.php:106 src/Components/Post/Post.php:721
 #: src/Components/Share/Share.php:55
 msgid "Content Distribution"
 msgstr ""
@@ -731,7 +718,7 @@ msgstr ""
 msgid "Copyright Protection"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:188
+#: src/Components/Setting/Setting.php:182
 #: src/Components/Post/widgets/PostWidget.php:78
 msgid "Count"
 msgstr ""
@@ -740,7 +727,7 @@ msgstr ""
 msgid "Counter input"
 msgstr ""
 
-#: src/Components/Post/Post.php:614 src/Components/Post/Post.php:635
+#: src/Components/Post/Post.php:602 src/Components/Post/Post.php:623
 msgid "Cover"
 msgstr ""
 
@@ -797,7 +784,10 @@ msgstr ""
 msgid "Custom Admin Login"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:160
+#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:156
+#: src/Components/Setting/Setting.php:157
+#: src/Components/Setting/Setting.php:157
 msgid "Custom Code"
 msgstr ""
 
@@ -821,7 +811,7 @@ msgstr ""
 msgid "Custom Group"
 msgstr ""
 
-#: src/Components/Post/Post.php:714
+#: src/Components/Post/Post.php:702
 msgid "Custom interaction data"
 msgstr ""
 
@@ -854,10 +844,10 @@ msgstr ""
 msgid "Data Missing"
 msgstr ""
 
-#: src/Components/User/User.php:225 src/Components/User/User.php:261
-#: src/Components/User/User.php:281 src/Components/User/User.php:296
-#: src/Components/User/User.php:317 src/Components/User/User.php:332
-#: src/Components/User/User.php:352
+#: src/Components/User/User.php:223 src/Components/User/User.php:259
+#: src/Components/User/User.php:279 src/Components/User/User.php:294
+#: src/Components/User/User.php:315 src/Components/User/User.php:330
+#: src/Components/User/User.php:350
 msgid "Data missing"
 msgstr ""
 
@@ -884,11 +874,11 @@ msgstr ""
 msgid "Days when agents are expected to be online."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:152
 msgid "Default Avatar"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:156
+#: src/Components/Setting/Setting.php:153
 msgid "Default Cover"
 msgstr ""
 
@@ -925,7 +915,7 @@ msgid ""
 "user instead of directly reporting an error."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:165
+#: src/Components/Setting/Setting.php:162
 msgid "Delay"
 msgstr ""
 
@@ -974,7 +964,7 @@ msgstr ""
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:358
+#: src/Components/Setting/Setting.php:341
 msgid "Description"
 msgstr ""
 
@@ -982,19 +972,19 @@ msgstr ""
 msgid "Design"
 msgstr ""
 
-#: src/Components/Post/Post.php:772
+#: src/Components/Post/Post.php:760
 msgid "Desktop Footer Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:773
+#: src/Components/Post/Post.php:761
 msgid "Desktop Footer Secondary Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:770
+#: src/Components/Post/Post.php:758
 msgid "Desktop Header Menu"
 msgstr ""
 
-#: src/Components/Post/Post.php:771
+#: src/Components/Post/Post.php:759
 msgid "Desktop Header Secondary Menu"
 msgstr ""
 
@@ -1042,15 +1032,11 @@ msgstr ""
 msgid "Display Items"
 msgstr ""
 
-#: src/Components/Post/Post.php:845
+#: src/Components/Post/Post.php:833
 msgid "Display Type"
 msgstr ""
 
-#: src/Components/OSS/OSS.php:88
-msgid "Do not include APPID unless the bucket name already contains it."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:441
+#: src/Components/Setting/Setting.php:424
 msgid "Documents"
 msgstr ""
 
@@ -1171,10 +1157,6 @@ msgstr ""
 msgid "End Credits"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:160
-msgid "Enter any HTML, CSS, JS code here that you want to customize output."
-msgstr ""
-
 #: src/Components/WechatOA/views/tab-reply.php:22
 #: src/Components/WechatOA/views/tab-reply.php:116
 msgid "Enter keywords please"
@@ -1183,18 +1165,6 @@ msgstr ""
 #: src/Components/WechatOA/views/tab-reply.php:32
 #: src/Components/WechatOA/views/tab-reply.php:127
 msgid "Enter reply please"
-msgstr ""
-
-#: src/Components/Setting/Setting.php:159
-msgid ""
-"Enter the HTML, CSS, and JS code that you want to add to the website's "
-"footer here."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:158
-msgid ""
-"Enter the HTML, CSS, and JS code that you want to add to the website's "
-"header here."
 msgstr ""
 
 #: src/Components/User/Includes/PremiumListTable.php:132
@@ -1243,11 +1213,11 @@ msgstr ""
 msgid "Failed to delete orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:481
+#: src/Components/Setting/Setting.php:464
 msgid "Failed to generate LLM cache."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:485
+#: src/Components/Developer/Developer.php:486
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
@@ -1276,8 +1246,8 @@ msgstr ""
 msgid "Feature Disabled"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:420
-#: src/Components/Setting/Setting.php:421
+#: src/Components/Setting/Setting.php:403
+#: src/Components/Setting/Setting.php:404
 msgid "Feed Disabled"
 msgstr ""
 
@@ -1336,21 +1306,21 @@ msgstr ""
 msgid "Flexible Payment Terms"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:397
+#: src/Components/Developer/Developer.php:398
 msgid "Flush all the cache data."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:379
+#: src/Components/Developer/Developer.php:380
 msgid "Flush and fix the rewrite rules."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:391
+#: src/Components/Developer/Developer.php:392
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:396
+#: src/Components/Developer/Developer.php:397
 msgid "Flush Cache"
 msgstr ""
 
@@ -1362,15 +1332,15 @@ msgstr ""
 msgid "Flush Menus Online"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:384
+#: src/Components/Developer/Developer.php:385
 msgid "Flush REST routes cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:378
+#: src/Components/Developer/Developer.php:379
 msgid "Flush Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:390
+#: src/Components/Developer/Developer.php:391
 msgid "Flush Setting Options"
 msgstr ""
 
@@ -1387,7 +1357,7 @@ msgstr ""
 msgid "Folder Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:159
+#: src/Components/Setting/Setting.php:156
 msgid "Footer Code"
 msgstr ""
 
@@ -1492,7 +1462,7 @@ msgstr ""
 msgid "Frontend tip shown before conversation messages. HTML is allowed."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:785
+#: src/Components/Developer/Developer.php:786
 msgid "G3 License Code"
 msgstr ""
 
@@ -1533,7 +1503,7 @@ msgid ""
 "database 1, and notification services are stored in database 2."
 msgstr ""
 
-#: src/Components/Post/Post.php:803
+#: src/Components/Post/Post.php:791
 msgid "General Menu"
 msgstr ""
 
@@ -1545,25 +1515,28 @@ msgstr ""
 msgid "General Settings"
 msgstr ""
 
+#: src/Components/Setting/Setting.php:189
+#: src/Components/Setting/Setting.php:193
+#, php-format
+msgid "Generate %s Cache"
+msgstr ""
+
+#: src/Components/Setting/Setting.php:189
+#: src/Components/Setting/Setting.php:193
+msgid "Generate Cache"
+msgstr ""
+
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:92
 #: src/Components/Auth/views/tab-invitation.php:49
 #: src/Components/Auth/views/tab-invitation.php:50
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:190
-msgid "Generate LLM Cache"
-msgstr ""
-
-#: src/Components/Developer/Developer.php:401
+#: src/Components/Developer/Developer.php:402
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:195
-msgid "Generate Sitemap"
-msgstr ""
-
-#: src/Components/Developer/Developer.php:402
+#: src/Components/Developer/Developer.php:403
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1587,7 +1560,7 @@ msgstr ""
 msgid "Guest Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:158
+#: src/Components/Setting/Setting.php:155
 msgid "Header Code"
 msgstr ""
 
@@ -1610,7 +1583,7 @@ msgstr ""
 msgid "High Intention"
 msgstr ""
 
-#: src/Components/Post/Post.php:661
+#: src/Components/Post/Post.php:649
 msgid "Homepage Sidebar"
 msgstr ""
 
@@ -1639,11 +1612,11 @@ msgstr ""
 msgid "https://www.jealer.com/g3-web"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:157
+#: src/Components/Setting/Setting.php:154
 msgid "ICP Code"
 msgstr ""
 
-#: src/Services/UserService.php:302
+#: src/Services/UserService.php:301
 msgid "If the account exists, a password reset email has been sent."
 msgstr ""
 
@@ -1651,7 +1624,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:157
+#: src/Components/Setting/Setting.php:154
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1683,6 +1656,14 @@ msgstr ""
 msgid "Image upload & preview"
 msgstr ""
 
+#: src/Components/Setting/views/tab-sitemap.php:5
+#, php-format
+msgid ""
+"In <a href=\"%s\">the security settings</a>, you can choose to use G3-"
+"Sitemap instead of <a href=\"%s\" target=\"_blank\">the default WordPress "
+"sitemap</a>, as the default sitemap may expose sensitive user information."
+msgstr ""
+
 #: src/Components/Performance/views/tab-redis.php:21
 msgid "In G3-Web, all business data must be cached and queried through Redis."
 msgstr ""
@@ -1704,9 +1685,9 @@ msgstr ""
 #: src/Components/Security/Security.php:90
 #, php-format
 msgid ""
-"In the <a href=\"%s\">site map settings page</a>, manually trigger to "
-"generate the site map cache file, instead of generating the site map cache "
-"file through the site map dynamic link."
+"In the <a href=\"%s\">site map settings page</a>, manually generate the "
+"sitemap cache file instead of automatically generating it by accessing the "
+"sitemap dynamic link."
 msgstr ""
 
 #: src/Components/WechatOA/views/tab-menus.php:10
@@ -1814,9 +1795,9 @@ msgstr ""
 msgid "Keyword too long, max %s characters."
 msgstr ""
 
+#: src/Components/Setting/Setting.php:338
 #: src/Components/Setting/Setting.php:355
-#: src/Components/Setting/Setting.php:372
-#: src/Components/Setting/Setting.php:378
+#: src/Components/Setting/Setting.php:361
 msgid "Keywords"
 msgstr ""
 
@@ -1852,8 +1833,8 @@ msgstr ""
 msgid "Level Group"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:689
-#: src/Components/Developer/Developer.php:692
+#: src/Components/Developer/Developer.php:690
+#: src/Components/Developer/Developer.php:693
 msgid "License Expired"
 msgstr ""
 
@@ -1874,20 +1855,12 @@ msgstr ""
 msgid "Linked SKU"
 msgstr ""
 
-#: src/Components/Post/Post.php:804
+#: src/Components/Post/Post.php:792
 msgid "List Card Menu"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:189
-msgid "LLM Cache"
-msgstr ""
-
-#: src/Components/Setting/Setting.php:466
+#: src/Components/Setting/Setting.php:449
 msgid "LLM feature is disabled."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:190
-msgid "LLM Generator"
 msgstr ""
 
 #: src/Components/OSS/OSS.php:84 src/Components/OSS/OSS.php:101
@@ -1921,7 +1894,7 @@ msgstr ""
 #: templates/user/register.php:273 templates/user/reset-password.php:34
 #: src/Services/AuthService.php:492 src/Components/Security/Security.php:83
 #: src/Components/Auth/Auth.php:25 src/Components/Auth/Auth.php:26
-#: src/Components/Auth/Auth.php:44 src/Components/User/User.php:164
+#: src/Components/Auth/Auth.php:44 src/Components/User/User.php:162
 msgid "Login"
 msgstr ""
 
@@ -1980,7 +1953,7 @@ msgstr ""
 msgid "Membership Duration"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:719
+#: src/Components/Developer/Developer.php:720
 msgid "Membership Feature"
 msgstr ""
 
@@ -2004,7 +1977,7 @@ msgstr ""
 msgid "Memory Usage"
 msgstr ""
 
-#: src/Components/Post/Post.php:815
+#: src/Components/Post/Post.php:803
 msgid "Menu Type"
 msgstr ""
 
@@ -2040,11 +2013,11 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:406
+#: src/Components/Developer/Developer.php:407
 msgid "Migrate"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:407
+#: src/Components/Developer/Developer.php:408
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2061,20 +2034,12 @@ msgid ""
 "timeout reason. Default: 120."
 msgstr ""
 
-#: src/Components/Post/Post.php:774
+#: src/Components/Post/Post.php:762
 msgid "Mobile Menu"
 msgstr ""
 
 #: src/Services/OrdersService.php:113
 msgid "MobileApp Order"
-msgstr ""
-
-#: src/Components/Setting/Setting.php:155
-msgid "Modify the default system avatar."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:156
-msgid "Modify the default system cover."
 msgstr ""
 
 #: src/Components/Post/widgets/PostWidget.php:46
@@ -2094,27 +2059,27 @@ msgstr ""
 msgid "Multi-theme Mode"
 msgstr ""
 
-#: src/Services/PostService.php:900 src/Components/User/User.php:151
+#: src/Services/PostService.php:807 src/Components/User/User.php:149
 msgid "My Homepage"
 msgstr ""
 
-#: src/Components/User/User.php:152
+#: src/Components/User/User.php:150
 msgid "My Messages"
 msgstr ""
 
-#: src/Components/User/User.php:153
+#: src/Components/User/User.php:151
 msgid "My Orders"
 msgstr ""
 
-#: src/Components/User/User.php:155
+#: src/Components/User/User.php:153
 msgid "My Profile"
 msgstr ""
 
-#: src/Components/User/User.php:156
+#: src/Components/User/User.php:154
 msgid "My Settings"
 msgstr ""
 
-#: src/Components/User/User.php:154
+#: src/Components/User/User.php:152
 msgid "My Wallet"
 msgstr ""
 
@@ -2229,7 +2194,7 @@ msgstr ""
 msgid "Object Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:493
+#: src/Components/Developer/Developer.php:494
 msgid "object-cache.php file already exists."
 msgstr ""
 
@@ -2247,19 +2212,19 @@ msgstr ""
 msgid "Offline"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:701
+#: src/Components/Developer/Developer.php:702
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
 "all services."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:163
+#: src/Components/Setting/Setting.php:160
 #: src/Components/Performance/widgets/MonitorWidget.php:102
 msgid "Online"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:442
+#: src/Components/Setting/Setting.php:425
 msgid "Online Courses"
 msgstr ""
 
@@ -2367,7 +2332,7 @@ msgstr ""
 msgid "Override WP-Auth"
 msgstr ""
 
-#: src/Services/PostService.php:577 src/Services/PostService.php:603
+#: src/Services/PostService.php:530 src/Services/PostService.php:537
 #, php-format
 msgid "Page %s"
 msgstr ""
@@ -2376,7 +2341,7 @@ msgstr ""
 msgid "Page Comments"
 msgstr ""
 
-#: src/Components/Post/Post.php:697
+#: src/Components/Post/Post.php:685
 msgid "Page Sidebar"
 msgstr ""
 
@@ -2455,7 +2420,7 @@ msgstr ""
 msgid "Pending Payment"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:163
+#: src/Components/Setting/Setting.php:160
 msgid ""
 "Perform user identification and count concurrent online users using browser "
 "fingerprints."
@@ -2499,7 +2464,7 @@ msgid ""
 "after setting."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:741
+#: src/Components/Developer/Developer.php:742
 msgid "Please enter a valid license code."
 msgstr ""
 
@@ -2509,7 +2474,7 @@ msgid ""
 "executed."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:795
+#: src/Components/Developer/Developer.php:796
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2593,11 +2558,11 @@ msgstr ""
 msgid "POST requests are not cached"
 msgstr ""
 
-#: src/Components/Post/Post.php:688
+#: src/Components/Post/Post.php:676
 msgid "Post Sidebar"
 msgstr ""
 
-#: src/Services/PostService.php:332
+#: src/Services/PostService.php:320
 msgid ""
 "Postmeta key is empty. Please provide a valid meta key for migration in the "
 "wp-config.php file using the <strong>G3_OLD_POST_VIEW_META_KEY</strong> "
@@ -2812,18 +2777,12 @@ msgstr ""
 msgid "Reading Time"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:181
-#: src/Components/Setting/Setting.php:218
+#: src/Components/Setting/Setting.php:176
+#: src/Components/Setting/Setting.php:191
 msgid "Real-time data"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:189
-msgid ""
-"Real-time data access no longer generates cache files. Please generate cache "
-"files manually for better performance."
-msgstr ""
-
-#: src/Components/Developer/Developer.php:385
+#: src/Components/Developer/Developer.php:386
 msgid "Rebuild the REST route cache file."
 msgstr ""
 
@@ -2839,7 +2798,7 @@ msgstr ""
 msgid "Recommended configuration"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:162
+#: src/Components/Setting/Setting.php:159
 msgid "Redirect Link"
 msgstr ""
 
@@ -2854,7 +2813,7 @@ msgstr ""
 msgid "Referral Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:939
+#: src/Components/Developer/Developer.php:940
 msgid "Refreshed"
 msgstr ""
 
@@ -2866,7 +2825,7 @@ msgstr ""
 msgid "Region"
 msgstr ""
 
-#: src/Components/User/User.php:165
+#: src/Components/User/User.php:163
 msgid "Register"
 msgstr ""
 
@@ -2895,11 +2854,11 @@ msgstr ""
 msgid "Remove sensitive data from response headers, such as: X-Powered-By."
 msgstr ""
 
-#: src/Components/Security/Security.php:86
+#: src/Components/Security/Security.php:87
 msgid "Remove the default sitemap of WordPress and use the G3 sitemap instead."
 msgstr ""
 
-#: src/Components/Security/Security.php:87
+#: src/Components/Security/Security.php:86
 msgid ""
 "Remove the default users sitemap module of WordPress to avoid exposing user "
 "ID and login name security risks."
@@ -2931,12 +2890,8 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: src/Components/User/User.php:166 src/Components/User/User.php:167
+#: src/Components/User/User.php:164 src/Components/User/User.php:165
 msgid "Reset Password"
-msgstr ""
-
-#: src/Components/Security/Security.php:86
-msgid "Reset SiteMap"
 msgstr ""
 
 #: src/Components/Security/Security.php:84
@@ -2999,7 +2954,7 @@ msgstr ""
 msgid "Runs wordpress to process the request"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:154
+#: src/Components/Setting/Setting.php:151
 msgid "Sad Mod"
 msgstr ""
 
@@ -3059,12 +3014,12 @@ msgstr ""
 msgid "Search Products"
 msgstr ""
 
-#: src/Services/PostService.php:666 src/Services/PostService.php:716
+#: src/Services/PostService.php:575 src/Services/PostService.php:624
 #, php-format
 msgid "Search results for %s"
 msgstr ""
 
-#: src/Components/Post/Post.php:679
+#: src/Components/Post/Post.php:667
 msgid "Search Sidebar"
 msgstr ""
 
@@ -3079,7 +3034,7 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:734
+#: src/Components/Developer/Developer.php:735
 msgid "Security check failed. Please try again."
 msgstr ""
 
@@ -3111,13 +3066,13 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:314
+#: src/Components/Setting/Setting.php:297
 msgid "SEO & Social Media"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:355
-#: src/Components/Setting/Setting.php:373
-#: src/Components/Setting/Setting.php:381
+#: src/Components/Setting/Setting.php:338
+#: src/Components/Setting/Setting.php:356
+#: src/Components/Setting/Setting.php:364
 msgid "Separate tags with commas."
 msgstr ""
 
@@ -3154,6 +3109,11 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+#: src/Components/Setting/Setting.php:187
+#: src/Components/Setting/Setting.php:192
+msgid "Share it to your friends, search engine or AI!"
+msgstr ""
+
 #: src/Components/Share/Share.php:60
 msgid "Share to DouYin"
 msgstr ""
@@ -3175,7 +3135,7 @@ msgstr ""
 msgid "Shop"
 msgstr ""
 
-#: src/Components/Post/Post.php:775
+#: src/Components/Post/Post.php:763
 msgid "Shop Menu"
 msgstr ""
 
@@ -3195,24 +3155,19 @@ msgstr ""
 msgid "Site Health"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:191
+#: src/Components/Setting/Setting.php:190
 msgid "SiteMap"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:491
+#: src/Components/Setting/Setting.php:474
 msgid "Sitemap generation is disabled."
-msgstr ""
-
-#: src/Components/Security/Security.php:89
-#: src/Components/Setting/Setting.php:195
-msgid "SiteMap Generator"
 msgstr ""
 
 #: templates/developer/w.php:113
 msgid "SKU System"
 msgstr ""
 
-#: src/Components/User/User.php:375 src/Components/User/User.php:417
+#: src/Components/User/User.php:373 src/Components/User/User.php:415
 msgid "Slug Param only allows English letters, numbers, and underscores"
 msgstr ""
 
@@ -3261,11 +3216,11 @@ msgstr ""
 msgid "Specifications"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:440
+#: src/Components/Setting/Setting.php:423
 msgid "Sponsor"
 msgstr ""
 
-#: src/Components/User/User.php:233
+#: src/Components/User/User.php:231
 msgid "Start and end credits must be positive integers."
 msgstr ""
 
@@ -3273,12 +3228,6 @@ msgstr ""
 #: src/Components/User/views/tab-level.php:160
 #: src/Components/User/views/tab-level.php:235
 msgid "Start Credits"
-msgstr ""
-
-#: src/Components/Setting/Setting.php:213
-msgid ""
-"Starting from version 5.5 of WordPress, the functionality of multi-level and "
-"multi-page XML sitemaps has been loaded as a default core feature."
 msgstr ""
 
 #: src/Components/Form/Includes/FormListTable.php:44
@@ -3424,11 +3373,11 @@ msgid ""
 "message is found."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:165
+#: src/Components/Setting/Setting.php:162
 msgid "The delay time in minutes for updating the online status. Default: 30."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:154
+#: src/Components/Setting/Setting.php:151
 msgid ""
 "The entire website will be immersed in a mournful mode with only black, "
 "white, and gray colors."
@@ -3452,7 +3401,7 @@ msgstr ""
 msgid "The Key that will call the latest posts. Default: n"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:161
+#: src/Components/Setting/Setting.php:158
 msgid "The links feature helps you manage your friendship links."
 msgstr ""
 
@@ -3499,9 +3448,9 @@ msgid ""
 "The number of items displayed per page in the table list of admin panel."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:188
+#: src/Components/Setting/Setting.php:182
 msgid ""
-"The number of posts to be generated for each post type.<br>Default: <code>"
+"The number of posts to be generated for each post type. Default <code>"
 "2000</code>."
 msgstr ""
 
@@ -3525,12 +3474,12 @@ msgid ""
 "cache hit, and code update mechanism."
 msgstr ""
 
-#: src/Components/User/User.php:194 src/Components/User/User.php:201
+#: src/Components/User/User.php:192 src/Components/User/User.php:199
 msgid "The role name has been initialized."
 msgstr ""
 
-#: src/Components/User/User.php:230 src/Components/User/User.php:264
-#: src/Components/User/User.php:299 src/Components/User/User.php:335
+#: src/Components/User/User.php:228 src/Components/User/User.php:262
+#: src/Components/User/User.php:297 src/Components/User/User.php:333
 msgid "The role slug can only contain English and numbers."
 msgstr ""
 
@@ -3539,7 +3488,7 @@ msgstr ""
 msgid "The site administrator email address on %s was changed."
 msgstr ""
 
-#: src/Components/User/User.php:240
+#: src/Components/User/User.php:238
 msgid "The start credits must be less than the end credits."
 msgstr ""
 
@@ -3722,7 +3671,7 @@ msgstr ""
 #: templates/developer/w.php:18 src/Utilities/Element.php:691
 #: src/Components/Developer/Developer.php:183
 #: src/Components/Developer/Developer.php:184
-#: src/Components/Setting/Setting.php:446
+#: src/Components/Setting/Setting.php:429
 #: src/Components/Customer/Customer.php:71
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
@@ -3789,7 +3738,6 @@ msgstr ""
 msgid "Unauthorized"
 msgstr ""
 
-#: src/Services/UserService.php:465
 #: src/Components/Form/Includes/FormListTable.php:199
 #: src/Components/User/Includes/ManagerListTable.php:160
 msgid "Unknown"
@@ -3828,19 +3776,12 @@ msgid "Updated"
 msgstr ""
 
 #: src/Utilities/Element.php:227 src/Utilities/Element.php:283
+#: src/Components/OSS/OSS.php:76 src/Components/OSS/OSS.php:93
 msgid "Upload"
 msgstr ""
 
 #: src/Components/OSS/OSS.php:83 src/Components/OSS/OSS.php:100
 msgid "Upload generated image sizes together with the original image."
-msgstr ""
-
-#: src/Components/OSS/OSS.php:83 src/Components/OSS/OSS.php:100
-msgid "Upload Thumbnails"
-msgstr ""
-
-#: src/Components/OSS/OSS.php:76 src/Components/OSS/OSS.php:93
-msgid "Upload URL"
 msgstr ""
 
 #: src/Components/Product/Product.php:123
@@ -4014,8 +3955,8 @@ msgstr ""
 msgid "Users click and view the article of the specified URL."
 msgstr ""
 
-#: src/Components/Security/Security.php:87
-msgid "Users SiteMap"
+#: src/Components/Security/Security.php:86
+msgid "Users Sitemap"
 msgstr ""
 
 #: src/Components/WechatOA/WechatOA.php:69
@@ -4040,8 +3981,8 @@ msgstr ""
 msgid "Verified Subscription Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:764
-#: src/Components/Developer/Developer.php:803
+#: src/Components/Developer/Developer.php:765
+#: src/Components/Developer/Developer.php:804
 msgid "Verify License"
 msgstr ""
 
@@ -4054,7 +3995,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: src/Services/PostService.php:394
+#: src/Services/PostService.php:382
 #, php-format
 msgid "View count migration completed: %d records in %.2f seconds."
 msgstr ""
@@ -4076,7 +4017,7 @@ msgstr ""
 msgid "View Statistics"
 msgstr ""
 
-#: src/Components/Post/Post.php:545 src/Components/Post/Post.php:559
+#: src/Components/Post/Post.php:533 src/Components/Post/Post.php:547
 msgid "Views"
 msgstr ""
 
@@ -4084,11 +4025,11 @@ msgstr ""
 msgid "Views Migration"
 msgstr ""
 
-#: src/Components/Post/Post.php:834
+#: src/Components/Post/Post.php:822
 msgid "Visible only when logged in"
 msgstr ""
 
-#: src/Components/Post/Post.php:835
+#: src/Components/Post/Post.php:823
 msgid "Visible only when not logged in"
 msgstr ""
 
@@ -4175,8 +4116,8 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: templates/user/register.php:213 src/Components/Developer/Developer.php:812
-#: src/Components/Developer/Developer.php:813 src/Components/Mail/Mail.php:81
+#: templates/user/register.php:213 src/Components/Developer/Developer.php:813
+#: src/Components/Developer/Developer.php:814 src/Components/Mail/Mail.php:81
 #: src/Components/Mail/Mail.php:84 src/Components/Customer/Customer.php:73
 msgid "Welcome"
 msgstr ""
@@ -4199,6 +4140,13 @@ msgstr ""
 
 #: src/Services/WechatOAService.php:708 src/Components/WechatOA/WechatOA.php:19
 msgid "Welcome! Thanks for your attention."
+msgstr ""
+
+#: src/Components/Setting/Setting.php:180
+#: src/Components/Setting/Setting.php:191
+msgid ""
+"When accessing the real-time data address, a cached data file will be "
+"automatically generated"
 msgstr ""
 
 #: src/Components/Customer/Customer.php:67
@@ -4305,23 +4253,19 @@ msgstr ""
 msgid "You are already logged in."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:169
-msgid "You can add custom SEO data for each page."
-msgstr ""
-
-#: src/Components/Post/Post.php:672
+#: src/Components/Post/Post.php:660
 msgid "You can add widgets to archive sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:663
+#: src/Components/Post/Post.php:651
 msgid "You can add widgets to homepage sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:699
+#: src/Components/Post/Post.php:687
 msgid "You can add widgets to page sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:690
+#: src/Components/Post/Post.php:678
 msgid "You can add widgets to post sidebar."
 msgstr ""
 
@@ -4329,7 +4273,7 @@ msgstr ""
 msgid "You can add widgets to product sidebar."
 msgstr ""
 
-#: src/Components/Post/Post.php:681
+#: src/Components/Post/Post.php:669
 msgid "You can add widgets to search sidebar."
 msgstr ""
 
@@ -4341,13 +4285,6 @@ msgstr ""
 msgid ""
 "You can choose a theme for low-end browsers that do not support ES2015 "
 "standard."
-msgstr ""
-
-#: src/Components/Setting/views/tab-sitemap.php:5
-msgid ""
-"You can choose to use G3-Sitemap instead of the default WordPress sitemap in "
-"the security settings, as the default sitemap may expose sensitive user "
-"information."
 msgstr ""
 
 #: src/Components/Themes/views/page-general.php:4
@@ -4380,12 +4317,6 @@ msgstr ""
 
 #: templates/mail/payment-success.php:8
 msgid "You can sign in to your account to view the order details."
-msgstr ""
-
-#: src/Components/Setting/Setting.php:218
-msgid ""
-"You can visit the current address to generate local cache files of the "
-"sitemap."
 msgstr ""
 
 #: src/Components/Performance/views/tab-fastcgi.php:47

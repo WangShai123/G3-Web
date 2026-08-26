@@ -173,23 +173,24 @@ class Setting extends Components {
                 ->readonlyUrl('atom', 'Atom ' . __('URL'), get_bloginfo('atom_url'))
                 ->tab('llm', 'LLM')
                 ->option(SystemService::LLM_OPTION_KEY, $this->llmDefaults(), false)
-                ->switch('llm', 'LLM', sprintf(
-                    '%s: <a href="%s" target="_blank">%s</a><br>%s: <a href="%s" target="_blank">%s</a>',
-                    __('Real-time data', 'G3'),
+                ->switch('llm', __('Real-time data', 'G3'), sprintf(
+                    '<a href="%s" target="_blank">%s</a><br>%s',
                     site_url('/helper/llm/endpoint'),
                     site_url('/helper/llm/endpoint'),
-                    __('Cache Data', 'G3'),
-                    site_url('/llm/llms.txt'),
-                    site_url('/llm/llms.txt')
+                    __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3')
                 ))
-                ->number('postsPerType', __('Count', 'G3'), __('The number of posts to be generated for each post type.<br>Default: <code>2000</code>.', 'G3'))
-                ->switch('manual', __('LLM Cache', 'G3'), __('Real-time data access no longer generates cache files. Please generate cache files manually for better performance.', 'G3'))
-                ->html('generator', __('LLM Generator', 'G3'), '<button class="j-button is-outline" type="button" id="generateLLM">' . __('Generate LLM Cache', 'G3') . '</button><p class="description">' . __('Click to generate llms.txt cache file.', 'G3') . '</p>')
+                ->number('postsPerType', __('Count', 'G3'), __('The number of posts to be generated for each post type. Default <code>2000</code>.', 'G3'))
+                ->switch('manual', __('Cache', 'G3'), sprintf(
+                    '<a href="%s" target="_blank">%s</a>.<br>%s',
+                    site_url('/llm/llms.txt'),
+                    site_url('/llm/llms.txt'),
+                    __('Share it to your friends, search engine or AI!', 'G3')
+                ))
+                ->html('generator', __('Generate Cache', 'G3'), '<button class="j-button is-outline" type="button" id="generateLLM">' . sprintf(__('Generate %s Cache', 'G3'), 'llms.txt') . '</button>')
                 ->tab('sitemap', __('SiteMap', 'G3'))
-                ->callback('sitemap', 'WP SiteMap', fn() => $this->renderWpSitemapField())
-                ->callback('g3-sitemap', 'G3-SiteMap', fn() => $this->renderG3SitemapField())
-                ->callback('local-sitemap', 'Local Sitemap', fn() => $this->renderLocalSitemapField())
-                ->html('sitemapGenerator', __('SiteMap Generator', 'G3'), '<p><button class="j-button is-outline" type="button" id="generateSitemap">' . __('Generate Sitemap', 'G3') . '</button></p><p class="description">' . __('Click to generate sitemap cache files.', 'G3') . '</p>'),
+                ->html('g3-sitemap', __('Real-time data', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3'), home_url('helper/sitemap/endpoint/'), home_url('helper/sitemap/endpoint/')))
+                ->html('local-sitemap', __('Cache', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('Share it to your friends, search engine or AI!', 'G3'), home_url('sitemap.xml'), home_url('sitemap.xml')))
+                ->html('sitemapGenerator', __('Generate Cache', 'G3'), '<p><button class="j-button is-outline" type="button" id="generateSitemap">' . sprintf(__('Generate %s Cache', 'G3'), 'sitemap.xml') . '</button></p>'),
         ];
     }
     protected function end(): void
@@ -203,21 +204,6 @@ class Setting extends Components {
     public function render(): void
     {
         $this->createPanel();
-    }
-    private function renderWpSitemapField(): string
-    {
-        $sitemap = home_url('wp-sitemap.xml');
-        return '<fieldset><legend class="screen-reader-text"><span>WP sitemap</span></legend><p><a href="' . esc_url($sitemap) . '" target="_blank">' . esc_html($sitemap) . '</a></p><p class="description">' . __('Starting from version 5.5 of WordPress, the functionality of multi-level and multi-page XML sitemaps has been loaded as a default core feature.', 'G3') . '</p></fieldset>';
-    }
-    private function renderG3SitemapField(): string
-    {
-        $g3Sitemap = home_url('helper/sitemap/endpoint/');
-        return '<fieldset><legend class="screen-reader-text"><span>G3-Sitemap</span></legend><p><a href="' . esc_url($g3Sitemap) . '" target="_blank">' . esc_html($g3Sitemap) . '</a></p><p class="description">' . __('Real-time data', 'G3') . ': ' . __('You can visit the current address to generate local cache files of the sitemap.', 'G3') . '</p></fieldset>';
-    }
-    private function renderLocalSitemapField(): string
-    {
-        $localFile = home_url('sitemap/index.html');
-        return '<fieldset><legend class="screen-reader-text"><span>Local Sitemap</span></legend><p><a href="' . esc_url($localFile) . '" target="_blank">' . esc_html($localFile) . '</a></p><p class="description">' . __('Cache Data', 'G3') . ': ' . __('<strong>Share it to your friends, robots or AI!</strong> You can access the local sitemap cache file through the current address.', 'G3') . '</p></fieldset>';
     }
     public function sadHandle(): void
     {

@@ -83,11 +83,11 @@ class Security extends Components {
                 ->input('url', __('Admin Login URL', 'G3'), __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Common::hash()))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'))
                 ->switch('upload', __('Reset Upload File Names', 'G3'), __('Rename the currently uploaded file using a timestamp.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('sitemap', __('Reset SiteMap', 'G3'), __('Remove the default sitemap of WordPress and use the G3 sitemap instead.', 'G3'))
-                ->switch('userSiteMap', __('Users SiteMap', 'G3'), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
+                ->switch('userSiteMap', __('Users Sitemap', 'G3'), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
+                ->switch('sitemap', 'G3-Sitemap', __('Remove the default sitemap of WordPress and use the G3 sitemap instead.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('siteMapGenerator', __('SiteMap Generator', 'G3'), sprintf(
-                    __('In the <a href="%s">site map settings page</a>, manually trigger to generate the site map cache file, instead of generating the site map cache file through the site map dynamic link.', 'G3'),
+                ->switch('siteMapGenerator', 'G3-SiteMap ' . __('Cache', 'G3'), sprintf(
+                    __('In the <a href="%s">site map settings page</a>, manually generate the sitemap cache file instead of automatically generating it by accessing the sitemap dynamic link.', 'G3'),
                     admin_url('admin.php?page=g3-settings&tab=sitemap')
                 ))
                 ->switch('restApi', 'REST API', __('Disable the WordPress built-in REST API to avoid exposing sensitive information. Only admin can visit the build-in REST API.', 'G3'))

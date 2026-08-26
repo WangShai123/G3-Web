@@ -31,7 +31,7 @@ class CopyrightService extends Service {
         return preg_replace(self::CLEAN_PATTERN, '', $text) ?? $text;
     }
 
-    public function embed(string $text, string $payload): string
+    public function embed(string $text, string $payload, int $position): string
     {
         $cleanText = $this->clean($text);
         if (empty($payload)) return $cleanText;
@@ -52,7 +52,12 @@ class CopyrightService extends Service {
             $invisibleStr .= $this->chars[$index];
         }
 
-        return $cleanText . $invisibleStr;
+        $length   = mb_strlen($cleanText, 'UTF-8');
+        $position = max(0, min($position, $length));
+
+        return mb_substr($cleanText, 0, $position, 'UTF-8') .
+            $invisibleStr .
+            mb_substr($cleanText, $position, null, 'UTF-8');
     }
 
     public function extract(string $text): string

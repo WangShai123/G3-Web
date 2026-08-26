@@ -398,10 +398,11 @@ class Post extends Components {
     {
         if (($this->option()['copyright'] ?? '0') !== '1') return;
 
-        // 防止无限循环和权限检查
         if (
+            (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) ||
             wp_is_post_revision($postId) ||
             wp_is_post_autosave($postId) ||
+            ($post->post_status ?? '') === 'auto-draft' ||
             !current_user_can('edit_post', $postId)
         ) {
             return;
@@ -447,9 +448,13 @@ class Post extends Components {
          * @param int $position
          * @return int
          */
-        $position = apply_filters('g3_filter_copyright_position', $position);
-        $length   = mb_strlen($post->post_content, 'UTF-8');
-        if (empty($post->post_content) || $length < $position) {
+        $position = max(0, (int) apply_filters('g3_filter_copyright_position', $position));
+
+        /** @var CopyrightService $copyrightService */
+        $copyrightService = $this->container->get(CopyrightService::class);
+        $cleanContent     = $copyrightService->clean($post->post_content);
+        $length           = mb_strlen($cleanContent, 'UTF-8');
+        if (empty($cleanContent) || $length < $position) {
             $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
                 'module'   => 'Post',
                 'postId'   => $postId,
@@ -485,14 +490,9 @@ class Post extends Components {
                 return;
             }
 
-            /** @var CopyrightService $copyrightService */
-            $copyrightService = $this->container->get(CopyrightService::class);
-            $cleanContent     = $copyrightService->clean($post->post_content);
             wp_cache_delete($postId, CopyrightService::CACHE_GROUP);
 
-            if (mb_strlen($cleanContent, 'UTF-8') < 50) return;
-
-            $newContent = $copyrightService->embed($cleanContent, $payload);
+            $newContent = $copyrightService->embed($cleanContent, $payload, $position);
 
             // check if the content has changed
             if ($newContent === $post->post_content) {
@@ -503,16 +503,10 @@ class Post extends Components {
                 return;
             }
 
-            // remove the hook to avoid infinite loop
-            remove_action('save_post', [$this, 'copyrightProtected'], 10);
-
             $updated = wp_update_post([
                 'ID'           => $postId,
                 'post_content' => $newContent
-            ], false); // false = 不触发wp_error
-
-            // restore the hook to continue processing
-            add_action('save_post', [$this, 'copyrightProtected'], 10, 1);
+            ], true, false);
 
             if (is_wp_error($updated)) {
                 $this->logger->error('Failed to update copyright protected post.', [
