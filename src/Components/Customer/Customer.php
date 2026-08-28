@@ -65,16 +65,16 @@ class Customer extends Components {
                 ->tab('settings', __('General'))
                 ->option(CustomerService::OPTION_KEY, CustomerService::defaultOption())
                 ->switch('enable', __('Enable'), __('When enabled, a floating customer service icon is shown on the frontend and the service console is available in admin.', 'G3'))
-                ->input('title', __('Title'), __('Chat window title.', 'G3'))
-                ->textarea('announcement', __('Announcement', 'G3'), __('The announcement prompt that is fixedly displayed in front of the chat window. HTML is allowed.', 'G3'))
+                ->input('title', __('Window Title', 'G3'))
+                ->textarea('announcement', __('Announcement', 'G3'), __('The announcement prompt that is fixedly displayed in front of the chat window.', 'G3'))
                 ->input('announcementLink', __('Announcement', 'G3') . ' ' . __('Link'), __('Optional URL opened when the announcement is clicked.', 'G3'))
-                ->textarea('welcomeTip', __('Tip', 'G3'), __('Frontend tip shown before conversation messages. HTML is allowed.', 'G3'))
+                ->textarea('welcomeTip', __('Tip', 'G3'), __('HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('welcomeMessage', __('Welcome', 'G3') . ' ' . __('Message', 'G3'), __('Welcome message shown when a visitor opens the chat. HTML is allowed.', 'G3'))
+                ->textarea('welcomeMessage', __('Welcome', 'G3') . ' ' . __('Message', 'G3'), __('Welcome message shown when a visitor opens the chat.', 'G3') . __('HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('offlineMessage', __('Offline', 'G3') . ' ' . __('Message', 'G3'), __('Automated message created outside working hours. HTML is allowed.', 'G3'))
+                ->textarea('offlineMessage', __('Offline', 'G3') . ' ' . __('Message', 'G3'), __('Messages replied automatically during non-working hours.', 'G3') . __('HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
-                ->textarea('fallbackMessage', 'Fallback ' . __('Message', 'G3'), __('Fallback message returned when customer service automation or business handling fails. HTML is allowed.', 'G3'))
+                ->textarea('fallbackMessage', 'Fallback ' . __('Message', 'G3'), __('When the system encounters a fault, an automatic reply message will be sent.', 'G3') . __('HTML is allowed.', 'G3'))
                 ->rowClass('advanced')
                 ->checkbox('workDays', __('Working Days', 'G3'), [
                     '1' => __('Monday'),
@@ -84,18 +84,19 @@ class Customer extends Components {
                     '5' => __('Friday'),
                     '6' => __('Saturday'),
                     '7' => __('Sunday'),
-                ], __('Days when agents are expected to be online.', 'G3'))
+                ])
                 ->rowClass('advanced')
-                ->time('workStart', __('Work Start', 'G3'), 'HH:MM.')
+                ->time('workStart', __('Work Start', 'G3'))
                 ->rowClass('advanced')
-                ->time('workEnd', __('Work End', 'G3'), 'HH:MM.')
+                ->time('workEnd', __('Work End', 'G3'))
                 ->rowClass('advanced')
                 ->input('guestName', __('Guest Name', 'G3'), __('Default display name for anonymous visitors.', 'G3'))
                 ->number('retentionDays', __('Retention Days', 'G3'), __('<code>CustomerMessageJob</code> removes data older than this many days. Default: 180.', 'G3'))
                 ->rowClass('advanced')
-                ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45, range: 30-60.', 'G3'))
+                ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45. Adviced range: 30-60.', 'G3'))
                 ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason. Default: 120.', 'G3'))
                 ->rowClass('advanced')
+                ->switch('icon', __('Icon'), __('Use the default icon shown on the frontend.', 'G3'))
         ];
     }
     protected function adminPanelPage(): string

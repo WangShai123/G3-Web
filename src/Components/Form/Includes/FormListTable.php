@@ -143,7 +143,7 @@ class FormListTable extends WP_List_Table {
     public function column_name($item): string
     {
         $actions = [
-            'view'  => sprintf('<span data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"content"}, __('View')),
+            'view'  => sprintf('<span data-name="%s" data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"name"}, $item->{"content"}, __('View')),
             'reply' => sprintf(
                 '<a class="reply-field" href="mailto:%s?subject=%s&body=%s">%s</a>',
                 htmlspecialchars($item->{"email"}, ENT_QUOTES, 'UTF-8'),

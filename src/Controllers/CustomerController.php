@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Controllers;
-
 use JEALER\G3\Core\Attributes\Middleware;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Schema;
@@ -26,7 +25,7 @@ class CustomerController extends Controller {
     }
 
     #[RestRouter(namespace: 'api/customer', route: 'v1/stream/session', methods: 'POST')]
-    #[Middleware(RateLimitMiddleware::class, [30, 60])]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function streamSession(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $result = $this->service->createViewerStreamSession($request->get_json_params() ?: []);
@@ -34,7 +33,7 @@ class CustomerController extends Controller {
     }
 
     #[RestRouter(namespace: 'api/customer', route: 'v1/conversations/start', methods: 'POST')]
-    #[Middleware(RateLimitMiddleware::class, [30, 60])]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [

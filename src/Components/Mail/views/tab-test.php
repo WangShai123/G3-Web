@@ -6,7 +6,7 @@ use JEALER\G3\Services\MailerService;
 use JEALER\G3\Utilities\Message;
 
 echo Element::tip(
-    __('<div>Test Email will be sent according to <a href="/wp-admin/admin.php?page=performance">Performance Settings</a>. If using the default synchronous mode, the email sending will take a long time, please wait patiently.</div>', 'G3'),
+    sprintf('<div>' . __('Test Email will be sent according to <a href="%s">Performance Settings</a>.', 'G3') . '</div>', admin_url('admin.php?page=performance')),
     '',
     'default',
     'mt-4'

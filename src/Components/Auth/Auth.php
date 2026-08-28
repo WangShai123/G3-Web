@@ -44,7 +44,7 @@ class Auth extends Components {
             $this->panel('auth-settings', __('Login', 'G3'))
                 ->tab('general', __('General'))
                 ->option(AuthService::OPTION_KEY, AuthService::optionDefaults())
-                ->switch('override', __('Override WP-Auth', 'G3'), __('Replace wordPress native auth pages: login, registration and password-reset URLs with custom auth pages.', 'G3'))
+                ->switch('override', __('Override WP-Auth', 'G3'), __('Replace the native WordPress auth pages: login, registration, forget-password, and password-reset, with the G3-Auth page.', 'G3'))
                 ->select('code', __('Registration Code', 'G3'), [
                     '0' => __('Disabled'),
                     '1' => __('Invitation Code', 'G3'),

@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Services;
-
 use JEALER\G3\Core\IM\IM;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\Date;
@@ -35,15 +34,15 @@ class IMService extends Service {
         }
 
         $insert = [
-            'type'              => $type,
-            'subject'           => mb_substr($subject, 0, 255),
-            'state'             => sanitize_key((string) ($data['state'] ?? IM::CONVERSATION_OPEN)),
-            'source'            => sanitize_key((string) ($data['source'] ?? 'web')),
-            'ip_address'        => System::ip() ?: null,
-            'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? mb_substr(sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 0, 255) : null,
-            'meta'              => $this->encode($this->sanitizeMeta($data['meta'] ?? [])),
-            'created_at'        => $now,
-            'updated_at'        => $now,
+            'type'       => $type,
+            'subject'    => mb_substr($subject, 0, 255),
+            'state'      => sanitize_key((string) ($data['state'] ?? IM::CONVERSATION_OPEN)),
+            'source'     => sanitize_key((string) ($data['source'] ?? 'web')),
+            'ip_address' => System::ip() ?: null,
+            'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? mb_substr(sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 0, 255) : null,
+            'meta'       => $this->encode($this->sanitizeMeta($data['meta'] ?? [])),
+            'created_at' => $now,
+            'updated_at' => $now,
         ];
 
         $result = $this->wpdb->insert($this->conversationsTable, $insert);
@@ -137,7 +136,7 @@ class IMService extends Service {
                 return new WP_Error('db_insert_error', 'Failed to save message.', ['status' => 500]);
             }
 
-            $messageId   = (int) $this->wpdb->insert_id;
+            $messageId = (int) $this->wpdb->insert_id;
             $this->wpdb->query($this->wpdb->prepare(
                 "UPDATE {$this->conversationsTable}
                  SET `last_message_id` = %d,
@@ -157,7 +156,8 @@ class IMService extends Service {
             ));
 
             $this->wpdb->query('COMMIT');
-        } catch (Throwable $throwable) {
+        }
+        catch (Throwable $throwable) {
             $this->wpdb->query('ROLLBACK');
             return new WP_Error('db_insert_error', $throwable->getMessage(), ['status' => 500]);
         }
@@ -343,7 +343,8 @@ class IMService extends Service {
         try {
             $redis = $this->redis();
             $redis?->setex('g3:im:presence:' . sanitize_key($scope) . ':' . sanitize_key((string) $id), 60, (string) time());
-        } catch (Throwable) {
+        }
+        catch (Throwable) {
         }
     }
 
@@ -368,11 +369,11 @@ class IMService extends Service {
             return ['cutoff' => $cutoff, 'conversations' => 0, 'messages' => 0, 'participants' => 0, 'events' => 0];
         }
 
-        $ids          = array_map('intval', $ids);
-        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-        $messages     = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->messagesTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
-        $participants = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->participantsTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
-        $events       = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->eventsTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
+        $ids           = array_map('intval', $ids);
+        $placeholders  = implode(',', array_fill(0, count($ids), '%d'));
+        $messages      = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->messagesTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
+        $participants  = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->participantsTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
+        $events        = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->eventsTable} WHERE `conversation_id` IN ({$placeholders})", $ids));
         $conversations = (int) $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->conversationsTable} WHERE `id` IN ({$placeholders})", $ids));
 
         return [
@@ -389,7 +390,7 @@ class IMService extends Service {
         $minutes = max(1, min(14400, $minutes));
         $limit   = min(1000, max(1, $limit));
         $cutoff  = gmdate('Y-m-d H:i:s', time() - ($minutes * MINUTE_IN_SECONDS));
-        $ids = $this->wpdb->get_col($this->wpdb->prepare(
+        $ids     = $this->wpdb->get_col($this->wpdb->prepare(
             "SELECT `id`
              FROM {$this->conversationsTable}
              WHERE `type` = %s
@@ -519,25 +520,25 @@ class IMService extends Service {
     private function formatConversation(array $row): array
     {
         return [
-            'id'                   => (int) $row['id'],
-            'type'                 => $row['type'],
-            'subject'              => $row['subject'],
-            'state'                => $row['state'],
-            'priority'             => (int) $row['priority'],
-            'source'               => $row['source'],
-            'last_message_id'      => $row['last_message_id'] !== null ? (int) $row['last_message_id'] : null,
-            'last_msg_seq'         => (int) $row['last_msg_seq'],
-            'last_msg_type'        => $row['last_msg_type'],
-            'last_msg_preview'     => $row['last_msg_preview'],
-            'last_message_at'      => $this->formatDateTime($row['last_message_at'] ?? null),
-            'last_message_at_utc'  => $row['last_message_at'],
-            'meta'                 => $this->decode($row['meta'] ?? ''),
-            'created_at'           => $this->formatDateTime($row['created_at'] ?? null),
-            'created_at_utc'       => $row['created_at'],
-            'updated_at'           => $this->formatDateTime($row['updated_at'] ?? null),
-            'updated_at_utc'       => $row['updated_at'],
-            'closed_at'            => $this->formatDateTime($row['closed_at'] ?? null),
-            'closed_at_utc'        => $row['closed_at'],
+            'id'                  => (int) $row['id'],
+            'type'                => $row['type'],
+            'subject'             => $row['subject'],
+            'state'               => $row['state'],
+            'priority'            => (int) $row['priority'],
+            'source'              => $row['source'],
+            'last_message_id'     => $row['last_message_id'] !== null ? (int) $row['last_message_id'] : null,
+            'last_msg_seq'        => (int) $row['last_msg_seq'],
+            'last_msg_type'       => $row['last_msg_type'],
+            'last_msg_preview'    => $row['last_msg_preview'],
+            'last_message_at'     => $this->formatDateTime($row['last_message_at'] ?? null),
+            'last_message_at_utc' => $row['last_message_at'],
+            'meta'                => $this->decode($row['meta'] ?? ''),
+            'created_at'          => $this->formatDateTime($row['created_at'] ?? null),
+            'created_at_utc'      => $row['created_at'],
+            'updated_at'          => $this->formatDateTime($row['updated_at'] ?? null),
+            'updated_at_utc'      => $row['updated_at'],
+            'closed_at'           => $this->formatDateTime($row['closed_at'] ?? null),
+            'closed_at_utc'       => $row['closed_at'],
         ];
     }
 
@@ -692,7 +693,8 @@ class IMService extends Service {
             $redis->connect('127.0.0.1', 6379, 0.2);
             $redis->select(DBService::IM_REDIS_DB);
             return $redis;
-        } catch (Throwable) {
+        }
+        catch (Throwable) {
             return null;
         }
     }

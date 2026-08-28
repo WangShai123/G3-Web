@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Services;
-
 use JEALER\G3\Core\Service\Service;
 use WP_Error;
 

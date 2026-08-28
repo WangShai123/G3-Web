@@ -97,9 +97,18 @@ class Developer extends Components {
                 ->switch('pluginsPage', __('Plugins Page', 'G3'))
                 ->switch('permalink', __('Permalinks', 'G3'))
                 ->switch('wpHead', 'WP Head', __('Clean the data in wp head.', 'G3'))
-                ->switch('posts', __('Posts'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Posts', 'posts') . '. ' . __('Slug') . ': <code>posts</code>.')
-                ->switch('pages', __('Pages'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Pages', 'pages') . '. ' . __('Slug') . ': <code>pages</code>.')
+                ->switch('posts', __('Posts'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Posts', 'post') . '. ' . __('Slug') . ': <code>posts</code>.')
+
+                /**
+                 * @deprecated post-type site-page
+                 */
+                // ->switch('pages', __('Pages'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Pages', 'pages') . '. ' . __('Slug') . ': <code>pages</code>.')
+
+                /**
+                 * @deprecated custom menus
+                 */
                 // ->switch('menus', __('Menus'), sprintf(__('Use %s instead of built-in %s', 'G3'), 'G3-Menus', __('Menus') . '.'))
+
                 ->checkbox('dashboard', __('Dashboard'), [
                     '0' => __('Welcome Panel', 'G3'),
                     '1' => __('Site Health Status'),
@@ -277,9 +286,13 @@ class Developer extends Components {
         if ($v['posts'] ?? '0' === '1') {
             remove_menu_page('edit.php');
         }
-        if ($v['pages'] ?? '0' === '1') {
-            remove_menu_page('edit.php?post_type=page');
-        }
+
+        /**
+         * @deprecated post-type site-page
+         */
+        // if ($v['pages'] ?? '0' === '1') {
+        //     remove_menu_page('edit.php?post_type=page');
+        // }
     }
     protected function postType()
     {
@@ -302,25 +315,29 @@ class Developer extends Components {
                 'menu_position' => 4
             ]);
         }
-        if ($v['pages'] ?? '0' === '1') {
-            register_post_type('site-page', [
-                'labels'        => [
-                    'name'          => __('Pages'),
-                    'singular_name' => __('Page'),
-                ],
-                'public'        => true,
-                'show_in_rest'  => true,
-                'hierarchical'  => true,
-                'supports'      => ['title', 'editor', 'comments', 'author', 'thumbnail', 'page-attributes'],
-                'template'      => [],
-                'rewrite'       => [
-                    'slug'       => 'pages',
-                    'with_front' => false
-                ],
-                'menu_icon'     => 'dashicons-admin-page',
-                'menu_position' => 9
-            ]);
-        }
+
+        /**
+         * @deprecated post-type site-page
+         */
+        // if ($v['pages'] ?? '0' === '1') {
+        //     register_post_type('site-page', [
+        //         'labels'        => [
+        //             'name'          => __('Pages'),
+        //             'singular_name' => __('Page'),
+        //         ],
+        //         'public'        => true,
+        //         'show_in_rest'  => true,
+        //         'hierarchical'  => true,
+        //         'supports'      => ['title', 'editor', 'comments', 'author', 'thumbnail', 'page-attributes'],
+        //         'template'      => [],
+        //         'rewrite'       => [
+        //             'slug'       => 'pages',
+        //             'with_front' => false
+        //         ],
+        //         'menu_icon'     => 'dashicons-admin-page',
+        //         'menu_position' => 9
+        //     ]);
+        // }
     }
     public function handleLoginHeaderUrl(string $url): string
     {

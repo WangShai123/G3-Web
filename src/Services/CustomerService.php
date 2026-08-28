@@ -4,6 +4,7 @@ namespace JEALER\G3\Services;
 use JEALER\G3\Core\Customer\CustomerConversation;
 use JEALER\G3\Core\IM\IM;
 use JEALER\G3\Core\Service\Service;
+use JEALER\G3\Utilities\Date;
 use Throwable;
 use WP_Error;
 
@@ -13,7 +14,7 @@ class CustomerService extends Service {
     public const CACHE_GROUP     = 'g3_customer_service';
 
     private IMService $im;
-    private string $customerConversationsTable;
+    private string    $customerConversationsTable;
 
     public function __construct()
     {
@@ -26,20 +27,21 @@ class CustomerService extends Service {
     {
         return [
             'enable'           => '0',
-            'title'            => __('Online Service'),
+            'title'            => 'Online Service',
             'announcement'     => '',
             'announcementLink' => '',
-            'welcomeTip'       => __('Hello, how can we help you?'),
-            'welcomeMessage'   => __(''),
-            'offlineMessage'   => __('Please leave a message. This is outside of working hours. We will reply as soon as possible.'),
+            'welcomeTip'       => 'Hello, how can we help you?',
+            'welcomeMessage'   => '',
+            'offlineMessage'   => 'Please leave a message. This is outside of working hours. We will reply as soon as possible.',
             'workDays'         => ['1', '2', '3', '4', '5'],
             'workStart'        => '09:00',
             'workEnd'          => '18:00',
-            'guestName'        => __('Guest'),
+            'guestName'        => 'Guest',
             'retentionDays'    => 180,
             'heartbeatSeconds' => 45,
             'timeoutMinutes'   => 120,
-            'fallbackMessage'  => __('The service is temporarily unavailable. Please try again later.'),
+            'fallbackMessage'  => 'The service is temporarily unavailable. Please try again later.',
+            'icon'             => '1',
         ];
     }
 
@@ -272,11 +274,11 @@ class CustomerService extends Service {
             return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
         }
 
-        $result = $this->im->markRead($conversationId, $messageId, $identity);
+        $result  = $this->im->markRead($conversationId, $messageId, $identity);
         $counter = $identity['role'] === IM::ROLE_AGENT ? 'unread_agent' : 'unread_customer';
         $this->wpdb->update($this->customerConversationsTable, [
             $counter     => 0,
-            'updated_at' => gmdate('Y-m-d H:i:s'),
+            'updated_at' => Date::utcDateTime(),
         ], ['conversation_id' => $conversationId]);
 
         return $result;
@@ -301,7 +303,8 @@ class CustomerService extends Service {
     {
         try {
             return $this->im->latestEventId(IM::TYPE_CUSTOMER_SERVICE);
-        } catch (Throwable) {
+        }
+        catch (Throwable) {
             return 0;
         }
     }
@@ -468,16 +471,16 @@ class CustomerService extends Service {
 
     private function createCustomerConversation(int $conversationId, array $identity): void
     {
-        $now = gmdate('Y-m-d H:i:s');
+        $now = Date::utcDateTime();
         $this->wpdb->insert($this->customerConversationsTable, [
-            'conversation_id'    => $conversationId,
-            'customer_user_id'   => $identity['actor_type'] === IM::ACTOR_USER ? ($identity['user_id'] ?: null) : null,
-            'customer_guest_id'  => $identity['actor_type'] === IM::ACTOR_GUEST ? $identity['actor_id'] : null,
-            'status'             => CustomerConversation::STATUS_PENDING,
-            'wrap_lock_mode'     => CustomerConversation::WRAP_LOCK_NONE,
+            'conversation_id'      => $conversationId,
+            'customer_user_id'     => $identity['actor_type'] === IM::ACTOR_USER ? ($identity['user_id'] ?: null) : null,
+            'customer_guest_id'    => $identity['actor_type'] === IM::ACTOR_GUEST ? $identity['actor_id'] : null,
+            'status'               => CustomerConversation::STATUS_PENDING,
+            'wrap_lock_mode'       => CustomerConversation::WRAP_LOCK_NONE,
             'last_customer_msg_at' => null,
-            'created_at'         => $now,
-            'updated_at'         => $now,
+            'created_at'           => $now,
+            'updated_at'           => $now,
         ]);
     }
 
@@ -569,7 +572,7 @@ class CustomerService extends Service {
     {
         $this->wpdb->update($this->customerConversationsTable, [
             'assignee_user_id' => $userId > 0 ? $userId : null,
-            'updated_at'       => gmdate('Y-m-d H:i:s'),
+            'updated_at'       => Date::utcDateTime(),
         ], ['conversation_id' => $conversationId]);
     }
 
@@ -584,7 +587,7 @@ class CustomerService extends Service {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
 
-        $now         = gmdate('Y-m-d H:i:s');
+        $now         = Date::utcDateTime();
         $targetState = $status === CustomerConversation::STATUS_CLOSED ? IM::CONVERSATION_CLOSED : IM::CONVERSATION_OPEN;
         $update      = [
             'status'     => $status,
@@ -653,7 +656,7 @@ class CustomerService extends Service {
 
     private function afterMessageCommitted(int $conversationId, array $identity, array $message, ?array $conversation): ?array
     {
-        $now      = gmdate('Y-m-d H:i:s');
+        $now      = Date::utcDateTime();
         $isAgent  = $identity['role'] === IM::ROLE_AGENT;
         $isSystem = $identity['role'] === IM::ROLE_SYSTEM;
         $update   = [
@@ -934,7 +937,8 @@ class CustomerService extends Service {
     {
         try {
             return $this->container->get('loader')->admin();
-        } catch (Throwable) {
+        }
+        catch (Throwable) {
             return false;
         }
     }

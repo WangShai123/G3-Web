@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3-Web\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2026-08-26 15:31+0000\n"
+"PO-Revision-Date: 2026-08-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -69,7 +69,7 @@ msgstr ""
 "3. 创建 <code>object-cache.php</code> 对象存储文件：在 管理后台 > 开发者模式 > 数据刷新 选项页中，点击 "
 "\"生成 object-cache.php 文件\" 按钮，为 WordPress 增加对象缓存功能。"
 
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:193
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
@@ -79,22 +79,7 @@ msgstr "：如果<code>checkbox</code>未勾选，它不会提交任何值。"
 msgid ""
 "<code>CustomerMessageJob</code> removes data older than this many days. "
 "Default: 180."
-msgstr "<code>CustomerMessageJob</code> 会删除超过此天数（默认为180天）的数据。"
-
-#: src/Components/Mail/views/tab-test.php:9
-#| msgid ""
-#| "<div>Test Email will be sent according to <a href=\"/wp-admin/admin.php?"
-#| "page=performance&tab=queue\">Performance Settings</a>. If using the "
-#| "default synchronous mode, the email sending will take a long time, please "
-#| "wait patiently.</div>"
-msgid ""
-"<div>Test Email will be sent according to <a href=\"/wp-admin/admin.php?"
-"page=performance\">Performance Settings</a>. If using the default "
-"synchronous mode, the email sending will take a long time, please wait "
-"patiently.</div>"
-msgstr ""
-"<div>测试邮件将按照 <a href=\"/wp-admin/admin.php?page=performance\">性能设置</a> "
-"选择发送模式。如果使用的是默认同步模式，邮件发送会耗时较长，请耐心等待。</div>"
+msgstr "<code>CustomerMessageJob</code> 会删除超过此天数的数据。默认 180。"
 
 #: src/Core/Activator.php:125
 #, php-format
@@ -410,7 +395,7 @@ msgid ""
 "the live broadcast."
 msgstr "已授权用户，每季度可以在直播中，获得一次免费的业务顾问服务。"
 
-#: src/Components/Developer/Developer.php:140
+#: src/Components/Developer/Developer.php:149
 msgid "Auto Backup"
 msgstr "自动备份"
 
@@ -418,11 +403,7 @@ msgstr "自动备份"
 msgid "Auto Notice"
 msgstr "自动声明"
 
-#: src/Components/Customer/Customer.php:75
-msgid "Automated message created outside working hours. HTML is allowed."
-msgstr "非工作时间自动生成的消息。允许使用 HTML 格式。"
-
-#: src/Components/Mail/Mail.php:86 src/Components/Mail/Mail.php:233
+#: src/Components/Mail/Mail.php:233
 msgid "Automatic Updates Debug"
 msgstr ""
 
@@ -450,25 +431,19 @@ msgstr "余额管理"
 
 #: src/Components/Wallet/Wallet.php:47
 msgid "Bank transfer fees"
-msgstr ""
+msgstr "银行转账费"
 
 #: src/Services/WechatOAService.php:1125
 msgid "Batch insert keywords failed"
 msgstr "批量插入关键词失败"
 
+#: src/Components/Auth/views/tab-general.php:5
 #: src/Components/WechatOA/views/tab-general.php:5
 #, php-format
 msgid ""
-"Before activating the service, please ensure that you have completed <a "
-"href=\"%s\">the open platform setup</a>."
-msgstr "启用服务之前，请确保已经完成<a href=\"%s\">开放平台设置</a>。"
-
-#: src/Components/Auth/views/tab-general.php:5
-#, php-format
-msgid ""
-"Before enabling related login functions, please ensure to complete the "
-"relevant <a href=\"%s\">Open Platform</a> settings."
-msgstr "启用相关登录功能前，请确保完成相关<a href=\"%s\">开放平台</a>设置。"
+"Before enabling related features, please ensure to complete the <a "
+"href=\"%s\">%s</a> settings."
+msgstr "启用相关功能前，请确保完成相关 <a href=\"%s\">%s</a> 设置。"
 
 #: src/Components/Post/Post.php:137
 msgid ""
@@ -539,7 +514,7 @@ msgstr "品牌"
 msgid "Brands"
 msgstr "品牌"
 
-#: src/Components/Developer/Developer.php:149
+#: src/Components/Developer/Developer.php:158
 msgid "Build Theme"
 msgstr "创建主题"
 
@@ -589,7 +564,7 @@ msgstr ""
 msgid "Cache"
 msgstr "缓存"
 
-#: src/Components/Developer/Developer.php:138
+#: src/Components/Developer/Developer.php:147
 msgid "Cache Data"
 msgstr "缓存数据"
 
@@ -622,15 +597,11 @@ msgstr "购物车"
 msgid "Categories"
 msgstr "分类"
 
-#: src/Components/Developer/Developer.php:172
+#: src/Components/Developer/Developer.php:181
 msgid "Change the direction"
 msgstr "换个方向"
 
-#: src/Components/Customer/Customer.php:68
-msgid "Chat window title."
-msgstr "聊天窗口标题。"
-
-#: src/Components/Developer/Developer.php:177
+#: src/Components/Developer/Developer.php:186
 msgid "Checkbox field"
 msgstr "多选框字段"
 
@@ -669,7 +640,11 @@ msgstr "评论列表"
 
 #: src/Components/Mail/Mail.php:87
 msgid "Comment Moderation"
-msgstr ""
+msgstr "评论审核"
+
+#: src/Components/Mail/Mail.php:83
+msgid "comment replied to"
+msgstr "评论被回复"
 
 #: templates/developer/w.php:110
 msgid "Community System"
@@ -762,7 +737,7 @@ msgstr "版权保护"
 msgid "Count"
 msgstr "数量"
 
-#: src/Components/Developer/Developer.php:156
+#: src/Components/Developer/Developer.php:165
 msgid "Counter input"
 msgstr "计数器输入框"
 
@@ -910,10 +885,6 @@ msgstr "日"
 msgid "Days must be greater than 0"
 msgstr "天数必需大于0"
 
-#: src/Components/Customer/Customer.php:87
-msgid "Days when agents are expected to be online."
-msgstr "客服服务工作日。"
-
 #: src/Components/Setting/Setting.php:152
 msgid "Default Avatar"
 msgstr "默认头像"
@@ -1036,8 +1007,8 @@ msgid "Desktop Header Secondary Menu"
 msgstr "桌面主题头部次级菜单"
 
 #: templates/developer/w.php:136 src/Components/Developer/Developer.php:79
-#: src/Components/Developer/Developer.php:268
-#: src/Components/Developer/Developer.php:269
+#: src/Components/Developer/Developer.php:277
+#: src/Components/Developer/Developer.php:278
 #| msgid "Development Mode"
 msgid "Developer Mode"
 msgstr "开发者模式"
@@ -1104,6 +1075,10 @@ msgstr "下载"
 #: src/Services/ProductService.php:80
 msgid "Download Product"
 msgstr "下载类商品"
+
+#: src/Components/Mail/Mail.php:68 src/Components/Mail/Mail.php:70
+msgid "e.g."
+msgstr "例如"
 
 #: templates/developer/w.php:188
 msgid ""
@@ -1181,7 +1156,7 @@ msgstr "邮件队列"
 msgid "Email Test"
 msgstr "邮件测试"
 
-#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:184
+#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:193
 #: src/Components/OSS/OSS.php:67 src/Components/OSS/OSS.php:87
 msgid "Enable"
 msgstr "启用"
@@ -1192,12 +1167,9 @@ msgid ""
 "and English."
 msgstr "根据用户偏好启用语言切换功能。仅支持中文和英文。"
 
-#: src/Components/Form/Form.php:63
-#, php-format
-msgid ""
-"Enable the <a href=\"%s\">Form</a> feature, user can contact us on the form "
-"page."
-msgstr "启用<a href=\"%s\">表单</a>功能，用户可以在表单页面联系我们。"
+#: src/Components/Mail/Mail.php:72
+msgid "Encryption"
+msgstr "加密"
 
 #: src/Components/User/views/tab-level.php:65
 #: src/Components/User/views/tab-level.php:169
@@ -1271,7 +1243,7 @@ msgstr "订单删除失败"
 msgid "Failed to generate LLM cache."
 msgstr "LLM缓存生成失败。"
 
-#: src/Components/Developer/Developer.php:486
+#: src/Components/Developer/Developer.php:503
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
@@ -1285,12 +1257,6 @@ msgstr "微信授权URL创建失败。"
 #: src/Components/Auth/Auth.php:147
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr "失败。建议一次性创建数量为1-20."
-
-#: src/Components/Customer/Customer.php:77
-msgid ""
-"Fallback message returned when customer service automation or business "
-"handling fails. HTML is allowed."
-msgstr "当业务系统出现故障时，系统自动返回的回退消息。允许使用HTML格式。"
 
 #: src/Components/Post/Post.php:339
 msgid "Favorite"
@@ -1340,7 +1306,7 @@ msgstr "数据 %s 必需是 %s 的其中之一。"
 msgid "File Cache"
 msgstr "文件缓存"
 
-#: src/Components/Developer/Developer.php:154
+#: src/Components/Developer/Developer.php:163
 msgid "File upload"
 msgstr "文件上传"
 
@@ -1361,25 +1327,25 @@ msgstr "金融"
 msgid "Flexible Payment Terms"
 msgstr "灵活的付款方式"
 
-#: src/Components/Developer/Developer.php:398
+#: src/Components/Developer/Developer.php:415
 msgid "Flush all the cache data."
 msgstr "清空所有缓存数据。"
 
-#: src/Components/Developer/Developer.php:380
+#: src/Components/Developer/Developer.php:397
 msgid "Flush and fix the rewrite rules."
-msgstr "修复刷新WordPress重写规则。"
+msgstr "修复刷新重写规则。"
 
-#: src/Components/Developer/Developer.php:392
+#: src/Components/Developer/Developer.php:409
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr "清空当前设置选项数据，并恢复成上一次备份的数据。备份文件目录："
 
-#: src/Components/Developer/Developer.php:397
+#: src/Components/Developer/Developer.php:414
 msgid "Flush Cache"
 msgstr "清空缓存"
 
-#: src/Components/Developer/Developer.php:135
+#: src/Components/Developer/Developer.php:144
 msgid "Flush Data"
 msgstr "数据刷新"
 
@@ -1387,15 +1353,15 @@ msgstr "数据刷新"
 msgid "Flush Menus Online"
 msgstr "清空线上菜单"
 
-#: src/Components/Developer/Developer.php:385
+#: src/Components/Developer/Developer.php:402
 msgid "Flush REST routes cache"
 msgstr "刷新 REST 路由缓存"
 
-#: src/Components/Developer/Developer.php:379
+#: src/Components/Developer/Developer.php:396
 msgid "Flush Rewrite Rules"
 msgstr "刷新重写规则"
 
-#: src/Components/Developer/Developer.php:391
+#: src/Components/Developer/Developer.php:408
 msgid "Flush Setting Options"
 msgstr "刷新设置选项"
 
@@ -1483,7 +1449,7 @@ msgstr "禁止访问，因为请求过于频繁。请在 %s 秒后重试。"
 msgid "Form"
 msgstr "表单"
 
-#: src/Components/Developer/Developer.php:151
+#: src/Components/Developer/Developer.php:160
 msgid "Form Demo"
 msgstr "表单演示"
 
@@ -1513,11 +1479,7 @@ msgstr "从 PHP 配置文件（如 enable-php-83.conf）中确认和修改这个
 msgid "Frontend Editor"
 msgstr "前端编辑器"
 
-#: src/Components/Customer/Customer.php:71
-msgid "Frontend tip shown before conversation messages. HTML is allowed."
-msgstr "对话消息前显示的提示信息。允许使用HTML格式。"
-
-#: src/Components/Developer/Developer.php:786
+#: src/Components/Developer/Developer.php:803
 msgid "G3 License Code"
 msgstr "G3 授权码"
 
@@ -1591,11 +1553,11 @@ msgstr "生成缓存"
 msgid "Generate Invitation Code"
 msgstr "生成邀请码"
 
-#: src/Components/Developer/Developer.php:402
+#: src/Components/Developer/Developer.php:419
 msgid "Generate object-cache.php"
 msgstr "生成 object-cache.php 文件"
 
-#: src/Components/Developer/Developer.php:403
+#: src/Components/Developer/Developer.php:420
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1630,10 +1592,13 @@ msgid "Heartbeat"
 msgstr "心跳"
 
 #: src/Components/Customer/Customer.php:96
+#| msgid ""
+#| "Heartbeat interval in seconds. It is only used to keep the SSE connection "
+#| "alive. Default: 45, range: 30-60."
 msgid ""
 "Heartbeat interval in seconds. It is only used to keep the SSE connection "
-"alive. Default: 45, range: 30-60."
-msgstr "心跳间隔（以秒为单位）。该参数仅用于保持SSE连接活跃。默认值：45，范围：30-60。"
+"alive. Default: 45. Adviced range: 30-60."
+msgstr "心跳间隔（单位 秒）。该参数仅用于保持 SSE 连接活跃。默认 45，范围 30-60。"
 
 #: src/Components/Developer/Developer.php:89
 msgid "Help Link"
@@ -1657,13 +1622,20 @@ msgid ""
 "How to estimate the actual number of PHP files in your WordPress project?"
 msgstr "如何估算您的 WordPress 项目中实际 PHP 文件数量？"
 
-#: src/Components/Developer/Developer.php:187
+#: src/Components/Developer/Developer.php:196
 msgid "HTML Demo"
 msgstr "HTML演示"
 
 #: src/Components/Developer/views/tab-html.php:7
 msgid "HTML element demo in admin panel."
 msgstr "管理后台页面中的HTML元素演示。"
+
+#: src/Components/Customer/Customer.php:71
+#: src/Components/Customer/Customer.php:73
+#: src/Components/Customer/Customer.php:75
+#: src/Components/Customer/Customer.php:77
+msgid "HTML is allowed."
+msgstr "允许 HTML。"
 
 #. Author URI of the plugin
 msgid "https://www.jealer.com/"
@@ -1718,7 +1690,7 @@ msgstr "非法请求"
 msgid "Image Style"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:155
+#: src/Components/Developer/Developer.php:164
 msgid "Image upload & preview"
 msgstr "图片上传和预览"
 
@@ -1729,7 +1701,7 @@ msgid ""
 "Sitemap instead of <a href=\"%s\" target=\"_blank\">the default WordPress "
 "sitemap</a>, as the default sitemap may expose sensitive user information."
 msgstr ""
-"您可以在<a href=\"%s\">安全设置</a>中选择使用 G3-Sitemap 取代 <a href=\"%s\" "
+"您可以在 <a href=\"%s\">安全设置</a> 中选择使用 G3-Sitemap 取代 <a href=\"%s\" "
 "target=\"_blank\">默认的 WordPress Sitemap</a>，因为默认的 sitemap 会暴露用户敏感信息。"
 
 #: src/Components/Performance/views/tab-redis.php:21
@@ -1771,7 +1743,7 @@ msgid ""
 "subscribe the official account and visit."
 msgstr "在微信客户端中，公众号菜单每5分钟自动刷新一次。若您想即时手动刷新菜单，请重新订阅公众号后访问。"
 
-#: src/Components/Developer/Developer.php:153
+#: src/Components/Developer/Developer.php:162
 msgid "Input field"
 msgstr "输入框"
 
@@ -1916,8 +1888,8 @@ msgstr ""
 msgid "Level Group"
 msgstr "等级组"
 
-#: src/Components/Developer/Developer.php:690
-#: src/Components/Developer/Developer.php:693
+#: src/Components/Developer/Developer.php:707
+#: src/Components/Developer/Developer.php:710
 msgid "License Expired"
 msgstr "授权已过期"
 
@@ -2036,7 +2008,7 @@ msgstr "会员卡"
 msgid "Membership Duration"
 msgstr "会员时长"
 
-#: src/Components/Developer/Developer.php:720
+#: src/Components/Developer/Developer.php:737
 msgid "Membership Feature"
 msgstr "会员专属功能"
 
@@ -2097,11 +2069,15 @@ msgstr "消息已收到，感谢您的反馈。"
 msgid "Messages"
 msgstr "消息"
 
-#: src/Components/Developer/Developer.php:407
+#: src/Components/Customer/Customer.php:75
+msgid "Messages replied automatically during non-working hours."
+msgstr "非工作时间自动回复的消息。"
+
+#: src/Components/Developer/Developer.php:424
 msgid "Migrate"
 msgstr "迁移"
 
-#: src/Components/Developer/Developer.php:408
+#: src/Components/Developer/Developer.php:425
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2114,14 +2090,13 @@ msgid "Mini Program"
 msgstr "小程序"
 
 #: src/Components/Customer/Customer.php:97
-#, fuzzy
 #| msgid ""
 #| "Minutes without messages before the system marks a conversation as "
 #| "timeout. Default: 120."
 msgid ""
 "Minutes without messages before the system closes a conversation with "
 "timeout reason. Default: 120."
-msgstr "当一定时间无消息交互，系统将自动把会话标记为超时。单位分钟，默认值：120。"
+msgstr "当一定时间无消息交互，系统将自动把会话标记为超时。单位分钟，默认 120。"
 
 #: src/Components/Post/Post.php:762
 msgid "Mobile Menu"
@@ -2135,15 +2110,6 @@ msgstr "手机App订单"
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:42
 msgid "More"
 msgstr "更多"
-
-#: src/Components/WechatOA/views/tab-event.php:5
-#, php-format
-msgid ""
-"Most event replies are displayed as the news type message, You can configure "
-"the maximum number that will be returned in <a href=\"%s\">General "
-"Settings</a> and custom the event Key below."
-msgstr ""
-"绝大多数的回复以图文类型消息展示，您可以在<a href=\"%s\">常规设置</a>中设置返回结果的最大数量，在下方自定义配置事件KEY。"
 
 #: templates/developer/w.php:126
 msgid "Multi-theme Mode"
@@ -2185,6 +2151,10 @@ msgstr "新公告"
 msgid "New Brand Name"
 msgstr "新品牌名称"
 
+#: src/Components/Mail/Mail.php:87
+msgid "new comment moderation"
+msgstr "新的评论审核"
+
 #: src/Controllers/ContactController.php:91
 msgid "New Message"
 msgstr "新消息"
@@ -2200,6 +2170,10 @@ msgstr "添加新商品品类名称"
 #: src/Services/SwiperService.php:225
 msgid "New Tab"
 msgstr "新标签页"
+
+#: src/Components/Mail/Mail.php:81 src/Components/Mail/Mail.php:84
+msgid "new user registered"
+msgstr "新用户注册"
 
 #: src/Components/Comment/widgets/CommentWidget.php:86
 msgid "News Comments"
@@ -2282,11 +2256,11 @@ msgstr "未发现商品。"
 msgid "None"
 msgstr "无"
 
-#: templates/developer/w.php:130 src/Components/Developer/Developer.php:143
+#: templates/developer/w.php:130 src/Components/Developer/Developer.php:152
 msgid "Object Cache"
 msgstr "对象缓存"
 
-#: src/Components/Developer/Developer.php:494
+#: src/Components/Developer/Developer.php:511
 #| msgid "object_cache.php file already exists."
 msgid "object-cache.php file already exists."
 msgstr "对象缓存文件 object-cache.php 已存在。"
@@ -2305,7 +2279,7 @@ msgstr "公众号类型"
 msgid "Offline"
 msgstr "离线"
 
-#: src/Components/Developer/Developer.php:702
+#: src/Components/Developer/Developer.php:719
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
@@ -2325,7 +2299,7 @@ msgstr "在线课程"
 msgid "Only one cloud storage provider can be enabled at the same time."
 msgstr "同一时间，仅允许使用一个云存储服务。"
 
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:193
 msgid "Only one option"
 msgstr "仅一个选项"
 
@@ -2343,6 +2317,8 @@ msgstr "打开方式"
 #: src/Components/OpenPlatform/OpenPlatform.php:25
 #: src/Components/OpenPlatform/OpenPlatform.php:26
 #: src/Components/OpenPlatform/OpenPlatform.php:44
+#: src/Components/Auth/views/tab-general.php:7
+#: src/Components/WechatOA/views/tab-general.php:7
 msgid "Open Platform"
 msgstr "开放平台"
 
@@ -2377,7 +2353,7 @@ msgstr ""
 
 #: src/Components/Customer/Customer.php:70
 msgid "Optional URL opened when the announcement is clicked."
-msgstr "点击公告时打开的（可选）URL。"
+msgstr "[可选] 点击公告时打开的URL。"
 
 #: src/Components/OSS/OSS.php:70
 msgid "Optional. When configured, ECS RAM Role credentials are used first."
@@ -2418,13 +2394,6 @@ msgstr "原图保护"
 #| msgid "Over 20 Subsystem Components"
 msgid "Over 30 Subsystem Components"
 msgstr "超过30个子系统组件"
-
-#: src/Components/Mail/Mail.php:79
-msgid ""
-"Override mail templates in the current theme directory: <code>"
-"templates/mail/*.php</code>. Plugin defaults are in <code>G3-"
-"Web/templates/mail/</code>."
-msgstr ""
 
 #: src/Components/Auth/Auth.php:47
 msgid "Override WP-Auth"
@@ -2491,7 +2460,7 @@ msgstr "部分高级功能需要获得激活授权后才可用。"
 
 #: src/Components/Mail/Mail.php:85
 msgid "Password Changed"
-msgstr ""
+msgstr "密码变更"
 
 #: src/Components/OSS/OSS.php:77 src/Components/OSS/OSS.php:94
 msgid "Path Prefix"
@@ -2537,7 +2506,7 @@ msgstr "固定链接"
 
 #: src/Components/Wallet/Wallet.php:48
 msgid "Personal income tax rate"
-msgstr ""
+msgstr "个人所得税率"
 
 #: src/Services/WechatOAService.php:1661
 #: src/Components/WechatOA/views/view-menu-edit.php:216
@@ -2552,28 +2521,16 @@ msgstr "PHP 处理块"
 msgid "php-fpm processes the response, returns the response to nginx"
 msgstr "php-fpm 处理响应结果，并传递给Nginx"
 
-#: src/Components/Form/Form.php:63
+#: src/Components/Form/Form.php:63 src/Components/Security/Security.php:83
 #, php-format
 msgid "Please <a href=\"%s\">flush rewrite rules</a> after setting."
-msgstr "请在设置后<a href=\"%s\">刷新重写规则</a>。"
+msgstr "请在设置后 <a href=\"%s\">刷新重写规则</a>。"
 
-#: src/Components/Security/Security.php:83
-msgid ""
-"Please <a href=\"?page=developer-mode&tab=flush\">flush rewrite rules</a> "
-"after setting."
-msgstr "请在设置后<a href=\"?page=developer-mode&tab=flush\">刷新重写规则</a>。"
-
-#: src/Components/Developer/Developer.php:742
+#: src/Components/Developer/Developer.php:759
 msgid "Please enter a valid license code."
 msgstr "请输入正确的授权码。"
 
-#: src/Components/Mail/Mail.php:74
-msgid ""
-"Please enter the email address from which the sending operation will be "
-"executed."
-msgstr "请填写执行发件操作的电子邮箱地址。"
-
-#: src/Components/Developer/Developer.php:796
+#: src/Components/Developer/Developer.php:813
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2587,27 +2544,6 @@ msgstr ""
 msgid "Please fill in the complete data"
 msgstr "请填写完整的数据"
 
-#: src/Components/Mail/Mail.php:76
-msgid ""
-"Please fill in the email password or authorization code according to the "
-"service rules of the email provider."
-msgstr "请根据邮箱提供商的服务规则，填写邮箱密码或授权码。"
-
-#: src/Components/Mail/Mail.php:68
-msgid ""
-"Please fill in the SMTP address of the mail server, for example <code>smtp.x."
-"com</code>."
-msgstr "请填写邮件服务器的SMTP地址，如<code>smtp.x.com</code>。"
-
-#: src/Components/Mail/Mail.php:70
-#| msgid ""
-#| "Please fill in the SMTP port of the mail server, for example <code>"
-#| "25</code>."
-msgid ""
-"Please fill in the SMTP port of the mail server, for example <code>465</code>"
-"."
-msgstr "请填写邮件服务器的SMTP端口，如<code>465</code>。"
-
 #: src/Utilities/Element.php:172 src/Utilities/Element.php:224
 #: src/Utilities/Element.php:280 src/Utilities/Element.php:351
 #: src/Utilities/Element.php:403
@@ -2620,12 +2556,6 @@ msgstr "请输入选项"
 #: src/Components/OpenPlatform/OpenPlatform.php:48
 msgid "Please Select"
 msgstr "请选择"
-
-#: src/Components/Mail/Mail.php:72
-msgid ""
-"Please select the appropriate encryption method based on the configuration "
-"of the mail server."
-msgstr "请根据邮件服务器的配置，选择合适的加密方式。"
 
 #: src/Components/Swiper/Swiper.php:65
 msgid "Please set status data again"
@@ -2646,6 +2576,10 @@ msgstr "积分支付"
 #: src/Components/Mail/Mail.php:70
 msgid "Port"
 msgstr "端口"
+
+#: src/Components/Mail/Mail.php:82
+msgid "post commented on"
+msgstr "内容被评论"
 
 #: src/Components/Comment/widgets/CommentWidget.php:77
 msgid "Post Comments"
@@ -2882,7 +2816,7 @@ msgstr "队列服务"
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr "快速创建完整项目结构的 G3 Web 主题工程。"
 
-#: src/Components/Developer/Developer.php:165
+#: src/Components/Developer/Developer.php:174
 msgid "Radio field"
 msgstr "单选框"
 
@@ -2895,7 +2829,7 @@ msgstr "阅读时长"
 msgid "Real-time data"
 msgstr "实时数据"
 
-#: src/Components/Developer/Developer.php:386
+#: src/Components/Developer/Developer.php:403
 msgid "Rebuild the REST route cache file."
 msgstr "重建 REST 路由缓存文件。"
 
@@ -2926,7 +2860,7 @@ msgstr "Redis 是 G3-Web 的默认数据缓存驱动，我们期望您减少与�
 msgid "Referral Code"
 msgstr "推荐码"
 
-#: src/Components/Developer/Developer.php:940
+#: src/Components/Developer/Developer.php:957
 #| msgid "Refreshed!"
 msgid "Refreshed"
 msgstr "刷新成功"
@@ -2970,7 +2904,7 @@ msgstr "移除响应头中的敏感数据，比如: X-Powered-By。"
 
 #: src/Components/Security/Security.php:87
 msgid "Remove the default sitemap of WordPress and use the G3 sitemap instead."
-msgstr "移除 WordPress 默认站点地图，转而使用 G3 站点地图。"
+msgstr "移除 WordPress 默认站点地图，使用 G3 站点地图。"
 
 #: src/Components/Security/Security.php:86
 #| msgid ""
@@ -2992,9 +2926,9 @@ msgstr "使用时间戳重置当前上传文件的文件名。"
 
 #: src/Components/Auth/Auth.php:47
 msgid ""
-"Replace wordPress native auth pages: login, registration and password-reset "
-"URLs with custom auth pages."
-msgstr ""
+"Replace the native WordPress auth pages: login, registration, forget-"
+"password, and password-reset, with the G3-Auth page."
+msgstr "使用 G3-Auth 页面，替换 WordPress 原生授权页面：登录、注册、忘记密码、重置密码。"
 
 #: src/Services/WechatOAService.php:874
 msgid "Reply content cannot be empty"
@@ -3049,13 +2983,13 @@ msgstr "重写"
 msgid "Rewrite Rule"
 msgstr "重写规则"
 
-#: src/Components/Developer/Developer.php:136
-#: src/Components/Developer/Developer.php:147
+#: src/Components/Developer/Developer.php:145
+#: src/Components/Developer/Developer.php:156
 #: src/Components/Developer/Includes/RewriteRulesTable.php:11
 msgid "Rewrite Rules"
 msgstr "重写规则"
 
-#: src/Components/Developer/Developer.php:137
+#: src/Components/Developer/Developer.php:146
 msgid "Route"
 msgstr "路由"
 
@@ -3155,7 +3089,7 @@ msgstr "秒"
 msgid "Security"
 msgstr "安全"
 
-#: src/Components/Developer/Developer.php:735
+#: src/Components/Developer/Developer.php:752
 msgid "Security check failed. Please try again."
 msgstr "安全检查失败。请重试。"
 
@@ -3163,7 +3097,7 @@ msgstr "安全检查失败。请重试。"
 msgid "Security Extension"
 msgstr "安全扩展"
 
-#: src/Components/Developer/Developer.php:158
+#: src/Components/Developer/Developer.php:167
 msgid "Select field"
 msgstr "选择器"
 
@@ -3210,8 +3144,8 @@ msgstr "服务号"
 msgid "Set cover image"
 msgstr "设置封面图"
 
-#: src/Components/Developer/Developer.php:132
-#: src/Components/Developer/Developer.php:133
+#: src/Components/Developer/Developer.php:141
+#: src/Components/Developer/Developer.php:142
 #, php-format
 msgid ""
 "Set the data which will be displayed in the %s area. It will display default "
@@ -3223,7 +3157,7 @@ msgstr "设置管理后台页面%s显示的数据。若清空则显示默认数�
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr "按需设置最大内存，如：512MB."
 
-#: src/Components/Developer/Developer.php:139
+#: src/Components/Developer/Developer.php:148
 msgid "Setting Options"
 msgstr "设置选项"
 
@@ -3305,10 +3239,6 @@ msgstr "别名：仅支持英文字母"
 msgid "SMS"
 msgstr "短信"
 
-#: src/Components/Mail/Mail.php:72
-msgid "SMTP Encryption"
-msgstr "SMTP加密方式"
-
 #: src/Components/Share/Share.php:61
 msgid "Social Accounts"
 msgstr "社交账号"
@@ -3320,6 +3250,10 @@ msgstr "社交登录"
 #: src/Components/Product/Includes/SkuListTable.php:34
 msgid "Sold"
 msgstr "已售"
+
+#: src/Components/Mail/Mail.php:85
+msgid "someone password changed"
+msgstr "用户修改密码"
 
 #: src/Components/Swiper/Includes/SwiperListTable.php:29
 #: src/Components/Swiper/views/page-edit.php:134
@@ -3405,11 +3339,11 @@ msgstr "订阅号"
 msgid "Swiper"
 msgstr "轮播图"
 
-#: src/Components/Developer/Developer.php:185
+#: src/Components/Developer/Developer.php:194
 msgid "Switch"
 msgstr "开关"
 
-#: src/Components/Developer/Developer.php:146
+#: src/Components/Developer/Developer.php:155
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-html.php:52
@@ -3445,15 +3379,17 @@ msgstr ""
 msgid "Template file does not exist: %s"
 msgstr "模板文件不存在：%s"
 
-#: src/Components/Mail/Mail.php:79
-msgid "Templates"
-msgstr ""
-
 #: src/Components/Mail/views/tab-test.php:56
 msgid "Test Email Address"
 msgstr "测试邮箱地址"
 
-#: src/Components/Developer/Developer.php:157
+#: src/Components/Mail/views/tab-test.php:9
+#, php-format
+msgid ""
+"Test Email will be sent according to <a href=\"%s\">Performance Settings</a>."
+msgstr "测试邮件将按照 <a href=\"%s\">性能设置</a> 的模式发送。"
+
+#: src/Components/Developer/Developer.php:166
 msgid "Textarea"
 msgstr "文本域"
 
@@ -3463,7 +3399,7 @@ msgid ""
 "contributions to the world."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:183
+#: src/Components/Developer/Developer.php:192
 msgid "the <code>value</code> is an array."
 msgstr "<code>value</code> 的值是个数组。"
 
@@ -3474,10 +3410,13 @@ msgid ""
 msgstr "下面的系列操作将强制刷新 重写规则、配置选项、缓存数据，操作前请先备份对应数据。"
 
 #: src/Components/Customer/Customer.php:69
+#| msgid ""
+#| "The announcement prompt that is fixedly displayed in front of the chat "
+#| "window. HTML is allowed."
 msgid ""
 "The announcement prompt that is fixedly displayed in front of the chat "
-"window. HTML is allowed."
-msgstr "在聊天窗口前固定显示的公告提示。允许使用HTML格式。"
+"window."
+msgstr "在聊天窗口前固定显示的公告提示。"
 
 #: src/Components/Performance/views/tab-fastcgi.php:49
 msgid ""
@@ -3654,39 +3593,17 @@ msgid ""
 "email templates."
 msgstr "系统将使用自定义邮件模板来替代默认模板。"
 
-#: src/Components/Mail/Mail.php:82
-msgid ""
-"The system will send a comment email to users when his/her post is commented "
-"on."
-msgstr ""
+#: src/Components/Mail/Mail.php:84 src/Components/Mail/Mail.php:85
+#: src/Components/Mail/Mail.php:86 src/Components/Mail/Mail.php:87
+#, php-format
+msgid "The system will send an email to administrator when %s."
+msgstr "当%s时，系统将发送邮件给管理员。"
 
+#: src/Components/Mail/Mail.php:81 src/Components/Mail/Mail.php:82
 #: src/Components/Mail/Mail.php:83
-msgid ""
-"The system will send a comment reply email to users when his/her comment is "
-"replied to."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:81
-msgid "The system will send a welcome email to new users."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:84
-msgid "The system will send an email to admin about new user registered."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:85
-msgid "The system will send an email to admin about someone password changed."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:86
-msgid ""
-"The system will send an email to admin about the automatic updates debug."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:87
-msgid ""
-"The system will send an email to admin about the new comment moderation."
-msgstr ""
+#, php-format
+msgid "The system will send an email to users when %s."
+msgstr "当%s时，系统将发送邮件给用户。"
 
 #: src/Components/Mail/Mail.php:65
 msgid "The system will use SMTP to send emails."
@@ -3827,8 +3744,8 @@ msgid "Timeout"
 msgstr "超时"
 
 #: templates/developer/w.php:18 src/Utilities/Element.php:691
-#: src/Components/Developer/Developer.php:183
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:192
+#: src/Components/Developer/Developer.php:193
 #: src/Components/Setting/Setting.php:429
 #: src/Components/Customer/Customer.php:71
 #: src/Components/WechatOA/views/view-menu-edit.php:150
@@ -3953,7 +3870,6 @@ msgid "URLs with query parameters are not cached"
 msgstr "带查询参数的 URL 不缓存"
 
 #: src/Components/Developer/Developer.php:100
-#: src/Components/Developer/Developer.php:101
 #, php-format
 msgid "Use %s instead of built-in %s"
 msgstr "使用 %s 代替内置的 %s"
@@ -4154,8 +4070,8 @@ msgstr "认证服务号"
 msgid "Verified Subscription Account"
 msgstr "认证订阅号"
 
-#: src/Components/Developer/Developer.php:765
-#: src/Components/Developer/Developer.php:804
+#: src/Components/Developer/Developer.php:782
+#: src/Components/Developer/Developer.php:821
 msgid "Verify License"
 msgstr "验证授权"
 
@@ -4196,7 +4112,7 @@ msgstr "浏览量统计"
 msgid "Views"
 msgstr "浏览量"
 
-#: src/Components/Developer/Developer.php:144
+#: src/Components/Developer/Developer.php:153
 msgid "Views Migration"
 msgstr "浏览数迁移"
 
@@ -4296,8 +4212,8 @@ msgstr "微信标题"
 msgid "Week"
 msgstr "周"
 
-#: templates/user/register.php:213 src/Components/Developer/Developer.php:813
-#: src/Components/Developer/Developer.php:814 src/Components/Mail/Mail.php:81
+#: templates/user/register.php:213 src/Components/Developer/Developer.php:830
+#: src/Components/Developer/Developer.php:831 src/Components/Mail/Mail.php:81
 #: src/Components/Mail/Mail.php:84 src/Components/Customer/Customer.php:73
 msgid "Welcome"
 msgstr "欢迎"
@@ -4307,10 +4223,10 @@ msgid "Welcome back, my friend."
 msgstr "欢迎回来，我的朋友。"
 
 #: src/Components/Customer/Customer.php:73
-msgid "Welcome message shown when a visitor opens the chat. HTML is allowed."
-msgstr "当访客打开聊天窗口时，会显示欢迎消息。允许使用HTML。"
+msgid "Welcome message shown when a visitor opens the chat."
+msgstr "当访客打开聊天窗口时显示的欢迎消息。"
 
-#: src/Components/Developer/Developer.php:104
+#: src/Components/Developer/Developer.php:113
 msgid "Welcome Panel"
 msgstr "欢迎面板"
 
@@ -4348,7 +4264,7 @@ msgid ""
 "WeChat official account media library."
 msgstr "发布内容时，自动同步内容到微信公众号素材库。"
 
-#: src/Components/Developer/Developer.php:141
+#: src/Components/Developer/Developer.php:150
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
@@ -4360,6 +4276,11 @@ msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."
 msgstr "同一用户多处登录时，仅保留最近一次登录的有效会话。"
+
+#: src/Components/Customer/Customer.php:77
+msgid ""
+"When the system encounters a fault, an automatic reply message will be sent."
+msgstr "当系统出现故障时，自动回复的消息。"
 
 #: src/Components/WechatOA/views/view-menu-edit.php:137
 msgid ""
@@ -4398,6 +4319,10 @@ msgstr "是否实行强制邀请注册，未收到邀请的用户无法注册。
 #: src/Components/Product/Product.php:96
 msgid "Whether to support the product of download type."
 msgstr "是否支持下载类型商品。"
+
+#: src/Components/Customer/Customer.php:68
+msgid "Window Title"
+msgstr "窗口标题"
 
 #: src/Components/Wallet/Wallet.php:45
 msgid "Withdrawal"

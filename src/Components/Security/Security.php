@@ -80,7 +80,7 @@ class Security extends Components {
                 ->tab('general', __('General'))
                 ->option(SystemService::SECURITY_OPTION_KEY, $this->optionDefaults())
                 ->switch('login', __('Custom Admin Login', 'G3'), __('The system will replace <code>"wp-login.php"</code> with the new address <code>"/oa/$url"</code> below.', 'G3'))
-                ->input('url', __('Admin Login URL', 'G3'), __('Login', 'G3') . __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Common::hash()))) . '</code> ' . __('Please <a href="?page=developer-mode&tab=flush">flush rewrite rules</a> after setting.', 'G3'))
+                ->input('url', __('Admin Login URL', 'G3'), __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Common::hash()))) . '</code> ' . sprintf(__('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=developer-mode&tab=flush'))
                 ->switch('upload', __('Reset Upload File Names', 'G3'), __('Rename the currently uploaded file using a timestamp.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('userSiteMap', __('Users Sitemap', 'G3'), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))

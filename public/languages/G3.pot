@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 15:25+0000\n"
+"POT-Creation-Date: 2026-08-27 00:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -73,7 +73,7 @@ msgid ""
 "WordPress."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:193
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
@@ -83,14 +83,6 @@ msgstr ""
 msgid ""
 "<code>CustomerMessageJob</code> removes data older than this many days. "
 "Default: 180."
-msgstr ""
-
-#: src/Components/Mail/views/tab-test.php:9
-msgid ""
-"<div>Test Email will be sent according to <a href=\"/wp-admin/admin.php?"
-"page=performance\">Performance Settings</a>. If using the default "
-"synchronous mode, the email sending will take a long time, please wait "
-"patiently.</div>"
 msgstr ""
 
 #: src/Core/Activator.php:125
@@ -392,7 +384,7 @@ msgid ""
 "the live broadcast."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:140
+#: src/Components/Developer/Developer.php:149
 msgid "Auto Backup"
 msgstr ""
 
@@ -400,11 +392,7 @@ msgstr ""
 msgid "Auto Notice"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:75
-msgid "Automated message created outside working hours. HTML is allowed."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:86 src/Components/Mail/Mail.php:233
+#: src/Components/Mail/Mail.php:233
 msgid "Automatic Updates Debug"
 msgstr ""
 
@@ -435,18 +423,12 @@ msgstr ""
 msgid "Batch insert keywords failed"
 msgstr ""
 
+#: src/Components/Auth/views/tab-general.php:5
 #: src/Components/WechatOA/views/tab-general.php:5
 #, php-format
 msgid ""
-"Before activating the service, please ensure that you have completed <a "
-"href=\"%s\">the open platform setup</a>."
-msgstr ""
-
-#: src/Components/Auth/views/tab-general.php:5
-#, php-format
-msgid ""
-"Before enabling related login functions, please ensure to complete the "
-"relevant <a href=\"%s\">Open Platform</a> settings."
+"Before enabling related features, please ensure to complete the <a "
+"href=\"%s\">%s</a> settings."
 msgstr ""
 
 #: src/Components/Post/Post.php:137
@@ -516,7 +498,7 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:149
+#: src/Components/Developer/Developer.php:158
 msgid "Build Theme"
 msgstr ""
 
@@ -554,7 +536,7 @@ msgstr ""
 msgid "Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:138
+#: src/Components/Developer/Developer.php:147
 msgid "Cache Data"
 msgstr ""
 
@@ -587,15 +569,11 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:172
+#: src/Components/Developer/Developer.php:181
 msgid "Change the direction"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:68
-msgid "Chat window title."
-msgstr ""
-
-#: src/Components/Developer/Developer.php:177
+#: src/Components/Developer/Developer.php:186
 msgid "Checkbox field"
 msgstr ""
 
@@ -633,6 +611,10 @@ msgstr ""
 
 #: src/Components/Mail/Mail.php:87
 msgid "Comment Moderation"
+msgstr ""
+
+#: src/Components/Mail/Mail.php:83
+msgid "comment replied to"
 msgstr ""
 
 #: templates/developer/w.php:110
@@ -723,7 +705,7 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:156
+#: src/Components/Developer/Developer.php:165
 msgid "Counter input"
 msgstr ""
 
@@ -870,10 +852,6 @@ msgstr ""
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:87
-msgid "Days when agents are expected to be online."
-msgstr ""
-
 #: src/Components/Setting/Setting.php:152
 msgid "Default Avatar"
 msgstr ""
@@ -989,8 +967,8 @@ msgid "Desktop Header Secondary Menu"
 msgstr ""
 
 #: templates/developer/w.php:136 src/Components/Developer/Developer.php:79
-#: src/Components/Developer/Developer.php:268
-#: src/Components/Developer/Developer.php:269
+#: src/Components/Developer/Developer.php:277
+#: src/Components/Developer/Developer.php:278
 msgid "Developer Mode"
 msgstr ""
 
@@ -1054,6 +1032,10 @@ msgstr ""
 
 #: src/Services/ProductService.php:80
 msgid "Download Product"
+msgstr ""
+
+#: src/Components/Mail/Mail.php:68 src/Components/Mail/Mail.php:70
+msgid "e.g."
 msgstr ""
 
 #: templates/developer/w.php:188
@@ -1132,7 +1114,7 @@ msgstr ""
 msgid "Email Test"
 msgstr ""
 
-#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:184
+#: src/Utilities/Element.php:92 src/Components/Developer/Developer.php:193
 #: src/Components/OSS/OSS.php:67 src/Components/OSS/OSS.php:87
 msgid "Enable"
 msgstr ""
@@ -1143,11 +1125,8 @@ msgid ""
 "and English."
 msgstr ""
 
-#: src/Components/Form/Form.php:63
-#, php-format
-msgid ""
-"Enable the <a href=\"%s\">Form</a> feature, user can contact us on the form "
-"page."
+#: src/Components/Mail/Mail.php:72
+msgid "Encryption"
 msgstr ""
 
 #: src/Components/User/views/tab-level.php:65
@@ -1217,7 +1196,7 @@ msgstr ""
 msgid "Failed to generate LLM cache."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:486
+#: src/Components/Developer/Developer.php:503
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
@@ -1230,12 +1209,6 @@ msgstr ""
 
 #: src/Components/Auth/Auth.php:147
 msgid "Failed. It is recommended to generate 1-20 at a time."
-msgstr ""
-
-#: src/Components/Customer/Customer.php:77
-msgid ""
-"Fallback message returned when customer service automation or business "
-"handling fails. HTML is allowed."
 msgstr ""
 
 #: src/Components/Post/Post.php:339
@@ -1285,7 +1258,7 @@ msgstr ""
 msgid "File Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:154
+#: src/Components/Developer/Developer.php:163
 msgid "File upload"
 msgstr ""
 
@@ -1306,25 +1279,25 @@ msgstr ""
 msgid "Flexible Payment Terms"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:398
+#: src/Components/Developer/Developer.php:415
 msgid "Flush all the cache data."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:380
+#: src/Components/Developer/Developer.php:397
 msgid "Flush and fix the rewrite rules."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:392
+#: src/Components/Developer/Developer.php:409
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:397
+#: src/Components/Developer/Developer.php:414
 msgid "Flush Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:135
+#: src/Components/Developer/Developer.php:144
 msgid "Flush Data"
 msgstr ""
 
@@ -1332,15 +1305,15 @@ msgstr ""
 msgid "Flush Menus Online"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:385
+#: src/Components/Developer/Developer.php:402
 msgid "Flush REST routes cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:379
+#: src/Components/Developer/Developer.php:396
 msgid "Flush Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:391
+#: src/Components/Developer/Developer.php:408
 msgid "Flush Setting Options"
 msgstr ""
 
@@ -1428,7 +1401,7 @@ msgstr ""
 msgid "Form"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:151
+#: src/Components/Developer/Developer.php:160
 msgid "Form Demo"
 msgstr ""
 
@@ -1458,11 +1431,7 @@ msgstr ""
 msgid "Frontend Editor"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:71
-msgid "Frontend tip shown before conversation messages. HTML is allowed."
-msgstr ""
-
-#: src/Components/Developer/Developer.php:786
+#: src/Components/Developer/Developer.php:803
 msgid "G3 License Code"
 msgstr ""
 
@@ -1532,11 +1501,11 @@ msgstr ""
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:402
+#: src/Components/Developer/Developer.php:419
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:403
+#: src/Components/Developer/Developer.php:420
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1571,7 +1540,7 @@ msgstr ""
 #: src/Components/Customer/Customer.php:96
 msgid ""
 "Heartbeat interval in seconds. It is only used to keep the SSE connection "
-"alive. Default: 45, range: 30-60."
+"alive. Default: 45. Adviced range: 30-60."
 msgstr ""
 
 #: src/Components/Developer/Developer.php:89
@@ -1596,12 +1565,19 @@ msgid ""
 "How to estimate the actual number of PHP files in your WordPress project?"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:187
+#: src/Components/Developer/Developer.php:196
 msgid "HTML Demo"
 msgstr ""
 
 #: src/Components/Developer/views/tab-html.php:7
 msgid "HTML element demo in admin panel."
+msgstr ""
+
+#: src/Components/Customer/Customer.php:71
+#: src/Components/Customer/Customer.php:73
+#: src/Components/Customer/Customer.php:75
+#: src/Components/Customer/Customer.php:77
+msgid "HTML is allowed."
 msgstr ""
 
 #. Author URI of the plugin
@@ -1652,7 +1628,7 @@ msgstr ""
 msgid "Image Style"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:155
+#: src/Components/Developer/Developer.php:164
 msgid "Image upload & preview"
 msgstr ""
 
@@ -1697,7 +1673,7 @@ msgid ""
 "subscribe the official account and visit."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:153
+#: src/Components/Developer/Developer.php:162
 msgid "Input field"
 msgstr ""
 
@@ -1833,8 +1809,8 @@ msgstr ""
 msgid "Level Group"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:690
-#: src/Components/Developer/Developer.php:693
+#: src/Components/Developer/Developer.php:707
+#: src/Components/Developer/Developer.php:710
 msgid "License Expired"
 msgstr ""
 
@@ -1953,7 +1929,7 @@ msgstr ""
 msgid "Membership Duration"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:720
+#: src/Components/Developer/Developer.php:737
 msgid "Membership Feature"
 msgstr ""
 
@@ -2013,11 +1989,15 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:407
+#: src/Components/Customer/Customer.php:75
+msgid "Messages replied automatically during non-working hours."
+msgstr ""
+
+#: src/Components/Developer/Developer.php:424
 msgid "Migrate"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:408
+#: src/Components/Developer/Developer.php:425
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2045,14 +2025,6 @@ msgstr ""
 #: src/Components/Post/widgets/PostWidget.php:46
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:42
 msgid "More"
-msgstr ""
-
-#: src/Components/WechatOA/views/tab-event.php:5
-#, php-format
-msgid ""
-"Most event replies are displayed as the news type message, You can configure "
-"the maximum number that will be returned in <a href=\"%s\">General "
-"Settings</a> and custom the event Key below."
 msgstr ""
 
 #: templates/developer/w.php:126
@@ -2095,6 +2067,10 @@ msgstr ""
 msgid "New Brand Name"
 msgstr ""
 
+#: src/Components/Mail/Mail.php:87
+msgid "new comment moderation"
+msgstr ""
+
 #: src/Controllers/ContactController.php:91
 msgid "New Message"
 msgstr ""
@@ -2109,6 +2085,10 @@ msgstr ""
 
 #: src/Services/SwiperService.php:225
 msgid "New Tab"
+msgstr ""
+
+#: src/Components/Mail/Mail.php:81 src/Components/Mail/Mail.php:84
+msgid "new user registered"
 msgstr ""
 
 #: src/Components/Comment/widgets/CommentWidget.php:86
@@ -2190,11 +2170,11 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: templates/developer/w.php:130 src/Components/Developer/Developer.php:143
+#: templates/developer/w.php:130 src/Components/Developer/Developer.php:152
 msgid "Object Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:494
+#: src/Components/Developer/Developer.php:511
 msgid "object-cache.php file already exists."
 msgstr ""
 
@@ -2212,7 +2192,7 @@ msgstr ""
 msgid "Offline"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:702
+#: src/Components/Developer/Developer.php:719
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
@@ -2232,7 +2212,7 @@ msgstr ""
 msgid "Only one cloud storage provider can be enabled at the same time."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:193
 msgid "Only one option"
 msgstr ""
 
@@ -2250,6 +2230,8 @@ msgstr ""
 #: src/Components/OpenPlatform/OpenPlatform.php:25
 #: src/Components/OpenPlatform/OpenPlatform.php:26
 #: src/Components/OpenPlatform/OpenPlatform.php:44
+#: src/Components/Auth/views/tab-general.php:7
+#: src/Components/WechatOA/views/tab-general.php:7
 msgid "Open Platform"
 msgstr ""
 
@@ -2319,13 +2301,6 @@ msgstr ""
 
 #: templates/developer/w.php:169
 msgid "Over 30 Subsystem Components"
-msgstr ""
-
-#: src/Components/Mail/Mail.php:79
-msgid ""
-"Override mail templates in the current theme directory: <code>"
-"templates/mail/*.php</code>. Plugin defaults are in <code>G3-"
-"Web/templates/mail/</code>."
 msgstr ""
 
 #: src/Components/Auth/Auth.php:47
@@ -2453,28 +2428,16 @@ msgstr ""
 msgid "php-fpm processes the response, returns the response to nginx"
 msgstr ""
 
-#: src/Components/Form/Form.php:63
+#: src/Components/Form/Form.php:63 src/Components/Security/Security.php:83
 #, php-format
 msgid "Please <a href=\"%s\">flush rewrite rules</a> after setting."
 msgstr ""
 
-#: src/Components/Security/Security.php:83
-msgid ""
-"Please <a href=\"?page=developer-mode&tab=flush\">flush rewrite rules</a> "
-"after setting."
-msgstr ""
-
-#: src/Components/Developer/Developer.php:742
+#: src/Components/Developer/Developer.php:759
 msgid "Please enter a valid license code."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:74
-msgid ""
-"Please enter the email address from which the sending operation will be "
-"executed."
-msgstr ""
-
-#: src/Components/Developer/Developer.php:796
+#: src/Components/Developer/Developer.php:813
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2484,24 +2447,6 @@ msgstr ""
 #: src/Components/Swiper/Swiper.php:68 src/Components/Swiper/Swiper.php:120
 #: src/Components/Swiper/Swiper.php:146
 msgid "Please fill in the complete data"
-msgstr ""
-
-#: src/Components/Mail/Mail.php:76
-msgid ""
-"Please fill in the email password or authorization code according to the "
-"service rules of the email provider."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:68
-msgid ""
-"Please fill in the SMTP address of the mail server, for example <code>smtp.x."
-"com</code>."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:70
-msgid ""
-"Please fill in the SMTP port of the mail server, for example <code>465</code>"
-"."
 msgstr ""
 
 #: src/Utilities/Element.php:172 src/Utilities/Element.php:224
@@ -2514,12 +2459,6 @@ msgstr ""
 #: src/Services/COSService.php:31
 #: src/Components/OpenPlatform/OpenPlatform.php:48
 msgid "Please Select"
-msgstr ""
-
-#: src/Components/Mail/Mail.php:72
-msgid ""
-"Please select the appropriate encryption method based on the configuration "
-"of the mail server."
 msgstr ""
 
 #: src/Components/Swiper/Swiper.php:65
@@ -2540,6 +2479,10 @@ msgstr ""
 
 #: src/Components/Mail/Mail.php:70
 msgid "Port"
+msgstr ""
+
+#: src/Components/Mail/Mail.php:82
+msgid "post commented on"
 msgstr ""
 
 #: src/Components/Comment/widgets/CommentWidget.php:77
@@ -2769,7 +2712,7 @@ msgstr ""
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:165
+#: src/Components/Developer/Developer.php:174
 msgid "Radio field"
 msgstr ""
 
@@ -2782,7 +2725,7 @@ msgstr ""
 msgid "Real-time data"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:386
+#: src/Components/Developer/Developer.php:403
 msgid "Rebuild the REST route cache file."
 msgstr ""
 
@@ -2813,7 +2756,7 @@ msgstr ""
 msgid "Referral Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:940
+#: src/Components/Developer/Developer.php:957
 msgid "Refreshed"
 msgstr ""
 
@@ -2874,8 +2817,8 @@ msgstr ""
 
 #: src/Components/Auth/Auth.php:47
 msgid ""
-"Replace wordPress native auth pages: login, registration and password-reset "
-"URLs with custom auth pages."
+"Replace the native WordPress auth pages: login, registration, forget-"
+"password, and password-reset, with the G3-Auth page."
 msgstr ""
 
 #: src/Services/WechatOAService.php:874
@@ -2930,13 +2873,13 @@ msgstr ""
 msgid "Rewrite Rule"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:136
-#: src/Components/Developer/Developer.php:147
+#: src/Components/Developer/Developer.php:145
+#: src/Components/Developer/Developer.php:156
 #: src/Components/Developer/Includes/RewriteRulesTable.php:11
 msgid "Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:137
+#: src/Components/Developer/Developer.php:146
 msgid "Route"
 msgstr ""
 
@@ -3034,7 +2977,7 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:735
+#: src/Components/Developer/Developer.php:752
 msgid "Security check failed. Please try again."
 msgstr ""
 
@@ -3042,7 +2985,7 @@ msgstr ""
 msgid "Security Extension"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:158
+#: src/Components/Developer/Developer.php:167
 msgid "Select field"
 msgstr ""
 
@@ -3088,8 +3031,8 @@ msgstr ""
 msgid "Set cover image"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:132
-#: src/Components/Developer/Developer.php:133
+#: src/Components/Developer/Developer.php:141
+#: src/Components/Developer/Developer.php:142
 #, php-format
 msgid ""
 "Set the data which will be displayed in the %s area. It will display default "
@@ -3100,7 +3043,7 @@ msgstr ""
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:139
+#: src/Components/Developer/Developer.php:148
 msgid "Setting Options"
 msgstr ""
 
@@ -3180,10 +3123,6 @@ msgstr ""
 msgid "SMS"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:72
-msgid "SMTP Encryption"
-msgstr ""
-
 #: src/Components/Share/Share.php:61
 msgid "Social Accounts"
 msgstr ""
@@ -3194,6 +3133,10 @@ msgstr ""
 
 #: src/Components/Product/Includes/SkuListTable.php:34
 msgid "Sold"
+msgstr ""
+
+#: src/Components/Mail/Mail.php:85
+msgid "someone password changed"
 msgstr ""
 
 #: src/Components/Swiper/Includes/SwiperListTable.php:29
@@ -3280,11 +3223,11 @@ msgstr ""
 msgid "Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:185
+#: src/Components/Developer/Developer.php:194
 msgid "Switch"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:146
+#: src/Components/Developer/Developer.php:155
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-html.php:52
@@ -3319,15 +3262,17 @@ msgstr ""
 msgid "Template file does not exist: %s"
 msgstr ""
 
-#: src/Components/Mail/Mail.php:79
-msgid "Templates"
-msgstr ""
-
 #: src/Components/Mail/views/tab-test.php:56
 msgid "Test Email Address"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:157
+#: src/Components/Mail/views/tab-test.php:9
+#, php-format
+msgid ""
+"Test Email will be sent according to <a href=\"%s\">Performance Settings</a>."
+msgstr ""
+
+#: src/Components/Developer/Developer.php:166
 msgid "Textarea"
 msgstr ""
 
@@ -3337,7 +3282,7 @@ msgid ""
 "contributions to the world."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:183
+#: src/Components/Developer/Developer.php:192
 msgid "the <code>value</code> is an array."
 msgstr ""
 
@@ -3350,7 +3295,7 @@ msgstr ""
 #: src/Components/Customer/Customer.php:69
 msgid ""
 "The announcement prompt that is fixedly displayed in front of the chat "
-"window. HTML is allowed."
+"window."
 msgstr ""
 
 #: src/Components/Performance/views/tab-fastcgi.php:49
@@ -3504,38 +3449,16 @@ msgid ""
 "email templates."
 msgstr ""
 
-#: src/Components/Mail/Mail.php:82
-msgid ""
-"The system will send a comment email to users when his/her post is commented "
-"on."
+#: src/Components/Mail/Mail.php:84 src/Components/Mail/Mail.php:85
+#: src/Components/Mail/Mail.php:86 src/Components/Mail/Mail.php:87
+#, php-format
+msgid "The system will send an email to administrator when %s."
 msgstr ""
 
+#: src/Components/Mail/Mail.php:81 src/Components/Mail/Mail.php:82
 #: src/Components/Mail/Mail.php:83
-msgid ""
-"The system will send a comment reply email to users when his/her comment is "
-"replied to."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:81
-msgid "The system will send a welcome email to new users."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:84
-msgid "The system will send an email to admin about new user registered."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:85
-msgid "The system will send an email to admin about someone password changed."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:86
-msgid ""
-"The system will send an email to admin about the automatic updates debug."
-msgstr ""
-
-#: src/Components/Mail/Mail.php:87
-msgid ""
-"The system will send an email to admin about the new comment moderation."
+#, php-format
+msgid "The system will send an email to users when %s."
 msgstr ""
 
 #: src/Components/Mail/Mail.php:65
@@ -3669,8 +3592,8 @@ msgid "Timeout"
 msgstr ""
 
 #: templates/developer/w.php:18 src/Utilities/Element.php:691
-#: src/Components/Developer/Developer.php:183
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:192
+#: src/Components/Developer/Developer.php:193
 #: src/Components/Setting/Setting.php:429
 #: src/Components/Customer/Customer.php:71
 #: src/Components/WechatOA/views/view-menu-edit.php:150
@@ -3793,7 +3716,6 @@ msgid "URLs with query parameters are not cached"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:100
-#: src/Components/Developer/Developer.php:101
 #, php-format
 msgid "Use %s instead of built-in %s"
 msgstr ""
@@ -3981,8 +3903,8 @@ msgstr ""
 msgid "Verified Subscription Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:765
-#: src/Components/Developer/Developer.php:804
+#: src/Components/Developer/Developer.php:782
+#: src/Components/Developer/Developer.php:821
 msgid "Verify License"
 msgstr ""
 
@@ -4021,7 +3943,7 @@ msgstr ""
 msgid "Views"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:144
+#: src/Components/Developer/Developer.php:153
 msgid "Views Migration"
 msgstr ""
 
@@ -4116,8 +4038,8 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: templates/user/register.php:213 src/Components/Developer/Developer.php:813
-#: src/Components/Developer/Developer.php:814 src/Components/Mail/Mail.php:81
+#: templates/user/register.php:213 src/Components/Developer/Developer.php:830
+#: src/Components/Developer/Developer.php:831 src/Components/Mail/Mail.php:81
 #: src/Components/Mail/Mail.php:84 src/Components/Customer/Customer.php:73
 msgid "Welcome"
 msgstr ""
@@ -4127,10 +4049,10 @@ msgid "Welcome back, my friend."
 msgstr ""
 
 #: src/Components/Customer/Customer.php:73
-msgid "Welcome message shown when a visitor opens the chat. HTML is allowed."
+msgid "Welcome message shown when a visitor opens the chat."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:104
+#: src/Components/Developer/Developer.php:113
 msgid "Welcome Panel"
 msgstr ""
 
@@ -4167,7 +4089,7 @@ msgid ""
 "WeChat official account media library."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:141
+#: src/Components/Developer/Developer.php:150
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
@@ -4178,6 +4100,11 @@ msgstr ""
 msgid ""
 "When the same user logs in from multiple locations, only the most recent "
 "login session remains valid."
+msgstr ""
+
+#: src/Components/Customer/Customer.php:77
+msgid ""
+"When the system encounters a fault, an automatic reply message will be sent."
 msgstr ""
 
 #: src/Components/WechatOA/views/view-menu-edit.php:137
@@ -4213,6 +4140,10 @@ msgstr ""
 
 #: src/Components/Product/Product.php:96
 msgid "Whether to support the product of download type."
+msgstr ""
+
+#: src/Components/Customer/Customer.php:68
+msgid "Window Title"
 msgstr ""
 
 #: src/Components/Wallet/Wallet.php:45

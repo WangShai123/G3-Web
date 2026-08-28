@@ -13,7 +13,6 @@ use WP_Error;
 use stdClass;
 
 class UserService extends Service {
-    const META_KEY                  = 'g3_user_meta';
     const ROLE_OPTION_KEY           = 'g3_option_roles';
     const GROUP_OPTION_KEY          = 'g3_option_groups';
     const MANAGER_OPTION_KEY        = 'g3_option_managers';
@@ -138,6 +137,8 @@ class UserService extends Service {
             'manager'         => (string) ($row['manager'] ?? ''),
             'premium'         => (string) ($row['premium'] ?? ''),
             'view_count'      => (int) ($row['view_count'] ?? 0),
+            'follow_count'    => (int) ($row['follow_count'] ?? 0),
+            'fans_count'      => (int) ($row['fans_count'] ?? 0),
             'status'          => (int) ($row['status'] ?? 0),
             'third_party_ids' => Type::jsonToArray($row['third_party_ids'] ?? '')
         ];
@@ -450,4 +451,20 @@ class UserService extends Service {
         $sessions->destroy_all();
     }
 
+    public function getAvatar(): string
+    {
+        $avatar = $this->cache['avatar'] ?? '';
+        if ($avatar === '') {
+            return $this->getDefaultAvatar();
+        }
+        return $avatar;
+    }
+    public function getDescription(): string
+    {
+        $result = $this->cache['description'] ?? '';
+        if ($result === '') {
+            return __('No description available.', 'G3');
+        }
+        return $result;
+    }
 }

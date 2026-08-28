@@ -95,10 +95,11 @@ $table->display();
             modal.show();
         })
         $(document).on('click', '.view-content', function () {
-            const content = jsx`<div>${$(this).data('content')}</div>`;
+            const title = `${$(this).data('name')}:`;
+            const content = jsx`${$(this).data('content')}`;
             const modal = createModal({
                 text: {
-                    title: '<?php _e('View') ?>',
+                    title,
                     confirm: '<?php _e('Confirm', 'G3'); ?>',
                 },
                 content,

@@ -1,6 +1,7 @@
 <?php
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Frontend;
 
 class MonitorWidget extends WP_Widget {
     private Container $container;
@@ -27,6 +28,8 @@ class MonitorWidget extends WP_Widget {
     {
         $title = apply_filters('widget_title', $instance['title'] ?? __('Application Monitor', 'G3'));
         $items = $this->getMonitorItems($instance);
+
+        Frontend::css('widget');
 
         echo $args['before_widget'];
 

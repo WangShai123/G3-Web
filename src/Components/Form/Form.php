@@ -60,11 +60,11 @@ class Form extends Components {
             $this->panel('form-settings', __('Form', 'G3'))
                 ->page('general', __('General'))
                 ->option(FormService::FORM_OPTION_KEY, $this->default())
-                ->switch('enable', __('Enable'), sprintf(__('Enable the <a href="%s">Form</a> feature, user can contact us on the form page.', 'G3') . __('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=form-list', '?page=developer-mode&tab=flush'))
+                ->switch('enable', __('Enable'), sprintf(__('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=developer-mode&tab=flush'))
                 ->number('perPage', __('Items Per Page', 'G3'), __('The number of items displayed per page in the table list of admin panel.', 'G3'))
                 ->switch('email', __('Email Notification', 'G3'), __('Automatically send email to the system email when the form is submitted.', 'G3'))
                 ->rowClass('advanced')
-                ->html('address', __('Page'), '<a href="' . $url . '" target="_blank">' . $url . '</a>')
+                ->html('address', 'URL', '<a href="' . $url . '" target="_blank">' . $url . '</a>')
                 ->html('custom', __('Custom Fields'), sprintf(__('Default fields: name, email, content.<p>Custom fields: You can customize fields by setting <code>ext</code> property, for example: %s while submitting the request. See more details in the API documentation.</p>', 'G3'), '<code>ext: { phone: "1234567890" }</code>'))
                 ->html('template', __('Template'), __('You can customize the contact form template by overriding the template file <code>/templates/form/index.php</code>.', 'G3'))
         ];

@@ -501,7 +501,7 @@ class PostService extends Service {
 
                         $result[$taxonomyName][] = [
                             'name' => $term->name,
-                            'link' => (string) $termLink,
+                            'url'  => (string) $termLink,
                         ];
                     }
                 }
@@ -905,7 +905,6 @@ class PostService extends Service {
      * @param int $cnSpeed Letters per minute. Default 400
      * @param int $enSpeed Words per minute. Default 200
      * @return int Minimum reading time is 1 second
-     * @since 1.0.0
      */
     public function calculateReadingTime(string $content, int $cnSpeed = 400, int $enSpeed = 200): int
     {
@@ -1025,5 +1024,27 @@ class PostService extends Service {
         }
 
         return max(50, min(1000, $speed));
+    }
+
+    public function htmlTaxonomy(string $term = 'category', bool $isBlank = false)
+    {
+        if (
+            !isset($this->cache['taxonomy'][$term])
+            || empty($this->cache['taxonomy'][$term])
+        ) {
+            return '';
+        }
+
+        $target = $isBlank ? '_blank' : '_self';
+
+        $html = '';
+        foreach ($this->cache['taxonomy'][$term] as $termItem) {
+            $url   = $termItem['url'];
+            $name  = $termItem['name'];
+            $html .= <<<HTML
+            <a class="post-taxonomy-{$term}" href="{$url}" target="{$target}" title="{$name}">{$name}</a>
+        HTML;
+        }
+        return $html;
     }
 }

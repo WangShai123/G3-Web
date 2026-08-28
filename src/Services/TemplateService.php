@@ -6,9 +6,10 @@ class TemplateService extends Service {
 
     public function singleTemplate(string $template, string $type, array $templates)
     {
-        if (!is_single()) {
-            return $template;
-        }
+        if (
+            is_singular(['page', 'site-page'])
+            || !is_single()
+        ) return $template;
 
         $themeDir = get_stylesheet_directory();
 
@@ -24,15 +25,12 @@ class TemplateService extends Service {
         // fallback: post type template
         $postType     = get_post_type();
         $typeTemplate = $themeDir . "/templates/post/{$postType}.php";
-        if (file_exists($typeTemplate)) {
-            return $typeTemplate;
-        }
+        if (file_exists($typeTemplate)) return $typeTemplate;
 
         // fallback: default template
         $defaultTemplate = $themeDir . '/templates/post/index.php';
-        if (file_exists($defaultTemplate)) {
-            return $defaultTemplate;
-        }
+        if (file_exists($defaultTemplate)) return $defaultTemplate;
+
         return $template;
     }
 

@@ -42,6 +42,7 @@ class DBService extends Service {
      * init User Table
      *  - g3_user_extra          用户额外信息表
      *  - g3_user_card           用户名片表
+     *  - g3_user_follow         用户关注表
      *  - g3_user_wallet         用户钱包表
      * 
      * @param wpdb $wpdb
@@ -74,6 +75,8 @@ class DBService extends Service {
          *  - premium: 认证等级 别名
          *  - status: 状态
          *  - view_count: 访问次数
+         *  - follow_count: 关注数量
+         *  - fans_count: 粉丝数量
          *  - third_party_ids: 第三方ID
          *      - wx_openId: 微信 openId
          *      - wx_unionId: 微信 unionId
@@ -91,6 +94,8 @@ class DBService extends Service {
                 `premium` VARCHAR(64) DEFAULT NULL,
                 `status` TINYINT NOT NULL DEFAULT 0,
                 `view_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `follow_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `fans_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `third_party_ids` JSON DEFAULT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`user_id`),
@@ -98,8 +103,7 @@ class DBService extends Service {
                 KEY `idx_custom` (`custom`),
                 KEY `idx_manager` (`manager`),
                 KEY `idx_premium` (`premium`),
-                KEY `idx_status` (`status`),
-                KEY `idx_view_count` (`view_count`)
+                KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -145,6 +149,33 @@ class DBService extends Service {
                 KEY `idx_gender` (`gender`),
                 KEY `idx_phone` (`phone`),
                 KEY `idx_province` (`province`)
+            ) ENGINE=InnoDB $charset;";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        /**
+         * User Follow Table
+         * 
+         * 用户关注表
+         *  - id
+         *  - follow_id: 关注用户ID
+         *  - fans_id: 粉丝用户ID
+         *  - created_at: 创建时间
+         * 
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_user_follow';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `id` BIGINT UNSIGNED NOT NULL,
+                `follow_id` BIGINT UNSIGNED NOT NULL,
+                `fans_id` BIGINT UNSIGNED NOT NULL,
+                `created_at` DATETIME DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY uk_follower_following (follow_id, fans_id),
+                KEY `idx_follow_id` (`follow_id`),
+                KEY `idx_fans_id` (`fans_id`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
