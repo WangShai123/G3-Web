@@ -3,6 +3,7 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Services\CustomerService;
 use JEALER\G3\Services\LLMService;
 use JEALER\G3\Services\SitemapService;
 use JEALER\G3\Services\UserService;
@@ -51,8 +52,6 @@ class Setting extends Components {
     }
     protected function form(): void
     {
-        Frontend::css('jui');
-        Frontend::umd('jui');
         $this->permalink();
         if ((get_option(SystemService::SEO_OPTION_KEY)['seo'] ?? '0') === '1') {
             // SEO: add field in edit form for post
@@ -70,6 +69,13 @@ class Setting extends Components {
         add_filter('admin_body_class', function ($classes) {
             return $classes . ' light j-theme-indigo j-shadow-none j-radius-sm j-font-sm';
         });
+    }
+    protected function adminScripts(): void
+    {
+        Frontend::css('jui');
+        Frontend::umd('jui');
+        Frontend::umd('g3.admin.notification');
+        add_action('admin_footer', [$this, 'renderAdminNotificationConfig']);
     }
     protected function init(): void
     {
@@ -204,6 +210,47 @@ class Setting extends Components {
     public function render(): void
     {
         $this->createPanel();
+    }
+    public function renderAdminNotificationConfig(): void
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        echo Frontend::configScript('g3-admin-notification-config', $this->adminNotificationConfig());
+    }
+    private function adminNotificationConfig(): array
+    {
+        $sources = [];
+
+        /** @var CustomerService|null $customerService */
+        $customerService = $this->getService(CustomerService::class);
+        if ($customerService instanceof CustomerService && $customerService->enabled()) {
+            $sources[] = [
+                'id'              => 'customer-service',
+                'type'            => 'customer_message',
+                'sessionUrl'      => esc_url_raw(rest_url('api/admin/customer/v1/stream/session')),
+                'afterId'         => $customerService->latestEventId(),
+                'events'          => ['message.created'],
+                'targetUrl'       => esc_url_raw(admin_url('admin.php?page=customer-service')),
+                'suppressOnPages' => ['customer-service'],
+                'labels'          => [
+                    'title'   => __('New Message', 'G3'),
+                    'confirm' => __('View'),
+                    'close'   => __('Close'),
+                ],
+            ];
+        }
+
+        return [
+            'enabled'       => !empty($sources),
+            'notifyRestUrl' => esc_url_raw(rest_url('api/notify/v1')),
+            'nonce'         => wp_create_nonce('wp_rest'),
+            'currentPage'   => $this->currentAdminPage(),
+            'audioUrl'      => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
+            'retryDelay'    => 3000,
+            'sources'       => $sources,
+        ];
     }
     public function sadHandle(): void
     {
