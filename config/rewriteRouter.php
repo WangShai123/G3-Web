@@ -46,7 +46,7 @@ return [
     // Admin Login
     'oa/([^/]+)/?$'                      => [
         'var'        => 'custom_admin_login',
-        'path'       => 'admin/oa.php',
+        'path'       => '302.php',
         'priority'   => [
             [
                 'value' => [\JEALER\G3\Components\Security::class, 'customAdminParam'],
