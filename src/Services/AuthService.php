@@ -3,6 +3,7 @@ namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\WechatOAService;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Option;
 use WP_User_Query;
 use WP_User;
@@ -433,9 +434,73 @@ class AuthService {
         }
     }
 
-    public function getInviteCode(string $code)
-    {
 
+
+    public function invitationCodeEnabled(): bool
+    {
+        $option = get_option(self::OPTION_KEY, []);
+        return is_array($option) && ($option['code'] ?? '') === '1';
+    }
+
+    public function invitationCodeTableList(array $params): array
+    {
+        $page    = max(1, (int) ($params['page'] ?? 1));
+        $perPage = min(100, max(1, (int) ($params['perPage'] ?? 20)));
+        $search  = sanitize_text_field((string) ($params['search'] ?? ''));
+        $orderby = $this->normalizeInviteCodeOrderby((string) ($params['orderby'] ?? 'created_at'));
+        $order   = strtoupper((string) ($params['order'] ?? 'DESC')) === 'ASC' ? 'ASC' : 'DESC';
+
+        [$where, $placeholders] = $this->inviteCodeWhere($search);
+        $countSql               = "SELECT COUNT(*) FROM {$this->fullInviteCodesTable} WHERE {$where}";
+        $total                  = (int) ($placeholders
+            ? $this->wpdb->get_var($this->wpdb->prepare($countSql, $placeholders))
+            : $this->wpdb->get_var($countSql));
+
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $page       = min($page, $totalPages);
+        $offset     = ($page - 1) * $perPage;
+
+        $queryPlaceholders   = $placeholders;
+        $queryPlaceholders[] = $perPage;
+        $queryPlaceholders[] = $offset;
+        $sql                 = "SELECT * FROM {$this->fullInviteCodesTable} WHERE {$where} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+        $rows                = $this->wpdb->get_results($this->wpdb->prepare($sql, $queryPlaceholders), ARRAY_A) ?: [];
+
+        return [
+            'items'      => array_map(fn(array $row): array => $this->formatInvitationCodeRow($row), $rows),
+            'pagination' => [
+                'page'       => $page,
+                'perPage'    => $perPage,
+                'total'      => $total,
+                'totalPages' => $totalPages,
+            ],
+            'sort'       => [
+                'orderby' => $orderby,
+                'order'   => $order,
+            ],
+        ];
+    }
+
+    public function deleteInviteCodes(array $ids): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), fn(int $id): bool => $id > 0)));
+
+        $successCount = 0;
+        $failCount    = 0;
+        foreach ($ids as $id) {
+            $result = $this->deleteInviteCode($id);
+            if ($result !== false) {
+                $successCount++;
+            } else {
+                $failCount++;
+            }
+        }
+
+        return [
+            'successCount' => $successCount,
+            'failCount'    => $failCount,
+            'message'      => $successCount > 0 ? __('Deleted', 'G3') . ': ' . $successCount : __('Failed', 'G3'),
+        ];
     }
 
     /**
@@ -472,6 +537,109 @@ class AuthService {
             2       => __('User Bought', 'G3'),
             default => __('Unknown'),
         };
+    }
+
+    private function inviteCodeWhere(string $search): array
+    {
+        $where        = '1=1';
+        $placeholders = [];
+
+        if ($search !== '') {
+            $where          .= ' AND code LIKE %s';
+            $placeholders[]  = '%' . $this->wpdb->esc_like($search) . '%';
+        }
+
+        return [$where, $placeholders];
+    }
+
+    private function normalizeInviteCodeOrderby(string $orderby): string
+    {
+        $map = [
+            'id'         => 'id',
+            'code'       => 'code',
+            'creator'    => 'creator_id',
+            'creatorId'  => 'creator_id',
+            'createdAt'  => 'created_at',
+            'created_at' => 'created_at',
+            'source'     => 'source',
+            'endTime'    => 'end_time',
+            'end_time'   => 'end_time',
+            'status'     => 'status',
+            'invitee'    => 'invitee_id',
+            'inviteeId'  => 'invitee_id',
+            'usedAt'     => 'used_at',
+            'used_at'    => 'used_at',
+        ];
+
+        return $map[$orderby] ?? 'created_at';
+    }
+
+    private function formatInvitationCodeRow(array $row): array
+    {
+        $status = (string) ($row['status'] ?? '0');
+
+        return [
+            'id'            => (int) $row['id'],
+            'code'          => (string) $row['code'],
+            'creatorId'     => (int) ($row['creator_id'] ?? 0),
+            'creatorName'   => $this->userDisplayName((int) ($row['creator_id'] ?? 0), __('Unknown')),
+            'createdAt'     => (string) ($row['created_at'] ?? ''),
+            'createdAtText' => $this->formatDateTime($row['created_at'] ?? null),
+            'source'        => (int) ($row['source'] ?? 0),
+            'sourceText'    => self::renderCodeSource((int) ($row['source'] ?? 0)),
+            'endTime'       => (string) ($row['end_time'] ?? ''),
+            'endTimeText'   => $this->formatEndTime($row['end_time'] ?? null),
+            'expired'       => $this->dateExpired($row['end_time'] ?? null),
+            'status'        => $status,
+            'statusText'    => $status === '0' ? __('Unused', 'G3') : __('Used', 'G3'),
+            'inviteeId'     => (int) ($row['invitee_id'] ?? 0),
+            'inviteeName'   => $this->userDisplayName((int) ($row['invitee_id'] ?? 0), '-'),
+            'usedAt'        => (string) ($row['used_at'] ?? ''),
+            'usedAtText'    => $this->formatDateTime($row['used_at'] ?? null),
+        ];
+    }
+
+    private function userDisplayName(int $userId, string $empty = ''): string
+    {
+        if ($userId <= 0) {
+            return $empty;
+        }
+
+        $user = get_userdata($userId);
+        return $user ? $user->display_name : __('Unknown');
+    }
+
+    private function formatDateTime(?string $value): string
+    {
+        if (!$value) {
+            return '-';
+        }
+
+        $timestamp = strtotime($value);
+        return $timestamp === false ? $value : (string) Date::dateTime($timestamp);
+    }
+
+    private function formatEndTime(?string $value): string
+    {
+        if (!$value) {
+            return '-';
+        }
+
+        if ($this->dateExpired($value)) {
+            return __('Expired', 'G3');
+        }
+
+        return $this->formatDateTime($value);
+    }
+
+    private function dateExpired(?string $value): bool
+    {
+        if (!$value) {
+            return false;
+        }
+
+        $timestamp = strtotime($value);
+        return $timestamp !== false && $timestamp < time();
     }
 
 

@@ -21,7 +21,7 @@ echo '</div>';
                 action: 'g3_delete_sku',
                 id: id
             };
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, data, (res) => {
                         if (res.success) {

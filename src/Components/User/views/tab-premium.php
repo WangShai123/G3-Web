@@ -90,7 +90,7 @@ $table->display();
         });
         $(document).on('click', '.delete-config', (e) => {
             const slug = $(e.currentTarget).data('slug');
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_premium_config',

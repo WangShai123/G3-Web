@@ -33,6 +33,11 @@ final class Message {
         return __('Updated', 'G3');
     }
 
+    public static function deleted(): string
+    {
+        return __('Deleted', 'G3');
+    }
+
     public static function flushed(): string
     {
         return __('Flushed', 'G3');
@@ -72,13 +77,22 @@ final class Message {
         return __('Illegal request', 'G3');
     }
 
-    public static function deleteConfirm(): void
+    public static function paramMissing(): string
     {
-        echo __('Are you sure you want to delete it?', 'G3');
+        return __('Param missing', 'G3');
     }
-    public static function changeConfirm(): void
+
+    public static function noAction(): string
     {
-        echo __('Are you sure you want to change it?', 'G3');
+        return __('Please select a bulk action.', 'G3');
+    }
+    public static function deleteConfirm(): string
+    {
+        return __('Are you sure you want to delete it?', 'G3');
+    }
+    public static function changeConfirm(): string
+    {
+        return __('Are you sure you want to change it?', 'G3');
     }
     public static function templateNotImplemented($name): string
     {

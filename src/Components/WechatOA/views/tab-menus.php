@@ -38,7 +38,7 @@ echo Element::tip(
             e.preventDefault()
             let id = $(this).attr('data-id')
 
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_wechatOA_menu',

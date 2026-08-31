@@ -168,7 +168,7 @@ $specs = json_encode($specs);
                 lite('<?php _e('Cannot delete this spec option, it is used in sku.', 'G3'); ?>')
                 return
             }
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_spec_option',

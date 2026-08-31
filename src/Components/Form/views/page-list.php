@@ -13,7 +13,7 @@ $table->display();
         const { success, error, confirm } = Toast;
         $(document).on('click', '.delete-field', function () {
             const id = $(this).data('id');
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_field',

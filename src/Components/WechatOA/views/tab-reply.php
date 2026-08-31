@@ -156,7 +156,7 @@ $table->display();
 
         $(document).on('click', '.delete-reply', function () {
             const id = $(this).data('id');
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.ajax({
                         // url: '<?php //echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',

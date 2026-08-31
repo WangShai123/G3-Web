@@ -43,7 +43,7 @@ final class Response {
     public static function ajaxUpdated(): void
     {
         wp_send_json_success(
-            ['message' => __('Updated', 'G3')],
+            ['message' => Message::updated()],
             200
         );
     }
@@ -54,7 +54,7 @@ final class Response {
     public static function ajaxDeleted(): void
     {
         wp_send_json_success([
-            'message' => __('Deleted', 'G3')
+            'message' => Message::deleted(),
         ]);
     }
 
@@ -64,7 +64,7 @@ final class Response {
     public static function ajaxForbidden(): void
     {
         wp_send_json_error(
-            ['message' => __('Forbidden', 'G3')],
+            ['message' => Message::forbidden()],
             403
         );
     }
@@ -75,7 +75,7 @@ final class Response {
     public static function ajaxIllegal(): void
     {
         wp_send_json_error(
-            ['message' => __('Illegal request', 'G3')],
+            ['message' => Message::illegalRequest()],
             402
         );
     }
@@ -86,7 +86,7 @@ final class Response {
     public static function ajaxFailed(): void
     {
         wp_send_json_error(
-            ['message' => __('Failed', 'G3')],
+            ['message' => Message::failed()],
             400
         );
     }
@@ -97,7 +97,7 @@ final class Response {
     public static function ajaxParamMissing(): void
     {
         wp_send_json_error(
-            ['message' => __('Param missing', 'G3')],
+            ['message' => Message::paramMissing()],
             400
         );
     }

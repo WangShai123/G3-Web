@@ -175,7 +175,7 @@ $table->display();
                 lite('<?php _e('Cannot delete this spec, it is used in some sku or options.', 'G3'); ?>')
                 return
             }
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_spec',

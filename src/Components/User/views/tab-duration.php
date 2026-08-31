@@ -175,7 +175,7 @@ $table->display();
         })
         $(document).on('click', '.delete-duration', (e) => {
             const t = $(e.currentTarget);
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 text: {
                     cancel: '<?php _e('Cancel'); ?>',
                     action: '<?php _e('Delete'); ?>',

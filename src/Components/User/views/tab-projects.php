@@ -140,7 +140,7 @@ $durations = get_option(UserService::DURATION_OPTION_KEY, []);
         })
         $(document).on('click', '.delete-project', (e) => {
             const id = $(e.currentTarget).data('id')
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_membership_project',

@@ -136,6 +136,8 @@ class Customer extends Components {
             'title'            => (string) ($option['title'] ?? CustomerService::defaultOption()['title']),
             'welcomeTip'       => $z ? (string) ($option['welcomeTip'] ?? CustomerService::defaultOption()['welcomeTip']) : '',
             'welcomeMessage'   => $z ? (string) ($option['welcomeMessage'] ?? CustomerService::defaultOption()['welcomeMessage']) : '',
+            'offlineMessage'   => $z ? (string) ($option['offlineMessage'] ?? CustomerService::defaultOption()['offlineMessage']) : '',
+            'fallbackMessage'  => $z ? (string) ($option['fallbackMessage'] ?? CustomerService::defaultOption()['fallbackMessage']) : '',
             'announcement'     => (string) ($option['announcement'] ?? ''),
             'announcementLink' => (string) ($option['announcementLink'] ?? ''),
             'z'                => $z,

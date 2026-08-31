@@ -34,7 +34,7 @@ $renderer->form($panel, $panelTab);
             $(document).on('click', `[data-action="${dataAction}"]`, function (e) {
                 const t = $(e.currentTarget);
                 const loader = `<span class="g3-loader-wrap"><span class="j-loader"><span class="loader"></span></span></span>`;
-                confirm('<?php Message::deleteConfirm(); ?>', {
+                confirm('<?php echo Message::deleteConfirm(); ?>', {
                     text: {
                         cancel: '<?php _e('Cancel'); ?>',
                         action: '<?php _e('Clear'); ?>'

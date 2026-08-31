@@ -99,7 +99,7 @@ echo '</form>';
 
         $('.deleteLocation').on('click', function () {
             const key = $(this).data('key');
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'delete_swiper_location',

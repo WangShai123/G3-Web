@@ -164,7 +164,7 @@ class Auth extends Components {
 
             if (empty($successCodes)) {
                 wp_send_json_error([
-                    'message'   => __('Failed', 'G3'),
+                    'message'   => Message::failed(),
                     'failCount' => $failCount
                 ], 500);
             }

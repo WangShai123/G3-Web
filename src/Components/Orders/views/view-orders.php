@@ -35,7 +35,7 @@ $table->display();
         });
         $(document).on('click', '.delete-order', function (e) {
             const order_id = $(this).data('id')
-            confirm('<?php Message::deleteConfirm(); ?>', {
+            confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_delete_order',
