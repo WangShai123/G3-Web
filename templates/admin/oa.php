@@ -15,6 +15,7 @@ if (is_user_logged_in()) {
         return;
     }
 }
+Frontend::css('jui');
 Frontend::esm('g3.login.oa');
 get_header();
 echo '<div id="app"></div>';
