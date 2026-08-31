@@ -39,7 +39,7 @@ class CustomerService extends Service {
             'guestName'        => 'Guest',
             'retentionDays'    => 180,
             'heartbeatSeconds' => 45,
-            'timeoutMinutes'   => 120,
+            'timeoutMinutes'   => 30,
             'fallbackMessage'  => 'The service is temporarily unavailable. Please try again later.',
             'icon'             => '1',
         ];
@@ -58,8 +58,9 @@ class CustomerService extends Service {
 
     public function publicConfig(): array
     {
-        $option = $this->option();
-        $z      = $this->z();
+        $option  = $this->option();
+        $z       = $this->z();
+        $working = $this->withinWorkingHours();
         return [
             'enabled'          => $this->enabled(),
             'title'            => (string) $option['title'],
@@ -68,10 +69,13 @@ class CustomerService extends Service {
             'announcement'     => (string) $option['announcement'],
             'announcementLink' => (string) $option['announcementLink'],
             'offlineMessage'   => $z ? (string) $option['offlineMessage'] : '',
-            'working'          => $this->withinWorkingHours(),
+            'fallbackMessage'  => $z ? (string) $option['fallbackMessage'] : '',
+            'working'          => $working,
+            'offline'          => !$working,
             'guestId'          => $this->guestId(false),
             'z'                => $z,
             'heartbeatSeconds' => (int) $option['heartbeatSeconds'],
+            'timeoutMinutes'   => (int) $option['timeoutMinutes'],
         ];
     }
 
@@ -104,10 +108,6 @@ class CustomerService extends Service {
             return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
         }
 
-        if ($created) {
-            $this->createOfflineMessage((int) $conversation['id']);
-        }
-
         $content = trim((string) ($data['content'] ?? ''));
         if ($content !== '') {
             $message = $this->sendMessage((int) $conversation['id'], $identity, $content, IM::MESSAGE_TEXT, false);
@@ -119,6 +119,7 @@ class CustomerService extends Service {
         return [
             'conversation' => $this->getCustomerConversation((int) $conversation['id']),
             'messages'     => $this->im->messages((int) $conversation['id'], 0, 50),
+            'created'      => $created,
         ];
     }
 
@@ -148,7 +149,6 @@ class CustomerService extends Service {
                 return $conversationId;
             }
             $this->createCustomerConversation($conversationId, $identity);
-            $this->createOfflineMessage($conversationId);
         }
 
         $msgType = $this->requestMessageType($data);
@@ -157,6 +157,37 @@ class CustomerService extends Service {
         }
 
         return $this->sendMessage($conversationId, $identity, (string) ($data['content'] ?? ''), $msgType, false);
+    }
+
+    public function closeCustomerConversation(int $conversationId, string $closeReason = CustomerConversation::CLOSE_BY_CUSTOMER): array|WP_Error
+    {
+        if (!$this->enabled()) {
+            return new WP_Error('customer_service_disabled', 'Customer service is disabled.', ['status' => 403]);
+        }
+
+        $identity = $this->customerIdentity(false);
+        if ($conversationId <= 0 || !$identity || !$this->canAccessCustomerConversation($conversationId, $identity)) {
+            return new WP_Error('forbidden', 'Forbidden', ['status' => 403]);
+        }
+
+        $conversation = $this->getCustomerConversation($conversationId);
+        if (!$conversation) {
+            return new WP_Error('conversation_not_found', 'Conversation not found.', ['status' => 404]);
+        }
+
+        if ($this->finalStatus((string) $conversation['status'])) {
+            return $conversation;
+        }
+
+        $allowedReasons = [
+            CustomerConversation::CLOSE_BY_CUSTOMER,
+            CustomerConversation::CLOSE_BY_TIMEOUT,
+        ];
+        $closeReason    = in_array($closeReason, $allowedReasons, true) ? $closeReason : CustomerConversation::CLOSE_BY_CUSTOMER;
+
+        return $this->updateCustomerStatus($conversationId, CustomerConversation::STATUS_CLOSED, $identity, [
+            'close_reason' => $closeReason,
+        ]);
     }
 
     public function sendAgentMessage(int $conversationId, array $data): array|WP_Error
@@ -805,20 +836,6 @@ class CustomerService extends Service {
         }
 
         return $msgType;
-    }
-
-    private function createOfflineMessage(int $conversationId): void
-    {
-        if (!$this->z() || $this->withinWorkingHours()) {
-            return;
-        }
-
-        $offline = trim((string) ($this->option()['offlineMessage'] ?? ''));
-        if ($offline === '') {
-            return;
-        }
-
-        $this->sendMessage($conversationId, $this->systemIdentity(), $offline, IM::MESSAGE_OFFLINE, true);
     }
 
     private function customerIdentity(bool $createGuest = true): ?array

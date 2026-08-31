@@ -20,22 +20,22 @@ class CustomerMessageJob extends Job {
     public function handle(array $data): void
     {
         if (!$this->dep) return;
-        /** @var CustomerService $service */
-        $service = Container::use(CustomerService::class);
-        $option  = $service->option();
-        $days    = (int) ($data['days'] ?? 0);
+        /** @var CustomerService $customerService */
+        $customerService = Container::use(CustomerService::class);
+        $option          = $customerService->option();
+        $days            = (int) ($data['days'] ?? 0);
 
         if ($days <= 0) {
             $days = (int) ($option['retentionDays'] ?? 180);
         }
 
-        $timeouts = $service->markTimeoutConversations((int) ($option['timeoutMinutes'] ?? 120));
-        $result   = $service->cleanupBeforeDays($days);
+        $timeouts = $customerService->markTimeoutConversations((int) ($option['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes']));
+        $result   = $customerService->cleanupBeforeDays($days);
         $this->logger->info('Customer conversations cleanup completed.', [
-            'module'                 => 'customer',
-            'timeout_conversations'  => $timeouts,
-            'cleanup_result'         => $result,
-            'retention_days'         => $days,
+            'module'                => 'customer',
+            'timeout_conversations' => $timeouts,
+            'cleanup_result'        => $result,
+            'retention_days'        => $days,
         ]);
     }
 

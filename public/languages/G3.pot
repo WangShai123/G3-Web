@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-27 00:23+0000\n"
+"POT-Creation-Date: 2026-08-31 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:173
+#: src/Components/Customer/Customer.php:180
 msgid "Active"
 msgstr ""
 
@@ -248,7 +248,7 @@ msgstr ""
 msgid "All Orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:159
+#: src/Components/Setting/Setting.php:165
 msgid ""
 "All outbound links will be intercepted by the system and redirected to the "
 "link middle page instead of the original target url."
@@ -266,6 +266,7 @@ msgstr ""
 msgid "Already have an account?"
 msgstr ""
 
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:39
 #: src/Components/Auth/views/tab-invitation.php:20
 msgid "Amount"
 msgstr ""
@@ -306,9 +307,9 @@ msgstr ""
 msgid "Announcements"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:22
-#: src/Components/Performance/widgets/MonitorWidget.php:28
-#: src/Components/Performance/widgets/MonitorWidget.php:50
+#: src/Components/Performance/widgets/MonitorWidget.php:23
+#: src/Components/Performance/widgets/MonitorWidget.php:29
+#: src/Components/Performance/widgets/MonitorWidget.php:53
 msgid "Application Monitor"
 msgstr ""
 
@@ -320,7 +321,7 @@ msgstr ""
 msgid "Archive Sidebar"
 msgstr ""
 
-#: src/Utilities/Message.php:81
+#: src/Utilities/Message.php:95
 msgid "Are you sure you want to change it?"
 msgstr ""
 
@@ -332,7 +333,8 @@ msgstr ""
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr ""
 
-#: src/Utilities/Message.php:77
+#: src/Utilities/Message.php:91
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:53
 msgid "Are you sure you want to delete it?"
 msgstr ""
 
@@ -529,8 +531,8 @@ msgid ""
 msgstr ""
 
 #: src/Components/Security/Security.php:89
-#: src/Components/Setting/Setting.php:183
-#: src/Components/Setting/Setting.php:192
+#: src/Components/Setting/Setting.php:189
+#: src/Components/Setting/Setting.php:198
 #: src/Components/Performance/Performance.php:68
 #: src/Components/Developer/views/tab-system.php:61
 msgid "Cache"
@@ -596,7 +598,7 @@ msgstr ""
 msgid "Click here to view \"%s\" search results."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:177
+#: src/Components/Customer/Customer.php:184
 msgid "Closed"
 msgstr ""
 
@@ -646,7 +648,7 @@ msgid ""
 "Default: 24 hours. Current value: %s."
 msgstr ""
 
-#: src/Components/Form/views/page-list.php:102
+#: src/Components/Form/views/page-list.php:103
 #: src/Components/WechatOA/views/tab-message.php:46
 msgid "Confirm"
 msgstr ""
@@ -700,7 +702,7 @@ msgstr ""
 msgid "Copyright Protection"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:182
+#: src/Components/Setting/Setting.php:188
 #: src/Components/Post/widgets/PostWidget.php:78
 msgid "Count"
 msgstr ""
@@ -721,16 +723,18 @@ msgstr ""
 msgid "Create account"
 msgstr ""
 
-#: src/Utilities/Message.php:47
+#: src/Utilities/Message.php:52
 msgid "Created"
 msgstr ""
 
 #: src/Components/Form/Includes/FormListTable.php:45
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:38
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:59
 msgid "Created At"
 msgstr ""
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:37
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:58
 msgid "Creator"
 msgstr ""
 
@@ -766,10 +770,10 @@ msgstr ""
 msgid "Custom Admin Login"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:155
-#: src/Components/Setting/Setting.php:156
-#: src/Components/Setting/Setting.php:157
-#: src/Components/Setting/Setting.php:157
+#: src/Components/Setting/Setting.php:161
+#: src/Components/Setting/Setting.php:162
+#: src/Components/Setting/Setting.php:163
+#: src/Components/Setting/Setting.php:163
 msgid "Custom Code"
 msgstr ""
 
@@ -806,7 +810,7 @@ msgstr ""
 #: src/Components/Customer/Customer.php:46
 #: src/Components/Customer/Customer.php:47
 #: src/Components/Customer/Customer.php:64
-#: src/Components/Customer/Customer.php:142
+#: src/Components/Customer/Customer.php:149
 msgid "Customer Service"
 msgstr ""
 
@@ -837,7 +841,7 @@ msgstr ""
 msgid "Data Type"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:89
+#: src/Components/Performance/widgets/MonitorWidget.php:92
 msgid "Database Queries"
 msgstr ""
 
@@ -852,11 +856,11 @@ msgstr ""
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:152
+#: src/Components/Setting/Setting.php:158
 msgid "Default Avatar"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:153
+#: src/Components/Setting/Setting.php:159
 msgid "Default Cover"
 msgstr ""
 
@@ -893,7 +897,7 @@ msgid ""
 "user instead of directly reporting an error."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:162
+#: src/Components/Setting/Setting.php:168
 msgid "Delay"
 msgstr ""
 
@@ -907,7 +911,8 @@ msgstr ""
 msgid "Delete History Data"
 msgstr ""
 
-#: src/Utilities/Response.php:57 src/Controllers/AdminController.php:133
+#: src/Utilities/Message.php:38 src/Controllers/AdminController.php:133
+#: src/Controllers/TableListController.php:96 src/Services/AuthService.php:502
 #: src/Services/OrdersService.php:132
 #: src/Components/Announcement/Announcement.php:90
 #: src/Components/Developer/Includes/CronListTable.php:306
@@ -942,7 +947,7 @@ msgstr ""
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:341
+#: src/Components/Setting/Setting.php:388
 msgid "Description"
 msgstr ""
 
@@ -1006,7 +1011,7 @@ msgstr ""
 msgid "Dislike"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:58
+#: src/Components/Performance/widgets/MonitorWidget.php:61
 msgid "Display Items"
 msgstr ""
 
@@ -1014,7 +1019,7 @@ msgstr ""
 msgid "Display Type"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:424
+#: src/Components/Setting/Setting.php:471
 msgid "Documents"
 msgstr ""
 
@@ -1074,7 +1079,7 @@ msgstr ""
 msgid "Edit Brand"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:181
+#: src/Components/Customer/Customer.php:188
 msgid "Edit Conversation Title"
 msgstr ""
 
@@ -1094,7 +1099,7 @@ msgstr ""
 msgid "Edit Swipers"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:93
+#: src/Components/Performance/widgets/MonitorWidget.php:96
 msgid "Elapsed Time"
 msgstr ""
 
@@ -1161,6 +1166,7 @@ msgstr ""
 msgid "Event Replay"
 msgstr ""
 
+#: src/Services/AuthService.php:629
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:253
 msgid "Expired"
 msgstr ""
@@ -1169,8 +1175,9 @@ msgstr ""
 msgid "Extra Data"
 msgstr ""
 
-#: src/Utilities/Response.php:89 src/Utilities/Message.php:67
-#: src/Components/Auth/Auth.php:167
+#: src/Utilities/Message.php:72 src/Controllers/TableListController.php:62
+#: src/Controllers/TableListController.php:91 src/Services/AuthService.php:502
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:37
 msgid "Failed"
 msgstr ""
 
@@ -1192,7 +1199,7 @@ msgstr ""
 msgid "Failed to delete orders"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:464
+#: src/Components/Setting/Setting.php:511
 msgid "Failed to generate LLM cache."
 msgstr ""
 
@@ -1207,7 +1214,7 @@ msgstr ""
 msgid "Failed to generate WeChat auth URL."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:147
+#: src/Controllers/TableListController.php:45 src/Components/Auth/Auth.php:147
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr ""
 
@@ -1215,12 +1222,12 @@ msgstr ""
 msgid "Favorite"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:102
+#: src/Components/Performance/widgets/MonitorWidget.php:105
 msgid "Feature Disabled"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:403
-#: src/Components/Setting/Setting.php:404
+#: src/Components/Setting/Setting.php:450
+#: src/Components/Setting/Setting.php:451
 msgid "Feed Disabled"
 msgstr ""
 
@@ -1317,7 +1324,7 @@ msgstr ""
 msgid "Flush Setting Options"
 msgstr ""
 
-#: src/Utilities/Message.php:38
+#: src/Utilities/Message.php:43
 msgid "Flushed"
 msgstr ""
 
@@ -1330,7 +1337,7 @@ msgstr ""
 msgid "Folder Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:156
+#: src/Components/Setting/Setting.php:162
 msgid "Footer Code"
 msgstr ""
 
@@ -1384,8 +1391,7 @@ msgstr ""
 msgid "For Traditional Wordpress Theme"
 msgstr ""
 
-#: src/Middleware/RoleMiddleware.php:61 src/Utilities/Response.php:67
-#: src/Utilities/Message.php:23
+#: src/Middleware/RoleMiddleware.php:61 src/Utilities/Message.php:23
 msgid "Forbidden"
 msgstr ""
 
@@ -1484,18 +1490,19 @@ msgstr ""
 msgid "General Settings"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:189
-#: src/Components/Setting/Setting.php:193
+#: src/Components/Setting/Setting.php:195
+#: src/Components/Setting/Setting.php:199
 #, php-format
 msgid "Generate %s Cache"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:189
-#: src/Components/Setting/Setting.php:193
+#: src/Components/Setting/Setting.php:195
+#: src/Components/Setting/Setting.php:199
 msgid "Generate Cache"
 msgstr ""
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:92
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:38
 #: src/Components/Auth/views/tab-invitation.php:49
 #: src/Components/Auth/views/tab-invitation.php:50
 msgid "Generate Invitation Code"
@@ -1511,7 +1518,7 @@ msgid ""
 "wp-content</i></code> directory if it does not exist."
 msgstr ""
 
-#: src/Utilities/Message.php:43
+#: src/Utilities/Message.php:48
 msgid "Generated"
 msgstr ""
 
@@ -1521,7 +1528,7 @@ msgstr ""
 msgid "Global Spec"
 msgstr ""
 
-#: src/Services/CustomerService.php:845
+#: src/Services/CustomerService.php:833
 msgid "Guest"
 msgstr ""
 
@@ -1529,7 +1536,7 @@ msgstr ""
 msgid "Guest Name"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:155
+#: src/Components/Setting/Setting.php:161
 msgid "Header Code"
 msgstr ""
 
@@ -1588,11 +1595,11 @@ msgstr ""
 msgid "https://www.jealer.com/g3-web"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:154
+#: src/Components/Setting/Setting.php:160
 msgid "ICP Code"
 msgstr ""
 
-#: src/Services/UserService.php:301
+#: src/Services/UserService.php:302
 msgid "If the account exists, a password reset email has been sent."
 msgstr ""
 
@@ -1600,7 +1607,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:154
+#: src/Components/Setting/Setting.php:160
 msgid ""
 "If you are conducting online business in mainland China, please be sure to "
 "input the ICP filing number issued by the Ministry of Industry and "
@@ -1620,7 +1627,8 @@ msgid ""
 "and highly maintainable system-level features."
 msgstr ""
 
-#: src/Utilities/Response.php:78 src/Utilities/Message.php:72
+#: src/Utilities/Message.php:77 src/Controllers/TableListController.php:86
+#: src/Controllers/TableListController.php:112
 msgid "Illegal request"
 msgstr ""
 
@@ -1725,13 +1733,22 @@ msgstr ""
 msgid "Invalid username."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:50 src/Components/Auth/Auth.php:79
-#: src/Components/Auth/Auth.php:173
+#: src/Controllers/TableListController.php:66 src/Components/Auth/Auth.php:50
+#: src/Components/Auth/Auth.php:79 src/Components/Auth/Auth.php:173
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:36
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:57
 msgid "Invitation Code"
 msgstr ""
 
+#: src/Controllers/TableListController.php:25
+#: src/Controllers/TableListController.php:39
+#: src/Controllers/TableListController.php:82
+#: src/Controllers/TableListController.php:108
+msgid "Invitation code feature is not available."
+msgstr ""
+
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:9
 msgid ""
 "Invitation code feature is not available. Please set the invitation code as "
 "the registration code first."
@@ -1742,6 +1759,7 @@ msgid "Invite-Only Registration"
 msgstr ""
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:42
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:63
 msgid "Invitee"
 msgstr ""
 
@@ -1771,9 +1789,9 @@ msgstr ""
 msgid "Keyword too long, max %s characters."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:338
-#: src/Components/Setting/Setting.php:355
-#: src/Components/Setting/Setting.php:361
+#: src/Components/Setting/Setting.php:385
+#: src/Components/Setting/Setting.php:402
+#: src/Components/Setting/Setting.php:408
 msgid "Keywords"
 msgstr ""
 
@@ -1835,7 +1853,7 @@ msgstr ""
 msgid "List Card Menu"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:449
+#: src/Components/Setting/Setting.php:496
 msgid "LLM feature is disabled."
 msgstr ""
 
@@ -1868,9 +1886,9 @@ msgid "Logged-in users are not cached"
 msgstr ""
 
 #: templates/user/register.php:273 templates/user/reset-password.php:34
-#: src/Services/AuthService.php:492 src/Components/Security/Security.php:83
-#: src/Components/Auth/Auth.php:25 src/Components/Auth/Auth.php:26
-#: src/Components/Auth/Auth.php:44 src/Components/User/User.php:162
+#: src/Services/AuthService.php:660 src/Components/Auth/Auth.php:25
+#: src/Components/Auth/Auth.php:26 src/Components/Auth/Auth.php:44
+#: src/Components/User/User.php:162
 msgid "Login"
 msgstr ""
 
@@ -1949,7 +1967,7 @@ msgstr ""
 msgid "Membership System"
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:97
+#: src/Components/Performance/widgets/MonitorWidget.php:100
 msgid "Memory Usage"
 msgstr ""
 
@@ -1963,11 +1981,11 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: src/Services/IMService.php:97 src/Services/CustomerService.php:778
+#: src/Services/IMService.php:96 src/Services/CustomerService.php:780
 msgid "Message content cannot be empty."
 msgstr ""
 
-#: src/Services/IMService.php:100
+#: src/Services/IMService.php:99
 msgid "Message is too long."
 msgstr ""
 
@@ -2011,7 +2029,7 @@ msgstr ""
 #: src/Components/Customer/Customer.php:97
 msgid ""
 "Minutes without messages before the system closes a conversation with "
-"timeout reason. Default: 120."
+"timeout reason."
 msgstr ""
 
 #: src/Components/Post/Post.php:762
@@ -2072,6 +2090,7 @@ msgid "new comment moderation"
 msgstr ""
 
 #: src/Controllers/ContactController.php:91
+#: src/Components/Setting/Setting.php:238
 msgid "New Message"
 msgstr ""
 
@@ -2122,13 +2141,17 @@ msgstr ""
 msgid "No brands found."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:169
+#: src/Components/Customer/Customer.php:176
 msgid "No conversations"
 msgstr ""
 
 #: src/Core/Admin/PanelRenderer.php:115
 #: src/Components/Swiper/views/tab-locations.php:43
 msgid "No data changed"
+msgstr ""
+
+#: src/Services/UserService.php:466
+msgid "No description available."
 msgstr ""
 
 #: src/Components/Mail/Mail.php:72
@@ -2199,12 +2222,12 @@ msgid ""
 "all services."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:160
-#: src/Components/Performance/widgets/MonitorWidget.php:102
+#: src/Components/Setting/Setting.php:166
+#: src/Components/Performance/widgets/MonitorWidget.php:105
 msgid "Online"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:425
+#: src/Components/Setting/Setting.php:472
 msgid "Online Courses"
 msgstr ""
 
@@ -2332,7 +2355,7 @@ msgstr ""
 msgid "Paid Reading"
 msgstr ""
 
-#: src/Utilities/Response.php:100
+#: src/Utilities/Message.php:82
 msgid "Param missing"
 msgstr ""
 
@@ -2385,7 +2408,7 @@ msgstr ""
 msgid "Payment System"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:176
+#: src/Components/Customer/Customer.php:183
 #: src/Components/Form/Includes/FormListTable.php:195
 #: src/Components/Form/views/page-list.php:45
 msgid "Pending"
@@ -2395,7 +2418,7 @@ msgstr ""
 msgid "Pending Payment"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:160
+#: src/Components/Setting/Setting.php:166
 msgid ""
 "Perform user identification and count concurrent online users using browser "
 "fingerprints."
@@ -2459,6 +2482,10 @@ msgstr ""
 #: src/Services/COSService.php:31
 #: src/Components/OpenPlatform/OpenPlatform.php:48
 msgid "Please Select"
+msgstr ""
+
+#: src/Utilities/Message.php:87
+msgid "Please select a bulk action."
 msgstr ""
 
 #: src/Components/Swiper/Swiper.php:65
@@ -2674,7 +2701,7 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
-#: src/Utilities/Message.php:52
+#: src/Utilities/Message.php:57
 msgid "Pushed"
 msgstr ""
 
@@ -2720,8 +2747,8 @@ msgstr ""
 msgid "Reading Time"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:176
-#: src/Components/Setting/Setting.php:191
+#: src/Components/Setting/Setting.php:182
+#: src/Components/Setting/Setting.php:197
 msgid "Real-time data"
 msgstr ""
 
@@ -2741,7 +2768,7 @@ msgstr ""
 msgid "Recommended configuration"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:159
+#: src/Components/Setting/Setting.php:165
 msgid "Redirect Link"
 msgstr ""
 
@@ -2861,7 +2888,7 @@ msgstr ""
 msgid "Retrieve the data for the product list."
 msgstr ""
 
-#: src/Components/Performance/widgets/MonitorWidget.php:18
+#: src/Components/Performance/widgets/MonitorWidget.php:19
 msgid "Retrieve the data for the web application monitor."
 msgstr ""
 
@@ -2897,7 +2924,7 @@ msgstr ""
 msgid "Runs wordpress to process the request"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:151
+#: src/Components/Setting/Setting.php:157
 msgid "Sad Mod"
 msgstr ""
 
@@ -2938,6 +2965,7 @@ msgid "Search Brands"
 msgstr ""
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:107
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:31
 msgid "Search by Invitation Code"
 msgstr ""
 
@@ -2989,7 +3017,7 @@ msgstr ""
 msgid "Select field"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:144
+#: src/Components/Customer/Customer.php:151
 msgid "Send"
 msgstr ""
 
@@ -3005,17 +3033,17 @@ msgstr ""
 msgid "Sender's Email Secret"
 msgstr ""
 
-#: src/Utilities/Message.php:57
+#: src/Utilities/Message.php:62
 msgid "Sent"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:297
+#: src/Components/Setting/Setting.php:344
 msgid "SEO & Social Media"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:338
-#: src/Components/Setting/Setting.php:356
-#: src/Components/Setting/Setting.php:364
+#: src/Components/Setting/Setting.php:385
+#: src/Components/Setting/Setting.php:403
+#: src/Components/Setting/Setting.php:411
 msgid "Separate tags with commas."
 msgstr ""
 
@@ -3052,8 +3080,8 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:187
-#: src/Components/Setting/Setting.php:192
+#: src/Components/Setting/Setting.php:193
+#: src/Components/Setting/Setting.php:198
 msgid "Share it to your friends, search engine or AI!"
 msgstr ""
 
@@ -3098,11 +3126,11 @@ msgstr ""
 msgid "Site Health"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:190
+#: src/Components/Setting/Setting.php:196
 msgid "SiteMap"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:474
+#: src/Components/Setting/Setting.php:521
 msgid "Sitemap generation is disabled."
 msgstr ""
 
@@ -3159,7 +3187,7 @@ msgstr ""
 msgid "Specifications"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:423
+#: src/Components/Setting/Setting.php:470
 msgid "Sponsor"
 msgstr ""
 
@@ -3248,7 +3276,7 @@ msgstr ""
 msgid "System Email"
 msgstr ""
 
-#: src/Services/AuthService.php:471
+#: src/Services/AuthService.php:536
 msgid "System Generated"
 msgstr ""
 
@@ -3318,11 +3346,11 @@ msgid ""
 "message is found."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:162
+#: src/Components/Setting/Setting.php:168
 msgid "The delay time in minutes for updating the online status. Default: 30."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:151
+#: src/Components/Setting/Setting.php:157
 msgid ""
 "The entire website will be immersed in a mournful mode with only black, "
 "white, and gray colors."
@@ -3346,7 +3374,7 @@ msgstr ""
 msgid "The Key that will call the latest posts. Default: n"
 msgstr ""
 
-#: src/Components/Setting/Setting.php:158
+#: src/Components/Setting/Setting.php:164
 msgid "The links feature helps you manage your friendship links."
 msgstr ""
 
@@ -3393,7 +3421,7 @@ msgid ""
 "The number of items displayed per page in the table list of admin panel."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:182
+#: src/Components/Setting/Setting.php:188
 msgid ""
 "The number of posts to be generated for each post type. Default <code>"
 "2000</code>."
@@ -3465,7 +3493,7 @@ msgstr ""
 msgid "The system will use SMTP to send emails."
 msgstr ""
 
-#: src/Utilities/Message.php:86
+#: src/Utilities/Message.php:100
 #, php-format
 msgid ""
 "The template \"%s\" is not implemented yet. Please complete your own theme."
@@ -3574,7 +3602,7 @@ msgstr ""
 msgid "This username is already registered."
 msgstr ""
 
-#: src/Services/AuthService.php:347
+#: src/Services/AuthService.php:348
 msgid "This WeChat account is already bound to another user."
 msgstr ""
 
@@ -3594,7 +3622,7 @@ msgstr ""
 #: templates/developer/w.php:18 src/Utilities/Element.php:691
 #: src/Components/Developer/Developer.php:192
 #: src/Components/Developer/Developer.php:193
-#: src/Components/Setting/Setting.php:429
+#: src/Components/Setting/Setting.php:476
 #: src/Components/Customer/Customer.php:71
 #: src/Components/WechatOA/views/view-menu-edit.php:150
 msgid "Tip"
@@ -3651,7 +3679,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:145
+#: src/Components/Customer/Customer.php:152
 msgid "Type a message..."
 msgstr ""
 
@@ -3670,6 +3698,7 @@ msgstr ""
 msgid "Unsupported message type"
 msgstr ""
 
+#: src/Services/AuthService.php:594
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:77
 msgid "Unused"
 msgstr ""
@@ -3686,8 +3715,7 @@ msgstr ""
 msgid "Update Product Category"
 msgstr ""
 
-#: src/Utilities/Response.php:46 src/Utilities/Message.php:33
-#: src/Controllers/AdminController.php:96
+#: src/Utilities/Message.php:33 src/Controllers/AdminController.php:96
 #: src/Components/Announcement/Announcement.php:88
 #: src/Components/Announcement/Announcement.php:89
 #: src/Components/Announcement/Announcement.php:91
@@ -3761,6 +3789,10 @@ msgstr ""
 msgid "Use the dark color scheme as the default theme color scheme."
 msgstr ""
 
+#: src/Components/Customer/Customer.php:99
+msgid "Use the default icon shown on the frontend."
+msgstr ""
+
 #: src/Components/OSS/OSS.php:74
 msgid ""
 "Use the internal OSS endpoint when the site runs on Alibaba Cloud ECS in the "
@@ -3773,11 +3805,13 @@ msgid ""
 "recently used key."
 msgstr ""
 
+#: src/Services/AuthService.php:594
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:77
 msgid "Used"
 msgstr ""
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:43
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:64
 msgid "Used At"
 msgstr ""
 
@@ -3785,12 +3819,12 @@ msgstr ""
 msgid "Useful Development Features"
 msgstr ""
 
-#: src/Services/AuthService.php:472
+#: src/Services/AuthService.php:537
 msgid "User Bought"
 msgstr ""
 
 #: src/Controllers/ContactController.php:66
-#: src/Components/Customer/Customer.php:178
+#: src/Components/Customer/Customer.php:185
 msgid "User Profile"
 msgstr ""
 
@@ -3891,7 +3925,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: src/Utilities/Message.php:62
+#: src/Utilities/Message.php:67
 msgid "Verified"
 msgstr ""
 
@@ -4021,7 +4055,7 @@ msgid "Wechat Official Account supports 13 types of menu:"
 msgstr ""
 
 #: src/Controllers/AuthController.php:522 src/Services/WechatOAService.php:1779
-#: src/Services/AuthService.php:266
+#: src/Services/AuthService.php:267
 msgid "WeChat service is not available."
 msgstr ""
 
@@ -4064,8 +4098,8 @@ msgstr ""
 msgid "Welcome! Thanks for your attention."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:180
-#: src/Components/Setting/Setting.php:191
+#: src/Components/Setting/Setting.php:186
+#: src/Components/Setting/Setting.php:197
 msgid ""
 "When accessing the real-time data address, a cached data file will be "
 "automatically generated"
@@ -4171,7 +4205,7 @@ msgstr ""
 msgid "Working Days"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:174
+#: src/Components/Customer/Customer.php:181
 msgid "Wrap-up"
 msgstr ""
 

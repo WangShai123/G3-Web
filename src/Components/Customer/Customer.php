@@ -94,7 +94,7 @@ class Customer extends Components {
                 ->number('retentionDays', __('Retention Days', 'G3'), __('<code>CustomerMessageJob</code> removes data older than this many days. Default: 180.', 'G3'))
                 ->rowClass('advanced')
                 ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45. Adviced range: 30-60.', 'G3'))
-                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason. Default: 120.', 'G3'))
+                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason.', 'G3') . __(' Default') . ': 30.')
                 ->rowClass('advanced')
                 ->switch('icon', __('Icon'), __('Use the default icon shown on the frontend.', 'G3'))
         ];
@@ -125,8 +125,10 @@ class Customer extends Components {
     }
     private function frontConfig(): array
     {
-        $option = $this->option();
-        $z      = $this->z();
+        $option  = $this->option();
+        $z       = $this->z();
+        $service = $this->getService(CustomerService::class);
+        $working = $service instanceof CustomerService ? $service->withinWorkingHours() : true;
 
         return [
             'restUrl'          => esc_url_raw(rest_url('api/customer/v1')),
@@ -138,9 +140,12 @@ class Customer extends Components {
             'welcomeMessage'   => $z ? (string) ($option['welcomeMessage'] ?? CustomerService::defaultOption()['welcomeMessage']) : '',
             'offlineMessage'   => $z ? (string) ($option['offlineMessage'] ?? CustomerService::defaultOption()['offlineMessage']) : '',
             'fallbackMessage'  => $z ? (string) ($option['fallbackMessage'] ?? CustomerService::defaultOption()['fallbackMessage']) : '',
+            'working'          => $working,
+            'offline'          => !$working,
             'announcement'     => (string) ($option['announcement'] ?? ''),
             'announcementLink' => (string) ($option['announcementLink'] ?? ''),
             'z'                => $z,
+            'timeoutMinutes'   => (int) ($option['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes']),
             'labels'           => [
                 'open'        => __('Customer Service', 'G3'),
                 'close'       => __('Close'),

@@ -90,6 +90,26 @@ class CustomerController extends Controller {
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
+    #[RestRouter(namespace: 'api/customer', route: 'v1/conversations/close', methods: 'POST')]
+    #[Middleware(RateLimitMiddleware::class, [20, 60])]
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['conversation_id'],
+        'properties' => [
+            'conversation_id' => ['type' => 'integer'],
+            'close_reason'    => ['type' => 'string', 'enum' => ['customer', 'timeout']],
+        ]
+    ])]
+    public function close(WP_REST_Request $request): WP_Error|WP_REST_Response
+    {
+        $data   = $request->get_json_params() ?: [];
+        $result = $this->service->closeCustomerConversation(
+            (int) ($data['conversation_id'] ?? 0),
+            (string) ($data['close_reason'] ?? 'customer')
+        );
+        return is_wp_error($result) ? $result : $this->ok($result);
+    }
+
     #[RestRouter(namespace: 'api/customer', route: 'v1/conversations/read', methods: 'POST')]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function read(WP_REST_Request $request): WP_Error|WP_REST_Response
