@@ -226,8 +226,8 @@ class WechatOAService {
                 $data['content'] = $url;
                 break;
             case 'event':
-                $event           = (string) $message['Event'] ?? '';
-                $key             = (string) $message['EventKey'] ?? '';
+                $event           = $message['Event'] ?? '';
+                $key             = $message['EventKey'] ?? '';
                 $data['content'] = $event . ' - ' . $key;
                 break;
             default:

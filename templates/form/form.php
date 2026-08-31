@@ -4,6 +4,8 @@ use JEALER\G3\Utilities\Frontend;
 get_header();
 get_template_part('parts/header/index');
 Frontend::css('jui');
+Frontend::esm('vanilla-signal-i18n');
+Frontend::esm('jui');
 Frontend::esm('g3.form');
 ?>
 <div class="container flex-container contact-form-container">
