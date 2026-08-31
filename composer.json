@@ -35,9 +35,6 @@
     "qcloud/cos-sdk-v5": "^2.6"
   },
   "require-dev": {
-    "phpstan/phpstan": "^2.2",
-    "phpunit/phpunit": "^13.3",
-    "guzzlehttp/guzzle": "^7.10",
-    "wp-phpunit/wp-phpunit": "^7.1"
+    "guzzlehttp/guzzle": "^7.10"
   }
 }
