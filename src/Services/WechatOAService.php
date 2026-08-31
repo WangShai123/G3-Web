@@ -834,7 +834,7 @@ class WechatOAService {
                 $replyId
             ), ARRAY_A);
             if (!$reply) return false;
-            wp_cache_set($cacheKey, $reply, self::CACHE_GROUP);
+            wp_cache_set($cacheKey, $reply, self::CACHE_GROUP, DAY_IN_SECONDS);
         }
 
         return $reply;
