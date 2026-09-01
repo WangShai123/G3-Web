@@ -5,6 +5,7 @@ use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\CustomerService;
 use JEALER\G3\Services\LLMService;
+use JEALER\G3\Services\RedisService;
 use JEALER\G3\Services\SitemapService;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Utilities\Frontend;
@@ -89,24 +90,14 @@ class Setting extends Components {
     {
         $v = $this->option();
         if ($v['online'] ?? '0' === '1' && $this->loader->admin()) {
-            $ttl    = $v['onlineDelay'] ?? 30;
-            $redis  = $this->container->get(Redis::class);
-            $cookie = $_COOKIE[UserService::VISITOR_COOKIE] ?? '';
+            $ttl = $v['onlineDelay'] ?? 30;
+            /** @var RedisService $redisService*/
+            $redisService = $this->container->get(RedisService::class);
+            $redis        = $redisService->init();
+            $cookie       = $_COOKIE[UserService::VISITOR_COOKIE] ?? '';
             if (!empty($cookie)) {
                 $visitorId = sanitize_text_field($cookie);
-                // case 1:
-                // // for TTL
-                // $redis->setex("g3:g3_online:{$visitorId}", $ttl * 60, time());
-                // // for O(1) lightning-fast statistics
-                // $redis->sadd('g3:g3_online:online', $visitorId);
-
-                // case 2:
-                // 0(1) lightning-fast write and read, and use HyperLogLog to count unique visitors
-                // $redis->pfadd('g3:g3_hll:online', [$visitorId]);
-
-                // case 3:
-                // write and update active time (O(log(N)))
-                $expireAt = time() + ($ttl * 60);
+                $expireAt  = time() + ($ttl * 60);
                 $redis->zadd('g3:g3_zset:online', $expireAt, $visitorId);
                 // clean up expired entries (O(log(N))
                 $redis->zremrangebyscore('g3:g3_zset:online', '-inf', time());

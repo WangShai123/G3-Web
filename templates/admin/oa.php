@@ -15,6 +15,10 @@ if (is_user_logged_in()) {
         return;
     }
 }
+
+Frontend::css('vanilla-signal');
+Frontend::css('vanilla-signal-i18n');
+Frontend::css('vanilla-create-storage');
 Frontend::css('jui');
 Frontend::esm('g3.login.oa');
 get_header();

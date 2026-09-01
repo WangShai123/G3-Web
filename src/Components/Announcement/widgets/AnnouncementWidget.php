@@ -32,7 +32,7 @@ class AnnouncementWidget extends WP_Widget {
 
         $announcements = $this->getAnnouncements($count, $category, $type);
 
-        Frontend::css('widget');
+        Frontend::css('g3.widget');
 
         echo $args['before_widget'];
 

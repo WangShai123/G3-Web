@@ -486,4 +486,170 @@ final class System {
     {
         return !(defined('WP_USE_THEMES') && WP_USE_THEMES === false);
     }
+
+    public static function debugDBQuery(): void
+    {
+        $queryCount = get_num_queries();
+        if ($queryCount > 0) {
+            echo '<pre>';
+            var_dump(self::printDBQuery());
+            echo '</pre>';
+        }
+    }
+    public static function logDBQuery(): void
+    {
+        $queryCount = get_num_queries();
+        if ($queryCount > 0) {
+            error_log('G3 DB Query Log:');
+            error_log(print_r(self::printDBQuery(), true));
+        }
+    }
+
+    /**
+     * Get WordPress database queries recorded during the current request.
+     *
+     * 获取当前请求中 WordPress 已记录的数据库查询。
+     *
+     * @return array Debug data for var_dump/print_r in templates.
+     */
+    public static function printDBQuery(): array
+    {
+        global $wpdb;
+
+        if (!isset($wpdb) || !is_object($wpdb)) {
+            return [
+                'get_num_queries'    => 0,
+                'wpdb_num_queries'   => 0,
+                'recorded_queries'   => 0,
+                'unrecorded_queries' => 0,
+                'savequeries'        => false,
+                'enabled'            => false,
+                'count'              => 0,
+                'total_time'         => 0.0,
+                'total_time_ms'      => 0.0,
+                'last_error'         => '',
+                'notice'             => 'The global $wpdb instance is not available.',
+                'by_type'            => [],
+                'duplicates'         => [],
+                'queries'            => [],
+            ];
+        }
+
+        $enabled    = defined('SAVEQUERIES') && SAVEQUERIES;
+        $queryCount = function_exists('get_num_queries') ? (int) get_num_queries() : (int) ($wpdb->num_queries ?? 0);
+        $rawQueries = isset($wpdb->queries) && is_array($wpdb->queries) ? $wpdb->queries : [];
+
+        $queries    = [];
+        $duplicates = [];
+        $byType     = [];
+        $totalTime  = 0.0;
+
+        foreach ($rawQueries as $index => $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            $sql       = (string) ($entry[0] ?? $entry['query'] ?? '');
+            $time      = (float) ($entry[1] ?? $entry['time'] ?? 0);
+            $caller    = (string) ($entry[2] ?? $entry['caller'] ?? '');
+            $startedAt = (float) ($entry[3] ?? $entry['start'] ?? 0);
+            $data      = $entry[4] ?? $entry['data'] ?? [];
+            $type      = self::detectDBQueryType($sql);
+            $key       = md5(self::normalizeDBQuery($sql));
+
+            $totalTime += $time;
+
+            if (!isset($byType[$type])) {
+                $byType[$type] = [
+                    'count'         => 0,
+                    'total_time'    => 0.0,
+                    'total_time_ms' => 0.0,
+                ];
+            }
+
+            $byType[$type]['count']++;
+            $byType[$type]['total_time']    += $time;
+            $byType[$type]['total_time_ms']  = round($byType[$type]['total_time'] * 1000, 3);
+
+            if (!isset($duplicates[$key])) {
+                $duplicates[$key] = [
+                    'type'          => $type,
+                    'count'         => 0,
+                    'total_time'    => 0.0,
+                    'total_time_ms' => 0.0,
+                    'sql'           => $sql,
+                ];
+            }
+
+            $duplicates[$key]['count']++;
+            $duplicates[$key]['total_time']    += $time;
+            $duplicates[$key]['total_time_ms']  = round($duplicates[$key]['total_time'] * 1000, 3);
+
+            $queries[] = [
+                'index'         => count($queries) + 1,
+                'raw_index'     => $index,
+                'type'          => $type,
+                'time'          => $time,
+                'time_ms'       => round($time * 1000, 3),
+                'caller'        => $caller,
+                'started_at'    => $startedAt,
+                'duplicate_key' => $key,
+                'sql'           => $sql,
+                'data'          => $data,
+            ];
+        }
+
+        $duplicates = array_values(array_filter($duplicates, static fn($item) => $item['count'] > 1));
+        usort(
+            $duplicates,
+            static fn($a, $b) => [$b['count'], $b['total_time']] <=> [$a['count'], $a['total_time']]
+        );
+
+        uasort(
+            $byType,
+            static fn($a, $b) => [$b['count'], $b['total_time']] <=> [$a['count'], $a['total_time']]
+        );
+
+        $recordedCount = count($queries);
+
+        return [
+            'get_num_queries'    => $queryCount,
+            'wpdb_num_queries'   => isset($wpdb->num_queries) ? (int) $wpdb->num_queries : $queryCount,
+            'recorded_queries'   => $recordedCount,
+            'unrecorded_queries' => max(0, $queryCount - $recordedCount),
+            'savequeries'        => $enabled,
+            'enabled'            => $enabled,
+            'count'              => $recordedCount,
+            'total_time'         => round($totalTime, 6),
+            'total_time_ms'      => round($totalTime * 1000, 3),
+            'last_error'         => isset($wpdb->last_error) ? (string) $wpdb->last_error : '',
+            'notice'             => $enabled ? '' : 'SAVEQUERIES is not enabled, so get_num_queries() is available but SQL details are not recorded. G3-Web enables it automatically when WP_DEBUG and WP_DEBUG_LOG are true, but SQL can only be recorded after SAVEQUERIES has been enabled.',
+            'by_type'            => $byType,
+            'duplicates'         => $duplicates,
+            'queries'            => $queries,
+        ];
+    }
+
+    private static function detectDBQueryType(string $sql): string
+    {
+        $sql = ltrim($sql);
+
+        if ($sql === '') {
+            return 'unknown';
+        }
+
+        $parts = preg_split('/\s+/', $sql, 2);
+
+        return strtolower($parts[0] ?? 'unknown');
+    }
+
+    private static function normalizeDBQuery(string $sql): string
+    {
+        $sql = preg_replace('/\s+/', ' ', trim($sql)) ?? trim($sql);
+        $sql = preg_replace("/'(?:''|[^'])*'/", '?', $sql) ?? $sql;
+        $sql = preg_replace('/"(?:""|[^"])*"/', '?', $sql) ?? $sql;
+        $sql = preg_replace('/\b\d+(?:\.\d+)?\b/', '?', $sql) ?? $sql;
+
+        return strtolower($sql);
+    }
 }

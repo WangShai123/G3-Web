@@ -134,7 +134,7 @@ class Performance extends Components {
             return $ttl;
         }
 
-        $targetGroups = ['term-queries', 'post-queries', 'user-queries', 'comment-queries'];
+        $targetGroups = ['term-queries', 'post-queries', 'user-queries', 'comment-queries', 'comment', 'comment_meta'];
         if (in_array($group, $targetGroups, true)) {
             return HOUR_IN_SECONDS * $hours;
         }

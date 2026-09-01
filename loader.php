@@ -48,6 +48,10 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
+if (!defined('SAVEQUERIES') && JEALER\G3\Utilities\System::debug()) {
+    define('SAVEQUERIES', true);
+}
+
 /**
  * @description Load Constants Configuration Files
  */

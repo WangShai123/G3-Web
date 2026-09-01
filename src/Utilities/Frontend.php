@@ -159,6 +159,9 @@ final class Frontend {
      * Enqueue registered styles by handle.
      *
      * @param string|array<int,string> $handle
+     * @param bool $cdn
+     * @param string $media
+     * @return bool
      */
     public static function css(string|array $handle, bool $cdn = false, string $media = 'all'): bool
     {
@@ -183,6 +186,9 @@ final class Frontend {
      * Enqueue registered classic scripts by handle.
      *
      * @param string|array<int,string> $handle
+     * @param bool $cdn
+     * @param bool $inFooter
+     * @return bool
      */
     public static function umd(string|array $handle, bool $cdn = false, bool $inFooter = true): bool
     {
@@ -207,6 +213,9 @@ final class Frontend {
      * Enqueue registered script modules by handle.
      *
      * @param string|array<int,string> $handle
+     * @param bool $cdn
+     * @param bool $inFooter
+     * @return bool
      */
     public static function esm(string|array $handle, bool $cdn = false, bool $inFooter = true): bool
     {
@@ -225,16 +234,6 @@ final class Frontend {
             wp_enqueue_script_module($queueHandle);
             return true;
         });
-    }
-
-    /**
-     * Alias for enqueueing registered script modules.
-     *
-     * @param string|array<int,string> $handle
-     */
-    public static function module(string|array $handle, bool $cdn = false, bool $inFooter = true): bool
-    {
-        return self::esm($handle, $cdn, $inFooter);
     }
 
     /**
@@ -290,6 +289,21 @@ final class Frontend {
                 // Old version UC Browser (version number less than 9)
             (preg_match('/UCBrowser\/(\d+)/i', $user_agent, $matches) && \intval($matches[1]) < 9)
         );
+    }
+
+    /**
+     * Generate a JSON script tag with the specified ID and configuration.
+     * 
+     * 生成一个包含指定ID和配置的JSON脚本标签
+     *
+     * @param string $id
+     * @param array $config
+     * @return string
+     */
+    public static function configScript(string $id, array $config): string
+    {
+        $json = str_replace('</script', '<\/script', wp_json_encode($config, JSON_UNESCAPED_UNICODE) ?: '{}');
+        return '<script type="application/json" id="' . esc_attr($id) . '">' . $json . '</script>';
     }
 
     private static function loadAssetConfig(string $name): array
@@ -572,11 +586,5 @@ final class Frontend {
     private static function isScriptRegistered(string $handle): bool
     {
         return function_exists('wp_script_is') && wp_script_is($handle, 'registered');
-    }
-
-    public static function configScript(string $id, array $config): string
-    {
-        $json = str_replace('</script', '<\/script', wp_json_encode($config, JSON_UNESCAPED_UNICODE) ?: '{}');
-        return '<script type="application/json" id="' . esc_attr($id) . '">' . $json . '</script>';
     }
 }

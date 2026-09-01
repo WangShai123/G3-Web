@@ -109,7 +109,12 @@ class PostService extends Service {
         if ($postId <= 0) return [];
 
         $cached = wp_cache_get($postId, self::EXTRA_CACHE_GROUP);
-        if (is_array($cached)) return $cached;
+        if (is_array($cached)) {
+            $reInitResult = $this->reInitOldData($postId, $cached);
+            if (false !== $reInitResult) {
+                return $reInitResult;
+            }
+        }
 
         $row = $this->wpdb->get_row(
             $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `post_id` = %d", $postId),
@@ -127,6 +132,27 @@ class PostService extends Service {
             ]);
         }
         return $extra;
+    }
+
+    /**
+     * reInit old data
+     * @param  int $postId
+     * @param  array $data
+     * @return array|bool
+     */
+    private function reInitOldData(int $postId, array $data): array|bool
+    {
+        // reading_time
+        if (isset($data['reading_time']) && $data['reading_time'] > 0) return $data;
+
+        $post                 = get_post($postId);
+        $readingTime          = $this->calculateReadingTime($post->post_content);
+        $data['reading_time'] = $readingTime;
+        $result               = $this->setExtra($postId, $data);
+
+        if (is_wp_error($result)) return false;
+
+        return $data;
     }
 
     /**

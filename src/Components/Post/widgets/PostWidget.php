@@ -36,7 +36,7 @@ class PostWidget extends WP_Widget {
 
         $posts = $this->getPosts($count, $category, $type);
 
-        Frontend::css('widget');
+        Frontend::css('g3.widget');
 
         echo $args['before_widget'];
 

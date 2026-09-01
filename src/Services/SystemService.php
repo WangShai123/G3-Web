@@ -3,7 +3,6 @@ namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\System;
 use Throwable;
-use Redis;
 
 class SystemService extends Service {
     // general setting option Key
@@ -59,7 +58,14 @@ class SystemService extends Service {
         if ($option !== '1') {
             return false;
         }
-        $redis = $this->container->get(Redis::class);
+
+        /** @var RedisService $redisService */
+        $redisService = $this->container->get(RedisService::class);
+        $redis        = $redisService->init();
+
+        if (!$redis) {
+            return false;
+        }
         // return $redis->scard('g3:g3_online:online') + 1;
         // return $redis->pfcount('g3:g3_hll:online') + 1;
         return $redis->zcount('g3:g3_zset:online', time(), '+inf');

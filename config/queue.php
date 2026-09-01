@@ -4,12 +4,15 @@ return [
     // driver: 'redis' / 'database'
     'driver'   => 'redis',
     'redis'    => [
-        'host'     => '127.0.0.1',
-        'port'     => 6379,
-        'password' => null,
-        'database' => 1,
-        'prefix'   => 'g3_queue:',
-        'timeout'  => 5,
+        'database'       => 1,
+        'host'           => '127.0.0.1',
+        'port'           => 6379,
+        'timeout'        => 5,
+        'reserved'       => null,
+        'retry_interval' => 0,
+        'read_timeout'   => 0,
+        'password'       => null,
+        'prefix'         => 'g3_queue:',
     ],
     'database' => [
         'table' => 'g3_jobs',

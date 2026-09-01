@@ -18,6 +18,7 @@ return [
     'g3.subscribe.modal'     => [G3_ASSETS_URL . '/js/es/g3.subscribe.modal.min.js', ['jui', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.0.0'],
     'g3.switch.language'     => [G3_ASSETS_URL . '/js/es/g3.switch.language.min.js', ['jui', 'vanilla-signal-i18n'], '1.0.0'],
     'g3.visitor'             => [G3_ASSETS_URL . '/js/es/g3.visitor.min.js', ['fingerprint'], '1.0.0'],
+    'g3.comment'             => [G3_ASSETS_URL . '/js/es/g3.comment.min.js', ['vanilla-signal', 'jui', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.0.0'],
 
     /**
      * fingerprintjs

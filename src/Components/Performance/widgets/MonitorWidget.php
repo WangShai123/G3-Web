@@ -29,7 +29,7 @@ class MonitorWidget extends WP_Widget {
         $title = apply_filters('widget_title', $instance['title'] ?? __('Application Monitor', 'G3'));
         $items = $this->getMonitorItems($instance);
 
-        Frontend::css('widget');
+        Frontend::css('g3.widget');
 
         echo $args['before_widget'];
 

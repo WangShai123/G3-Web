@@ -688,15 +688,9 @@ class IMService extends Service {
 
     private function redis(): ?Redis
     {
-        try {
-            $redis = $this->container->get(Redis::class);
-            $redis->connect('127.0.0.1', 6379, 0.2);
-            $redis->select(DBService::IM_REDIS_DB);
-            return $redis;
-        }
-        catch (Throwable) {
-            return null;
-        }
+        /** @var RedisService $redisService */
+        $redisService = $this->container->get(RedisService::class);
+        return $redisService->init(DBService::IM_REDIS_DB);
     }
 
     private function realtime(): IMRealtimeService

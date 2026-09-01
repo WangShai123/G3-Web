@@ -3,7 +3,6 @@ namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\Type;
 use Redis;
-use Throwable;
 use WP_Error;
 
 class NotificationService extends Service {
@@ -219,15 +218,9 @@ class NotificationService extends Service {
 
     private function redis(): ?Redis
     {
-        try {
-            $redis = $this->container->get(Redis::class);
-            $redis->connect('127.0.0.1', 6379, 0.2);
-            $redis->select(DBService::NOTIFICATION_REDIS_DB);
-            return $redis;
-        }
-        catch (Throwable) {
-            return null;
-        }
+        /** @var RedisService $redisService */
+        $redisService = $this->container->get(RedisService::class);
+        return $redisService->init(DBService::NOTIFICATION_REDIS_DB);
     }
 
     private function prepareStreamRuntime(): bool

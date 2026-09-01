@@ -3,19 +3,21 @@ namespace JEALER\G3\Core;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Services\DBService;
+use JEALER\G3\Services\RedisService;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
-use Redis;
 use Throwable;
 
 class Activator {
     public static Activator $instance;
     private DBService       $DBManager;
     private Container       $container;
+    private RedisService    $redisService;
     public function __construct()
     {
-        $this->container = Container::run();
-        $this->DBManager = $this->container->get(DBService::class);
+        $this->container    = Container::run();
+        $this->DBManager    = $this->container->get(DBService::class);
+        $this->redisService = $this->container->get(RedisService::class);
         $this->init();
     }
     public static function activate(): Activator
@@ -58,8 +60,7 @@ class Activator {
     private function checkRedis(): void
     {
         try {
-            $redis = $this->container->get(Redis::class);
-            $redis->connect('127.0.0.1', 6379);
+            $this->redisService->connect();
         }
         catch (Throwable $th) {
             deactivate_plugins(plugin_basename(G3_PLUGIN_FILE));

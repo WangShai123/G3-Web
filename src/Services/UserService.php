@@ -128,6 +128,13 @@ class UserService extends Service {
         return $this->card;
     }
 
+    public function homeUrl(): string
+    {
+        $slug = $this->user['slug'] ?? '';
+        if (empty($slug)) return '';
+        return home_url('/user/' . $slug);
+    }
+
     private function normalizeExtra(array $row): array
     {
         return [

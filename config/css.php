@@ -1,9 +1,12 @@
 <?php
 return [
-    'jui'                 => [G3_CSS_URL . '/jui.css', [], '1.5.8', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
-    'widget'              => [G3_ASSETS_URL . '/css/widget.min.css', ['jui'], '1.0.0'],
+    'jui'                 => [G3_CSS_URL . '/jui.css', [], '1.6.2', 'https://unpkg.com/vanilla-jui@latest/dist/style.css'],
+
+    'g3.widget'           => [G3_ASSETS_URL . '/css/g3.widget.min.css', ['jui'], '1.0.0'],
+    'g3.comment'          => [G3_ASSETS_URL . '/css/g3.comment.min.css', ['jui'], '1.0.0'],
     'g3.customer.service' => [G3_ASSETS_URL . '/css/g3.customer-service.min.css', ['jui'], '1.0.0'],
     'g3.admin.customer'   => [G3_ASSETS_URL . '/css/g3.admin.customer.min.css', ['jui'], '1.0.0'],
+
     /**
      * highlight: JavaScript syntax highlighter with language auto-detection and zero dependencies.
      * @link https://github.com/highlightjs/highlight.js

@@ -2,7 +2,9 @@
 namespace JEALER\G3\Core\Queue;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\DBService;
+use JEALER\G3\Services\RedisService;
 use Redis;
+use RuntimeException;
 
 /**
  * Redis Queue Implementation
@@ -26,20 +28,16 @@ class RedisQueue implements QueueInterface {
     public function __construct(array $config = [])
     {
         $this->container = Container::run();
-        $this->redis     = $this->container->get(Redis::class);
-        $host            = $config['host'] ?? '127.0.0.1';
-        $port            = $config['port'] ?? 6379;
-        $timeout         = $config['timeout'] ?? 5;
-
-        $this->redis->connect($host, $port, $timeout);
-
-        if (isset($config['password']) && $config['password']) {
-            $this->redis->auth($config['password']);
+        /** @var RedisService $redisService */
+        $redisService = $this->container->get(RedisService::class);
+        $redis        = $redisService->init(
+            (int) ($config['database'] ?? DBService::QUEUE_REDIS_DB),
+            $config
+        );
+        if (!$redis) {
+            throw new RuntimeException('Redis queue connection failed.');
         }
-
-        if (isset($config['database'])) {
-            $this->redis->select($config['database'] ?? DBService::QUEUE_REDIS_DB);
-        }
+        $this->redis = $redis;
 
         $this->prefix = $config['prefix'] ?? 'g3_queue:';
     }

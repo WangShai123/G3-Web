@@ -5,6 +5,7 @@ use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\LogService;
 use Psr\Log\LoggerInterface;
 use wpdb;
+use Redis;
 
 abstract class Service {
     protected LoggerInterface $logger;
@@ -33,6 +34,7 @@ abstract class Service {
 
         return $this->container->get(LoggerInterface::class);
     }
+
     public function cache(): array
     {
         return $this->cache;

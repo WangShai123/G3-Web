@@ -8,6 +8,7 @@ class DBService extends Service {
     const QUEUE_REDIS_DB        = 1;
     const IM_REDIS_DB           = 2;
     const NOTIFICATION_REDIS_DB = 3;
+    const COMMENT_REDIS_DB      = 4;
 
     public function __construct()
     {
