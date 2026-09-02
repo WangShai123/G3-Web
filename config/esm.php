@@ -1,14 +1,14 @@
 <?php
 return [
     // vanilla library
-    'vanilla-signal'         => [G3_PLUGIN_URL . '/node_modules/vanilla-signal/dist/index.js', [], '1.1.15', 'https://unpkg.com/vanilla-signal@latest/dist/index.js'],
-    'vanilla-simple-lru'     => [G3_PLUGIN_URL . '/node_modules/vanilla-simple-lru/dist/index.js', [], '1.0.3', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.js'],
-    'vanilla-create-storage' => [G3_PLUGIN_URL . '/node_modules/vanilla-create-storage/dist/index.js', [], '1.0.4', 'https://unpkg.com/vanilla-storage@latest/dist/index.js'],
-    'vanilla-request'        => [G3_PLUGIN_URL . '/node_modules/vanilla-request/dist/index.js', [], '1.1.0', 'https://unpkg.com/vanilla-request@latest/dist/index.js'],
-    'vanilla-sse'            => [G3_PLUGIN_URL . '/node_modules/vanilla-sse/dist/index.js', [], '1.0.0', 'https://unpkg.com/vanilla-sse@latest/dist/index.js'],
-    'vanilla-signal-i18n'    => [G3_PLUGIN_URL . '/node_modules/vanilla-signal-i18n/dist/index.js', ['vanilla-signal'], '1.1.2', 'https://unpkg.com/vanilla-i18n@latest/dist/index.js'],
-    'vanilla-signal-query'   => [G3_PLUGIN_URL . '/node_modules/vanilla-signal-query/dist/index.js', ['vanilla-signal', 'vanilla-simple-lru'], '1.1.6', 'https://unpkg.com/vanilla-query@latest/dist/index.js'],
-    'jui'                    => [G3_PLUGIN_URL . '/node_modules/vanilla-jui/dist/index.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.6.3', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
+    'vanilla-signal'         => [G3_PUBLIC_URL . '/w3lib/vanilla-signal/dist/index.js', [], '1.1.15', 'https://unpkg.com/vanilla-signal@latest/dist/index.js'],
+    'vanilla-simple-lru'     => [G3_PUBLIC_URL . '/w3lib/vanilla-simple-lru/dist/index.js', [], '1.0.3', 'https://unpkg.com/vanilla-simple-lru@latest/dist/index.js'],
+    'vanilla-create-storage' => [G3_PUBLIC_URL . '/w3lib/vanilla-create-storage/dist/index.js', [], '1.0.4', 'https://unpkg.com/vanilla-storage@latest/dist/index.js'],
+    'vanilla-request'        => [G3_PUBLIC_URL . '/w3lib/vanilla-request/dist/index.js', [], '1.1.0', 'https://unpkg.com/vanilla-request@latest/dist/index.js'],
+    'vanilla-sse'            => [G3_PUBLIC_URL . '/w3lib/vanilla-sse/dist/index.js', [], '1.0.0', 'https://unpkg.com/vanilla-sse@latest/dist/index.js'],
+    'vanilla-signal-i18n'    => [G3_PUBLIC_URL . '/w3lib/vanilla-signal-i18n/dist/index.js', ['vanilla-signal'], '1.1.2', 'https://unpkg.com/vanilla-i18n@latest/dist/index.js'],
+    'vanilla-signal-query'   => [G3_PUBLIC_URL . '/w3lib/vanilla-signal-query/dist/index.js', ['vanilla-signal', 'vanilla-simple-lru'], '1.1.6', 'https://unpkg.com/vanilla-query@latest/dist/index.js'],
+    'jui'                    => [G3_PUBLIC_URL . '/w3lib/vanilla-jui/dist/index.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.6.3', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
 
     // build-in g3 modules
     'g3.comment'             => [G3_ASSETS_URL . '/js/es/g3.comment.min.js', ['vanilla-signal', 'jui', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.0.0'],
