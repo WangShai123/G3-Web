@@ -449,6 +449,8 @@ class Setting extends Components {
     }
     private function permalink(): void
     {
+        // test:  /%post_id%/  or  /%postname%/
+
         if (get_option('permalink_structure') === '/%postname%/') return;
 
         update_option('permalink_structure', '/%postname%/');

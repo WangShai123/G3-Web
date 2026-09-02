@@ -59,7 +59,7 @@ return [
     // User Register Page
     'user/([^/]+)/?$'                    => [
         'var'      => 'g3_var_user',
-        'path'     => '302.php',
+        'path'     => 'user/user.php',
         'priority' => [
             [
                 'callback' => [\JEALER\G3\Services\UserService::class, 'authTemplatePath']

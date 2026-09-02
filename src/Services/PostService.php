@@ -5,6 +5,7 @@ use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\PageService;
 use JEALER\G3\Traits\Cache;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Type;
 use WP_Error;
 use WP_Post;
@@ -179,28 +180,23 @@ class PostService extends Service {
             ]);
         }
 
-        $exists = (bool) $this->wpdb->get_var(
-            $this->wpdb->prepare("SELECT `post_id` FROM `{$this->extTable}` WHERE `post_id` = %d", $postId)
+        $data['updated_at'] = Date::utcDateTime();
+        $insert             = ['post_id' => $postId] + $data;
+        $columns            = array_keys($insert);
+        $updateParts        = [];
+
+        foreach (array_keys($data) as $key) {
+            $updateParts[] = "`{$key}` = VALUES(`{$key}`)";
+        }
+
+        $sql = sprintf(
+            "INSERT INTO `{$this->extTable}` (`%s`) VALUES (%s) ON DUPLICATE KEY UPDATE %s",
+            implode('`, `', $columns),
+            implode(', ', array_merge(['%d'], $this->extraFormats(array_keys($data)))),
+            implode(', ', $updateParts)
         );
 
-        $data['updated_at'] = gmdate('Y-m-d H:i:s');
-
-        if ($exists) {
-            $result = $this->wpdb->update(
-                $this->extTable,
-                $data,
-                ['post_id' => $postId],
-                $this->extraFormats(array_keys($data)),
-                ['%d']
-            );
-        } else {
-            $insert = ['post_id' => $postId] + $data;
-            $result = $this->wpdb->insert(
-                $this->extTable,
-                $insert,
-                array_merge(['%d'], $this->extraFormats(array_keys($data)))
-            );
-        }
+        $result = $this->wpdb->query($this->wpdb->prepare($sql, array_values($insert)));
 
         if (false === $result) {
             return new WP_Error('update_failed', 'update failed for post extra data', [
@@ -209,14 +205,73 @@ class PostService extends Service {
             ]);
         }
 
-        $cached = wp_cache_delete($postId, self::EXTRA_CACHE_GROUP);
-        if (false === $cached) {
+        wp_cache_delete($postId, self::EXTRA_CACHE_GROUP);
+        return true;
+    }
+
+    /**
+     * Increment post view count without triggering wpdb field metadata queries.
+     *
+     * 递增文章浏览量，并同步缓存供当前请求后续读取复用。
+     *
+     * @param int|WP_Post $id
+     * @return array|WP_Error Updated extra data.
+     */
+    public function incrementViewCount(int|WP_Post $id): array|WP_Error
+    {
+        $postId = $this->postId($id);
+        if ($postId <= 0) {
+            return new WP_Error('invalid_post_id', 'invalid post ID', [
+                'status'  => 400,
+                'post_id' => $postId,
+            ]);
+        }
+
+        $updatedAt = Date::utcDateTime();
+
+        $result = $this->wpdb->query(
+            $this->wpdb->prepare(
+                "INSERT INTO `{$this->extTable}` (`post_id`, `view_count`, `updated_at`)
+                VALUES (%d, LAST_INSERT_ID(1), %s)
+                ON DUPLICATE KEY UPDATE
+                    `view_count` = LAST_INSERT_ID(`view_count` + 1),
+                    `updated_at` = VALUES(`updated_at`)",
+                $postId,
+                $updatedAt
+            )
+        );
+
+        if (false === $result) {
+            return new WP_Error('update_failed', 'update failed for post view count', [
+                'status'  => 500,
+                'post_id' => $postId,
+            ]);
+        }
+
+        $viewCount = max(1, (int) $this->wpdb->insert_id);
+        $cached    = wp_cache_get($postId, self::EXTRA_CACHE_GROUP);
+        if (is_array($cached)) {
+            $extra               = $this->normalizeExtra($cached);
+            $extra['view_count'] = $viewCount;
+            $extra['updated_at'] = $updatedAt;
+        } else {
+            $row                 = $this->wpdb->get_row(
+                $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `post_id` = %d", $postId),
+                ARRAY_A
+            );
+            $extra               = $this->normalizeExtra(is_array($row) ? $row : ['post_id' => $postId, 'view_count' => 1]);
+            $extra['view_count'] = $viewCount;
+        }
+
+        $result = wp_cache_set($postId, $extra, self::EXTRA_CACHE_GROUP, WEEK_IN_SECONDS);
+        if (false === $result) {
             return new WP_Error('cache_failed', 'cache failed for post extra data', [
                 'status'  => 500,
                 'post_id' => $postId,
             ]);
         }
-        return true;
+
+        return $extra;
     }
 
     /**
@@ -459,11 +514,21 @@ class PostService extends Service {
             'seo_title'       => (string) ($row['seo_title'] ?? ''),
             'seo_description' => (string) ($row['seo_description'] ?? ''),
             'seo_keywords'    => (string) ($row['seo_keywords'] ?? ''),
-            'gallery'         => Type::jsonToArray($row['gallery'] ?? ''),
-            'property'        => Type::jsonToArray($row['property'] ?? ''),
-            'ext'             => Type::jsonToArray($row['ext'] ?? ''),
+            'gallery'         => $this->normalizeExtraJsonField($row['gallery'] ?? ''),
+            'property'        => $this->normalizeExtraJsonField($row['property'] ?? ''),
+            'ext'             => $this->normalizeExtraJsonField($row['ext'] ?? ''),
+            'updated_at'      => (string) ($row['updated_at'] ?? ''),
         ];
         return $respect;
+    }
+
+    private function normalizeExtraJsonField(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return Type::jsonToArray((string) $value);
     }
 
     private function normalizeExtraForSave(array $data): array

@@ -2,6 +2,18 @@
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\AuthService;
 
+$var  = get_query_var('g3_var_user');
+$test = get_user_by('slug', $var);
+if (false === $test) {
+    wp_safe_redirect(home_url(), 302, 'G3');
+    return;
+}
+
+get_header();
+$user = $test;
+echo '<p>user id: ' . $user->ID . '</p>';
+
+get_footer();
 if (!is_user_logged_in()) {
     return;
 }
@@ -9,6 +21,7 @@ if (!is_user_logged_in()) {
 Frontend::css('jui');
 
 $user = wp_get_current_user();
+
 get_header();
 $openId = AuthService::OPENID_META_KEY;
 ?>

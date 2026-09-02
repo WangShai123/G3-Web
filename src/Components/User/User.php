@@ -163,11 +163,18 @@ class User extends Components {
                 'register'       => __('Register', 'G3'),
                 'lost-password'  => __('Reset Password', 'G3'),
                 'reset-password' => __('Reset Password', 'G3'),
-                default          => $title,
+                default          => $this->defaultUserTemplateTitle($var, $title)
             };
         }
 
         return $title;
+    }
+
+    private function defaultUserTemplateTitle(string $var, string $title)
+    {
+        $user = get_user_by('slug', $var);
+        if (false === $user) return $title;
+        return $user->display_name . ' - ' . $title;
     }
 
     // public function sessionTokensManager(string $manager)

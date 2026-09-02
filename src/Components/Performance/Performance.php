@@ -44,11 +44,12 @@ class Performance extends Components {
     }
     protected function adminPanels(): array
     {
-        $code       = '<code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code>';
-        $eg1        = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code>, <code>*_relationships</code></p>';
-        $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? (int) G3_WP_BUILTIN_CACHE_TTL . ' ' . __('hours') : __('None');
-        $msg        = sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL);
-        $cron       = '<p class="mt-1"><code>define(\'DISABLE_WP_CRON\', true);</code></p>';
+        $code = '<code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code>';
+        // $eg1        = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code>, <code>*_relationships</code></p>';
+        $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? sprintf(__('%d hours'), (int) G3_WP_BUILTIN_CACHE_TTL) : __('None');
+
+        $msg  = sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL);
+        $cron = '<p class="mt-1"><code>define(\'DISABLE_WP_CRON\', true);</code></p>';
         return [
             $this->panel('performance', __('Performance', 'G3'))
                 ->tab('general', __('General'))
@@ -65,7 +66,8 @@ class Performance extends Components {
                 //     '72'  => sprintf(__('%d days'), 3),
                 //     '168' => sprintf(__('%d days'), 7),
                 // ], __('Set cache expiration for some built-in functions in WordPress to avoid redundant junk data.', 'G3') . $eg1 )
-                ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg . $eg1)
+                // ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg . $eg1)
+                ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg)
                 ->rowClass('advanced')
                 ->html('cron', 'Cron', __('<p class="mt-1">Disable WordPress\'s built-in cron jobs to improve performance.</p><p class="mt-1">You\'ll find that even if you\'ve configured Redis, WordPress will still secretly and frequently request the database, preventing true zero-SQL operations. This is because WordPress cron is at work.</p>', 'G3') . $cron)
                 ->html('queue', __('Queue', 'G3'), __('If you want to use scheduled tasks, please use the Queue and Job services provided by G3-Web, which combine systemd or supervisor for high-performance and highly maintainable system-level features.', 'G3'))

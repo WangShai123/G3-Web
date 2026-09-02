@@ -38,7 +38,7 @@ class Post extends Components {
         return [
             'enable'       => '1',
             'viewInterval' => '60',
-            'notice'       => '',
+            'notice'       => 'All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.',
             'autoNotice'   => '0',
             'copyright'    => '0',
             'paidReading'  => '0',
@@ -70,7 +70,7 @@ class Post extends Components {
     {
         $this->removeAutoP();
         $this->initPostViews();
-        add_filter('the_content', [$this, 'mountCopyright']);
+        // add_filter('the_content', [$this, 'mountCopyright']);
         $this->registerCover();
         $this->menus();
     }
@@ -131,7 +131,7 @@ class Post extends Components {
                 ], __('Defines how long a visit from the same user must wait before it counts as a new view.', 'G3'))
                 ->rowClass('advanced')
                 ->textarea('notice', __('Copyright Notice', 'G3'), __('Copyright notice to display on each post & page. Suggest: All publicly displayed data on this platform is sourced from the public internet and is only used for functional testing purposes. They do not represent the views of this platform. We make no guarantees or commitments regarding the authenticity, timeliness, integrity, accuracy, or ownership of the text, images, and other content. Visitors and related parties are advised to verify the information themselves.', 'G3'))
-                ->switch('autoNotice', __('Auto Notice', 'G3'), __('Automatically add a notice at the end of the article', 'G3'))
+                // ->switch('autoNotice', __('Auto Notice', 'G3'), __('Automatically add a notice at the end of the article', 'G3'))
                 ->switch('copyright', __('Copyright Protection', 'G3'), __('Automatically add your encoded & invisible brand mark in the article while saving to protect your content copyright.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('paidReading', __('Paid Reading', 'G3'), __('Before enabling the knowledge payment service, please ensure that payment and other related functional configurations have been completed.', 'G3'))
@@ -276,14 +276,12 @@ class Post extends Components {
         // No Limit
         $e = $this->loader->admin() && ($intervalMinutes > 0);
         if (!$e) {
-            $count = $postService->getExtra($postId)['view_count'] ?? 0;
-            $postService->setExtra($postId, ['view_count' => $count + 1]);
+            $postService->incrementViewCount($postId);
             return;
         }
 
         // With Interval
         $cookieExpireSeconds = $intervalMinutes * 60;
-        $count               = $postService->getExtra($postId)['view_count'] ?? 0;
 
         $cookieKey   = PostService::READED_COOKIE;
         $viewed      = $_COOKIE[$cookieKey] ?? '';
@@ -317,7 +315,7 @@ class Post extends Components {
         }
 
         setcookie($cookieKey, $newViewed, time() + $cookieExpireSeconds, '/');
-        $postService->setExtra($postId, ['view_count' => $count + 1]);
+        $postService->incrementViewCount($postId);
     }
 
     public function postboxRender($post): void
