@@ -48,8 +48,14 @@ class Performance extends Components {
         // $eg1        = '<p class="mt-1"><code>post-queries</code>, <code>term-queries</code>, <code>comment-queries</code>, <code>user-queries</code>, <code>*_relationships</code></p>';
         $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? sprintf(__('%d hours'), (int) G3_WP_BUILTIN_CACHE_TTL) : __('None');
 
-        $msg  = sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL);
-        $cron = '<p class="mt-1"><code>define(\'DISABLE_WP_CRON\', true);</code></p>';
+        $msg = $this->description(sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL));
+
+        $wpConfig = <<<HTML
+<code>define('AUTOMATIC_UPDATER_DISABLED', true);</code><br>
+<code>define('WP_AUTO_UPDATE_CORE', false);</code><br>
+<code>define('DISABLE_WP_CRON', true);</code>
+HTML;
+
         return [
             $this->panel('performance', __('Performance', 'G3'))
                 ->tab('general', __('General'))
@@ -69,8 +75,8 @@ class Performance extends Components {
                 // ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg . $eg1)
                 ->html('adminCache', __('Query', 'G3') . ' ' . __('Cache', 'G3'), $msg)
                 ->rowClass('advanced')
-                ->html('cron', 'Cron', __('<p class="mt-1">Disable WordPress\'s built-in cron jobs to improve performance.</p><p class="mt-1">You\'ll find that even if you\'ve configured Redis, WordPress will still secretly and frequently request the database, preventing true zero-SQL operations. This is because WordPress cron is at work.</p>', 'G3') . $cron)
-                ->html('queue', __('Queue', 'G3'), __('If you want to use scheduled tasks, please use the Queue and Job services provided by G3-Web, which combine systemd or supervisor for high-performance and highly maintainable system-level features.', 'G3'))
+                ->html('wpConfig', 'wp-config', $this->description($wpConfig))
+                ->html('queue', __('Queue', 'G3'), $this->description(__('If you want to use scheduled tasks, please use the Queue and Job services provided by G3-Web, which combine systemd or supervisor for high-performance and highly maintainable system-level features.', 'G3')))
                 ->tab('cleaner', __('Junk Cleaner', 'G3'))
                 ->callback('draft', __('Draft'), fn() => $this->renderActions('draft'))
                 ->callback('auto-draft', __('Auto Draft'), fn() => $this->renderActions('auto-draft'))
@@ -82,6 +88,10 @@ class Performance extends Components {
                 ->tab('queue', __('Queue', 'G3'))
                 ->tab('consumer', __('Consumer', 'G3'))
         ];
+    }
+    private function description(string $description): string
+    {
+        return '<p class="description">' . $description . '</p>';
     }
     private function renderActions(string $action)
     {

@@ -18,6 +18,13 @@ use WP_Error;
 use WP_Query;
 
 class Developer extends Components {
+    private const WP_UPDATE_CRON_HOOKS = [
+        'wp_version_check'     => true,
+        'wp_update_plugins'    => true,
+        'wp_update_themes'     => true,
+        'wp_maybe_auto_update' => true,
+    ];
+
     public TemplateService $template;
 
     private function default(): array
@@ -25,6 +32,7 @@ class Developer extends Components {
         return [
             'environment'     => 'production',
             'wpAutoUpdate'    => '0',
+            'wpCron'          => '0',
             'translationsApi' => '0',
             'themeEditor'     => '0',
             'pluginEditor'    => '0',
@@ -80,6 +88,7 @@ class Developer extends Components {
                 ->tab('general', __('Settings'))
                 ->option(SystemService::SETTING_OPTION_KEY, $this->default())
                 ->switch('wpAutoUpdate', __('WordPress Auto Update', 'G3'))
+                ->switch('wpCron', 'WP Cron')
                 ->switch('translationsApi', __('Translations API', 'G3'))
                 ->switch('themeEditor', __('Theme Editor', 'G3'))
                 ->switch('pluginEditor', __('Plugin Editor', 'G3'))
@@ -224,6 +233,9 @@ class Developer extends Components {
             'login_headertext'  => [[$this, 'handleLoginHeaderText'], 10, 1],
         ]);
 
+        $this->subscribeAction('init', [$this, 'wpAutoUpdateHandle'], 1);
+        $this->subscribeAction('init', [$this, 'wpCronHandle'], 1);
+
         $this->action([
             'login_head'     => [[$this, 'handleLoginHead']],
             'admin_head'     => [[$this, 'helpLinkHandle']],
@@ -248,7 +260,6 @@ class Developer extends Components {
     }
     protected function init(): void
     {
-        $this->wpAutoUpdateHandle();
         $this->emojiHandle();
         $this->wpHeadHandle();
     }
@@ -538,39 +549,97 @@ class Developer extends Components {
     }
     public function wpAutoUpdateHandle(): void
     {
-        if (!is_admin()) return;
         $option = $this->option();
-        if (($option['wpAutoUpdate'] ?? '0') === '0') {
-            // Remove update-core.php submenu page
-            add_action('admin_menu', function () {
-                remove_submenu_page('index.php', 'update-core.php');
-            });
-            // Disable automatic update
-            add_filter('automatic_updater_disabled', '__return_true');
-            add_filter('pre_site_transient_update_core', '__return_null');
-            remove_action('wp_version_check', 'wp_version_check');
-            // Remove automatic update schedule
-            remove_action('init', 'wp_schedule_update_checks');
-            wp_clear_scheduled_hook('wp_version_check');
-            wp_clear_scheduled_hook('wp_update_plugins');
-            wp_clear_scheduled_hook('wp_update_themes');
-            wp_clear_scheduled_hook('wp_maybe_auto_update');
-            // Remove plugin update notice
-            remove_action('load-plugins.php', 'wp_update_plugins');
-            remove_action('load-update.php', 'wp_update_plugins');
-            remove_action('load-update-core.php', 'wp_update_plugins');
-            remove_action('admin_init', '_maybe_update_plugins');
-            add_filter('pre_site_transient_update_plugins', '__return_null');
-            // Remove theme update notice
-            remove_action('load-themes.php', 'wp_update_themes');
-            remove_action('load-update.php', 'wp_update_themes');
-            remove_action('load-update-core.php', 'wp_update_themes');
-            remove_action('admin_init', '_maybe_update_themes');
-            remove_action('admin_init', '_maybe_update_core');
-            add_filter('pre_site_transient_update_themes', '__return_null');
-            // Remove translation update notice
-            remove_action('load-update-core.php', 'wp_update_translations');
-            add_filter('pre_site_transient_update_core', '__return_null');
+        if (($option['wpAutoUpdate'] ?? '0') === '1') return;
+
+        add_filter('automatic_updater_disabled', '__return_true');
+        add_filter('pre_schedule_event', [$this, 'blockWpUpdateCronEvent'], PHP_INT_MAX, 3);
+        add_filter('pre_reschedule_event', [$this, 'blockWpUpdateCronEvent'], PHP_INT_MAX, 3);
+
+        add_filter('auto_update_core', '__return_false');
+        add_filter('auto_update_plugin', '__return_false');
+        add_filter('auto_update_theme', '__return_false');
+        add_filter('auto_update_translation', '__return_false');
+
+        remove_action('init', 'wp_schedule_update_checks', 10);
+        remove_action('wp_version_check', 'wp_version_check');
+        remove_action('wp_update_plugins', 'wp_update_plugins');
+        remove_action('wp_update_themes', 'wp_update_themes');
+        remove_action('wp_maybe_auto_update', 'wp_maybe_auto_update');
+
+        $this->adminAutoUpdateHandle();
+    }
+
+    public function blockWpUpdateCronEvent(mixed $pre, object $event, bool $wpError): mixed
+    {
+        return isset(self::WP_UPDATE_CRON_HOOKS[$event->hook ?? ''])
+            ? false
+            : $pre;
+    }
+
+    public function wpCronHandle(): void
+    {
+        $option = $this->option();
+        if (($option['wpCron'] ?? '0') === '1') return;
+
+        remove_action('init', 'wp_cron', 10);
+        remove_action('init', 'wp_schedule_update_checks', 10);
+        remove_action('wp_loaded', '_wp_cron', 20);
+        remove_action('shutdown', '_wp_cron');
+
+        add_filter('pre_get_ready_cron_jobs', [$this, 'emptyWpCronJobs']);
+        add_filter('pre_schedule_event', [$this, 'blockWpCronEvent'], PHP_INT_MAX, 3);
+        add_filter('pre_reschedule_event', [$this, 'blockWpCronEvent'], PHP_INT_MAX, 3);
+    }
+
+    public function emptyWpCronJobs(mixed $pre = null): array
+    {
+        return [];
+    }
+
+    public function blockWpCronEvent(mixed $pre, object $event, bool $wpError): bool
+    {
+        return false;
+    }
+
+    public function adminAutoUpdateHandle(): void
+    {
+        if (!is_admin()) return;
+
+        // Remove update-core.php submenu page
+        add_action('admin_menu', function () {
+            remove_submenu_page('index.php', 'update-core.php');
+        });
+
+        add_filter('pre_site_transient_update_core', '__return_null');
+        add_filter('pre_site_transient_update_plugins', '__return_null');
+        add_filter('pre_site_transient_update_themes', '__return_null');
+
+        remove_action('load-plugins.php', 'wp_update_plugins');
+        remove_action('load-update.php', 'wp_update_plugins');
+        remove_action('load-update-core.php', 'wp_update_plugins');
+        remove_action('load-themes.php', 'wp_update_themes');
+        remove_action('load-update.php', 'wp_update_themes');
+        remove_action('load-update-core.php', 'wp_update_themes');
+        remove_action('load-update-core.php', 'wp_update_translations');
+
+        remove_action('admin_init', '_maybe_update_plugins');
+        remove_action('admin_init', '_maybe_update_themes');
+        remove_action('admin_init', '_maybe_update_core');
+
+        remove_action('upgrader_process_complete', 'wp_version_check', 10);
+        remove_action('upgrader_process_complete', 'wp_update_plugins', 10);
+        remove_action('upgrader_process_complete', 'wp_update_themes', 10);
+
+        $this->clearWpUpdateCronHooks();
+    }
+
+    private function clearWpUpdateCronHooks(): void
+    {
+        foreach (array_keys(self::WP_UPDATE_CRON_HOOKS) as $hook) {
+            if (wp_next_scheduled($hook)) {
+                wp_clear_scheduled_hook($hook);
+            }
         }
     }
     public function adminMenuHandle(): void

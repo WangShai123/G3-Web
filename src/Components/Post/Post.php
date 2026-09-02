@@ -26,10 +26,12 @@ class Post extends Components {
             'option_timezone_string' => [[$this, 'customTimezone'], 10, 1],
         ]);
         $this->action([
-            'save_post'          => [[$this, 'savePost'], 10, 2],
-            'wp_update_nav_menu' => [[$this, 'flushMenuCache'], 10, 1],
-            'before_delete_post' => [[$this, 'actionBeforeDelete'], 10, 1],
-            'wp_footer'          => [[$this, 'renderFrontRoot']]
+            'save_post'            => [[$this, 'savePost'], 10, 2],
+            'wp_update_nav_menu'   => [[$this, 'flushMenuCache'], 10, 1],
+            'customize_save_after' => [[$this, 'flushMenuCache'], 10, 0],
+            'switch_theme'         => [[$this, 'flushMenuCache'], 10, 0],
+            'before_delete_post'   => [[$this, 'actionBeforeDelete'], 10, 1],
+            'wp_footer'            => [[$this, 'renderFrontRoot']]
         ]);
     }
     private function default(): array
@@ -364,10 +366,9 @@ class Post extends Components {
         ]);
     }
 
-    public function flushMenuCache($menuId): void
+    public function flushMenuCache($menuId = null): void
     {
-        wp_cache_flush_group(MenuService::MENU_HTML_CACHE_GROUP);
-        wp_cache_flush_group(MenuService::MENU_JSON_CACHE_GROUP);
+        wp_cache_flush_group(MenuService::CACHE_GROUP);
     }
     public function savePostPro($postId, $post): void
     {

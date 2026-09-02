@@ -32,35 +32,13 @@ class MenuController extends Controller {
         route: 'v1/query',
         methods: 'GET'
     )]
-    // #[Schema([
-    //     'type'       => 'object',
-    //     'required'   => ['location'],
-    //     'properties' => [
-    //         'location' => [
-    //             'type'      => 'string',
-    //             'minLength' => 1,
-    //         ]
-    //     ]
-    // ])]
-    #[Middleware(RateLimitMiddleware::class, [20, 60])]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function handler(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        // $params = $request->get_json_params();
         $params = $request->get_query_params();
 
         $location = $params['location'] ?? '';
-        $cacheKey = $location;
-
-        $cache = wp_cache_get($cacheKey, MenuService::MENU_JSON_CACHE_GROUP);
-        if ($cache) {
-            return rest_ensure_response([
-                'success' => true,
-                'code'    => 200,
-                'data'    => $cache,
-            ]);
-        }
-
-        $result = $this->menuService->getJson($location);
+        $result   = $this->menuService->getData($location);
 
         if (is_wp_error($result)) {
             return $result;
