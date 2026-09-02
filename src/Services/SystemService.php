@@ -30,6 +30,9 @@ class SystemService extends Service {
     // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
     const THEME_COOKIE       = 'ui-theme';
+
+    const AUTOMATION_OPTION_KEY = 'g3_option_automation';
+
     public function __construct()
     {
         parent::__construct();
@@ -183,5 +186,12 @@ class SystemService extends Service {
             return false;
         }
         return $data['links'] === '1';
+    }
+
+    public static function automationDefaultOption(): array
+    {
+        return [
+
+        ];
     }
 }

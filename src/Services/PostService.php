@@ -4,8 +4,6 @@ use JEALER\G3\Components\Components;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\PageService;
-use JEALER\G3\Traits\Cache;
-use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Type;
 use WP_Error;
 use WP_Post;
@@ -16,24 +14,129 @@ use WP_Term;
 use Closure;
 
 class PostService extends Service {
-    // Option Key
+
+    /**
+     * 阅读配置 选项键
+     * @var string
+     */
     const OPTION_KEY = 'g3_option_reading';
-    // SEO Keywords Key
+
+    /**
+     * SEO 关键词 选项键
+     * @var string
+     */
     const KEYWORDS_KEY = 'g3_keywords';
-    // Cover Key
+
+    /**
+     * 分类法的封面配置 选项键
+     * @var string
+     */
     const COVER_KEY = 'g3_cover';
-    // ext table
+
+    /**
+     * Post 扩展表名
+     * @var string
+     */
     const EXT_TABLE = 'g3_posts_extra';
+
+    /**
+     * Post 扩展表 全名
+     * @var string
+     */
     public string $extTable;
+
+    /**
+     * Post Extra 缓存组
+     * @var string
+     */
     const EXTRA_CACHE_GROUP = 'g3_posts_extra';
-    const QUERY_CACHE_GROUP = 'g3_posts_query';
-    const MAX_VIEWED        = 100;
-    const READED_COOKIE     = 'g3_posts_readed';
-    const SKU_NAME          = 'g3_post_sku';
-    const PROPERTY_NAME     = 'g3_post_property';
-    const GALLERY_NAME      = 'g3_post_gallery';
-    private array $post  = [];
+
+    /**
+     * 查看次数 Cookie 限制 
+     * @var int
+     */
+    const VIEWED_COOKIE_LIMIT = 100;
+
+    /**
+     * 查看次数 Cookie 名称
+     * @var string
+     */
+    const VIEWED_COOKIE = 'g3_posts_viewed';
+
+    /**
+     * 商品 SKU 字段名
+     * @var string
+     */
+    const SKU_NAME = 'g3_post_sku';
+
+    /**
+     * 商品属性字段名
+     * @var string
+     */
+    const PROPERTY_NAME = 'g3_post_property';
+
+    /**
+     * 商品相册字段名
+     * @var string
+     */
+    const GALLERY_NAME = 'g3_post_gallery';
+
+    private const EXTRA_INTEGER_FIELDS = [
+        'view_count'     => true,
+        'like_count'     => true,
+        'dislike_count'  => true,
+        'share_count'    => true,
+        'favorite_count' => true,
+        'reading_time'   => true,
+    ];
+
+    private const REACTION_FIELDS = [
+        'like'     => 'like_count',
+        'dislike'  => 'dislike_count',
+        'favorite' => 'favorite_count',
+        'share'    => 'share_count',
+    ];
+
+    private const POST_FIELDS = [
+        'post_id'          => true,
+        'slug'             => true,
+        'post_type'        => true,
+        'created_at'       => true,
+        'created_at_local' => true,
+        'updated_at'       => true,
+        'updated_at_local' => true,
+        'user_id'          => true,
+        'title'            => true,
+        'url'              => true,
+        'content'          => true,
+        'excerpt'          => true,
+        'cover'            => true,
+        'taxonomy'         => true,
+        'password'         => true,
+        'status'           => true,
+        'comment_status'   => true,
+        'comment_count'    => true,
+    ];
+
+    private const EXTRA_FIELDS = [
+        'view_count'      => true,
+        'like_count'      => true,
+        'dislike_count'   => true,
+        'share_count'     => true,
+        'favorite_count'  => true,
+        'reading_time'    => true,
+        'seo_title'       => true,
+        'seo_description' => true,
+        'seo_keywords'    => true,
+        'gallery'         => true,
+        'property'        => true,
+        'ext'             => true,
+    ];
+
+    private array $post = [];
+
     private array $extra = [];
+
     private const READING_TECH_KEYWORDS = [
         'abstract'  => true,
         'async'     => true,
@@ -67,8 +170,6 @@ class PostService extends Service {
         'var'       => true,
     ];
 
-    use Cache;
-
     public function __construct()
     {
         parent::__construct();
@@ -93,7 +194,7 @@ class PostService extends Service {
         if ($post instanceof WP_Post) {
             $this->post  = $this->normalizePost((array) $post);
             $this->extra = $this->getExtra($post->ID);
-            $this->cache = array_merge($this->post, $this->extra);
+            $this->cache = array_merge($this->post, $this->extra, $this->currentUserActionStatus($post->ID));
             return $this;
         }
         return null;
@@ -180,10 +281,9 @@ class PostService extends Service {
             ]);
         }
 
-        $data['updated_at'] = Date::utcDateTime();
-        $insert             = ['post_id' => $postId] + $data;
-        $columns            = array_keys($insert);
-        $updateParts        = [];
+        $insert      = ['post_id' => $postId] + $data;
+        $columns     = array_keys($insert);
+        $updateParts = [];
 
         foreach (array_keys($data) as $key) {
             $updateParts[] = "`{$key}` = VALUES(`{$key}`)";
@@ -219,6 +319,22 @@ class PostService extends Service {
      */
     public function incrementViewCount(int|WP_Post $id): array|WP_Error
     {
+        $result = $this->incrementExtra($id, 'view_count', 1, true);
+
+        return is_wp_error($result) ? $result : $result['extra'];
+    }
+
+    /**
+     * Increment a numeric post extra field atomically.
+     *
+     * @param int|WP_Post $id
+     * @param string $field Numeric extra field name.
+     * @param int $value Increment delta.
+     * @param bool $hydrateExtra Whether to fetch/cache the full extra row when cache is missing.
+     * @return array|WP_Error
+     */
+    public function incrementExtra(int|WP_Post $id, string $field, int $value, bool $hydrateExtra = false): array|WP_Error
+    {
         $postId = $this->postId($id);
         if ($postId <= 0) {
             return new WP_Error('invalid_post_id', 'invalid post ID', [
@@ -227,51 +343,139 @@ class PostService extends Service {
             ]);
         }
 
-        $updatedAt = Date::utcDateTime();
+        $field = sanitize_key($field);
+        if (!isset(self::EXTRA_INTEGER_FIELDS[$field])) {
+            return new WP_Error('invalid_extra_field', 'invalid numeric extra field', [
+                'status' => 400,
+                'field'  => $field,
+            ]);
+        }
+
+        if ($value === 0) {
+            return new WP_Error('invalid_value', 'extra increment value cannot be 0', [
+                'status' => 400,
+                'value'  => $value,
+            ]);
+        }
 
         $result = $this->wpdb->query(
             $this->wpdb->prepare(
-                "INSERT INTO `{$this->extTable}` (`post_id`, `view_count`, `updated_at`)
-                VALUES (%d, LAST_INSERT_ID(1), %s)
+                "INSERT INTO `{$this->extTable}` (`post_id`, `{$field}`)
+                VALUES (%d, LAST_INSERT_ID(GREATEST(%d, 0)))
                 ON DUPLICATE KEY UPDATE
-                    `view_count` = LAST_INSERT_ID(`view_count` + 1),
-                    `updated_at` = VALUES(`updated_at`)",
+                    `{$field}` = LAST_INSERT_ID(GREATEST(`{$field}` + %d, 0))",
                 $postId,
-                $updatedAt
+                $value,
+                $value
             )
         );
 
         if (false === $result) {
-            return new WP_Error('update_failed', 'update failed for post view count', [
+            return new WP_Error('update_failed', 'update failed for post extra increment', [
                 'status'  => 500,
                 'post_id' => $postId,
+                'field'   => $field,
             ]);
         }
 
-        $viewCount = max(1, (int) $this->wpdb->insert_id);
-        $cached    = wp_cache_get($postId, self::EXTRA_CACHE_GROUP);
+        $count  = max(0, (int) $this->wpdb->insert_id);
+        $extra  = null;
+        $cached = wp_cache_get($postId, self::EXTRA_CACHE_GROUP);
+
         if (is_array($cached)) {
-            $extra               = $this->normalizeExtra($cached);
-            $extra['view_count'] = $viewCount;
-            $extra['updated_at'] = $updatedAt;
-        } else {
-            $row                 = $this->wpdb->get_row(
+            $extra = $this->normalizeExtra($cached);
+        } elseif ($hydrateExtra) {
+            $row   = $this->wpdb->get_row(
                 $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `post_id` = %d", $postId),
                 ARRAY_A
             );
-            $extra               = $this->normalizeExtra(is_array($row) ? $row : ['post_id' => $postId, 'view_count' => 1]);
-            $extra['view_count'] = $viewCount;
+            $extra = $this->normalizeExtra(is_array($row) ? $row : ['post_id' => $postId, $field => $count]);
         }
 
-        $result = wp_cache_set($postId, $extra, self::EXTRA_CACHE_GROUP, WEEK_IN_SECONDS);
-        if (false === $result) {
-            return new WP_Error('cache_failed', 'cache failed for post extra data', [
-                'status'  => 500,
-                'post_id' => $postId,
+        if (is_array($extra)) {
+            $extra[$field] = $count;
+
+            $result = wp_cache_set($postId, $extra, self::EXTRA_CACHE_GROUP, WEEK_IN_SECONDS);
+            if (false === $result) {
+                return new WP_Error('cache_failed', 'cache failed for post extra data', [
+                    'status'  => 500,
+                    'post_id' => $postId,
+                ]);
+            }
+        }
+
+        $response = [
+            'post_id' => $postId,
+            'field'   => $field,
+            'value'   => $value,
+            'count'   => $count,
+        ];
+
+        if (is_array($extra)) {
+            $response['extra'] = $extra;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Update post reaction counter.
+     *
+     * 更新文章互动计数。
+     *
+     * @param int|WP_Post $id
+     * @param string $action like|dislike|favorite|share
+     * @param int $value Counter delta, only -1 or 1 is accepted.
+     * @return array|WP_Error
+     */
+    public function react(int|WP_Post $id, string $action, int $value): array|WP_Error
+    {
+        $action = sanitize_key($action);
+        if (!isset(self::REACTION_FIELDS[$action])) {
+            return new WP_Error('invalid_action', 'invalid reaction action', [
+                'status' => 400,
+                'action' => $action,
             ]);
         }
 
-        return $extra;
+        $userId = (int) get_current_user_id();
+        if ($userId <= 0) {
+            return new WP_Error('unauthorized', 'Unauthorized', [
+                'status' => 401,
+            ]);
+        }
+
+        if (!in_array($value, [-1, 1], true)) {
+            return new WP_Error('invalid_value', 'reaction value must be -1 or 1', [
+                'status' => 400,
+                'value'  => $value,
+            ]);
+        }
+
+        $field        = self::REACTION_FIELDS[$action];
+        $actionResult = $this->userPostActionService()->set($userId, $id, $action, $value);
+        if (is_wp_error($actionResult)) return $actionResult;
+
+        if ((int) $actionResult['delta'] !== 0) {
+            $result = $this->incrementExtra($id, $field, (int) $actionResult['delta']);
+            if (is_wp_error($result)) return $result;
+
+            $count = (int) $result['count'];
+        } else {
+            $extra = $this->getExtra($id);
+            if (is_wp_error($extra)) return $extra;
+
+            $count = (int) ($extra[$field] ?? 0);
+        }
+
+        return [
+            'post_id' => $actionResult['post_id'],
+            'action'  => $action,
+            'active'  => (bool) $actionResult['active'],
+            'field'   => $field,
+            'value'   => (int) $actionResult['value'],
+            'count'   => $count,
+        ];
     }
 
     /**
@@ -314,15 +518,15 @@ class PostService extends Service {
     }
 
     /**
-     * Query posts with extra data and caching
+     * Query posts with extra data
      * 
-     * 查询文章列表并合并扩展数据，支持缓存
+     * 查询文章列表并合并扩展数据
      * 
      * @param  array $args
-     * @param  array|null $unset
+     * @param  array|null $respect Fields to include. Null means all supported fields.
      * @return array|WP_Error
      */
-    public function query(?array $args, ?array $unset = null): array|WP_Error
+    public function query(?array $args, ?array $respect = null): array|WP_Error
     {
         if (!$args || !is_array($args)) {
             return new WP_Error('invalid_args', 'Invalid query arguments', [
@@ -330,16 +534,7 @@ class PostService extends Service {
             ]);
         }
 
-        $cacheParams = $args;
-        if (!empty($unset)) {
-            $cacheParams['_unset'] = $unset;
-        }
-        $cacheKey = $this->generateArrayCacheKey($cacheParams);
-
-        $cachedResults = wp_cache_get($cacheKey, self::QUERY_CACHE_GROUP);
-        if ($cachedResults !== false) {
-            return $cachedResults;
-        }
+        $respect = $this->normalizeRespect($respect);
 
         $query = new WP_Query($args);
         if ($query->get('error')) {
@@ -357,21 +552,28 @@ class PostService extends Service {
         }
 
         $results = [];
+        $postIds = [];
         foreach ($query->posts as $post) {
             if (!($post instanceof WP_Post)) {
                 continue;
             }
 
-            $extra = $this->getExtra($post->ID);
-            if ($extra instanceof WP_Error) {
-                error_log('Failed to get extra data for post ' . $post->ID . ': ' . $extra->get_error_message());
-                $extra = [];
-            } else {
-                unset($extra['post_id']);
+            $postIds[] = (int) $post->ID;
+        }
+
+        $extras = $this->shouldLoadExtra($respect) ? $this->getExtras($postIds) : [];
+
+        foreach ($query->posts as $post) {
+            if (!($post instanceof WP_Post)) {
+                continue;
             }
-            $postData  = $this->normalizePost((array) $post);
+
+            $extra = $extras[$post->ID] ?? [];
+            unset($extra['post_id']);
+            $extra = $this->filterByRespect($extra, $respect);
+
+            $postData  = $this->normalizePost((array) $post, $respect);
             $merged    = array_merge($postData, $extra);
-            $merged    = Type::arrayExcept($merged, $unset);
             $results[] = $merged;
         }
 
@@ -382,10 +584,122 @@ class PostService extends Service {
             'found_posts'   => $query->found_posts,
             'max_num_pages' => $query->max_num_pages,
         ];
-
-        // one day cache
-        wp_cache_set($cacheKey, $result, self::QUERY_CACHE_GROUP, DAY_IN_SECONDS);
         return $result;
+    }
+
+    /**
+     * Get multiple post extra rows using per-post cache entries.
+     *
+     * 批量获取文章扩展数据，只缓存单篇 post extra，避免缓存完整列表结果。
+     *
+     * @param array $postIds
+     * @return array<int, array>
+     */
+    private function getExtras(array $postIds): array
+    {
+        $postIds = array_values(array_unique(array_filter(
+            array_map('intval', $postIds),
+            static fn(int $postId): bool => $postId > 0
+        )));
+        if (!$postIds) return [];
+
+        $extras     = [];
+        $missingIds = [];
+        $cachedRows = wp_cache_get_multiple($postIds, self::EXTRA_CACHE_GROUP);
+        if (!is_array($cachedRows)) {
+            $cachedRows = [];
+        }
+
+        foreach ($postIds as $postId) {
+            $cached = $cachedRows[$postId] ?? false;
+            if (is_array($cached)) {
+                $reInitResult = $this->reInitOldData($postId, $cached);
+                if (false !== $reInitResult) {
+                    $extras[$postId] = $reInitResult;
+                    continue;
+                }
+            }
+
+            $missingIds[] = $postId;
+        }
+
+        if (!$missingIds) return $extras;
+
+        $rows         = [];
+        $placeholders = implode(', ', array_fill(0, count($missingIds), '%d'));
+        $dbRows       = $this->wpdb->get_results(
+            $this->wpdb->prepare("SELECT * FROM `{$this->extTable}` WHERE `post_id` IN ({$placeholders})", $missingIds),
+            ARRAY_A
+        );
+
+        if (is_array($dbRows)) {
+            foreach ($dbRows as $row) {
+                $postId        = (int) ($row['post_id'] ?? 0);
+                $rows[$postId] = $row;
+            }
+        }
+
+        $cacheRows = [];
+        foreach ($missingIds as $postId) {
+            $extra              = $this->normalizeExtra($rows[$postId] ?? ['post_id' => $postId]);
+            $extras[$postId]    = $extra;
+            $cacheRows[$postId] = $extra;
+        }
+
+        wp_cache_set_multiple($cacheRows, self::EXTRA_CACHE_GROUP, WEEK_IN_SECONDS);
+
+        return $extras;
+    }
+
+    /**
+     * Normalize requested output fields into a lookup map.
+     *
+     * @param array|null $respect
+     * @return array<string, bool>|null
+     */
+    private function normalizeRespect(?array $respect): ?array
+    {
+        if ($respect === null) return null;
+
+        $allowed = self::POST_FIELDS + self::EXTRA_FIELDS;
+        $fields  = [];
+
+        foreach ($respect as $field) {
+            $field = sanitize_key((string) $field);
+            if (isset($allowed[$field])) {
+                $fields[$field] = true;
+            }
+        }
+
+        return $fields;
+    }
+
+    private function shouldLoadExtra(?array $respect): bool
+    {
+        if ($respect === null) return true;
+
+        foreach (array_keys(self::EXTRA_FIELDS) as $field) {
+            if (isset($respect[$field])) return true;
+        }
+
+        return false;
+    }
+
+    private function filterByRespect(array $data, ?array $respect): array
+    {
+        return $respect === null ? $data : array_intersect_key($data, $respect);
+    }
+
+    /**
+     * @param array<string, bool> $fields
+     * @param array<string, bool>|null $respect
+     * @return array<int, string>
+     */
+    private function fieldsByRespect(array $fields, ?array $respect): array
+    {
+        return $respect === null
+            ? array_keys($fields)
+            : array_keys(array_intersect_key($fields, $respect));
     }
 
     /**
@@ -464,6 +778,33 @@ class PostService extends Service {
         ];
     }
 
+    public function currentUserActionStatus(int|WP_Post $id): array
+    {
+        $postId = $this->postId($id);
+        $userId = (int) get_current_user_id();
+
+        $status = [
+            'liked'     => false,
+            'favorited' => false,
+        ];
+
+        if ($postId <= 0 || $userId <= 0) return $status;
+
+        $actions = $this->userPostActionService()->status($userId, $postId, ['like', 'favorite']);
+
+        return [
+            'liked'     => (bool) ($actions['like'] ?? false),
+            'favorited' => (bool) ($actions['favorite'] ?? false),
+        ];
+    }
+
+    private function userPostActionService(): UserPostActionService
+    {
+        /** @var UserPostActionService $service */
+        $service = $this->container->get(UserPostActionService::class);
+        return $service;
+    }
+
     private function postId(int|WP_Post $id): int
     {
         if ($id instanceof WP_Post) {
@@ -473,18 +814,28 @@ class PostService extends Service {
         return is_int($id) ? $id : 0;
     }
 
-    private function normalizePost(array $post): array
+    private function normalizePost(array $post, ?array $respect = null): array
     {
-        $respect = [
+        $fields = $this->fieldsByRespect(self::POST_FIELDS, $respect);
+        $data   = [];
+
+        foreach ($fields as $field) {
+            $data[$field] = $this->normalizePostField($post, $field);
+        }
+
+        return $data;
+    }
+
+    private function normalizePostField(array $post, string $field): mixed
+    {
+        return match ($field) {
             'post_id'          => (int) ($post['ID'] ?? 0),
             'slug'             => (string) ($post['post_name'] ?? ''),
             'post_type'        => (string) ($post['post_type'] ?? ''),
-
             'created_at'       => (string) ($post['post_date_gmt'] ?? ''),
             'created_at_local' => (string) ($post['post_date'] ?? ''),
             'updated_at'       => (string) ($post['post_modified_gmt'] ?? ''),
             'updated_at_local' => (string) ($post['post_modified'] ?? ''),
-
             'user_id'          => (int) ($post['post_author'] ?? 0),
             'title'            => (string) ($post['post_title'] ?? ''),
             'url'              => (string) ($post['guid'] ?? ''),
@@ -492,13 +843,12 @@ class PostService extends Service {
             'excerpt'          => wp_strip_all_tags($post['post_excerpt'] ?? '', true),
             'cover'            => get_the_post_thumbnail_url($post['ID']),
             'taxonomy'         => $this->filterTerms($post),
-
             'password'         => (string) ($post['post_password'] ?? ''),
             'status'           => (string) ($post['post_status'] ?? ''),
             'comment_status'   => (string) ($post['comment_status'] ?? ''),
             'comment_count'    => (int) ($post['comment_count'] ?? 0),
-        ];
-        return $respect;
+            default            => null,
+        };
     }
 
     private function normalizeExtra(array $row): array
@@ -517,7 +867,6 @@ class PostService extends Service {
             'gallery'         => $this->normalizeExtraJsonField($row['gallery'] ?? ''),
             'property'        => $this->normalizeExtraJsonField($row['property'] ?? ''),
             'ext'             => $this->normalizeExtraJsonField($row['ext'] ?? ''),
-            'updated_at'      => (string) ($row['updated_at'] ?? ''),
         ];
         return $respect;
     }
@@ -535,7 +884,7 @@ class PostService extends Service {
     {
         $normalized = [];
 
-        foreach (['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count', 'reading_time'] as $key) {
+        foreach (array_keys(self::EXTRA_INTEGER_FIELDS) as $key) {
             if (array_key_exists($key, $data)) {
                 $normalized[$key] = max(0, (int) $data[$key]);
             }
@@ -560,7 +909,7 @@ class PostService extends Service {
     {
         $formats = [];
         foreach ($keys as $key) {
-            $formats[] = in_array($key, ['view_count', 'like_count', 'dislike_count', 'share_count', 'favorite_count', 'reading_time'], true) ? '%d' : '%s';
+            $formats[] = isset(self::EXTRA_INTEGER_FIELDS[$key]) ? '%d' : '%s';
         }
 
         return $formats;
@@ -1117,7 +1466,16 @@ class PostService extends Service {
         return max(50, min(1000, $speed));
     }
 
-    public function htmlTaxonomy(string $term = 'category', bool $isBlank = false)
+    /**
+     * Get HTML taxonomy links for a post.
+     *
+     * 返回指定分类或标签的HTML链接。
+     *  
+     * @param string $term Taxonomy term to get links for.
+     * @param bool $isBlank Whether to open links in a new tab.
+     * @return string HTML links for the taxonomy term.
+     */
+    public function htmlTaxonomy(string $term = 'category', bool $isBlank = false): string
     {
         if (
             !isset($this->cache['taxonomy'][$term])

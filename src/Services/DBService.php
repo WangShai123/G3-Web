@@ -233,7 +233,6 @@ class DBService extends Service {
          *  - gallery: 相册集
          *  - property: 属性集（JSON）如商品属性
          *  - ext: 额外字段
-         *  - updated_at: 更新时间
          * 
          * @since 1.0.0
          */
@@ -246,20 +245,56 @@ class DBService extends Service {
                 `dislike_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `share_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `favorite_count` BIGINT UNSIGNED NOT NULL DEFAULT 0,
-                `reading_time` INT UNSIGNED DEFAULT 0,
+                `reading_time` INT UNSIGNED NOT NULL DEFAULT 0,
                 `seo_title` VARCHAR(255) DEFAULT NULL,
                 `seo_description` VARCHAR(255) DEFAULT NULL,
                 `seo_keywords` VARCHAR(255) DEFAULT NULL,
                 `gallery` JSON DEFAULT NULL,
                 `property` JSON DEFAULT NULL,
                 `ext` JSON DEFAULT NULL,
-                `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`post_id`),
                 KEY `idx_view_count` (`view_count`),
                 KEY `idx_like_count` (`like_count`),
                 KEY `idx_dislike_count` (`dislike_count`),
                 KEY `idx_share_count` (`share_count`),
                 KEY `idx_favorite_count` (`favorite_count`)
+            ) ENGINE=InnoDB $charset;";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+
+        if ($wpdb->get_var("SHOW COLUMNS FROM `$table` LIKE 'updated_at'") === 'updated_at') {
+            $wpdb->query("ALTER TABLE `$table` DROP COLUMN `updated_at`");
+        }
+
+        /**
+         * User Post Action Relationship Table
+         *
+         * 用户与文章行为关系表
+         *  - id
+         *  - user_id: 用户ID
+         *  - post_id: 文章ID
+         *  - action: 行为类型
+         *  - value: 行为状态，1为有效，0为取消
+         *  - created_at: 创建时间
+         *  - updated_at: 更新时间
+         *
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_user_post_action';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
+                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `post_id` BIGINT UNSIGNED NOT NULL,
+                `action` VARCHAR(32) NOT NULL,
+                `value` TINYINT NOT NULL DEFAULT 1,
+                `created_at` DATETIME NOT NULL,
+                `updated_at` DATETIME NOT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `uniq_user_post_action` (`user_id`, `post_id`, `action`),
+                KEY `idx_user_action_updated` (`user_id`, `action`, `updated_at`),
+                KEY `idx_post_action_updated` (`post_id`, `action`, `updated_at`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);

@@ -23,7 +23,6 @@ class UserService extends Service {
     const CARD_TABLE                = 'g3_user_card';
     const EXTRA_CACHE_GROUP         = 'g3_user_extra';
     const CARD_CACHE_GROUP          = 'g3_user_card';
-    const QUERY_CACHE_GROUP         = 'g3_user_query';
     const SESSION_TOKEN_CACHE_GROUP = 'g3_session_tokens';
     const G3_LANG_COOKIE            = 'g3_user_language';
     const G3_TIMEZONE_COOKIE        = 'g3_user_timezone';

@@ -6,14 +6,13 @@ use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Middleware\RestAuthMiddleware;
-use JEALER\G3\Services\PostService;
-use JEALER\G3\Services\UserService;
+use JEALER\G3\Services\UserPostActionService;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
 class UserController extends Controller {
-    public function __construct()
+    public function __construct(private UserPostActionService $postActionService)
     {
         parent::__construct();
     }
@@ -62,4 +61,40 @@ class UserController extends Controller {
     //         'message' => __('Switched', 'G3'),
     //     ]);
     // }
+
+    #[RestRouter(namespace: 'api/user', route: 'v1/post-actions', methods: 'POST')]
+    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['action'],
+        'properties' => [
+            'action'         => ['type' => 'string', 'enum' => ['like', 'dislike', 'favorite', 'share']],
+            'paged'          => ['type' => 'integer'],
+            'posts_per_page' => ['type' => 'integer'],
+        ],
+    ])]
+    public function postActions(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $params = $request->get_json_params() ?: [];
+        $result = $this->postActionService->listPosts(
+            (int) get_current_user_id(),
+            (string) ($params['action'] ?? ''),
+            max(1, (int) ($params['paged'] ?? 1)),
+            max(1, (int) ($params['posts_per_page'] ?? 20))
+        );
+
+        return is_wp_error($result)
+            ? $result
+            : $this->ok($result);
+    }
+
+    private function ok(mixed $data): WP_REST_Response
+    {
+        return rest_ensure_response([
+            'success' => true,
+            'code'    => 200,
+            'data'    => $data,
+        ]);
+    }
 }

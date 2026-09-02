@@ -1,6 +1,5 @@
 
 .DS_Store
-node_modules
 documents
 tests
 Examples
@@ -21,6 +20,16 @@ vite.config.ts
 **/*.md
 !/README.md
 !/README_zh.md
+
+node_modules
+!node_modules/vanilla-create-storage/dist
+!node_modules/vanilla-jui/dist
+!node_modules/vanilla-request/dist
+!node_modules/vanilla-signal/dist
+!node_modules/vanilla-signal-i18n/dist
+!node_modules/vanilla-signal-query/dist
+!node_modules/vanilla-simple-lru/dist
+!node_modules/vanilla-sse/dist
 
 assets/css/*.css
 !assets/css/*.min.css

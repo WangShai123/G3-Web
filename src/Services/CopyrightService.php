@@ -4,17 +4,16 @@ use JEALER\G3\Core\Service\Service;
 use WP_Post;
 
 class CopyrightService extends Service {
-    const CACHE_GROUP = 'g3_copyright';
-    private const MAPS        = [
+    const CACHE_GROUP   = 'g3_copyright';
+    private const MAPS          = [
         "\u{200B}",
         "\u{200C}",
         "\u{200D}",
         "\u{FEFF}",
     ];
-
     private const CLEAN_PATTERN = '/[\x{200B}-\x{200D}\x{FEFF}\x{2060}\x{180E}\x{00AD}\x{2061}-\x{2069}\x{202A}-\x{202E}\x{206A}-\x{206F}\x{061C}\x{00A0}\x{2000}-\x{2003}]/u';
-
     private array $chars;
+
     public function __construct()
     {
         parent::__construct();

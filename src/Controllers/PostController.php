@@ -5,6 +5,7 @@ use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Middleware\RateLimitMiddleware;
+use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Services\PostService;
 use WP_Error;
 use WP_REST_Request;
@@ -55,6 +56,7 @@ class PostController extends Controller {
             'no_found_rows'          => ['type' => 'boolean'],
             'update_post_meta_cache' => ['type' => 'boolean'],
             'update_post_term_cache' => ['type' => 'boolean'],
+            'respect'                => ['type' => 'array'],
             'filter'                 => ['type' => 'array'],
         ],
         'required'   => ['post_type', 'posts_per_page']
@@ -67,10 +69,11 @@ class PostController extends Controller {
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function query(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $params = $request->get_json_params();
-        $unset  = $params['unset'] ?? null;
+        $params  = $request->get_json_params() ?: [];
+        $respect = $params['respect'] ?? null;
+        unset($params['respect']);
 
-        $result = $this->postService->query($params, $unset);
+        $result = $this->postService->query($params, $respect);
 
         if (isset($params['paged']) && $params['paged'] > 1) {
             sleep(1);
@@ -87,5 +90,65 @@ class PostController extends Controller {
                 ],
                 'data'    => $result['data'],
             ]);
+    }
+
+    #[RestRouter(
+        namespace: 'api/posts',
+        route: 'v1/react',
+        methods: 'POST',
+    )]
+    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [30, 60])]
+    #[Schema([
+        'type'       => 'object',
+        'properties' => [
+            'post_id' => ['type' => 'integer'],
+            'action'  => ['type' => 'string', 'enum' => ['like', 'dislike', 'favorite', 'share']],
+            'value'   => ['type' => 'integer', 'enum' => [-1, 1]],
+        ],
+        'required'   => ['post_id', 'action', 'value']
+    ])]
+    public function react(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $params = $request->get_json_params() ?: [];
+
+        $result = $this->postService->react(
+            (int) ($params['post_id'] ?? 0),
+            (string) ($params['action'] ?? ''),
+            (int) ($params['value'] ?? 0)
+        );
+
+        return is_wp_error($result)
+            ? $result
+            : $this->ok($result);
+    }
+
+    #[RestRouter(
+        namespace: 'api/posts',
+        route: 'v1/actions/status',
+        methods: 'POST',
+    )]
+    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
+    #[Schema([
+        'type'       => 'object',
+        'properties' => [
+            'post_id' => ['type' => 'integer'],
+        ],
+        'required'   => ['post_id']
+    ])]
+    public function actionStatus(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $params = $request->get_json_params() ?: [];
+        return $this->ok($this->postService->currentUserActionStatus((int) ($params['post_id'] ?? 0)));
+    }
+
+    private function ok(mixed $data): WP_REST_Response
+    {
+        return rest_ensure_response([
+            'success' => true,
+            'code'    => 200,
+            'data'    => $data,
+        ]);
     }
 }

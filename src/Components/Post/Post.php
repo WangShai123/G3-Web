@@ -12,8 +12,10 @@ use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\CopyrightService;
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Utilities\Type;
 use Override;
 use Exception;
+use WP;
 
 class Post extends Components {
     #[Override]
@@ -24,13 +26,10 @@ class Post extends Components {
             'option_timezone_string' => [[$this, 'customTimezone'], 10, 1],
         ]);
         $this->action([
-            'save_post'              => [[$this, 'savePost'], 10, 2],
-            'wp_update_nav_menu'     => [[$this, 'flushMenuCache'], 10, 1],
-            'transition_post_status' => [[$this, 'actionOnPublish'], 10, 3],
-            'trashed_post'           => [[$this, 'actionOnTrash'], 10, 1],
-            'before_delete_post'     => [[$this, 'actionBeforeDelete'], 10, 1],
-            'delete_post'            => [[$this, 'actionOnDelete'], 10, 2],
-            'wp_footer'              => [[$this, 'renderFrontRoot']]
+            'save_post'          => [[$this, 'savePost'], 10, 2],
+            'wp_update_nav_menu' => [[$this, 'flushMenuCache'], 10, 1],
+            'before_delete_post' => [[$this, 'actionBeforeDelete'], 10, 1],
+            'wp_footer'          => [[$this, 'renderFrontRoot']]
         ]);
     }
     private function default(): array
@@ -183,33 +182,15 @@ class Post extends Components {
         return $timezone;
     }
 
-    public function actionOnPublish($newStatus, $oldStatus, $post)
-    {
-        if ($newStatus === 'publish' && $oldStatus !== 'publish') {
-            $this->flushQueryCache();
-        }
-    }
-    public function actionOnTrash($postId)
-    {
-        $this->flushQueryCache();
-    }
     public function actionBeforeDelete($postId)
     {
         $this->cleanExtraData($postId);
-    }
-    public function actionOnDelete($postId, $post)
-    {
-        $this->flushQueryCache();
     }
     private function cleanExtraData($postId): void
     {
         /** @var PostService $postService */
         $postService = $this->container->get(PostService::class);
         $postService->deleteExtra($postId);
-    }
-    private function flushQueryCache(): void
-    {
-        wp_cache_flush_group(PostService::QUERY_CACHE_GROUP);
     }
     private function removeAutoP(): void
     {
@@ -283,7 +264,7 @@ class Post extends Components {
         // With Interval
         $cookieExpireSeconds = $intervalMinutes * 60;
 
-        $cookieKey   = PostService::READED_COOKIE;
+        $cookieKey   = PostService::VIEWED_COOKIE;
         $viewed      = $_COOKIE[$cookieKey] ?? '';
         $viewedArray = explode(',', $viewed);
         // filter empty values
@@ -294,7 +275,7 @@ class Post extends Components {
         if (in_array($postId, $viewedArray)) return;
 
         $viewedArray[] = $postId;
-        $maxViewed     = PostService::MAX_VIEWED;
+        $maxViewed     = PostService::VIEWED_COOKIE_LIMIT;
         if (count($viewedArray) > $maxViewed) {
             $viewedArray = array_slice($viewedArray, -$maxViewed);
         }
@@ -453,32 +434,32 @@ class Post extends Components {
         $cleanContent     = $copyrightService->clean($post->post_content);
         $length           = mb_strlen($cleanContent, 'UTF-8');
         if (empty($cleanContent) || $length < $position) {
-            $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
-                'module'   => 'Post',
-                'postId'   => $postId,
-                'length'   => $length,
-                'position' => $position,
-            ]);
+            // $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
+            //     'module'   => 'Post',
+            //     'postId'   => $postId,
+            //     'length'   => $length,
+            //     'position' => $position,
+            // ]);
             return;
         }
 
         try {
             // payload
-            $payload = json_encode([
+            $payload = Type::arrayToJson([
                 'site'  => home_url(),
                 'id'    => $postId,
                 'title' => $post->post_title,
                 'time'  => time(),
-            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            ]);
 
             /**
              * Custom Filter: g3_filter_copyright_payload
              * 
              * @param string $payload
-             * @param int $postId
+             * @param WP_Post $post
              * @return string
              */
-            $payload = apply_filters('g3_filter_copyright_payload', $payload, $postId);
+            $payload = apply_filters('g3_filter_copyright_payload', $payload, $post);
 
             if ($payload === false) {
                 $this->logger->error('Copyright payload encoding failed.', [

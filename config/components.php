@@ -101,5 +101,6 @@ return [
             'enabled' => true,
             'force'   => true,
         ],
+        'Automation'   => true,
     ]
 ];

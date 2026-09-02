@@ -1,25 +1,21 @@
 <?php
 namespace JEALER\G3\Utilities;
+use InvalidArgumentException;
 
 final class Type {
 
     /**
      * Convert array to JSON string
      *
-     * 将数组转换为 JSON 字符串
+     * 将数组转换为 JSON 字符串，不转义 Unicode & 斜杠
      *
      * @param array $array
      * @return string
      */
     public static function arrayToJson(array $array): string
     {
-        $result = json_encode($array, JSON_UNESCAPED_UNICODE);
-
-        if ($result === false) {
-            return '{}';
-        }
-
-        return $result;
+        $result = json_encode($array, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return $result === false ? '{}' : $result;
     }
 
     /**
@@ -32,14 +28,23 @@ final class Type {
      */
     public static function jsonToArray(string $json): array
     {
-        if ($json === '') {
-            return [];
-        }
+        if ($json === '') return [];
 
         $result = json_decode($json, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             return [];
+        }
+
+        return $result;
+    }
+
+    public static function jsonToObject(string $json): object
+    {
+        $result = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+
+        if (!is_object($result)) {
+            throw new InvalidArgumentException('Invalid JSON input: expected a JSON object string.');
         }
 
         return $result;
