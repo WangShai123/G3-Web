@@ -112,7 +112,7 @@ class OrdersListTable extends WP_List_Table {
         $this->prepare_items();
 
         echo '<div class="wrap">';
-        echo '<h1 class="float-left">' . __('All Orders', 'G3') . '</h1>';
+        echo '<h1 class="float-left">' . sprintf(__('All %s', 'G3'), __('Orders', 'G3')) . '</h1>';
         echo '<form id="list-form" method="post">';
         $this->search_box(__('Search'), 'reply');
         parent::display();

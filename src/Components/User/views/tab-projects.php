@@ -41,7 +41,7 @@ $durations = get_option(UserService::DURATION_OPTION_KEY, []);
                 {
                     type: 'select',
                     payload: {
-                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        label: '<?php echo sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')); ?>',
                         name: 'duration',
                         options: [
                             <?php foreach ($durations as $slug => $duration) :
@@ -114,7 +114,7 @@ $durations = get_option(UserService::DURATION_OPTION_KEY, []);
                 {
                     type: 'select',
                     payload: {
-                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        label: '<?php echo sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')); ?>',
                         name: 'duration',
                         value: t.data('duration'),
                         options: [

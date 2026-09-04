@@ -31,6 +31,7 @@ class ProductService extends Service {
      * 有些逻辑和查询仅用于后台管理，设置一个较短的缓存时间
      */
     const EXPIRE_IN_ADMIN = DAY_IN_SECONDS;
+
     /**
      * Cache Expire Time in Global
      * 全局缓存的过期时间
@@ -38,6 +39,7 @@ class ProductService extends Service {
      */
     const EXPIRE_IN_GLOBAL = WEEK_IN_SECONDS;
     private PostService $postService;
+
     public function __construct()
     {
         parent::__construct();

@@ -1,5 +1,6 @@
 <?php
 use JEALER\G3\Services\UserService;
+use JEALER\G3\Utilities\Message;
 
 if (is_user_logged_in()) {
     wp_safe_redirect(home_url(), 302, 'G3');
@@ -65,6 +66,8 @@ get_header();
         display: grid;
         place-items: center;
         padding: 56px 18px;
+        min-height: 100vh;
+        min-height: 100dvh;
     }
 
     .g3-auth-shell {
@@ -122,13 +125,6 @@ get_header();
         letter-spacing: 0;
     }
 
-    .g3-auth-subtitle {
-        margin: 0 0 24px;
-        color: #64748b;
-        font-size: 15px;
-        line-height: 1.6;
-    }
-
     .g3-auth-note {
         margin: -2px 0 0;
         color: #64748b;
@@ -161,20 +157,18 @@ get_header();
 
 
     .g3-auth-footer {
-        margin: 22px 0 0;
+        margin: 20px 0 0;
         color: #64748b;
         font-size: 14px;
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
     }
 
     .g3-auth-footer a {
-        color: #047857;
+        /* color: #047857; */
+        color: inherit;
         font-weight: 800;
         text-decoration: none;
-    }
-
-    .g3-auth-footer a:hover {
-        text-decoration: underline;
     }
 
     @media (max-width: 820px) {
@@ -204,7 +198,8 @@ get_header();
 </style>
 <div class="aurora" aria-hidden="true"></div>
 <main class="g3-auth-page">
-    <section class="g3-auth-shell" aria-label="<?php esc_attr_e('Create account', 'G3'); ?>">
+    <section class="g3-auth-shell"
+        aria-label="<?php echo sprintf(__('%s %s', 'G3'), __('Create'), __('Account', 'G3')); ?>">
         <div class="g3-auth-visual">
             <div class="g3-auth-brand">
                 <span><?php echo get_bloginfo('name'); ?></span>
@@ -217,31 +212,30 @@ get_header();
 
         <div class="g3-auth-panel">
             <h2><?php esc_html_e('Register'); ?></h2>
-            <p class="g3-auth-subtitle"><?php esc_html_e('Take a minute to get an account.', 'G3'); ?>
             </p>
 
             <form id="g3-register-form" class="j-form is-vertical is-item-vertical" novalidate>
                 <div id="g3-register-message" class="g3-auth-message" role="status" aria-live="polite"></div>
 
-                <div class="form-item">
-                    <label for="g3-register-username" class="item-label is-required"><?php _e('Username'); ?></label>
-                    <div class="form-control">
+                <fieldset class="form-field">
+                    <label for="g3-register-username" class="field-legend is-required"><?php _e('Username'); ?></label>
+                    <div class="field-control">
                         <input class="j-input is-lg" id="g3-register-username" name="username" type="text"
                             autocomplete="username" minlength="6" maxlength="60" required placeholder="">
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="form-item">
-                    <label for="g3-register-email" class="item-label is-required"><?php _e('Email'); ?></label>
-                    <div class="form-control">
+                <fieldset class="form-field">
+                    <label for="g3-register-email" class="field-legend is-required"><?php _e('Email'); ?></label>
+                    <div class="field-control">
                         <input class="j-input is-lg" id="g3-register-email" name="email" type="email"
                             autocomplete="email" maxlength="100" required placeholder="">
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="form-item">
-                    <label for="g3-register-password" class="item-label is-required"><?php _e('Password'); ?></label>
-                    <div class="form-control">
+                <fieldset class="form-field">
+                    <label for="g3-register-password" class="field-legend is-required"><?php _e('Password'); ?></label>
+                    <div class="field-control">
                         <input class="j-input is-lg has-toggle" id="g3-register-password" name="password"
                             type="password" autocomplete="new-password" minlength="12" maxlength="128" required
                             placeholder="">
@@ -249,28 +243,32 @@ get_header();
                             <?php _e('Hint: The password should be at least twelve characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ &amp; ).'); ?>
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="form-item">
+                <fieldset class="form-field">
                     <label for="g3-register-confirm-password"
-                        class="item-label is-required"><?php _e('Confirm password', 'G3'); ?></label>
-                    <div class="form-control">
+                        class="field-legend is-required"><?php echo sprintf(__('%s %s', 'G3'), __('Confirm', 'G3'), __('Password')); ?></label>
+                    <div class="field-control">
                         <input class="j-input is-lg has-toggle" id="g3-register-confirm-password"
                             name="confirm_password" type="password" autocomplete="new-password" minlength="12"
                             placeholder="" maxlength="128" required>
                     </div>
-                </div>
+                </fieldset>
 
                 <div class="form-buttons">
                     <button id="g3-register-submit" class="j-button is-primary is-lg"
                         type="submit"><?php _e('Register'); ?></button>
-                    <button type="reset" class="j-button is-ghost is-lg"><?php _e('Reset'); ?></button>
+                    <button type="reset" class="j-button is-ghost is-lg"><?php _e('Reset', 'G3'); ?></button>
                 </div>
             </form>
 
             <p class="g3-auth-footer">
-                <?php esc_html_e('Already have an account?', 'G3'); ?>
-                <a href="<?php echo esc_url($registerConfig['loginUrl']); ?>"><?php _e('Login', 'G3'); ?></a>
+                <a href="<?php echo $registerConfig['homeUrl']; ?>" class="j-button is-text is-sm">
+                    <?php echo sprintf(__('%s %s', 'G3'), __('&laquo; Back'), __('Homepage')); ?>
+                </a>
+                <a href="<?php echo $registerConfig['loginUrl']; ?>" class="j-button is-text is-sm">
+                    <?php _e('Login', 'G3'); ?>
+                </a>
             </p>
         </div>
     </section>
@@ -279,9 +277,9 @@ get_header();
 <script>
     (function () {
         const config = <?php echo wp_json_encode($registerConfig, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
-        const form = document.getElementById('g3-register-form');
-        const submit = document.getElementById('g3-register-submit');
-        const message = document.getElementById('g3-register-message');
+        const form = document.querySelector('#g3-register-form');
+        const submit = document.querySelector('#g3-register-submit');
+        const message = document.querySelector('#g3-register-message');
 
         document.querySelectorAll('[data-toggle-password]').forEach((button) => {
             button.addEventListener('click', () => {
@@ -308,7 +306,7 @@ get_header();
             }
 
             if (data.password !== data.confirm_password) {
-                setMessage('<?php echo esc_js(__('The two passwords do not match.', 'G3')); ?>', 'error');
+                setMessage('<?php echo __('The two passwords do not match.', 'G3'); ?>', 'error');
                 return;
             }
 
@@ -327,15 +325,15 @@ get_header();
 
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok || result.success !== true) {
-                    throw new Error(result.message || '<?php echo esc_js(__('Registration failed. Please try again.', 'G3')); ?>');
+                    throw new Error(result.message || '<?php echo sprintf(__('%s %s', 'G3'), __('Failed') . '.', __('Please try again.')); ?>');
                 }
 
-                setMessage(result.message || '<?php echo esc_js(__('Registration successful.', 'G3')); ?>', 'success');
+                setMessage(result.message || '<?php echo Message::registrationSuccess(); ?>', 'success');
                 window.setTimeout(() => {
                     window.location.href = result.data?.redirect || config.homeUrl;
                 }, 650);
             } catch (error) {
-                setMessage(error.message || '<?php echo esc_js(__('Registration failed. Please try again.', 'G3')); ?>', 'error');
+                setMessage(error.message || '<?php echo sprintf(__('%s %s', 'G3'), __('Failed') . '.', __('Please try again.')); ?>', 'error');
                 setLoading(false);
             }
         });
@@ -344,7 +342,7 @@ get_header();
             submit.disabled = loading;
             submit.textContent = loading
                 ? '<span class="icon-loader"></span>'
-                : '<?php echo esc_js(__('Create account', 'G3')); ?>';
+                : '<?php echo sprintf(__('%s %s', 'G3'), __('Create'), __('Account', 'G3')); ?>';
         }
 
         function setMessage(text, type) {

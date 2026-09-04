@@ -67,9 +67,9 @@ class User extends Components {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . __('Membership', 'G3') . '</h1>';
         Element::tab('User', 'projects', [
-            'projects' => __('Membership Projects', 'G3'),
-            'duration' => __('Membership Duration', 'G3'),
-            'card'     => __('Membership Card', 'G3')
+            'projects' => sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Projects', 'G3')),
+            'duration' => sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')),
+            'card'     => sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Card', 'G3'))
         ]);
         echo '</div>';
     }
@@ -146,12 +146,12 @@ class User extends Components {
         $var = get_query_var('g3_var_my', false);
         if ($var) {
             return match ($var) {
-                'home'    => __('My Homepage', 'G3'),
-                'message' => __('My Messages', 'G3'),
-                'order'   => __('My Orders', 'G3'),
-                'wallet'  => __('My Wallet', 'G3'),
-                'profile' => __('My Profile', 'G3'),
-                'setting' => __('My Settings', 'G3'),
+                'home'    => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Homepage')),
+                'message' => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Messages', 'G3')),
+                'order'   => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Orders', 'G3')),
+                'wallet'  => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Wallet', 'G3')),
+                'profile' => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Profile', 'G3')),
+                'setting' => sprintf(__('%s %s', 'G3'), __('My', 'G3'), __('Settings')),
                 default   => $title,
             };
         }
@@ -160,9 +160,9 @@ class User extends Components {
         if ($var) {
             return match ($var) {
                 'login'          => __('Login', 'G3'),
-                'register'       => __('Register', 'G3'),
-                'lost-password'  => __('Reset Password', 'G3'),
-                'reset-password' => __('Reset Password', 'G3'),
+                'register'       => __('Register'),
+                'lost-password'  => __('Lost Password'),
+                'reset-password' => __('Reset Password'),
                 default          => $this->defaultUserTemplateTitle($var, $title)
             };
         }
@@ -227,7 +227,7 @@ class User extends Components {
             $data = $_POST['data'];
 
             if (!isset($data['slug']) && !$data['slug']) {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
 
             if ($data['slug'] !== 'abandon') {
@@ -263,7 +263,7 @@ class User extends Components {
         add_action('wp_ajax_g3_edit_custom_role', function () {
             $data = $_POST['data'];
             if (!isset($data['name']) || !isset($data['slug']) || trim($data['name']) == '' || trim($data['slug']) == '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             if (!preg_match('/^[a-zA-Z0-9]+$/', $data['slug'])) {
                 Response::ajaxError(__('The role slug can only contain English and numbers.', 'G3'));
@@ -283,7 +283,7 @@ class User extends Components {
         add_action('wp_ajax_g3_delete_custom_role', function () {
             $slug = $_POST['slug'];
             if (!isset($slug) || trim($slug) === '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             $roles = get_option(UserService::GROUP_OPTION_KEY, []);
             unset($roles[$slug]);
@@ -298,7 +298,7 @@ class User extends Components {
         add_action('wp_ajax_g3_edit_manager_role', function () {
             $data = $_POST['data'];
             if (!isset($data['name']) || !isset($data['slug']) || trim($data['name']) == '' || trim($data['slug']) == '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             if (!preg_match('/^[a-zA-Z0-9]+$/', $data['slug'])) {
                 Response::ajaxError(__('The role slug can only contain English and numbers.', 'G3'));
@@ -319,7 +319,7 @@ class User extends Components {
         add_action('wp_ajax_g3_delete_manager_role', function () {
             $slug = $_POST['slug'];
             if (!isset($slug) || trim($slug) === '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             $roles = get_option(UserService::MANAGER_OPTION_KEY, []);
             unset($roles[$slug]);
@@ -334,7 +334,7 @@ class User extends Components {
         add_action('wp_ajax_g3_edit_premium_config', function () {
             $data = $_POST['data'];
             if (!isset($data['name']) || !isset($data['slug']) || trim($data['name']) == '' || trim($data['slug']) == '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             if (!preg_match('/^[a-zA-Z0-9]+$/', $data['slug'])) {
                 Response::ajaxError(__('The role slug can only contain English and numbers.', 'G3'));
@@ -354,7 +354,7 @@ class User extends Components {
         add_action('wp_ajax_g3_delete_premium_config', function () {
             $slug = $_POST['slug'];
             if (!isset($slug) || trim($slug) === '') {
-                Response::ajaxError(__('Data missing', 'G3'));
+                Response::ajaxError(__('Data Missing', 'G3'));
             }
             $roles = get_option(UserService::PREMIUM_OPTION_KEY, []);
             unset($roles[$slug]);

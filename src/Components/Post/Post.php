@@ -625,46 +625,52 @@ HTML;
     }
     protected function sidebar(): void
     {
+        $homepage = __('Homepage');
+        $archive  = __('Archives');
+        $search   = __('Search');
+        $post     = __('Post');
+        $page     = __('Page');
+
         register_sidebar([
-            'name'          => __('Homepage Sidebar', 'G3'),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $homepage),
             'id'            => 'home',
-            'description'   => __('You can add widgets to homepage sidebar.', 'G3'),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $homepage),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ]);
         register_sidebar([
-            'name'          => __('Archive Sidebar', 'G3'),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $archive),
             'id'            => 'archive',
-            'description'   => __('You can add widgets to archive sidebar.', 'G3'),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $archive),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ]);
         register_sidebar([
-            'name'          => __('Search Sidebar', 'G3'),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $search),
             'id'            => 'search',
-            'description'   => __('You can add widgets to search sidebar.', 'G3'),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $search),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ]);
         register_sidebar([
-            'name'          => __('Post Sidebar', 'G3'),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $post),
             'id'            => 'post',
-            'description'   => __('You can add widgets to post sidebar.', 'G3'),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $post),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ]);
         register_sidebar([
-            'name'          => __('Page Sidebar', 'G3'),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $page),
             'id'            => 'page',
-            'description'   => __('You can add widgets to page sidebar.', 'G3'),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $page),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',

@@ -54,6 +54,26 @@ class TemplateService extends Service {
         return $template;
     }
 
+    public function archiveTemplate(string $template, string $type, array $templates)
+    {
+        if (!is_archive()) {
+            return $template;
+        }
+        $postType = get_post_type();
+        $themeDir = get_stylesheet_directory();
+
+        $archiveTemplate = $themeDir . "/templates/archive/{$postType}.php";
+        if (file_exists($archiveTemplate)) {
+            return $archiveTemplate;
+        }
+
+        $defaultTemplate = $themeDir . '/templates/archive/index.php';
+        if (file_exists($defaultTemplate)) {
+            return $defaultTemplate;
+        }
+        return $template;
+    }
+
     public function notFoundTemplate(string $template, string $type, array $templates)
     {
         if (!is_404()) {

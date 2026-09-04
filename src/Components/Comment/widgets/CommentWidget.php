@@ -73,7 +73,8 @@ class CommentWidget extends WP_Widget {
             <label for="<?php echo $this->get_field_id('from'); ?>"><?php _e('Data Source'); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('from'); ?>"
                 name="<?php echo $this->get_field_name('from'); ?>">
-                <option value="0" <?php selected($from, 0); ?>><?php _e('All Comments', 'G3'); ?></option>
+                <option value="0" <?php selected($from, 0); ?>><?php echo sprintf(__('All %s', 'G3'), __('Comments', 'G3')); ?>
+                </option>
                 <option value="1" <?php selected($from, 1); ?>><?php _e('Post Comments', 'G3'); ?></option>
                 <option value="2" <?php selected($from, 2); ?>><?php _e('Page Comments', 'G3'); ?></option>
                 <?php if ($announcement) : ?>
@@ -94,7 +95,8 @@ class CommentWidget extends WP_Widget {
             </select>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('type'); ?>"><?php _e('Data Type'); ?></label>
+            <label
+                for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
                 <option value="0" <?php //selected($instance['type'], 0); ?>><?php _e('Latest Comments', 'G3'); ?></option>

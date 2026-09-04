@@ -37,7 +37,7 @@ class DurationListTable extends WP_List_Table {
             'cb'       => '<input type="checkbox" />',
             'name'     => __('Name'),
             'slug'     => __('Slug'),
-            'duration' => __('Membership Duration', 'G3'),
+            'duration' => sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')),
             'action'   => __('Action')
         ];
     }

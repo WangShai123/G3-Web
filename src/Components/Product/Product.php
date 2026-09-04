@@ -17,6 +17,7 @@ use Exception;
 class Product extends Components {
     private ProductService $service;
     private PostService    $postService;
+
     protected function start()
     {
         $this->service     = $this->container->get(ProductService::class);
@@ -99,33 +100,36 @@ class Product extends Components {
     }
     protected function postType(): void
     {
-        $labels = [
-            'name'                  => __('Products', 'G3'),
-            'singular_name'         => __('Product', 'G3'),
-            'menu_name'             => __('Shop', 'G3'),
-            'name_admin_bar'        => __('Product', 'G3'),
+        $product  = __('Product', 'G3');
+        $products = __('Products', 'G3');
+        $shop     = __('Shop', 'G3');
+        $labels   = [
+            'name'                  => $products,
+            'singular_name'         => $product,
+            'menu_name'             => $shop,
+            'name_admin_bar'        => $product,
             'add_new'               => __('Add New', 'G3'),
-            'add_new_item'          => __('Add New Product', 'G3'),
-            'new_item'              => __('New Product', 'G3'),
-            'edit_item'             => __('Edit Product', 'G3'),
-            'view_item'             => __('View Product', 'G3'),
-            'all_items'             => __('All Products', 'G3'),
-            'search_items'          => __('Search Products', 'G3'),
-            'parent_item_colon'     => __('Parent Product:', 'G3'),
-            'not_found'             => __('No products found.', 'G3'),
-            'not_found_in_trash'    => __('No products found in trash.', 'G3'),
+            'add_new_item'          => sprintf(__('Add New %s', 'G3'), $product),
+            'new_item'              => sprintf(__('New %s', 'G3'), $product),
+            'edit_item'             => sprintf(__('Edit %s', 'G3'), $product),
+            'view_item'             => sprintf(__('View %s', 'G3'), $product),
+            'all_items'             => sprintf(__('All %s', 'G3'), $products),
+            'search_items'          => sprintf(__('Search %s', 'G3'), $product),
+            'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $product),
+            'not_found'             => sprintf(__('No %s found.', 'G3'), $products),
+            'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $products),
             'featured_image'        => __('Cover Image', 'G3'),
             'set_featured_image'    => __('Set cover image', 'G3'),
             'remove_featured_image' => __('Remove cover image', 'G3'),
             'use_featured_image'    => __('Use as cover image', 'G3'),
-            'archives'              => __('Product Archives', 'G3'),
-            'insert_into_item'      => __('Insert into product', 'G3'),
-            'uploaded_to_this_item' => __('Uploaded to this product', 'G3'),
-            'filter_items_list'     => __('Filter products list', 'G3'),
-            'items_list_navigation' => __('Products list navigation', 'G3'),
-            'items_list'            => __('Products list', 'G3'),
+            'archives'              => sprintf(__('%s Archives', 'G3'), $products),
+            'insert_into_item'      => sprintf(__('Insert into %s', 'G3'), $product),
+            // 'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $product),
+            'filter_items_list'     => sprintf(__('Filter %s list', 'G3'), $products),
+            'items_list_navigation' => sprintf(__('%s list navigation', 'G3'), $products),
+            'items_list'            => sprintf(__('%s list', 'G3'), $products),
         ];
-        $args   = [
+        $args     = [
             'labels'             => $labels,
             'public'             => true,
             'publicly_queryable' => true,
@@ -146,6 +150,12 @@ class Product extends Components {
     }
     protected function taxonomy(): void
     {
+        $product    = __('Product', 'G3');
+        $products   = __('Products', 'G3');
+        $brand      = __('Brand', 'G3');
+        $brands     = __('Brands', 'G3');
+        $category   = __('Category');
+        $categories = __('Categories');
         register_taxonomy(
             'product_category',
             ['product'],
@@ -157,18 +167,12 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_category'],
                 'labels'            => [
-                    'name'              => __('Product Categories', 'G3'),
-                    'singular_name'     => __('Product Category', 'G3'),
-                    'search_items'      => __('Search Product Categories', 'G3'),
-                    'not_found'         => __('No product categories found.', 'G3'),
-                    'all_items'         => __('All Product Categories', 'G3'),
-                    'parent_item'       => __('Parent Product Category', 'G3'),
-                    'parent_item_colon' => __('Parent Product Category:', 'G3'),
-                    'edit_item'         => __('Edit Product Category', 'G3'),
-                    'update_item'       => __('Update Product Category', 'G3'),
-                    'add_new_item'      => __('Add New Product Category', 'G3'),
-                    'new_item_name'     => __('New Product Category Name', 'G3'),
-                    'menu_name'         => __('Categories', 'G3')
+                    'name'          => sprintf(__('%s %s', 'G3'), $products, $categories),
+                    'singular_name' => sprintf(__('%s %s', 'G3'), $product, $category),
+                    'search_items'  => sprintf(__('Search %s', 'G3'), $categories),
+                    'not_found'     => sprintf(__('No %s found.', 'G3'), $category),
+                    'all_items'     => __('All Categories'),
+                    'menu_name'     => $categories
                 ]
             ]
         );
@@ -183,29 +187,31 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_brand'],
                 'labels'            => [
-                    'name'              => __('Product Brands', 'G3'),
-                    'singular_name'     => __('Product Brand', 'G3'),
-                    'search_items'      => __('Search Brands', 'G3'),
-                    'not_found'         => __('No brands found.', 'G3'),
-                    'all_items'         => __('All Brands', 'G3'),
-                    'parent_item'       => __('Parent Brand', 'G3'),
-                    'parent_item_colon' => __('Parent Brand:', 'G3'),
-                    'edit_item'         => __('Edit Brand', 'G3'),
-                    'update_item'       => __('Update Brand', 'G3'),
-                    'add_new_item'      => __('Add New Brand', 'G3'),
-                    'new_item_name'     => __('New Brand Name', 'G3'),
-                    'menu_name'         => __('Brands', 'G3')
+                    'name'              => sprintf(__('%s %s', 'G3'), $products, $brands),
+                    'singular_name'     => sprintf(__('%s %s', 'G3'), $product, $brand),
+                    'search_items'      => sprintf(__('Search %s', 'G3'), $brands),
+                    'not_found'         => sprintf(__('No %s found.', 'G3'), $brand),
+                    'all_items'         => sprintf(__('All %s', 'G3'), $brands),
+                    'parent_item'       => sprintf(__('Parent %s', 'G3'), $brand),
+                    'parent_item_colon' => sprintf(__('Parent %s', 'G3') . ':', $brand),
+                    'edit_item'         => sprintf(__('Edit %s', 'G3'), $brand),
+                    'update_item'       => sprintf(__('Update %s', 'G3'), $brand),
+                    'add_new_item'      => sprintf(__('Add New %s', 'G3'), $brand),
+                    'new_item_name'     => sprintf(__('New %s Name', 'G3'), $brand),
+                    'menu_name'         => $brands
                 ]
             ]
         );
     }
     protected function sidebar(): void
     {
+        $shop    = __('Shop', 'G3');
+        $product = __('Product', 'G3');
         register_sidebar(
             [
-                'name'          => __('Shop Sidebar', 'G3'),
+                'name'          => sprintf(__('%s Sidebar', 'G3'), $shop),
                 'id'            => 'shop',
-                'description'   => __('You can add widgets to shop sidebar.', 'G3'),
+                'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $shop),
                 'before_widget' => '<div id="%1$s" class="widget %2$s">',
                 'after_widget'  => '</div>',
                 'before_title'  => '<h3 class="widget-title">',
@@ -214,9 +220,9 @@ class Product extends Components {
         );
         register_sidebar(
             [
-                'name'          => __('Product Sidebar', 'G3'),
+                'name'          => sprintf(__('%s Sidebar', 'G3'), $product),
                 'id'            => 'product',
-                'description'   => __('You can add widgets to product sidebar.', 'G3'),
+                'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $product),
                 'before_widget' => '<div id="%1$s" class="widget %2$s">',
                 'after_widget'  => '</div>',
                 'before_title'  => '<h3 class="widget-title">',

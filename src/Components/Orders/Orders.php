@@ -25,8 +25,8 @@ class Orders extends Components {
         );
         add_submenu_page(
             'orders',
-            __('All Orders', 'G3'),
-            __('All Orders', 'G3'),
+            sprintf(__('All %s', 'G3'), __('Orders', 'G3')),
+            sprintf(__('All %s', 'G3'), __('Orders', 'G3')),
             'manage_options',
             'orders',
             [$this, 'render'],

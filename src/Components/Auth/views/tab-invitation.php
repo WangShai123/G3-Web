@@ -17,7 +17,7 @@ $table->display();
                     {
                         type: 'number',
                         payload: {
-                            label: '<?php _e('Amount', 'G3'); ?>',
+                            label: '<?php _e('Count', 'G3'); ?>',
                             name: 'amount',
                             value: 1
                         }

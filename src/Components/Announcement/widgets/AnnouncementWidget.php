@@ -38,7 +38,7 @@ class AnnouncementWidget extends WP_Widget {
 
         if (!empty($title)) {
             // echo $args['before_title'] . $title . $args['after_title'];
-            $link = site_url('/pages/announcement');
+            $link = site_url('/announcement');
             echo '<div class="widget-header"><h3>' . $title . '</h3><a href="' . $link . '" class="more-link">' . __('More', 'G3') . Image::icon('arrow-right') . '</a></div>';
         }
         echo '<div class="widget-body">';
@@ -66,7 +66,8 @@ class AnnouncementWidget extends WP_Widget {
                 name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('type'); ?>"><?php _e('Data Type'); ?></label>
+            <label
+                for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
                 <option value="0" <?php //selected($instance['type'], 0); ?>><?php _e('Latest Announcements', 'G3'); ?></option>

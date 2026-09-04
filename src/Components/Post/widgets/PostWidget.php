@@ -9,6 +9,8 @@ class PostWidget extends WP_Widget {
     private int    $type;
     private int    $category;
     private string $buildIn;
+    private string $postType;
+    private string $slug;
 
     public function __construct()
     {
@@ -26,6 +28,8 @@ class PostWidget extends WP_Widget {
         $this->category = 0;
         $this->type     = 0;
         $this->buildIn  = get_option(SystemService::SETTING_OPTION_KEY)['posts'] ?? '0';
+        $this->postType = $this->buildIn === '1' ? 'site-post' : 'post';
+        $this->slug     = $this->buildIn === '1' ? 'posts' : 'post';
     }
     public function widget($args, $instance)
     {
@@ -42,7 +46,7 @@ class PostWidget extends WP_Widget {
 
         if (!empty($title)) {
             // echo $args['before_title'] . $title . $args['after_title'];
-            $link = site_url('/pages/post');
+            $link = site_url("/{$this->slug}");
             echo '<div class="widget-header"><h3>' . $title . '</h3><a href="' . $link . '" class="more-link">' . __('More', 'G3') . Image::icon('arrow-right') . '</a></div>';
         }
         echo '<div class="widget-body">';
@@ -68,7 +72,8 @@ class PostWidget extends WP_Widget {
                 name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('type'); ?>"><?php _e('Data Type', 'G3'); ?></label>
+            <label
+                for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
                 <option value="0" <?php selected($type, 0); ?>><?php _e('Latest Posts', 'G3'); ?></option>
@@ -107,7 +112,7 @@ class PostWidget extends WP_Widget {
         $posts = [];
 
         $args = [
-            'post_type'      => $this->buildIn === '1' ? 'site-post' : 'post',
+            'post_type'      => $this->postType,
             'posts_per_page' => $count,
             'order'          => 'DESC',
         ];

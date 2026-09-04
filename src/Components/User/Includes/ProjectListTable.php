@@ -33,9 +33,9 @@ class ProjectListTable extends WP_List_Table {
         return [
             'cb'       => '<input type="checkbox" />',
             'name'     => __('Name'),
-            'duration' => __('Membership Duration', 'G3'),
+            'duration' => sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')),
             'price'    => __('Price', 'G3'),
-            'copy'     => __('Payment Link', 'G3'),
+            'copy'     => sprintf(__('%s %s', 'G3'), __('Payment', 'G3'), __('Link')),
             'action'   => __('Action')
         ];
     }

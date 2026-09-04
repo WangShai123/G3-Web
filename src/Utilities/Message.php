@@ -8,6 +8,11 @@ final class Message {
         return __('Logged in', 'G3');
     }
 
+    public static function registrationSuccess(): string
+    {
+        return __('Registration successful', 'G3');
+    }
+
     public static function bindSuccess(): string
     {
         return __('Bound', 'G3');

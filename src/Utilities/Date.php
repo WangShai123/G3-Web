@@ -22,23 +22,38 @@ final class Date {
         $timeDiff = current_time('timestamp') - $timestamp;
 
         return match (true) {
+            // 1 分钟内
             $timeDiff < 60      => \sprintf(
                 _n('%s second ago', '%s seconds ago', $timeDiff, 'G3'),
                 $timeDiff
             ),
+            // 1 小时内
             $timeDiff < 3600    => \sprintf(
                 _n('%s minute ago', '%s minutes ago', intdiv($timeDiff, 60), 'G3'),
                 intdiv($timeDiff, 60)
             ),
+            // 1 天内
             $timeDiff < 86400   => \sprintf(
                 _n('%s hour ago', '%s hours ago', intdiv($timeDiff, 3600), 'G3'),
                 intdiv($timeDiff, 3600)
             ),
+            // 1 月内（30天）
             $timeDiff < 2592000 => \sprintf(
                 _n('%s day ago', '%s days ago', intdiv($timeDiff, 86400), 'G3'),
                 intdiv($timeDiff, 86400)
             ),
-            default             => wp_date(get_option('date_format'), $timestamp),
+
+            // 3 月内（90天）
+            // $timeDiff < 7776000 => \sprintf(
+            //     _n('%s day ago', '%s days ago', intdiv($timeDiff, 86400), 'G3'),
+            //     intdiv($timeDiff, 86400)
+            // ),
+
+            // 1 年内（365天）
+            // $timeDiff < 31536000 => \sprintf(
+            // ),
+
+            default             => self::dateTime($timestamp),
         };
     }
 

@@ -44,7 +44,8 @@ class Developer extends Components {
             'adminBar'        => '0',
             'emoji'           => '0',
             'wpHead'          => '1',
-            'gutenberg'       => '0',
+            // 'gutenberg'       => '0',
+            'editor'          => '0',
             'adminTitle'      => '0',
             'adminLogo'       => '0',
             'toolsPage'       => '1',
@@ -90,15 +91,20 @@ class Developer extends Components {
                 ->switch('wpAutoUpdate', __('WordPress Auto Update', 'G3'))
                 ->switch('wpCron', 'WP Cron')
                 ->switch('translationsApi', __('Translations API', 'G3'))
-                ->switch('themeEditor', __('Theme Editor', 'G3'))
-                ->switch('pluginEditor', __('Plugin Editor', 'G3'))
+                ->switch('themeEditor', sprintf(__('%s Editor', 'G3'), __('Themes')))
+                ->switch('pluginEditor', sprintf(__('%s Editor', 'G3'), __('Plugins')))
                 ->switch('siteHealth', __('Site Health', 'G3'))
                 ->switch('themeCustomize', __('Theme Customize', 'G3'))
                 ->switch('blockPatterns', __('Block Patterns', 'G3'))
                 ->switch('helpLink', __('Help Link', 'G3'))
                 ->switch('adminBar', __('Admin Bar', 'G3'))
                 ->switch('emoji', 'Emoji')
-                ->switch('gutenberg', 'Gutenberg')
+                // ->switch('gutenberg', 'Gutenberg')
+                ->select('editor', __('Editor', 'G3'), [
+                    '0' => 'TinyMCE',
+                    '1' => __('Gutenberg'),
+                    '2' => 'G3-' . __('Editor'),
+                ])
                 ->switch('adminTitle', 'WP ' . __('Title'))
                 ->switch('adminLogo', 'WP Logo')
                 ->switch('themeInstall', __('Theme') . ' ' . __('Install'))
@@ -224,6 +230,7 @@ class Developer extends Components {
         $this->filter([
             'single_template'   => [[$this->template, 'singleTemplate'], 10, 3],
             'category_template' => [[$this->template, 'categoryTemplate'], 10, 3],
+            'archive_template'  => [[$this->template, 'archiveTemplate'], 10, 3],
             '404_template'      => [[$this->template, 'notFoundTemplate'], 10, 3],
 
             'map_meta_cap'      => [[$this, 'themeCustomizeHandle'], 20, 4],
@@ -749,7 +756,8 @@ class Developer extends Components {
     protected function scripts(): void
     {
         $option = $this->option();
-        if (($option['gutenberg'] ?? '0') === '0') {
+        // if (($option['gutenberg'] ?? '0') === '0')
+        if (($option['editor'] ?? '0') !== '1') {
             /** Remove Gutenberg styles */
             wp_dequeue_style('wp-block-library');
             /** Remove Gutenberg theme styles */
@@ -761,7 +769,8 @@ class Developer extends Components {
     private function gutenbergInAdmin(): void
     {
         $option = $this->option();
-        if (($option['gutenberg'] ?? '0') === '0') {
+        // if (($option['gutenberg'] ?? '0') === '0')
+        if (($option['editor'] ?? '0') !== '1') {
             remove_theme_support('widgets-block-editor');
             /** Disable Gutenberg editor for all posts */
             add_filter('use_block_editor_for_post', '__return_false');
@@ -869,7 +878,7 @@ class Developer extends Components {
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="g3_code"><?php echo esc_html(__('G3 License Code', 'G3')); ?></label>
+                            <label for="g3_code"><?php echo 'G3 ' . __('License Code', 'G3'); ?></label>
                         </th>
                         <td>
                             <input type="text" id="g3_code" name="g3_code" value=""

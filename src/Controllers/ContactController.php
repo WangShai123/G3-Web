@@ -63,7 +63,7 @@ class ContactController extends Controller {
         $formOption = get_option(FormService::FORM_OPTION_KEY, []);
         $notify     = $formOption['email'] ?? '0';
         if ($notify === '1') {
-            $contactH3 = __('User Profile', 'G3');
+            $contactH3 = sprintf(__('%s %s', 'G3'), __('User'), __('Profile', 'G3'));
             $name      = __('Name') . ': ' . $data['name'];
             $contentH3 = __('Details') . ': ';
             $content   = $data['content'];

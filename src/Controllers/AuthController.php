@@ -196,7 +196,7 @@ class AuthController extends Controller {
         if (is_user_logged_in()) {
             return new WP_Error(
                 'already_logged_in',
-                __('You are already logged in.', 'G3'),
+                __('You are logged in already. No need to register again!'),
                 ['status' => 409]
             );
         }
@@ -204,7 +204,7 @@ class AuthController extends Controller {
         if (!get_option('users_can_register')) {
             return new WP_Error(
                 'registration_disabled',
-                __('User registration is currently disabled.', 'G3'),
+                __('User registration has been disabled.'),
                 ['status' => 403]
             );
         }
@@ -218,7 +218,7 @@ class AuthController extends Controller {
         if ($username === '' || !validate_username($username)) {
             return new WP_Error(
                 'invalid_username',
-                __('Invalid username.', 'G3'),
+                __('This username is invalid because it uses illegal characters. Please enter a valid username.'),
                 ['status' => 422]
             );
         }
@@ -226,7 +226,7 @@ class AuthController extends Controller {
         if (!is_email($email)) {
             return new WP_Error(
                 'invalid_email',
-                __('Invalid email address.', 'G3'),
+                __('Invalid email address.'),
                 ['status' => 422]
             );
         }
@@ -234,7 +234,7 @@ class AuthController extends Controller {
         if (username_exists($username)) {
             return new WP_Error(
                 'username_exists',
-                __('This username is already registered.', 'G3'),
+                __('Sorry, that username already exists!'),
                 ['status' => 409]
             );
         }
@@ -242,7 +242,7 @@ class AuthController extends Controller {
         if (email_exists($email)) {
             return new WP_Error(
                 'email_exists',
-                __('This email address is already registered.', 'G3'),
+                __('Sorry, that email already exists!'),
                 ['status' => 409]
             );
         }
@@ -266,7 +266,7 @@ class AuthController extends Controller {
         return rest_ensure_response([
             'success' => true,
             'code'    => 200,
-            'message' => __('Registration successful.', 'G3'),
+            'message' => Message::registrationSuccess(),
             'data'    => [
                 'redirect' => home_url('/'),
             ],

@@ -31,7 +31,7 @@ $table->display();
                 {
                     type: 'number',
                     payload: {
-                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        label: '<?php echo sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')); ?>',
                         name: 'duration',
                         required: true
                     }
@@ -129,7 +129,7 @@ $table->display();
                 {
                     type: 'number',
                     payload: {
-                        label: '<?php _e('Membership Duration', 'G3'); ?>',
+                        label: '<?php echo sprintf(__('%s %s', 'G3'), __('Membership', 'G3'), __('Duration', 'G3')); ?>',
                         name: 'duration',
                         value: t.data('duration'),
                         required: true
