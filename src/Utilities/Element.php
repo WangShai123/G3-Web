@@ -3,6 +3,7 @@ namespace JEALER\G3\Utilities;
 use JEALER\G3\Utilities\Frontend;
 
 final class Element {
+
     /**
      * Generate a tab navigation
      * 
@@ -705,5 +706,10 @@ HTML;
 </div>
 HTML;
         return $result;
+    }
+
+    public static function description(string $message): string
+    {
+        return "<p class='description'>$message</p>";
     }
 }

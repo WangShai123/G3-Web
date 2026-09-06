@@ -76,7 +76,9 @@ class PostWidget extends WP_Widget {
                 for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
-                <option value="0" <?php selected($type, 0); ?>><?php _e('Latest Posts', 'G3'); ?></option>
+                <option value="0" <?php selected($type, 0); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('Latest', 'G3'), __('Posts')); ?>
+                </option>
             </select>
         </p>
         <p>

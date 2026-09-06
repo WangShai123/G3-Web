@@ -230,6 +230,7 @@ class Developer extends Components {
         $this->filter([
             'single_template'   => [[$this->template, 'singleTemplate'], 10, 3],
             'category_template' => [[$this->template, 'categoryTemplate'], 10, 3],
+            'tag_template'      => [[$this->template, 'tagTemplate'], 10, 3],
             'archive_template'  => [[$this->template, 'archiveTemplate'], 10, 3],
             '404_template'      => [[$this->template, 'notFoundTemplate'], 10, 3],
 
@@ -818,40 +819,49 @@ class Developer extends Components {
     }
     public function formHandler(): void
     {
-        $current_notice = null;
+        $notice = null;
 
-        if (isset($_POST["submit"]) && isset($_POST["g3_code"])) {
+        if (isset($_POST["submit"]) && isset($_POST["g3_code"]) && isset($_POST["g3_email"]) && is_admin()) {
+
             if (
                 !isset($_POST["g3_license_nonce"]) ||
                 !wp_verify_nonce($_POST["g3_license_nonce"], "g3_license_verify")
             ) {
-                $current_notice = [
+                $notice = [
                     "type"    => "error",
-                    "message" => __("Security check failed. Please try again.", "G3")
+                    "message" => sprintf(__('%s %s', 'G3'), __('Security check failed.'), __('Please try again.'))
                 ];
             } else {
-                $code = sanitize_text_field($_POST["g3_code"]);
-                if (empty($code)) {
-                    $current_notice = [
+                $code  = sanitize_text_field($_POST["g3_code"]);
+                $email = sanitize_text_field($_POST["g3_email"]);
+
+                if ($code === '') {
+                    $notice = [
                         "type"    => "error",
                         "message" => __("Please enter a valid license code.", "G3")
                     ];
+                } else if ($email === '' || !is_email($email)) {
+                    $notice = [
+                        "type"    => "error",
+                        "message" => __("Invalid email address.")
+                    ];
                 } else {
-                    $result         = $this->loader->vY($code);
-                    $current_notice = is_wp_error($result) ?
+                    $result = $this->loader->vY($code, $email);
+                    $notice = is_wp_error($result) ?
                         [
                             "type"    => "error",
                             "message" => $result->get_error_message()
                         ] :
                         [
                             "type"     => "success",
-                            "message"  => Message::verified() . ' Redirecting...',
+                            "message"  => Message::verified() . __('.', 'G3') . __('Loading page, please wait.'),
                             "redirect" => true
                         ];
                 }
             }
         }
-        $this->formRender($current_notice);
+
+        $this->formRender($notice);
     }
     private function formRender($notice = null)
     {
@@ -873,31 +883,51 @@ class Developer extends Components {
                 }
             }
             ?>
-            <form method="post" action="">
-                <?php wp_nonce_field('g3_license_verify', 'g3_license_nonce'); ?>
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">
-                            <label for="g3_code"><?php echo 'G3 ' . __('License Code', 'G3'); ?></label>
-                        </th>
-                        <td>
-                            <input type="text" id="g3_code" name="g3_code" value=""
-                                placeholder="<?php echo 'G3-XXXX-XXXX-XXXX-XXXX'; ?>"
-                                style="text-transform: uppercase; letter-spacing: 2px; font-family: monospace; min-width: 300px;"
-                                required>
-                            <p class="description">
-                                <?php
-                                echo sprintf(
+            <div class="j-card" style="max-width: 440px;">
+                <div class="card-header">
+                    <span class="header-title">
+                        <?php echo __('Verify License', 'G3'); ?>
+                    </span>
+                </div>
+                <form method="post" action="" class="j-form is-vertical is-item-vertical card-content">
+                    <?php wp_nonce_field('g3_license_verify', 'g3_license_nonce'); ?>
+                    <fieldset class="form-field">
+                        <label for="g3_code" class="field-legend is-required">
+                            <?php echo __('License Code', 'G3'); ?>
+                        </label>
+                        <div class="field-control">
+                            <input type="text" class="j-input is-lg" required id="g3_code" name="g3_code" style="width: 100%;"
+                                minlength="16">
+                            <div class="help-block">
+                                <?php echo sprintf(
                                     __('Please enter your G3 license code to activate G3 Web.<br>No License? Click <a href="%s" target="_blank">HERE</a> to get one!', 'G3'),
-                                    esc_url('https://www.jealer.com/G3-Web/license/')
-                                ) . '<br>test: G3-TEST-CODE-DEMO-0001';
-                                ?>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-                <?php submit_button(__('Verify License', 'G3'), 'primary', 'submit'); ?>
-            </form>
+                                    'https://www.jealer.com/G3-Web/license/'
+                                ) . '<br>test: G3-TEST-CODE-DEMO-0001'; ?>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-field">
+                        <label for="g3_email" class="field-legend is-required">
+                            <?php echo sprintf(__('%s %s', 'G3'), __('Register'), __('Email')); ?>
+                        </label>
+                        <div class="field-control">
+                            <input type="email" class="j-input is-lg" required id="g3_email" name="g3_email"
+                                style="width: 100%;">
+                        </div>
+                    </fieldset>
+
+                    <div class="form-buttons" data-field-buttons="" style="justify-content: flex-start;">
+                        <button type="submit" class="j-button is-primary is-md" data-action="submit" id="submit"
+                            name="submit"><?php echo __('Verify License', 'G3'); ?></button>
+                        <button type="reset" class="j-button is-ghost is-md" data-action="reset">
+                            <?php echo __('Reset', 'G3'); ?>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
         </div>
         <?php
     }

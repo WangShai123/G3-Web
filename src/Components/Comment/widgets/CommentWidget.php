@@ -70,26 +70,32 @@ class CommentWidget extends WP_Widget {
                 name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('from'); ?>"><?php _e('Data Source'); ?></label>
+            <label for="<?php echo $this->get_field_id('from'); ?>">
+                <?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Source', 'G3')); ?>
+            </label>
             <select class="widefat" id="<?php echo $this->get_field_id('from'); ?>"
                 name="<?php echo $this->get_field_name('from'); ?>">
-                <option value="0" <?php selected($from, 0); ?>><?php echo sprintf(__('All %s', 'G3'), __('Comments', 'G3')); ?>
+                <option value="0" <?php selected($from, 0); ?>><?php echo sprintf(__('All %s', 'G3'), __('Comments')); ?>
                 </option>
-                <option value="1" <?php selected($from, 1); ?>><?php _e('Post Comments', 'G3'); ?></option>
-                <option value="2" <?php selected($from, 2); ?>><?php _e('Page Comments', 'G3'); ?></option>
+                <option value="1" <?php selected($from, 1); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('Post'), __('Comments')); ?>
+                </option>
+                <option value="2" <?php selected($from, 2); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('Page'), __('Comments')); ?>
+                </option>
                 <?php if ($announcement) : ?>
                     <option value="3" <?php selected($from, 3); ?>>
-                        <?php _e('Announcement Comments', 'G3'); ?>
+                        <?php echo sprintf(__('%s %s', 'G3'), __('Announcement', 'G3'), __('Comments')); ?>
                     </option>
                 <?php endif; ?>
                 <?php if ($news) : ?>
                     <option value="4" <?php selected($from, 4); ?>>
-                        <?php _e('News Comments', 'G3'); ?>
+                        <?php echo sprintf(__('%s %s', 'G3'), __('News', 'G3'), __('Comments')); ?>
                     </option>
                 <?php endif; ?>
                 <?php if ($product) : ?>
                     <option value="5" <?php selected($from, 5); ?>>
-                        <?php _e('Product Comments', 'G3'); ?>
+                        <?php echo sprintf(__('%s %s', 'G3'), __('Product', 'G3'), __('Comments')); ?>
                     </option>
                 <?php endif; ?>
             </select>
@@ -99,17 +105,19 @@ class CommentWidget extends WP_Widget {
                 for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
-                <option value="0" <?php //selected($instance['type'], 0); ?>><?php _e('Latest Comments', 'G3'); ?></option>
+                <option value="0" <?php //selected($instance['type'], 0); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('Latest', 'G3'), __('Comments')); ?>
+                </option>
             </select>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('The Count'); ?></label>
+            <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('Count', 'G3'); ?></label>
             <input type="number" class="widefat" id="<?php echo $this->get_field_id('count'); ?>"
                 name="<?php echo $this->get_field_name('count'); ?>"
                 value="<?php echo !empty($instance['count']) ? $instance['count'] : $this->count; ?>">
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('length'); ?>"><?php _e('Maximum Character Count'); ?></label>
+            <label for="<?php echo $this->get_field_id('length'); ?>"><?php _e('Maximum Character Count', 'G3'); ?></label>
             <input type="number" class="widefat" id="<?php echo $this->get_field_id('length'); ?>"
                 name="<?php echo $this->get_field_name('length'); ?>"
                 value="<?php echo !empty($instance['length']) ? $instance['length'] : $this->length; ?>">

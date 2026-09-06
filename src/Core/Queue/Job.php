@@ -2,20 +2,24 @@
 namespace JEALER\G3\Core\Queue;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\FactoryDefinition;
+use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Services\LogService;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 abstract class Job {
-    protected Container        $container;
+    protected Container       $container;
     protected LoggerInterface $logger;
-    protected                 $dep;
+    protected ?bool           $dep       = null;
 
     public function __construct()
     {
         $this->container = Container::run();
         $this->logger    = $this->resolveLogger();
-        if ($this->dep === null && $this->container->has('loader')) {
+        if ($this->dep === null) {
+            if (!$this->container->has('loader')) {
+                $this->container->setRawDefinition('loader', Helper::class);
+            }
             $this->dep = $this->container->get('loader')->admin();
         }
     }

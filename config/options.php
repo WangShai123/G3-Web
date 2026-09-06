@@ -27,6 +27,7 @@ return [
         'g3_option_rss',
         'g3_option_llm',
         'g3_option_reading',
+        'g3_option_comments',
         'g3_option_form',
         'g3_option_general_login',
         'g3_option_follow_login',

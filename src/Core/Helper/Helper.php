@@ -10,6 +10,7 @@ use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Utilities\Type;
 use WP_Error;
 use DateTime;
 use Exception;
@@ -93,9 +94,10 @@ final class Helper {
     {
         $d = $this->gT();
         if (isset($d['e'])) {
-            $e      = $d['e'];
+            $e      = is_string($d['e']) ? $d['e'] : '';
             $expire = $this->_d($e, $this->t());
-            $expire = wp_date("Y-m-d H:i:s", $expire);
+            if (!is_string($expire) || !$this->vt($expire)) return false;
+            $expire = wp_date("Y-m-d H:i:s", (int) $expire);
             return $expire;
         }
         return false;
@@ -104,16 +106,18 @@ final class Helper {
     {
         $d = $this->gT();
         if (isset($d['a'])) {
-            $a  = $d['a'];
-            $at = $this->_d($a, $this->t());
+            if (!is_numeric($d['a'])) return false;
+            $a = (int) $d['a'];
+            if (!$this->vt((string) $a)) return false;
+            $at = $a;
             $at = wp_date("Y-m-d H:i:s", $at);
             return $at;
         }
         return false;
     }
-    public function vY(string $s): bool|WP_Error
+    public function vY(string $s, string $e): bool|WP_Error
     {
-        $r = $this->send($s);
+        $r = $this->send($s, $e);
         if (is_wp_error($r)) {
             return $r;
         }
@@ -125,11 +129,12 @@ final class Helper {
     }
     private function t(): string
     {
-        return get_transient(SystemService::K) ?: '';
+        return System::Z;
     }
     private function gT(): array
     {
-        return get_transient($this->t()) ?: [];
+        $data = get_transient(SystemService::K);
+        return is_string($data) ? Type::jsonToArray($data) : [];
     }
     private function i(): bool
     {
@@ -140,61 +145,86 @@ final class Helper {
         $d = $this->gT();
         $t = $d['t'] ?? false;
         $e = $d['e'] ?? false;
-        $z = $d['z'] ?? false;
-        if (!$z || !$e || !$t) return false;
+        $a = $d['a'] ?? false;
+        if (!is_string($t) || !is_string($e) || !is_numeric($a)) return false;
         $u  = get_site_url();
-        $_u = $this->_d($t, $z);
-        if ($_u != $u) return false;
-        $_t = $this->_d($e, $z);
-        return $this->vt($_t) && $_t >= time();
+        $_u = $this->_d($t, $this->t());
+        if (!is_string($_u) || $this->nD($_u) !== $this->nD($u)) return false;
+        $_t = $this->_d($e, $this->t());
+        return is_string($_t) && $this->vt($_t) && (int) $_t > time() && $this->cA((int) $a, (int) $_t);
     }
-    private function send(string $code): array|WP_Error
+    private function send(string $c, string $e): array|WP_Error
     {
-        $params   = [
+        $p   = [
             "method"      => "POST",
             "headers"     => [
                 "Content-Type" => "application/json; charset=utf-8"
             ],
             "body"        => wp_json_encode([
                 "target" => SystemService::TARGET,
-                "code"   => $code,
-                "domain" => get_site_url()
+                'data'   => $this->bd($c, $e)
             ]),
             "data_format" => "body",
             "timeout"     => 30
         ];
-        $response = wp_remote_post($this->u(), $params);
-        $message  = json_decode($response['body'], true);
-        return is_wp_error($response) ? new WP_Error(400, $message) : $response;
+        $res = wp_remote_post($this->u(), $p);
+        return is_wp_error($res) ? new WP_Error(400, __('HTTPS request failed.')) : $res;
     }
     private function v(array $r): array|WP_Error
     {
         $rC = wp_remote_retrieve_response_code($r);
         $rB = wp_remote_retrieve_body($r);
+        $f  = 'Failed';
         if ($rC !== 200 || empty($rB)) {
-            $msg = json_decode($rB, true)['message'] ?? 'Failed';
+            $msg = Type::jsonToArray($rB)['message'] ?? $f;
             return new WP_Error(400, $msg);
         }
-        $d = json_decode($rB, true);
-        return (json_last_error() !== JSON_ERROR_NONE) ? new WP_Error(400) : $d;
+        $d = Type::jsonToArray($rB);
+        return empty($d) ? new WP_Error(400, $f) : $d;
+    }
+    private function bd(string $c, string $e): array
+    {
+        return [
+            'code'   => $c,
+            'email'  => $e,
+            "domain" => get_site_url()
+        ];
     }
     private function process(array $d): bool|WP_Error
     {
-        if (!isset($d["code"]) || $d["code"] !== 200) {
-            return new WP_Error(400);
+        if (($d["code"] ?? null) !== 200 || ($d["ok"] ?? false) !== true) {
+            return new WP_Error(400, $d['message'] ?? 'Invalid License');
         }
-        $vD = $d["data"] ?? [];
+
+        $vD = isset($d["data"]) && is_string($d["data"]) ? $this->dD($d["data"]) : [];
         $e  = $vD["e"] ?? false;
         $t  = $vD["t"] ?? false;
-        $z  = $vD["z"] ?? false;
-        if (!$e || !$t || !$z) return new WP_Error(400);
-        $test = set_transient(SystemService::K, $z);
-        $eT   = $this->_d($e, $z);
-        if (!$this->vt($eT) || $eT <= time()) {
-            return new WP_Error(400);
+        $a  = $vD["a"] ?? false;
+        $c  = $vD["c"] ?? false;
+        if (!is_string($e) || !is_string($t) || !is_numeric($a) || !is_array($c) || !$this->vC($c)) {
+            return $this->iE();
         }
-        $rS = $this->gs($eT);
-        return set_transient($z, $vD, $rS);
+
+        $_u = $this->_d($t, $this->t());
+        if (!is_string($_u) || $this->nD($_u) !== $this->nD(get_site_url())) {
+            return $this->iE();
+        }
+
+        $eT = $this->_d($e, $this->t());
+        if (!is_string($eT) || !$this->vt($eT) || (int) $eT <= time()) {
+            return $this->iE();
+        }
+
+        if (!$this->cA((int) $a, (int) $eT)) {
+            return $this->iE();
+        }
+
+        $rS = $this->gs((int) $eT);
+        return $this->sG([
+            't' => $t,
+            'e' => $e,
+            'a' => (int) $a,
+        ], $c, $rS);
     }
     private function gs(int $t): int
     {
@@ -203,10 +233,13 @@ final class Helper {
     }
     private function _d(string $token, string $key): bool|string
     {
-        return openssl_decrypt(base64_decode($token), "aes-256-cbc", $key, 0, str_pad($key, 16, '\0'));
+        $payload = base64_decode($token, true);
+        return is_string($payload) ? openssl_decrypt($payload, "aes-256-cbc", $key, 0, str_pad($key, 16, '\0')) : false;
     }
     private function vt(string $t): bool
     {
+        if ($t === '' || !preg_match('/^\d+$/', $t)) return false;
+
         try {
             $dateTime = new DateTime();
             $dateTime->setTimestamp((int) $t);
@@ -216,9 +249,65 @@ final class Helper {
             return false;
         }
     }
+    private function dD(string $data): array
+    {
+        $json = base64_decode($data, true);
+        return is_string($json) ? Type::jsonToArray($json) : [];
+    }
+    private function vC(array $components): bool
+    {
+        if ($components === [] || !array_is_list($components)) return false;
+        foreach ($components as $component) {
+            if (!is_string($component) || trim($component) === '') return false;
+        }
+        return true;
+    }
+    private function cA(int $a, int $expire): bool
+    {
+        return $a > 0 && $this->vt((string) $a) && $a <= $expire;
+    }
+    private function nD(string $domain): string
+    {
+        return rtrim(trim($domain), '/');
+    }
+    private function c(): string
+    {
+        return SystemService::COMP;
+    }
+    private function sG(array $grant, array $components, int $ttl): bool
+    {
+        if ($ttl <= 0) return false;
+        $components = array_values(array_unique(array_map(
+            static fn(string $component): string => strtolower(trim($component)),
+            $components
+        )));
+        if (!$this->vC($components)) return false;
+
+        $grantSaved      = set_transient(SystemService::K, Type::arrayToJson($grant), $ttl);
+        $componentsSaved = set_transient($this->c(), Type::arrayToJson($components), $ttl);
+        return $grantSaved && $componentsSaved;
+    }
+    private function iE(): WP_Error
+    {
+        return new WP_Error(400, 'Invalid License');
+    }
+    public function component(string $componentName): bool
+    {
+        $data       = get_transient($this->c());
+        $components = is_string($data) ? Type::jsonToArray($data) : [];
+        if (!$this->vC($components)) return false;
+        $componentName = strtolower(trim($componentName));
+        $components    = array_map(static fn(string $component): string => strtolower(trim($component)), $components);
+        return in_array($componentName, $components, true);
+    }
     private function u(): string
     {
-        return $this->container->get(SystemService::class)->endPoint();
+        // 线上请求地址
+        // return $this->container->get(SystemService::class)->endPoint();
+
+        // 本地测试请求地址
+        // @todo: 待删除
+        return 'http://127.0.0.1:3000/api/v1/requestVerify';
     }
     public function admin(): bool
     {
@@ -232,6 +321,7 @@ final class Helper {
     {
         return $this->i();
     }
+
     public function getRewrite(): ?RewriteRouter
     {
         if ($this->rewrite === null && System::themeModeAvailable()) {
@@ -242,6 +332,7 @@ final class Helper {
         }
         return $this->rewrite;
     }
+
     public function getRouter(string $type = 'main'): ?Router
     {
         $routerId = 'router';

@@ -2,20 +2,20 @@
 namespace JEALER\G3\Services;
 use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\System;
+use JEALER\G3\Core\Service\Service;
 
-class LLMService {
+class LLMService extends Service {
     private string $siteUrl;
     private string $llmDir;
     private string $fileName;
     private int    $postsPerType;
-    private string $lastError    = '';
-    public function __construct()
+
+    protected function onInit(): void
     {
         $this->siteUrl      = rtrim(home_url('/'), '/');
         $this->llmDir       = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'llm';
         $this->fileName     = 'llms.txt';
-        $option             = get_option(SystemService::LLM_OPTION_KEY, []);
-        $this->postsPerType = is_array($option) ? (int) ($option['postsPerType'] ?? 2000) : 2000;
+        $this->postsPerType = (int) $this->getOptionKV(SystemService::LLM_OPTION_KEY, 'postsPerType', 2000);
     }
 
     public function handleRequest()
@@ -23,8 +23,7 @@ class LLMService {
         if (get_query_var('g3_var_llm') === 'endpoint') {
             $llms_txt = $this->generateLLMsTxt();
 
-            $option = get_option(SystemService::LLM_OPTION_KEY, []);
-            $v      = is_array($option) ? ($option['manual'] ?? '0') : '0';
+            $v = $this->getOptionKV(SystemService::LLM_OPTION_KEY, 'manual', '0');
             if ($v !== '1') {
                 $test = $this->saveLLMsTxt($llms_txt);
             }
@@ -46,11 +45,12 @@ class LLMService {
         $saved = System::writeFile($file_path, $content);
 
         if ($saved === false) {
-            $this->lastError = sprintf(
-                'Failed to save %s because of file permission issues. Please check the permissions of: %s',
-                $this->fileName,
-                $file_path
-            );
+            $this->logger->error('Failed to save.', [
+                'module'    => 'LLMService',
+                'type'      => 'permission',
+                'file_path' => $file_path,
+                'file_name' => $this->fileName,
+            ]);
         }
 
         return $saved;

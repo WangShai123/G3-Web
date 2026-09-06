@@ -335,35 +335,53 @@ class Post extends Components {
     {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-        $viewCount      = $_POST['g3_views_count'] ?? 0;
-        $likeCount      = $_POST['g3_like_count'] ?? 0;
-        $dislikeCount   = $_POST['g3_dislike_count'] ?? 0;
-        $shareCount     = $_POST['g3_share_count'] ?? 0;
-        $favoriteCount  = $_POST['g3_favorite_count'] ?? 0;
-        $seoTitle       = $_POST['g3_seo_title'] ?? '';
-        $seoDescription = $_POST['g3_seo_description'] ?? '';
-        $seoKeywords    = $_POST['g3_seo_keywords'] ?? '';
-        $gallery        = $_POST['g3_post_gallery'] ?? [];
-        $property       = $_POST['g3_post_property'] ?? [];
+        $request          = wp_unslash($_POST);
+        $data             = [];
+        $contentSubmitted = array_key_exists('content', $request)
+            || array_key_exists('post_content', $request);
+
+        $integerFields = [
+            'g3_views_count'    => 'view_count',
+            'g3_like_count'     => 'like_count',
+            'g3_dislike_count'  => 'dislike_count',
+            'g3_share_count'    => 'share_count',
+            'g3_favorite_count' => 'favorite_count',
+        ];
+        foreach ($integerFields as $requestKey => $field) {
+            if (array_key_exists($requestKey, $request) && is_scalar($request[$requestKey])) {
+                $data[$field] = (int) $request[$requestKey];
+            }
+        }
+
+        $textFields = [
+            'g3_seo_title'       => 'seo_title',
+            'g3_seo_description' => 'seo_description',
+            'g3_seo_keywords'    => 'seo_keywords',
+        ];
+        foreach ($textFields as $requestKey => $field) {
+            if (array_key_exists($requestKey, $request) && is_scalar($request[$requestKey])) {
+                $data[$field] = (string) $request[$requestKey];
+            }
+        }
+
+        $arrayFields = [
+            'g3_post_gallery'  => 'gallery',
+            'g3_post_property' => 'property',
+        ];
+        foreach ($arrayFields as $requestKey => $field) {
+            if (array_key_exists($requestKey, $request) && is_array($request[$requestKey])) {
+                $data[$field] = array_values($request[$requestKey]);
+            }
+        }
+
+        if (!$contentSubmitted && !$data) return;
 
         /** @var PostService $postService */
         $postService = $this->container->get(PostService::class);
-        $readingTime = $postService->calculateReadingTime($post->post_content);
-        $ext         = [];
-        $test        = $postService->setExtra($postId, [
-            'view_count'      => (int) $viewCount,
-            'like_count'      => (int) $likeCount,
-            'dislike_count'   => (int) $dislikeCount,
-            'share_count'     => (int) $shareCount,
-            'favorite_count'  => (int) $favoriteCount,
-            'reading_time'    => $readingTime,
-            'seo_title'       => $seoTitle,
-            'seo_description' => $seoDescription,
-            'seo_keywords'    => $seoKeywords,
-            'gallery'         => array_values($gallery),
-            'property'        => array_values($property),
-            'ext'             => array_values($ext)
-        ]);
+        if ($contentSubmitted) {
+            $data['reading_time'] = $postService->calculateReadingTime($post->post_content);
+        }
+        $postService->setExtra($postId, $data);
     }
 
     public function flushMenuCache($menuId = null): void
@@ -626,7 +644,8 @@ HTML;
     protected function sidebar(): void
     {
         $homepage = __('Homepage');
-        $archive  = __('Archives');
+        $categor  = __('Archives');
+        $category = __('Categories');
         $search   = __('Search');
         $post     = __('Post');
         $page     = __('Page');
@@ -641,9 +660,18 @@ HTML;
             'after_title'   => '</h3>',
         ]);
         register_sidebar([
-            'name'          => sprintf(__('%s Sidebar', 'G3'), $archive),
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $categor),
             'id'            => 'archive',
-            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $archive),
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $categor),
+            'before_widget' => '<div id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h3 class="widget-title">',
+            'after_title'   => '</h3>',
+        ]);
+        register_sidebar([
+            'name'          => sprintf(__('%s Sidebar', 'G3'), $category),
+            'id'            => 'category',
+            'description'   => sprintf(__('You can add widgets to %s sidebar.', 'G3'), $category),
             'before_widget' => '<div id="%1$s" class="widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widget-title">',

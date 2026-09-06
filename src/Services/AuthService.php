@@ -2,6 +2,7 @@
 namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
 use JEALER\G3\Core\Container\Container;
+use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Option;
@@ -11,7 +12,7 @@ use WP_Error;
 use Exception;
 use wpdb;
 
-class AuthService {
+class AuthService extends Service {
     const string INVITE_CODE_TABLE = 'g3_invite_codes';
     // General Auth Option Key
     const OPTION_KEY = 'g3_option_auth';
@@ -27,15 +28,12 @@ class AuthService {
     public Application $wechatOA;
     // Wechat OA Service
     public WechatOAService $wechatOAService;
-    private wpdb           $wpdb;
     private string         $fullInviteCodesTable;
 
-    public function __construct()
+    protected function onInit(): void
     {
-        $this->wechatOAService = WechatOAService::run();
-        global $wpdb;
-        $this->wpdb                 = $wpdb;
-        $this->fullInviteCodesTable = $wpdb->prefix . self::INVITE_CODE_TABLE;
+        $this->wechatOAService      = WechatOAService::run();
+        $this->fullInviteCodesTable = $this->wpdb->prefix . self::INVITE_CODE_TABLE;
     }
 
     public static function optionDefaults(): array
@@ -411,7 +409,7 @@ class AuthService {
             return false;
         }
 
-        $expireDays    = (int) (get_option(self::OPTION_KEY)['expire'] ?? '7');
+        $expireDays    = (int) $this->getOptionKV(self::OPTION_KEY, 'expire', '7');
         $expireSeconds = $expireDays * 86400;
 
         $now = gmdate('Y-m-d H:i:s');
@@ -434,12 +432,9 @@ class AuthService {
         }
     }
 
-
-
     public function invitationCodeEnabled(): bool
     {
-        $option = get_option(self::OPTION_KEY, []);
-        return is_array($option) && ($option['code'] ?? '') === '1';
+        return $this->getOptionKV(self::OPTION_KEY, 'code', '') === '1';
     }
 
     public function invitationCodeTableList(array $params): array

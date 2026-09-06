@@ -302,6 +302,8 @@ final class System {
         return $safeLocales[$locale] ?? null;
     }
 
+    const Z = '5ebec86f4404d2c1';
+
     /**
      * Parse a vanilla-storage cookie record.
      * 

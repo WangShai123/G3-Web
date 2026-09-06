@@ -1045,8 +1045,7 @@ class PostService extends Service {
         $siteName = get_bloginfo('name');
 
         if (is_home() || is_front_page()) {
-            $seo      = get_option(SystemService::SEO_OPTION_KEY, []);
-            $keywords = $seo['keywords'] ?? '';
+            $keywords = $this->getOptionKV(SystemService::SEO_OPTION_KEY, 'keywords', '');
             $keywords = empty($keywords) ? $siteName : $keywords;
         } elseif (is_singular()) {
             $keywords = $this->getExtra(get_queried_object_id())['seo_keywords'] ?? '';
@@ -1104,8 +1103,7 @@ class PostService extends Service {
     }
     public function isOaLogin(): bool
     {
-        $security = get_option(SystemService::SECURITY_OPTION_KEY, []);
-        $v        = is_array($security) ? ($security['url'] ?? '') : '';
+        $v = $this->getOptionKV(SystemService::SECURITY_OPTION_KEY, 'url', '');
         return get_query_var('custom_admin_login') === $v;
     }
 

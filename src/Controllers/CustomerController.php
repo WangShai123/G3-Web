@@ -37,10 +37,12 @@ class CustomerController extends Controller {
     #[Schema([
         'type'       => 'object',
         'properties' => [
-            'subject' => ['type' => 'string', 'maxLength' => 255],
-            'content' => ['type' => 'string', 'maxLength' => 5000],
-            'source'  => ['type' => 'string', 'maxLength' => 32],
-            'meta'    => ['type' => 'object'],
+            'subject'                 => ['type' => 'string', 'maxLength' => 255],
+            'content'                 => ['type' => 'string', 'maxLength' => 5000],
+            'source'                  => ['type' => 'string', 'maxLength' => 32],
+            'meta'                    => ['type' => 'object'],
+            'force_new'               => ['type' => 'boolean'],
+            'exclude_conversation_id' => ['type' => 'integer'],
         ]
     ])]
     public function start(WP_REST_Request $request): WP_Error|WP_REST_Response
@@ -131,6 +133,8 @@ class CustomerController extends Controller {
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminConversations(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
+        sleep(1);
+
         $result = $this->service->listConversations($request->get_json_params() ?: []);
         return is_wp_error($result) ? $result : $this->ok($result);
     }
@@ -169,6 +173,16 @@ class CustomerController extends Controller {
 
     #[RestRouter(namespace: 'api/admin/customer', route: 'v1/conversations/update', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
+    #[Schema([
+        'type'       => 'object',
+        'required'   => ['conversation_id'],
+        'properties' => [
+            'conversation_id' => ['type' => 'integer'],
+            'subject'         => ['type' => 'string', 'maxLength' => 255],
+            'status'          => ['type' => 'string', 'enum' => ['pending', 'handling', 'closed']],
+            'close_reason'    => ['type' => 'string', 'enum' => ['agent', 'timeout', 'system']],
+        ],
+    ])]
     public function adminUpdate(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data = $request->get_json_params() ?: [];

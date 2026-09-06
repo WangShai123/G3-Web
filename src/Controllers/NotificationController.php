@@ -17,7 +17,8 @@ class NotificationController extends Controller {
     #[Middleware(RateLimitMiddleware::class, [120, 60])]
     public function stream(WP_REST_Request $request): void
     {
-        $data = $request->get_json_params() ?: [];
-        $this->service->stream((string) ($data['token'] ?? ''));
+        $data        = $request->get_json_params() ?: [];
+        $lastEventId = max(0, (int) ($request->get_header('last-event-id') ?: ($data['last_event_id'] ?? 0)));
+        $this->service->stream((string) ($data['token'] ?? ''), $lastEventId);
     }
 }

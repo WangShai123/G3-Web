@@ -13,6 +13,7 @@ class SystemService extends Service {
     const SEO_OPTION_KEY = 'g3_option_seo';
     // rss option key
     const RSS_OPTION_KEY = 'g3_option_rss';
+    const COMP           = 'Y29tcG9uZW50';
     // llm option key
     const LLM_OPTION_KEY = 'g3_option_llm';
     // form option key
@@ -20,13 +21,13 @@ class SystemService extends Service {
     // dev setting option key
     const SETTING_OPTION_KEY = 'g3_option_dev_setting';
     const K                  = 'wPxK91qZ';
-    const TARGET             = 'g3Verify';
     // securities option key
     const SECURITY_OPTION_KEY = 'g3_option_securities';
     // performance option key
     const PERFORMANCE_OPTION_KEY = 'g3_option_performance';
     // theme option key
     const THEME_OPTION_KEY = 'g3_option_themes';
+    const TARGET           = 'g3Verify';
     // wechat open platform option key
     const OPEN_WECHAT_OA_KEY = 'g3_option_op_wechatOA';
     const THEME_COOKIE       = 'ui-theme';

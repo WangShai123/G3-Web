@@ -2,12 +2,9 @@
 namespace JEALER\G3\Services;
 use EasyWeChat\OfficialAccount\Application;
 use EasyWeChat\Kernel\Message;
-use JEALER\G3\Core\Container\Container;
-use JEALER\G3\Core\Container\TagManager;
-use JEALER\G3\Service;
+use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
-use JEALER\G3\Services\PostService;
 use JEALER\G3\Utilities\Message as Lang;
 use JEALER\G3\Utilities\Type;
 use WP_Error;
@@ -15,7 +12,7 @@ use Exception;
 use Closure;
 use WP_User_Query;
 
-class WechatOAService {
+class WechatOAService extends Service {
 
     /**
      * Menu Table Name
@@ -81,19 +78,13 @@ class WechatOAService {
 
     public array $option;
 
-    public function __construct()
+    protected function onInit(): void
     {
-        $this->init();
-    }
+        if ($this->x()) return;
 
-    private function init(): void
-    {
-        $x = Container::run()->getServicesByTag('raven')['loader']->x();
-        if ($x) return;
-
-        $option        = get_option(self::OPTION_KEY, []);
-        $this->option  = is_array($option) ? $option : [];
-        $serviceEnable = $this->option['service'] ?? false;
+        // $this->option  = $this->getArrayOption(self::OPTION_KEY);
+        // $serviceEnable = $this->option['service'] ?? false;
+        $serviceEnable = $this->getOptionKV(self::OPTION_KEY, 'service', false);
 
         if ($serviceEnable) {
             $this->app = new Application($this->config());
@@ -140,8 +131,7 @@ class WechatOAService {
 
     private function config(): array
     {
-        $data = get_option(SystemService::OPEN_WECHAT_OA_KEY, []);
-        $data = is_array($data) ? $data : [];
+        $data = $this->getArrayOption(SystemService::OPEN_WECHAT_OA_KEY);
 
         $result = [
             'app_id' => $data['appId'] ?? '',
@@ -731,10 +721,8 @@ class WechatOAService {
 
     private function handleLoginEvent(string $openid, string $hash)
     {
-        /**
-         * @var AuthService
-         */
-        $authService = Container::run()->get(AuthService::class);
+        /** @var AuthService */
+        $authService = $this->container->get(AuthService::class);
         $authService->handlePostSubscribeLogin($openid, $hash);
         return Lang::loginSuccess();
     }
@@ -751,9 +739,9 @@ class WechatOAService {
     {
         $eventKey = $message->EventKey ?? '';
 
-        $event       = get_option(self::EVENT_OPTION_KEY, []);
-        $event       = is_array($event) ? $event : [];
-        $latestPosts = $event['latestPosts'] ?? 'n';
+        // $event       = $this->getArrayOption(self::EVENT_OPTION_KEY);
+        // $latestPosts = $event['latestPosts'] ?? 'n';
+        $latestPosts = $this->getOptionKV(self::EVENT_OPTION_KEY, 'latestPosts', 'n');
 
         return match ($eventKey) {
             $latestPosts => $this->getLatestPosts(),
@@ -1702,10 +1690,7 @@ class WechatOAService {
     {
         $valid = $this->option['length'] ?? false;
         if ($valid && mb_strlen($keyword, 'UTF-8') > $valid) {
-            return sprintf(
-                __('Keyword too long, max %s characters.', 'G3'),
-                $valid
-            );
+            return __('Maximum Character Count', 'G3') . ': ' . $valid;
         }
         return true;
     }
@@ -1727,9 +1712,9 @@ class WechatOAService {
             'order'       => 'DESC'
         ]);
 
-        $articles     = [];
-        $general      = get_option(SystemService::OPTION_KEY, []);
-        $defaultCover = is_array($general) ? ($general['cover'] ?? '') : '';
+        $articles = [];
+
+        $defaultCover = $this->getOptionKV(SystemService::OPTION_KEY, 'cover', '');
 
         foreach ($posts as $post) {
             $thumbnail = get_the_post_thumbnail_url($post->ID, 'medium');
@@ -1827,7 +1812,10 @@ class WechatOAService {
             ];
         }
         catch (Exception $e) {
-            error_log('Failed to create Subscribe Login QR code: ' . $e->getMessage());
+            $this->logger->error('Failed to create Subscribe Login QR code.', [
+                'module' => self::class,
+                'error'  => $e->getMessage()
+            ]);
             return new WP_Error('qrcode_error', $e->getMessage());
         }
     }
@@ -1849,7 +1837,8 @@ class WechatOAService {
         }
 
         // Bind openId to user
-        $authService = Container::run()->get(AuthService::class);
+        /** @var AuthService */
+        $authService = $this->container->get(AuthService::class);
         $result      = $authService->bindOpenIdToUser((int) $userId, $openid);
 
         if (is_wp_error($result)) {

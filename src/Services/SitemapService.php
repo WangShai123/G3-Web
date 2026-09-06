@@ -1,20 +1,23 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\System;
 use WP_User_Query;
 
-class SitemapService {
+class SitemapService extends Service {
     private const PER_PAGE = 4000;
     private string $siteUrl;
     private string $sitemapDir;
     private string $sitemapUrl;
-    public function __construct()
+
+    protected function onInit(): void
     {
         $this->siteUrl    = rtrim(home_url('/'), '/');
         $this->sitemapDir = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'sitemap';
         $this->sitemapUrl = $this->siteUrl . '/sitemap';
     }
+
     public function handleRequest(): void
     {
         if (!$this->enabled() || get_query_var('g3_var_sitemap') !== 'endpoint') {
@@ -31,13 +34,10 @@ class SitemapService {
         echo $xml;
         exit;
     }
+
     private function enabled(): bool
     {
-        $option = get_option(SystemService::SECURITY_OPTION_KEY, [
-            'sitemap' => '1',
-        ]);
-        $v      = $option['sitemap'] ?? '1';
-        return (string) $v === '1';
+        return get_option(SystemService::SECURITY_OPTION_KEY)['sitemap'] ?? '1' === '1';
     }
     private function requestPage(): int
     {
@@ -47,6 +47,7 @@ class SitemapService {
         }
         return 1;
     }
+
     public function writeStaticFiles(): void
     {
         if (!System::ensureDirectory($this->sitemapDir)) {

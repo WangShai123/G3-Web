@@ -326,8 +326,8 @@ class COSService extends Service {
 
     private function logError(Throwable $e): void
     {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[G3 COS] ' . $e->getMessage());
-        }
+        $this->logger->error('G3 COS Error.', [
+            'error' => $e->getMessage(),
+        ]);
     }
 }

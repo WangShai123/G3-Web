@@ -3,6 +3,8 @@ namespace JEALER\G3\Jobs;
 use JEALER\G3\Core\Queue\Queue;
 use JEALER\G3\Core\Queue\Job;
 use JEALER\G3\Services\MailerService;
+use JEALER\G3\Utilities\Date;
+use JEALER\G3\Utilities\Type;
 use Throwable;
 use Exception;
 
@@ -10,9 +12,6 @@ class EmailJob extends Job {
 
     public function handle(array $data): void
     {
-        $this->logger->debug('Email job started.', ['module' => 'email']);
-
-        // 验证必需的邮件数据
         $this->validateEmailData($data);
 
         $to          = $data['to'];
@@ -20,12 +19,6 @@ class EmailJob extends Job {
         $messages    = $data['messages'];
         $headers     = $data['headers'] ?? [];
         $attachments = $data['attachments'] ?? [];
-
-        $this->logger->info('Email send started.', [
-            'module'  => 'email',
-            'to'      => $to,
-            'subject' => $subject,
-        ]);
 
         try {
             // 处理邮件头
@@ -37,17 +30,9 @@ class EmailJob extends Job {
             // 发送邮件
             $result = MailerService::send($to, $subject, $messages, $processedAttachments, $processedHeaders);
 
-            $this->logger->debug('Email send result received.', [
-                'module' => 'email',
-                'result' => $result,
-            ]);
-
             if ($result !== true) {
                 throw new Exception('Failed to send email');
             }
-
-            $this->logEmailSent($data);
-
         }
         catch (Exception $e) {
             $this->logger->error('Email send threw an exception.', [
@@ -64,33 +49,37 @@ class EmailJob extends Job {
      * 处理任务失败
      * 
      * @param array $data 邮件数据
-     * @param Throwable $exception 异常
+     * @param Throwable $notifyMes 异常
      * @return void
      */
-    public function failed(array $data, Throwable $exception): void
+    public function failed(array $data, Throwable $notifyMes): void
     {
         $to      = $data['to'] ?? 'unknown';
         $subject = $data['subject'] ?? 'unknown';
 
+        // 记录失败的邮件到数据库（可选）
         $errorMessage = sprintf(
             'Failed to send email to %s with subject "%s": %s',
             $to,
             $subject,
-            $exception->getMessage()
+            $notifyMes->getMessage()
         );
-
-        $this->logger->error($errorMessage, [
-            'module'    => 'email',
-            'to'        => $to,
-            'subject'   => $subject,
-            'exception' => $exception,
-        ]);
-
-        // 记录失败的邮件到数据库（可选）
-        $this->logEmailFailed($data, $exception);
+        $this->logEmailFailed($data, $errorMessage);
 
         // 发送失败通知给管理员（可选）
-        $this->notifyAdminOfFailure($data, $exception);
+        $notifyMessage = sprintf(
+            "An email failed to be delivered:\n\n" .
+            "To: %s\n" .
+            "Subject: %s\n" .
+            "Error: %s\n" .
+            "Time: %s\n\n" .
+            "Please check your email configuration.",
+            $data['to'] ?? 'unknown',
+            $data['subject'] ?? 'unknown',
+            $notifyMes->getMessage(),
+            Date::dateTime(strtotime('now'))
+        );
+        $this->notifyAdminOfFailure($data, $notifyMessage);
     }
 
     /**
@@ -105,13 +94,9 @@ class EmailJob extends Job {
         $required = ['to', 'subject', 'messages'];
 
         foreach ($required as $field) {
-            // if (empty($data[$field])) {
-            //     throw new Exception("Missing required email field: {$field}");
-            // }
             if (empty($data[$field])) {
-                // 获取调用栈信息，找出调用者
+                // 获取调用栈信息
                 $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10);
-
                 // 查找调用者信息
                 $callerInfo = $this->getCallerInfo($backtrace);
 
@@ -122,22 +107,24 @@ class EmailJob extends Job {
                     $callerInfo['line'],
                     $callerInfo['class'] ?? 'unknown',
                     $callerInfo['function'] ?? 'unknown',
-                    json_encode($data, JSON_UNESCAPED_UNICODE)
+                    Type::arrayToJson($data)
                 );
 
                 throw new Exception($errorMessage);
             }
         }
 
-        // 验证邮件地址格式
         if (!is_email($data['to'])) {
             throw new Exception("Invalid email address: {$data['to']}");
         }
 
-        // 验证邮件主题长度
-        if (strlen($data['subject']) > 998) {
-            throw new Exception("Email subject too long (max 998 characters)");
+        if (mb_strlen($data['subject']) > 255) {
+            throw new Exception("Email subject too long (max 255 characters)");
         }
+
+        // 业务警告提醒
+        // if (mb_strlen($data['subject']) > 50) {
+        // }
     }
 
     /**
@@ -189,79 +176,38 @@ class EmailJob extends Job {
         foreach ($attachments as $attachment) {
             if (is_string($attachment) && file_exists($attachment)) {
                 $processedAttachments[] = $attachment;
-            } else {
-                $this->logger->warning('Email attachment not found or invalid.', [
-                    'module'     => 'email',
-                    'attachment' => $attachment,
-                ]);
             }
         }
 
         return $processedAttachments;
     }
 
-    private function logEmailSent(array $data): void
-    {
-        $this->logger->info('Email sent successfully.', [
-            'type'         => 'email',
-            'module'       => 'email',
-            'to'           => $data['to'],
-            'subject'      => $data['subject'],
-            'status'       => 'sent',
-            'message_hash' => md5($data['messages']),
-        ]);
-    }
-
-    private function logEmailFailed(array $data, Throwable $exception): void
+    private function logEmailFailed(array $data, string $errorMessage): void
     {
         $this->logger->error('Email delivery failed.', [
-            'type'      => 'email',
-            'module'    => 'email',
-            'to'        => $data['to'] ?? 'unknown',
-            'subject'   => $data['subject'] ?? 'unknown',
-            'status'    => 'failed',
-            'exception' => $exception,
+            'type'    => 'email',
+            'module'  => 'email',
+            'to'      => $data['to'] ?? 'unknown',
+            'subject' => $data['subject'] ?? 'unknown',
+            'status'  => 'failed',
+            'message' => $errorMessage,
         ]);
     }
 
-    /**
-     * Notify admin of email failure.
-     * 
-     * 通知管理员邮件发送失败。
-     * 
-     * @param array $data
-     * @param Throwable $exception
-     * @return void
-     */
-    private function notifyAdminOfFailure(array $data, Throwable $exception): void
+    private function notifyAdminOfFailure(array $data, string $notifyMessage): void
     {
-        // Get admin email
         $adminEmail = get_option('admin_email');
         if (!$adminEmail) {
             return;
         }
 
         // Avoid infinite loop (if sending email to admin also fails)
-        if (isset($data['is_admin_notification'])) {
-            return;
-        }
+        if (isset($data['is_admin_notification'])) return;
 
-        $subject  = '[' . get_bloginfo('name') . '] Email Delivery Failed';
-        $messages = sprintf(
-            "An email failed to be delivered:\n\n" .
-            "To: %s\n" .
-            "Subject: %s\n" .
-            "Error: %s\n" .
-            "Time: %s\n\n" .
-            "Please check your email configuration.",
-            $data['to'] ?? 'unknown',
-            $data['subject'] ?? 'unknown',
-            $exception->getMessage(),
-            current_time('mysql')
-        );
+        $subject = '[' . get_bloginfo('name') . '] Email Delivery Failed';
 
         // Send notification directly, not through the queue
-        MailerService::send($adminEmail, $subject, $messages);
+        MailerService::send($adminEmail, $subject, $notifyMessage);
     }
 
     /**

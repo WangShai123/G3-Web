@@ -4,14 +4,6 @@ use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Queue\CronSchedules;
 
-/**
- * Loader
- * 
- * 加载器
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class Loader {
 
     public Container $container;

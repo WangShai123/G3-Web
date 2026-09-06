@@ -430,8 +430,7 @@ class ProductService extends Service {
      */
     public static function isCartAvailable()
     {
-        $option = get_option(self::OPTION_KEY, []);
-        return is_array($option) ? ($option['cart'] ?? false) : false;
+        return get_option(self::OPTION_KEY)['cart'] ?? '0' === '1';
     }
 
     /**

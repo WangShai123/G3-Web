@@ -63,9 +63,9 @@ abstract class Components {
      */
     protected array $filterSubscriptions = [];
 
-    private ?array $adminPanelDefinitions = null;
+    private ?array            $adminPanelDefinitions = null;
     protected LoggerInterface $logger;
-    protected wpdb $wpdb;
+    protected wpdb            $wpdb;
 
     public function __construct()
     {
@@ -401,6 +401,11 @@ abstract class Components {
         return ComponentRegistry::run()->has($componentName);
     }
 
+    public function component(): bool
+    {
+        return $this->loader?->component($this->componentName) ?? false;
+    }
+
     public function prepareDataActions()
     {
         if ($this->loader->admin()) $this->ready();
@@ -593,7 +598,8 @@ abstract class Components {
         if ($key === null) {
             return [];
         }
-        $value = $default[$key] ?? [];
-        return get_option($key, $value);
+        $value  = $default[$key] ?? [];
+        $result = get_option($key, $value);
+        return is_array($result) ? $result : [];
     }
 }

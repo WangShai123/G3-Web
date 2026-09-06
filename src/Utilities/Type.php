@@ -123,4 +123,9 @@ final class Type {
         $content = wp_strip_all_tags($content);
         return mb_strimwidth($content, 0, $maxLength, $ellipsis);
     }
+
+    public static function arrayOption(mixed $option): array
+    {
+        return is_array($option) ? $option : [];
+    }
 }

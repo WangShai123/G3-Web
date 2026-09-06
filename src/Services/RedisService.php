@@ -5,8 +5,6 @@ use Redis;
 use Throwable;
 
 class RedisService extends Service {
-    private ?Redis $redis = null;
-
     /**
      * 初始化 Redis 连接
      *
@@ -26,9 +24,9 @@ class RedisService extends Service {
     public function init(int $db = 0, array $config = []): ?Redis
     {
         try {
-            $this->redis = $this->connect($config);
-            $this->redis->select($db);
-            return $this->redis;
+            $redis = $this->connect($config);
+            $redis->select($db);
+            return $redis;
         }
         catch (Throwable) {
             return null;
@@ -45,7 +43,7 @@ class RedisService extends Service {
         $readTimeout   = (float) ($config['read_timeout'] ?? (defined('WP_REDIS_READ_TIMEOUT') ? WP_REDIS_READ_TIMEOUT : 0));
         $password      = $config['password'] ?? (defined('WP_REDIS_PASSWORD') ? WP_REDIS_PASSWORD : null);
 
-        $redis = $this->container->get(Redis::class);
+        $redis = new Redis();
         $redis->connect($host, $port, $timeout, $reserved, $retryInterval, $readTimeout);
         if ($password) {
             $redis->auth($password);

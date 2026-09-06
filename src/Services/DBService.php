@@ -8,7 +8,6 @@ class DBService extends Service {
     const QUEUE_REDIS_DB        = 1;
     const IM_REDIS_DB           = 2;
     const NOTIFICATION_REDIS_DB = 3;
-    const COMMENT_REDIS_DB      = 4;
 
     public function __construct()
     {
@@ -33,8 +32,6 @@ class DBService extends Service {
         $this->initWechatTable($this->wpdb, $charset);
 
         $this->initIMTable($this->wpdb, $charset);
-
-        $this->initNotificationTable($this->wpdb, $charset);
 
         $this->initUtilityTable($this->wpdb, $charset);
     }
@@ -1285,8 +1282,6 @@ class DBService extends Service {
                 `assignee_user_id` BIGINT UNSIGNED DEFAULT NULL,
                 `status` VARCHAR(24) NOT NULL DEFAULT 'pending',
                 `close_reason` VARCHAR(32) DEFAULT NULL,
-                `wrap_lock_mode` VARCHAR(24) NOT NULL DEFAULT 'none',
-                `wrap_lock_until` DATETIME DEFAULT NULL,
                 `first_response_at` DATETIME DEFAULT NULL,
                 `last_customer_msg_at` DATETIME DEFAULT NULL,
                 `last_agent_msg_at` DATETIME DEFAULT NULL,
@@ -1305,7 +1300,6 @@ class DBService extends Service {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
-
         $table = $wpdb->prefix . 'g3_im_participants';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -1315,7 +1309,7 @@ class DBService extends Service {
                 `actor_id` VARCHAR(64) NOT NULL,
                 `user_id` BIGINT UNSIGNED DEFAULT NULL,
                 `role` VARCHAR(24) NOT NULL DEFAULT 'member',
-                `display_name` VARCHAR(120) DEFAULT NULL,
+                `nickname` VARCHAR(120) DEFAULT NULL,
                 `avatar` VARCHAR(255) DEFAULT NULL,
                 `last_read_message_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `last_seen_at` DATETIME DEFAULT NULL,
@@ -1354,26 +1348,6 @@ class DBService extends Service {
                 KEY `idx_msg_type_created` (`msg_type`, `created_at`),
                 KEY `idx_sender` (`sender_type`, `sender_id`),
                 KEY `idx_status` (`status`)
-            ) ENGINE=InnoDB $charset;";
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-        }
-
-        $table = $wpdb->prefix . 'g3_im_events';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `conversation_id` BIGINT UNSIGNED DEFAULT NULL,
-                `event_type` VARCHAR(64) NOT NULL,
-                `message_id` BIGINT UNSIGNED DEFAULT NULL,
-                `actor_type` VARCHAR(24) DEFAULT NULL,
-                `actor_id` VARCHAR(64) DEFAULT NULL,
-                `payload` JSON DEFAULT NULL,
-                `created_at` DATETIME NOT NULL,
-                PRIMARY KEY (`id`),
-                KEY `idx_conversation_id` (`conversation_id`, `id`),
-                KEY `idx_event_type_id` (`event_type`, `id`),
-                KEY `idx_created_at` (`created_at`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -1495,27 +1469,4 @@ class DBService extends Service {
         }
     }
 
-    private function initNotificationTable(wpdb $wpdb, string $charset): void
-    {
-        $table = $wpdb->prefix . 'g3_notifications';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
-            $sql = "CREATE TABLE IF NOT EXISTS `$table` (
-                `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `channel` VARCHAR(120) NOT NULL,
-                `event_type` VARCHAR(64) NOT NULL,
-                `target_type` VARCHAR(32) DEFAULT NULL,
-                `target_id` VARCHAR(64) DEFAULT NULL,
-                `actor_type` VARCHAR(24) DEFAULT NULL,
-                `actor_id` VARCHAR(64) DEFAULT NULL,
-                `payload` JSON DEFAULT NULL,
-                `created_at` DATETIME NOT NULL,
-                PRIMARY KEY (`id`),
-                KEY `idx_channel_id` (`channel`, `id`),
-                KEY `idx_target` (`target_type`, `target_id`, `id`),
-                KEY `idx_created_at` (`created_at`)
-            ) ENGINE=InnoDB $charset;";
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-        }
-    }
 }

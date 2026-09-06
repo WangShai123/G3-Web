@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
+use JEALER\G3\Services\NotificationService;
 use WP_Error;
 
 class IMRealtimeService extends Service {
@@ -12,7 +13,7 @@ class IMRealtimeService extends Service {
         }
     }
 
-    public function createSession(string $conversationType, string $scope, ?int $conversationId, int $afterId, int $heartbeat): array|WP_Error
+    public function createSession(string $conversationType, string $scope, ?int $conversationId, int $afterId, int $heartbeat, string $owner = ''): array|WP_Error
     {
         $channel = $scope === 'admin'
             ? $this->adminChannel($conversationType)
@@ -22,7 +23,7 @@ class IMRealtimeService extends Service {
             return new WP_Error('conversation_required', 'Conversation is required.', ['status' => 400]);
         }
 
-        return $this->notification()->createSession($channel, $afterId, $heartbeat);
+        return $this->notification()->createSession($channel, $afterId, $heartbeat, $owner);
     }
 
     public function latestEventId(string $conversationType): int

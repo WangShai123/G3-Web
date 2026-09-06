@@ -12,6 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 class CommentController extends Controller {
+
     public function __construct(private CommentService $service)
     {
         parent::__construct();
@@ -21,7 +22,13 @@ class CommentController extends Controller {
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function config(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        $result = $this->service->config();
+        $options = $this->service->option();
+        $result  = [
+            'perPage'   => $options['perPage'] ?? 10,
+            'maxLength' => $options['maxLength'] ?? 300,
+            'throttle'  => $options['throttle'] ?? 5,
+            'cacheTtl'  => CommentService::COOKIE_CONFIG_TTL,
+        ];
         return is_wp_error($result) ? $result : $this->ok($result);
     }
 
@@ -37,7 +44,6 @@ class CommentController extends Controller {
             max(0, (int) ($request->get_param('user_id') ?: 0))
         );
 
-        // 延迟 1 秒
         sleep(1);
 
         return is_wp_error($result) ? $result : $this->ok($result);
@@ -53,7 +59,6 @@ class CommentController extends Controller {
             max(0, (int) ($request->get_param('user_id') ?: 0))
         );
 
-        // 延迟 1 秒
         sleep(1);
 
         return is_wp_error($result) ? $result : $this->ok($result);
@@ -68,15 +73,12 @@ class CommentController extends Controller {
         'properties' => [
             'post_id'   => ['type' => 'integer'],
             'parent_id' => ['type' => 'integer'],
-            'content'   => ['type' => 'string', 'minLength' => 1, 'maxLength' => CommentService::MAX_CONTENT_LENGTH],
+            'content'   => ['type' => 'string', 'minLength' => 1],
         ],
     ])]
     public function create(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $result = $this->service->create($request->get_json_params() ?: []);
-
-        // 延迟 1 秒
-        sleep(1);
 
         return is_wp_error($result) ? $result : $this->ok($result);
     }

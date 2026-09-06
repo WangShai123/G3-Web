@@ -70,7 +70,9 @@ class AnnouncementWidget extends WP_Widget {
                 for="<?php echo $this->get_field_id('type'); ?>"><?php echo sprintf(__('%s %s', 'G3'), __('Data', 'G3'), __('Type')); ?></label>
             <select class="widefat" id="<?php echo $this->get_field_id('type'); ?>"
                 name="<?php echo $this->get_field_name('type'); ?>">
-                <option value="0" <?php //selected($instance['type'], 0); ?>><?php _e('Latest Announcements', 'G3'); ?></option>
+                <option value="0" <?php //selected($instance['type'], 0); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('Latest', 'G3'), __('Announcements', 'G3')); ?>
+                </option>
             </select>
         </p>
         <p>

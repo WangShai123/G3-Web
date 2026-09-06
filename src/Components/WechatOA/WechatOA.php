@@ -77,7 +77,7 @@ class WechatOA extends Components {
                 ->tab('reply', __('Custom Reply', 'G3'))
                 ->tab('event', __('Event Replay', 'G3'))
                 ->option(WechatOAService::EVENT_OPTION_KEY, $this->eventOptionDefaults())
-                ->input('latestPosts', __('Latest Posts', 'G3'), __('The Key that will call the latest posts. Default: n', 'G3')),
+                ->input('latestPosts', sprintf(__('%s %s', 'G3'), __('Latest', 'G3'), __('Posts')), __('The Key that will call the latest posts. Default: n', 'G3')),
         ];
     }
     private function serviceAvailable(): bool

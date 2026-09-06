@@ -6,25 +6,15 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Exception;
 
-/**
- * Mailer Service for sending emails
- * 
- * 邮件发送服务类
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
 class MailerService extends Service {
-    private array $performance = [];
 
-    // Option key for mail options
+    private array $performance = [];
     const OPTION_KEY              = 'g3_option_mail';
     const NOTIFICATION_OPTION_KEY = 'g3_option_mail_notification';
 
-    public function __construct()
+    protected function onInit(): void
     {
-        parent::__construct();
-        $this->performance = get_option(SystemService::PERFORMANCE_OPTION_KEY, []);
+        $this->performance = $this->getArrayOption(SystemService::PERFORMANCE_OPTION_KEY);
     }
 
     public static function mailDefaults(): array
@@ -318,18 +308,19 @@ class MailerService extends Service {
      */
     public static function getConfig(): array|false
     {
-        $option = get_option(self::OPTION_KEY);
+        $option  = get_option(self::OPTION_KEY, []);
+        $enabled = $option['enable'] ?? '0';
+        if ($enabled !== '1') return false;
 
-        if (!isset($option['enable']) || $option['enable'] != '1') return false;
-
+        $encryption = $option['encryption'] === '1' ? 'ssl' : ($option['encryption'] === '2' ? 'tls' : '');
         return [
-            'enable'     => $option['enable'] ?? '1',
+            'enable'     => $enabled,
             'nickname'   => $option['nickname'] ?? '',
             'server'     => $option['server'] ?? '',
             'port'       => $option['port'] ?? '',
             'address'    => $option['address'] ?? '',
             'secret'     => $option['secret'] ?? '',
-            'encryption' => $option['encryption'] === '1' ? 'ssl' : ($option['encryption'] === '2' ? 'tls' : '')
+            'encryption' => $encryption,
         ];
     }
 

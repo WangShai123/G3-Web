@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\CustomerService;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Frontend;
 
 class Customer extends Components {
@@ -91,12 +92,15 @@ class Customer extends Components {
                 ->time('workEnd', __('Work End', 'G3'))
                 ->rowClass('advanced')
                 ->input('guestName', __('Guest Name', 'G3'), __('Default display name for anonymous visitors.', 'G3'))
-                ->number('retentionDays', __('Retention Days', 'G3'), __('<code>CustomerMessageJob</code> removes data older than this many days. Default: 180.', 'G3'))
-                ->rowClass('advanced')
                 ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45. Adviced range: 30-60.', 'G3'))
                 ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason.', 'G3') . __(' Default') . ': 30.')
                 ->rowClass('advanced')
-                ->switch('icon', __('Icon'), __('Use the default icon shown on the frontend.', 'G3'))
+                ->number('throttle', __('Throttle', 'G3'), sprintf(__('The frequency of %s transmission by users. The default setting is once every 5 seconds.', 'G3'), __('Message', 'G3')))
+                ->rowClass('advanced')
+                ->switch('cacheStorage', sprintf(__('%s %s', 'G3'), __('Cache', 'G3'), __('Storage', 'G3')), __('IM data is stored solely in the Redis cache. Use the queue service for regular data synchronization to the database.', 'G3'))
+                ->number('retentionDays', __('Retention Days', 'G3'), '<code>IMDataCleanerJob</code> ' . __('will remove data older than these days. Default: 180.', 'G3'))
+                ->rowClass('advanced')
+                ->switch('icon', __('Icon'), __('Use a custom icon instead of the system default icon.', 'G3'))
         ];
     }
     protected function adminPanelPage(): string
@@ -146,6 +150,7 @@ class Customer extends Components {
             'announcementLink' => (string) ($option['announcementLink'] ?? ''),
             'z'                => $z,
             'timeoutMinutes'   => (int) ($option['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes']),
+            'throttle'         => $z ? max(0, (int) ($option['throttle'] ?? CustomerService::defaultOption()['throttle'])) : 0,
             'labels'           => [
                 'open'        => __('Customer Service', 'G3'),
                 'close'       => __('Close'),
@@ -167,26 +172,31 @@ class Customer extends Components {
         $service = $this->getService(CustomerService::class);
 
         return [
-            'restUrl'       => esc_url_raw(rest_url('api/admin/customer/v1')),
-            'notifyRestUrl' => esc_url_raw(rest_url('api/notify/v1')),
-            'nonce'         => wp_create_nonce('wp_rest'),
-            'audioUrl'      => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
-            'enabled'       => $this->enabled(),
-            'eventId'       => $service instanceof CustomerService ? $service->latestEventId() : 0,
-            'labels'        => [
-                'empty'       => __('No conversations', 'G3'),
-                'placeholder' => __('Leave a Reply'),
-                'send'        => __('Reply'),
-                'close'       => __('Close'),
-                'active'      => __('Active'),
-                'wrapUp'      => __('Wrap-up'),
-                'all'         => __('All'),
-                'pending'     => __('Pending', 'G3'),
-                'closed'      => __('Closed', 'G3'),
-                'profile'     => sprintf(__('%s %s', 'G3'), __('User'), __('Profile', 'G3')),
-                'search'      => __('Search'),
-                'edit'        => __('Edit'),
-                'editTitle'   => __('Edit Conversation Title', 'G3'),
+            'restUrl'        => esc_url_raw(rest_url('api/admin/customer/v1')),
+            'notifyRestUrl'  => esc_url_raw(rest_url('api/notify/v1')),
+            'nonce'          => wp_create_nonce('wp_rest'),
+            'audioUrl'       => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
+            'enabled'        => $this->enabled(),
+            'eventId'        => $service instanceof CustomerService ? $service->latestEventId() : 0,
+            'timeoutMinutes' => max(1, (int) ($this->option()['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes'])),
+            'labels'         => [
+                'empty'         => __('No conversations', 'G3'),
+                'placeholder'   => __('Leave a Reply'),
+                'send'          => __('Reply'),
+                'close'         => __('Close'),
+                'handle'        => __('Handle', 'G3'),
+                'handling'      => __('Handling', 'G3'),
+                'all'           => __('All'),
+                'pending'       => __('Pending', 'G3'),
+                'closed'        => __('Closed', 'G3'),
+                'profile'       => sprintf(__('%s %s', 'G3'), __('User'), __('Profile', 'G3')),
+                'search'        => __('Search'),
+                'edit'          => __('Edit'),
+                'editTitle'     => __('Edit Conversation Title', 'G3'),
+                'statusUpdated' => sprintf(__('%s %s', 'G3'), __('Status'), __('Updated', 'G3')),
+                'loadMore'      => __('Load More', 'G3'),
+                'loading'       => __('Loading more results... please wait.'),
+                'noMore'        => __('No items found.'),
             ],
         ];
     }
