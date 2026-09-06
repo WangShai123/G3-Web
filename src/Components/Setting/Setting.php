@@ -148,6 +148,7 @@ class Setting extends Components {
                 ->switch('sad', __('Sad Mod', 'G3'), __('The entire website will be immersed in a mournful mode with only black, white, and gray colors.', 'G3'))
                 ->image('avatar', __("Default Avatar"))
                 ->image('cover', sprintf(__('%s %s', 'G3'), __('Default'), __('Cover', 'G3')))
+                ->input('icp', 'ICP', __('ICP Record Code', 'G3'))
                 ->textarea('headerCode', __('Header Code', 'G3'), __('Custom Code', 'G3') . $code)
                 ->textarea('footerCode', __('Footer Code', 'G3'), __('Custom Code', 'G3') . $code)
                 ->textarea('customCode', __('Custom Code', 'G3'), __('Custom Code', 'G3') . $code)

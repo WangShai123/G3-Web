@@ -111,6 +111,11 @@ class Router {
                 'methods'             => $def['methods'],
                 'callback'            => function (WP_REST_Request $req) use ($def) {
                     $controllerClass = $def['class'];
+                    $controllerFile  = $def['file'] ?? null;
+                    if (is_string($controllerFile) && is_file($controllerFile)) {
+                        require_once $controllerFile;
+                    }
+
                     $factory         = new FactoryDefinition($controllerClass);
                     $factory->singleton(false);
                     $this->container->setRawDefinition($controllerClass, $factory);
