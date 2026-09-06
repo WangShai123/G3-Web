@@ -24,16 +24,15 @@ class Security extends Components {
     private function optionDefaults(): array
     {
         return [
-            'login'            => '0',
-            'url'              => Common::hash(8),
-            'upload'           => '1',
-            'sitemap'          => '1',
-            'userSiteMap'      => '1',
-            'siteMapGenerator' => '0',
-            'restApi'          => '1',
-            'session'          => '0',
-            'xmlrpc'           => '1',
-            'csp'              => '0',
+            'login'       => '0',
+            'url'         => Common::hash(8),
+            'upload'      => '1',
+            'sitemap'     => '1',
+            'userSiteMap' => '1',
+            'restApi'     => '1',
+            'session'     => '0',
+            'xmlrpc'      => '1',
+            'csp'         => '0',
         ];
     }
     private static function optionData(): array
@@ -86,10 +85,6 @@ class Security extends Components {
                 ->switch('userSiteMap', __('Users Sitemap', 'G3'), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
                 ->switch('sitemap', 'G3-Sitemap', __('Remove the default sitemap of WordPress and use the G3 sitemap instead.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('siteMapGenerator', 'G3-SiteMap ' . __('Cache', 'G3'), sprintf(
-                    __('In the <a href="%s">site map settings page</a>, manually generate the sitemap cache file instead of automatically generating it by accessing the sitemap dynamic link.', 'G3'),
-                    admin_url('admin.php?page=g3-settings&tab=sitemap')
-                ))
                 ->switch('restApi', 'REST API', __('Disable the WordPress built-in REST API to avoid exposing sensitive information. Only admin can visit the build-in REST API.', 'G3'))
                 ->switch('session', __('Safe Session', 'G3'), __('When the same user logs in from multiple locations, only the most recent login session remains valid.', 'G3'))
                 ->switch('xmlrpc', __('Prevent XMLRPC Attacks', 'G3'), __('Remove the XML-RPC API to block access to xmlrpc.php.', 'G3'))
@@ -122,8 +117,7 @@ class Security extends Components {
     {
         $option = self::optionData();
         $x      = $option['sitemap'] ?? '1';
-        $y      = $option['siteMapGenerator'] ?? '0';
-        return $x === '1' && $y !== '1';
+        return $x === '1';
     }
     public function nativeSitemapEnabled($enabled): bool
     {

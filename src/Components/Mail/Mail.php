@@ -85,7 +85,7 @@ class Mail extends Components {
                 ->switch('password_changed_admin', 'Admin-' . __('Password Changed', 'G3'), sprintf(__('The system will send an email to administrator when %s.', 'G3'), __('someone password changed', 'G3')))
                 ->switch('automatic_updates_debug', 'Admin-' . __('Update') . ' Debug', sprintf(__('The system will send an email to administrator when %s.', 'G3'), __('Update') . ' Debug'))
                 ->switch('comment_moderation', 'Admin-' . __('Comment Moderation', 'G3'), sprintf(__('The system will send an email to administrator when %s.', 'G3'), __('new comment moderation', 'G3')))
-                ->tab('test', __('Email Test', 'G3')),
+                ->tab('test', sprintf(__('%s %s', 'G3'), __('Email'), __('Test', 'G3'))),
         ];
     }
     public function render(): void
@@ -230,7 +230,7 @@ class Mail extends Components {
             'originalEmail' => $email,
         ], [
             'to'      => $email['to'] ?? get_option('admin_email'),
-            'subject' => $email['subject'] ?? __('Automatic Updates Debug', 'G3'),
+            'subject' => $email['subject'] ?? 'Automatic Updates Debug',
             'message' => $email['body'] ?? '',
             'body'    => $email['body'] ?? '',
             'headers' => $email['headers'] ?? '',
@@ -268,5 +268,4 @@ class Mail extends Components {
             'headers' => $mail['headers'],
         ], fn($value) => $value !== null));
     }
-
 }

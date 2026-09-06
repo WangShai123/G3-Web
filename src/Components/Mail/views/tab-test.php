@@ -53,7 +53,7 @@ if (
 
 echo '<form action="" method="post">';
 wp_nonce_field('mail-test-options');
-echo '<p><label for="mailTo">' . esc_html__('Test Email Address', 'G3') . '</label></p>';
+echo '<p><label for="mailTo">' . sprintf(__('%s %s %s', 'G3'), __('Test', 'G3'), __('Email'), __('Address', 'G3')) . '</label></p>';
 echo '<input type="email" class="regular-text" id="mailTo" name="g3_mail_test[mailTo]" required>';
-submit_button(__('Send Test Email', 'G3'));
+submit_button(sprintf(__('%s %s %s', 'G3'), __('Send', 'G3'), __('Test', 'G3'), __('Email')));
 echo '</form>';

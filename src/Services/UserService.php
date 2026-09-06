@@ -295,7 +295,7 @@ class UserService extends Service {
 
         $login = $this->requestString('user_login');
         if ($login === '') {
-            $context['message'] = __('<strong>Error:</strong> Please enter a username or email address.');
+            $context['message'] = __('Please enter a username or email address.', 'G3');
             return $context;
         }
 
@@ -305,7 +305,7 @@ class UserService extends Service {
         }
 
         $context['success'] = true;
-        $context['message'] = __('If the account exists, a password reset email has been sent.', 'G3');
+        $context['message'] = __('The password reset email has been sent.', 'G3');
 
         return $context;
     }
@@ -469,7 +469,7 @@ class UserService extends Service {
     {
         $result = $this->cache['description'] ?? '';
         if ($result === '') {
-            return __('No description available.', 'G3');
+            return __('No description available.');
         }
         return $result;
     }

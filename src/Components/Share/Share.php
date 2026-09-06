@@ -54,10 +54,10 @@ class Share extends Components {
                 ->option(ShareService::OPTION_KEY, $this->default())
                 ->switch('enable', __('Content Distribution', 'G3'), __('Whether to display the content distribution section on the post edit page.', 'G3'))
                 ->switch('poster', __('Share via Poster', 'G3'))
-                ->switch('wechatTitle', __('WeChat Title', 'G3'), __('Customize the title that will be displayed when shared on WeChat.', 'G3'))
+                ->switch('wechatTitle', sprintf(__('%s %s', 'G3'), __('WeChat', 'G3'), __('Title')), __('Customize the title that will be displayed when shared on WeChat.', 'G3'))
                 ->switch('wechatMediaLibrary', __('Wechat OA Media Library', 'G3'), __('When publishing post, the content will be automatically synchronized to the WeChat official account media library.', 'G3'))
-                ->switch('qqZone', __('Share to QQ Zone', 'G3'))
-                ->switch('douYin', __('Share to DouYin', 'G3'))
+                ->switch('qqZone', sprintf(__('Share to %s', 'G3'), __('QQ Zone', 'G3')))
+                ->switch('douYin', sprintf(__('Share to %s', 'G3'), __('DouYin', 'G3')))
                 ->tab('account', __('Social Accounts', 'G3')),
         ];
     }
@@ -84,7 +84,7 @@ class Share extends Components {
 
     public function addWechatTitleField($post): void
     {
-        $label    = __('WeChat Title', 'G3');
+        $label    = sprintf(__('%s %s', 'G3'), __('WeChat', 'G3'), __('Title'));
         $value    = get_post_meta($post->ID, ShareService::WECHAT_TITLE_KEY, true);
         $des      = __('Customize the title that will be displayed when shared on WeChat.', 'G3') . ' ' . __('If the title is empty, the title of the post will be used.', 'G3');
         $template = <<<HTML

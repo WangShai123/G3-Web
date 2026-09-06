@@ -79,8 +79,6 @@ class PostController extends Controller {
             sleep(1);
         }
 
-        error_log(print_r($result['data'], true));
-
         return is_wp_error($result)
             ? $result
             : rest_ensure_response([

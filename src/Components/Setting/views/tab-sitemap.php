@@ -25,8 +25,6 @@ $renderer->form($panel, $panelTab);
             }).done(function (res) {
                 if (res.success) {
                     success(res.data.message)
-                } else {
-                    error(res.data.message)
                 }
             }).fail(function (xhr, status, err) {
                 error(xhr.responseJSON.data.message)

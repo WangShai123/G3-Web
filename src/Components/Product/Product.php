@@ -114,17 +114,17 @@ class Product extends Components {
             'edit_item'             => sprintf(__('Edit %s', 'G3'), $product),
             'view_item'             => sprintf(__('View %s', 'G3'), $product),
             'all_items'             => sprintf(__('All %s', 'G3'), $products),
-            'search_items'          => sprintf(__('Search %s', 'G3'), $product),
+            'search_items'          => sprintf(__('Search %s', 'G3'), $products),
             'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $product),
-            'not_found'             => sprintf(__('No %s found.', 'G3'), $products),
-            'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $products),
-            'featured_image'        => __('Cover Image', 'G3'),
-            'set_featured_image'    => __('Set cover image', 'G3'),
-            'remove_featured_image' => __('Remove cover image', 'G3'),
-            'use_featured_image'    => __('Use as cover image', 'G3'),
-            'archives'              => sprintf(__('%s Archives', 'G3'), $products),
+            'not_found'             => sprintf(__('No %s found.', 'G3'), $product),
+            'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $product),
+            'featured_image'        => __('Cover', 'G3'),
+            'set_featured_image'    => __('Set cover', 'G3'),
+            'remove_featured_image' => __('Remove cover', 'G3'),
+            'use_featured_image'    => __('Use as cover', 'G3'),
+            'archives'              => sprintf(__('%s Archives', 'G3'), $product),
             'insert_into_item'      => sprintf(__('Insert into %s', 'G3'), $product),
-            // 'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $product),
+            'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $product),
             'filter_items_list'     => sprintf(__('Filter %s list', 'G3'), $products),
             'items_list_navigation' => sprintf(__('%s list navigation', 'G3'), $products),
             'items_list'            => sprintf(__('%s list', 'G3'), $products),
@@ -240,23 +240,26 @@ class Product extends Components {
         $postType       = 'product';
         $postTypeObject = get_post_type_object($postType);
 
+        $product = __('Product', 'G3');
+        $updated = __('Updated', 'G3');
+
         $messages[$postType] = array(
             0  => '',
             // Unused. Messages start at index 1.
-            1  => __('Product updated.', 'G3'),
-            2  => __('Custom field updated.', 'G3'),
-            3  => __('Custom field deleted.', 'G3'),
-            4  => __('Product updated.', 'G3'),
+            1  => $updated,
+            2  => $updated,
+            3  => $updated,
+            4  => $updated,
             /* translators: %s: date and time of the revision */
-            5  => isset($_GET['revision']) ? sprintf(__('Product restored to version from %s.', 'G3'), wp_post_revision_title((int) $_GET['revision'], false)) : false,
-            6  => __('Product published.', 'G3'),
-            7  => __('Product saved.', 'G3'),
-            8  => __('Product submitted.', 'G3'),
+            5  => isset($_GET['revision']) ? sprintf(__('Restored to version from %s.', 'G3'), wp_post_revision_title((int) $_GET['revision'], false)) : false,
+            6  => __('Published'),
+            7  => __('Saved'),
+            8  => __('Submitted', 'G3'),
             9  => sprintf(
-                __('Product scheduled for:<strong>%1$s</strong>.', 'G3'),
+                __('Scheduled for:<strong>%1$s</strong>.', 'G3'),
                 wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($post->post_date))
             ),
-            10 => __('Product draft updated.', 'G3'),
+            10 => $updated,
         );
 
         if ($postTypeObject->publicly_queryable) {

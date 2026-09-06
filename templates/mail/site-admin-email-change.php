@@ -1,17 +1,17 @@
 <?php
 use JEALER\G3\Services\MailerService;
 
-$title   = sprintf(__('[%s] Site admin email changed', 'G3'), $siteName);
+$title   = sprintf(__('[%s] Admin Email Changed'), $siteName);
 $content = sprintf(
-    '<p>%s</p><p><strong>%s</strong>: %s<br><strong>%s</strong>: %s</p>',
-    esc_html(sprintf(__('The site administrator email address on %s was changed.', 'G3'), $siteName)),
-    esc_html(__('Old Email')),
-    esc_html($oldEmail),
-    esc_html(__('New Email')),
-    esc_html($newEmail)
+    '<p>%s</p><p><strong>%s</strong>: %s</p><p><strong>%s</strong>: %s</p>',
+    sprintf(__('[%s] Admin Email Changed'), $siteName),
+    sprintf(__('%s %s', 'G3'), __('Old', 'G3'), __('Email')),
+    $oldEmail,
+    sprintf(__('%s %s', 'G3'), __('New', 'G3'), __('Email')),
+    $newEmail
 );
 
 return [
     'subject' => $title,
-    'message' => MailerService::messageHtml($title, $content, admin_url('options-general.php'), __('Open Settings', 'G3')),
+    'message' => MailerService::messageHtml($title, $content, admin_url('options-general.php'), sprintf(__('Visit %s&#8217;s website'), $siteName)),
 ];

@@ -8,6 +8,7 @@ use JEALER\G3\Services\LLMService;
 use JEALER\G3\Services\RedisService;
 use JEALER\G3\Services\SitemapService;
 use JEALER\G3\Services\UserService;
+use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
@@ -39,7 +40,6 @@ class Setting extends Components {
         return [
             'llm'          => '1',
             'postsPerType' => 2000,
-            'manual'       => '1',
         ];
     }
     protected function defaultOption(): array
@@ -177,17 +177,19 @@ class Setting extends Components {
                     __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3')
                 ))
                 ->number('postsPerType', __('Count', 'G3'), __('The number of posts to be generated for each post type. Default <code>2000</code>.', 'G3'))
-                ->switch('manual', __('Cache', 'G3'), sprintf(
-                    '<a href="%s" target="_blank">%s</a>.<br>%s',
-                    site_url('/llm/llms.txt'),
-                    site_url('/llm/llms.txt'),
-                    __('Share it to your friends, search engine or AI!', 'G3')
-                ))
-                ->html('generator', __('Generate Cache', 'G3'), '<button class="j-button is-outline" type="button" id="generateLLM">' . sprintf(__('Generate %s Cache', 'G3'), 'llms.txt') . '</button>')
+                ->html('generator', __('Generate Cache', 'G3'), Element::description('<button class="j-button is-outline" type="button" id="generateLLM">' . sprintf(__('Generate %s Cache', 'G3'), 'llms.txt') . '</button>') .
+                    Element::description(__('Share it to your friends, search engine or AI!', 'G3')) .
+                    Element::description(sprintf(
+                        '<a href="%s" target="_blank">%s</a>',
+                        site_url('/llms.txt'),
+                        site_url('/llms.txt'),
+                    )))
+
                 ->tab('sitemap', __('SiteMap', 'G3'))
                 ->html('g3-sitemap', __('Real-time data', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3'), home_url('helper/sitemap/endpoint/'), home_url('helper/sitemap/endpoint/')))
                 ->html('local-sitemap', __('Cache', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('Share it to your friends, search engine or AI!', 'G3'), home_url('sitemap.xml'), home_url('sitemap.xml')))
                 ->html('sitemapGenerator', __('Generate Cache', 'G3'), '<p><button class="j-button is-outline" type="button" id="generateSitemap">' . sprintf(__('Generate %s Cache', 'G3'), 'sitemap.xml') . '</button></p>'),
+
         ];
     }
     protected function end(): void
@@ -485,9 +487,9 @@ class Setting extends Components {
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_generate_llm', function () {
-            if ((get_option(SystemService::LLM_OPTION_KEY)['llm'] ?? '1') !== '1') {
-                Response::ajaxError(__('LLM feature is disabled.', 'G3'));
-            }
+            // if ((get_option(SystemService::LLM_OPTION_KEY)['llm'] ?? '1') !== '1') {
+            //     Response::ajaxError(__('LLM feature is disabled.', 'G3'));
+            // }
 
             $nonce = $_POST['nonce'] ?? '';
             if (!wp_verify_nonce($nonce, 'g3_generate_llm') || !current_user_can('manage_options')) {
@@ -507,11 +509,6 @@ class Setting extends Components {
             $nonce = $_POST['nonce'] ?? '';
             if (!wp_verify_nonce($nonce, 'g3_generate_sitemap') || !current_user_can('manage_options')) {
                 Response::ajaxForbidden();
-            }
-
-            $security = get_option(SystemService::SECURITY_OPTION_KEY, []);
-            if (!is_array($security) || ($security['siteMapGenerator'] ?? '0') !== '1') {
-                Response::ajaxError(__('Sitemap generation is disabled.', 'G3'));
             }
 
             /** @var SitemapService $service */

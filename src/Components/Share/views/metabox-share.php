@@ -1,5 +1,4 @@
 <?php
-
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\ShareService;
 
@@ -16,7 +15,7 @@ if ($mediaLibrary) : ?>
     <fieldset>
         <label>
             <input type="checkbox" id="wechatMediaLibrary" name="shareToWechatMediaLibrary"
-                title="<?php _e('Publish to Wechat OA Media Library', 'G3'); ?>">
+                title="<?php echo sprintf(__('Publish to %s', 'G3'), __('Wechat OA Media Library', 'G3')); ?>">
             <span>
                 <?php _e('Wechat OA Media Library', 'G3'); ?>
             </span>
@@ -27,7 +26,8 @@ if ($mediaLibrary) : ?>
 if ($qqZone) : ?>
     <fieldset>
         <label>
-            <input type="checkbox" id="qqZone" name="shareToQQZone" title="<?php _e('Publish to QQ Zone', 'G3'); ?>">
+            <input type="checkbox" id="qqZone" name="shareToQQZone"
+                title="<?php echo sprintf(__('Publish to %s', 'G3'), __('QQ Zone', 'G3')); ?>">
             <span><?php _e('QQ Zone', 'G3'); ?></span>
             <?php echo $tipSpan; ?>
         </label>
@@ -36,7 +36,8 @@ if ($qqZone) : ?>
 if ($douYin) : ?>
     <fieldset>
         <label>
-            <input type="checkbox" id="douYin" name="shareToDouYin" title="<?php _e('Publish to DouYin', 'G3'); ?>">
+            <input type="checkbox" id="douYin" name="shareToDouYin"
+                title="<?php echo sprintf(__('Publish to %s', 'G3'), __('DouYin', 'G3')); ?>">
             <span><?php _e('DouYin', 'G3'); ?></span>
             <?php echo $tipSpan; ?>
         </label>
@@ -45,7 +46,8 @@ if ($douYin) : ?>
 if ($weiBo) : ?>
     <fieldset>
         <label>
-            <input type="checkbox" id="weiBo" name="shareToWeiBo" title="<?php _e('Publish to Sina WeiBo', 'G3'); ?>">
+            <input type="checkbox" id="weiBo" name="shareToWeiBo"
+                title="<?php echo sprintf(__('Publish to %s', 'G3'), __('Sina WeiBo', 'G3')); ?>">
             <span><?php _e('Sina WeiBo', 'G3'); ?></span>
             <?php echo $tipSpan; ?>
         </label>

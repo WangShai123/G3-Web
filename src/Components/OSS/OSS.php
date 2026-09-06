@@ -42,8 +42,8 @@ class OSS extends Components {
     {
         add_submenu_page(
             'g3-settings',
-            'OSS',
-            'OSS',
+            __('OSS', 'G3'),
+            __('OSS', 'G3'),
             'manage_options',
             'oss',
             [$this, 'render'],
@@ -61,8 +61,8 @@ class OSS extends Components {
     protected function adminPanels(): array
     {
         return [
-            $this->panel('oss', 'OSS')
-                ->tab('aliyun', __('Aliyun OSS', 'G3'))
+            $this->panel('oss', __('OSS', 'G3'))
+                ->tab('aliyun', __('Aliyun', 'G3') . ' OSS')
                 ->option(OSSService::OPTION_KEY, OSSService::defaultOption())
                 ->switch('enable', __('Enable', 'G3'), __('Only one cloud storage provider can be enabled at the same time.', 'G3'))
                 ->input('bucket', 'Bucket')
@@ -82,7 +82,7 @@ class OSS extends Components {
                 ->rowClass('advanced')
                 ->switch('uploadThumb', __('Thumbnail'), __('Upload generated image sizes together with the original image.', 'G3'))
                 ->switch('localSaving', __('Local Saving', 'G3'), __('Keep local upload files after they are uploaded to cloud storage.', 'G3'))
-                ->tab('qcloud', __('Qcloud COS', 'G3'))
+                ->tab('qcloud', __('QCloud', 'G3') . ' COS')
                 ->option(COSService::OPTION_KEY, COSService::defaultOption())
                 ->switch('enable', __('Enable', 'G3'), __('Only one cloud storage provider can be enabled at the same time.', 'G3'))
                 ->input('bucket', 'Bucket')
@@ -284,11 +284,11 @@ class OSS extends Components {
     {
         $services = $this->enabledStorageServices();
         if (count($services) > 1) {
-            return __('同一时间只能启用一个云存储', 'G3');
+            return __('Only one cloud storage service can be enabled at a time.', 'G3');
         }
 
         if (count($services) === 1 && !$services[0]->configured()) {
-            return __('当前启用的云存储配置不完整', 'G3');
+            return __('The currently enabled cloud storage configuration is incomplete.', 'G3');
         }
 
         return '';

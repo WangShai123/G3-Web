@@ -113,7 +113,7 @@ class InvitationCodeListTable extends WP_List_Table {
     {
         if (!$this->revitationValid()) {
             echo Element::tip(
-                __('Invitation code feature is not available. Please set the invitation code as the registration code first.', 'G3'),
+                sprintf(__('%s %s', 'G3'), __('Invitation code feature is not available.', 'G3'), __('Please set the invitation code as the registration code first.', 'G3')),
                 '',
                 'danger',
                 'mt-4'

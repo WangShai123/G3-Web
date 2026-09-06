@@ -12,8 +12,9 @@ class LLMService extends Service {
 
     protected function onInit(): void
     {
-        $this->siteUrl      = rtrim(home_url('/'), '/');
-        $this->llmDir       = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'llm';
+        $this->siteUrl = rtrim(home_url('/'), '/');
+        // $this->llmDir       = rtrim(ABSPATH, '/\\') . DIRECTORY_SEPARATOR . 'llm';
+        $this->llmDir       = ABSPATH;
         $this->fileName     = 'llms.txt';
         $this->postsPerType = (int) $this->getOptionKV(SystemService::LLM_OPTION_KEY, 'postsPerType', 2000);
     }
@@ -21,23 +22,23 @@ class LLMService extends Service {
     public function handleRequest()
     {
         if (get_query_var('g3_var_llm') === 'endpoint') {
+
             $llms_txt = $this->generateLLMsTxt();
+            $result   = $this->saveLLMsTxt($llms_txt);
 
-            $v = $this->getOptionKV(SystemService::LLM_OPTION_KEY, 'manual', '0');
-            if ($v !== '1') {
-                $test = $this->saveLLMsTxt($llms_txt);
+            if ($result) {
+                header('Content-Type: text/plain; charset=utf-8');
+                echo $llms_txt;
+                exit;
             }
-
-            header('Content-Type: text/plain; charset=utf-8');
-            echo $llms_txt;
-            exit;
         }
         wp_redirect(home_url('404'));
     }
 
     public function saveLLMsTxt($content)
     {
-        $file_path = $this->llmDir . DIRECTORY_SEPARATOR . $this->fileName;
+        // $file_path = $this->llmDir . DIRECTORY_SEPARATOR . $this->fileName;
+        $file_path = $this->llmDir . $this->fileName;
 
         $bom     = "\xEF\xBB\xBF";
         $content = $bom . $content;

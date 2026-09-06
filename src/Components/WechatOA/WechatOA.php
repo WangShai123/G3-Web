@@ -64,7 +64,7 @@ class WechatOA extends Components {
             $this->panel('wechat-oa', __('Wechat OA', 'G3'))
                 ->tab('general', __('General'))
                 ->option(WechatOAService::OPTION_KEY, $this->optionDefaults())
-                ->switch('service', __('Wechat OA Service', 'G3'))
+                ->switch('service', sprintf(__('%s %s', 'G3'), __('Wechat OA', 'G3'), __('Service', 'G3')))
                 ->rowClass('advanced')
                 ->switch('storeMessages', sprintf(__('%s %s', 'G3'), __('Message', 'G3'), __('Storage', 'G3')), __('The messages sent to the WeChat Official Account will be stored in the database.', 'G3'))
                 ->switch('search', __('Search'), __('Users who send messages to the WeChat Official Account will automatically search for the content on the website and return the content.', 'G3'))

@@ -237,7 +237,7 @@ class MailerService extends Service {
         catch (PHPMailerException $e) {
             return $e->errorMessage();
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -326,6 +326,6 @@ class MailerService extends Service {
 
     public static function resetLinkExpiredMsg(): string
     {
-        return __('<strong>Error:</strong> Your password reset link appears to be invalid. Please request a new link.', 'G3');
+        return __('Your password reset link appears to be invalid. Please request a new link.', 'G3');
     }
 }
