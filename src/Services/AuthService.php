@@ -5,6 +5,7 @@ use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Date;
+use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Option;
 use WP_User_Query;
 use WP_User;
@@ -654,7 +655,14 @@ class AuthService extends Service {
         if (!$modal) {
             $element = '<a href="' . get_site_url() . '/user/login" title="' . __('Login', 'G3') . '">' . $element . '</a>';
         } else {
-            load_template(G3_TEMPLATE_DIR . '/user/login-modal.php', true);
+            // load_template(G3_TEMPLATE_DIR . '/user/login-modal.php', true);
+
+            $subscribe = get_option(self::WECHAT_OPTION_KEY)['subscribe'] ?? false;
+            if ($subscribe) {
+                Frontend::esm('g3.subscribe.modal');
+            } else {
+                Frontend::esm('g3.login.modal');
+            }
         }
         return $element;
     }

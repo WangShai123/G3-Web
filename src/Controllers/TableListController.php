@@ -1,6 +1,5 @@
 <?php
 namespace JEALER\G3\Controllers;
-
 use JEALER\G3\Core\Attributes\Middleware;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Router\Controller;
@@ -25,7 +24,7 @@ class TableListController extends Controller {
             return new WP_Error('g3_invitation_code_disabled', __('Invitation code feature is not available.', 'G3'), ['status' => 403]);
         }
 
-        return $this->ok($this->auth->invitationCodeTableList($this->payload($request)));
+        return $this->success($this->auth->invitationCodeTableList($this->payload($request)));
     }
 
     #[RestRouter(namespace: 'api/admin/table-list', route: 'v1/invitation-codes/generate', methods: 'POST')]
@@ -62,13 +61,12 @@ class TableListController extends Controller {
             return new WP_Error('g3_invitation_code_generate_failed', __('Failed', 'G3'), ['status' => 500]);
         }
 
-        return $this->ok([
-            'message'      => Message::generated() . ': ' . count($codes) . ' ' . __('Invitation Code', 'G3'),
+        return $this->success([
             'codes'        => $codes,
             'total'        => $amount,
             'successCount' => count($codes),
             'failCount'    => $failCount,
-        ]);
+        ], Message::generated() . ': ' . count($codes) . ' ' . __('Invitation Code', 'G3'));
     }
 
     #[RestRouter(namespace: 'api/admin/table-list', route: 'v1/invitation-codes/delete', methods: 'POST')]
@@ -91,10 +89,7 @@ class TableListController extends Controller {
             return new WP_Error('g3_invitation_code_delete_failed', __('Failed', 'G3'), ['status' => 500]);
         }
 
-        return $this->ok([
-            'id'      => $id,
-            'message' => __('Deleted', 'G3'),
-        ]);
+        return $this->success(['id' => $id], __('Deleted', 'G3'));
     }
 
     #[RestRouter(namespace: 'api/admin/table-list', route: 'v1/invitation-codes/bulk-delete', methods: 'POST')]
@@ -112,21 +107,12 @@ class TableListController extends Controller {
             return new WP_Error('g3_empty_invitation_code_ids', __('Illegal request', 'G3'), ['status' => 400]);
         }
 
-        return $this->ok($this->auth->deleteInviteCodes($ids));
+        return $this->success($this->auth->deleteInviteCodes($ids));
     }
 
     private function payload(WP_REST_Request $request): array
     {
         $data = $request->get_json_params();
         return is_array($data) ? $data : [];
-    }
-
-    private function ok(mixed $data): WP_REST_Response
-    {
-        return rest_ensure_response([
-            'success' => true,
-            'code'    => 200,
-            'data'    => $data,
-        ]);
     }
 }

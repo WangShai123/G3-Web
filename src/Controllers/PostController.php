@@ -120,7 +120,7 @@ class PostController extends Controller {
 
         return is_wp_error($result)
             ? $result
-            : $this->ok($result);
+            : $this->success($result);
     }
 
     #[RestRouter(
@@ -140,15 +140,6 @@ class PostController extends Controller {
     public function actionStatus(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params() ?: [];
-        return $this->ok($this->postService->currentUserActionStatus((int) ($params['post_id'] ?? 0)));
-    }
-
-    private function ok(mixed $data): WP_REST_Response
-    {
-        return rest_ensure_response([
-            'success' => true,
-            'code'    => 200,
-            'data'    => $data,
-        ]);
+        return $this->success($this->postService->currentUserActionStatus((int) ($params['post_id'] ?? 0)));
     }
 }

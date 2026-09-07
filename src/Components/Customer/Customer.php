@@ -92,6 +92,7 @@ class Customer extends Components {
                 ->time('workEnd', __('Work End', 'G3'))
                 ->rowClass('advanced')
                 ->input('guestName', __('Guest Name', 'G3'), __('Default display name for anonymous visitors.', 'G3'))
+                ->switch('needAuth', __('Auth', 'G3'), __('User needs to log in to use the service.', 'G3'))
                 ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45. Adviced range: 30-60.', 'G3'))
                 ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason.', 'G3') . __(' Default') . ': 30.')
                 ->rowClass('advanced')
@@ -173,7 +174,7 @@ class Customer extends Components {
 
         return [
             'restUrl'        => esc_url_raw(rest_url('api/admin/customer/v1')),
-            'notifyRestUrl'  => esc_url_raw(rest_url('api/notify/v1')),
+            'notifyRestUrl'  => esc_url_raw(rest_url('api/admin/notify/v1')),
             'nonce'          => wp_create_nonce('wp_rest'),
             'audioUrl'       => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
             'enabled'        => $this->enabled(),

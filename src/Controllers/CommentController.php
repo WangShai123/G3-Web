@@ -29,7 +29,7 @@ class CommentController extends Controller {
             'throttle'  => $options['throttle'] ?? 5,
             'cacheTtl'  => CommentService::COOKIE_CONFIG_TTL,
         ];
-        return is_wp_error($result) ? $result : $this->ok($result);
+        return is_wp_error($result) ? $result : $this->success($result);
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/comments', methods: 'GET')]
@@ -46,7 +46,7 @@ class CommentController extends Controller {
 
         sleep(1);
 
-        return is_wp_error($result) ? $result : $this->ok($result);
+        return is_wp_error($result) ? $result : $this->success($result);
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/replies', methods: 'GET')]
@@ -61,7 +61,7 @@ class CommentController extends Controller {
 
         sleep(1);
 
-        return is_wp_error($result) ? $result : $this->ok($result);
+        return is_wp_error($result) ? $result : $this->success($result);
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/comments', methods: 'POST')]
@@ -80,7 +80,7 @@ class CommentController extends Controller {
     {
         $result = $this->service->create($request->get_json_params() ?: []);
 
-        return is_wp_error($result) ? $result : $this->ok($result);
+        return is_wp_error($result) ? $result : $this->success($result);
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/reaction', methods: 'POST')]
@@ -99,15 +99,6 @@ class CommentController extends Controller {
         $data   = $request->get_json_params() ?: [];
         $result = $this->service->react((int) ($data['comment_id'] ?? 0), (string) ($data['reaction'] ?? 'none'));
 
-        return is_wp_error($result) ? $result : $this->ok($result);
-    }
-
-    private function ok(mixed $data): WP_REST_Response
-    {
-        return rest_ensure_response([
-            'success' => true,
-            'code'    => 200,
-            'data'    => $data,
-        ]);
+        return is_wp_error($result) ? $result : $this->success($result);
     }
 }

@@ -82,7 +82,7 @@ class Security extends Components {
                 ->input('url', __('Admin Login URL', 'G3'), __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Common::hash()))) . '</code> ' . sprintf(__('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=developer-mode&tab=flush'))
                 ->switch('upload', __('Reset Upload File Names', 'G3'), __('Rename the currently uploaded file using a timestamp.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('userSiteMap', __('Users Sitemap', 'G3'), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
+                ->switch('userSiteMap', sprintf(__('%s %s', 'G3'), __('Users'), __('Sitemap', 'G3')), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
                 ->switch('sitemap', 'G3-Sitemap', __('Remove the default sitemap of WordPress and use the G3 sitemap instead.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('restApi', 'REST API', __('Disable the WordPress built-in REST API to avoid exposing sensitive information. Only admin can visit the build-in REST API.', 'G3'))

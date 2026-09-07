@@ -41,6 +41,7 @@ class CustomerService extends Service {
             'workStart'        => '09:00',
             'workEnd'          => '18:00',
             'guestName'        => 'Guest',
+            'needAuth'         => '0',
             'retentionDays'    => 180,
             'heartbeatSeconds' => 45,
             'timeoutMinutes'   => 30,

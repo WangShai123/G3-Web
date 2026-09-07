@@ -154,14 +154,14 @@ class Setting extends Components {
                 ->textarea('customCode', __('Custom Code', 'G3'), __('Custom Code', 'G3') . $code)
                 ->switch('links', __('Links'), __('The links feature helps you manage your friendship links.', 'G3'))
                 ->switch('redirectLink', __('Redirect Link', 'G3'), __('All outbound links will be intercepted by the system and redirected to the link middle page instead of the original target url.', 'G3'))
-                ->switch('online', __('Online', 'G3') . ' ' . __('Status'), __('Perform user identification and count concurrent online users using browser fingerprints.', 'G3'))
+                ->switch('online', sprintf(__('%s %s', 'G3'), __('Online', 'G3'), __('Status')), __('Perform user identification and count concurrent online users using browser fingerprints.', 'G3'))
                 ->rowClass('advanced')
                 ->input('onlineDelay', __('Delay', 'G3'), __('The delay time in minutes for updating the online status. Default: 30.', 'G3'))
                 ->rowClass('advanced')
                 ->tab('seo', 'SEO')
                 ->option(SystemService::SEO_OPTION_KEY, $this->seoDefaults())
                 ->switch('seo', 'SEO')
-                ->input('keywords', __('Home') . ' ' . __('Keywords'), __('Separate tags with commas'))
+                ->input('keywords', sprintf(__('%s %s', 'G3'), __('Home'), __('Keywords')), __('Separate tags with commas'))
                 ->tab('rss', 'RSS')
                 ->option(SystemService::RSS_OPTION_KEY, $this->rssDefaults(), false)
                 ->switch('rss', 'RSS')
@@ -170,7 +170,7 @@ class Setting extends Components {
                 ->readonlyUrl('atom', 'Atom ' . __('URL'), get_bloginfo('atom_url'))
                 ->tab('llm', 'LLM')
                 ->option(SystemService::LLM_OPTION_KEY, $this->llmDefaults(), false)
-                ->switch('llm', __('Real-time data', 'G3'), sprintf(
+                ->switch('llm', sprintf(__('%s %s', 'G3'), __('Real-Time', 'G3'), __('Data', 'G3')), sprintf(
                     '<a href="%s" target="_blank">%s</a><br>%s',
                     site_url('/helper/llm/endpoint'),
                     site_url('/helper/llm/endpoint'),
@@ -185,8 +185,8 @@ class Setting extends Components {
                         site_url('/llms.txt'),
                     )))
 
-                ->tab('sitemap', __('SiteMap', 'G3'))
-                ->html('g3-sitemap', __('Real-time data', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3'), home_url('helper/sitemap/endpoint/'), home_url('helper/sitemap/endpoint/')))
+                ->tab('sitemap', __('Sitemap', 'G3'))
+                ->html('g3-sitemap', sprintf(__('%s %s', 'G3'), __('Real-Time', 'G3'), __('Data', 'G3')), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('When accessing the real-time data address, a cached data file will be automatically generated', 'G3'), home_url('helper/sitemap/endpoint/'), home_url('helper/sitemap/endpoint/')))
                 ->html('local-sitemap', __('Cache', 'G3'), sprintf('<a href="%s" target="_blank">%s</a><br>' . __('Share it to your friends, search engine or AI!', 'G3'), home_url('sitemap.xml'), home_url('sitemap.xml')))
                 ->html('sitemapGenerator', __('Generate Cache', 'G3'), '<p><button class="j-button is-outline" type="button" id="generateSitemap">' . sprintf(__('Generate %s Cache', 'G3'), 'sitemap.xml') . '</button></p>'),
 
@@ -237,7 +237,7 @@ class Setting extends Components {
 
         return [
             'enabled'       => !empty($sources),
-            'notifyRestUrl' => esc_url_raw(rest_url('api/notify/v1')),
+            'notifyRestUrl' => esc_url_raw(rest_url('api/admin/notify/v1')),
             'nonce'         => wp_create_nonce('wp_rest'),
             'currentPage'   => $this->currentAdminPage(),
             'audioUrl'      => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),

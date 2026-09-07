@@ -453,12 +453,6 @@ class Post extends Components {
         $cleanContent     = $copyrightService->clean($post->post_content);
         $length           = mb_strlen($cleanContent, 'UTF-8');
         if (empty($cleanContent) || $length < $position) {
-            // $this->logger->info('Copyright Protection does not apply, the content is too short to embed.', [
-            //     'module'   => 'Post',
-            //     'postId'   => $postId,
-            //     'length'   => $length,
-            //     'position' => $position,
-            // ]);
             return;
         }
 

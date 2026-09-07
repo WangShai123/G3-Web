@@ -8,4 +8,3 @@ if ($subscribe) {
 } else {
     Frontend::esm('g3.login.modal');
 }
-?>

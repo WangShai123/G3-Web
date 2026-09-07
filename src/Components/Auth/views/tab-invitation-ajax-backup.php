@@ -90,6 +90,28 @@ $config = [
             return err && err.message ? err.message : labels.failed;
         };
 
+        const unwrapResponse = (json) => {
+            if (json && json.success === true && Object.prototype.hasOwnProperty.call(json, 'data')) {
+                if (
+                    json.data &&
+                    typeof json.data === 'object' &&
+                    !Array.isArray(json.data) &&
+                    typeof json.message === 'string' &&
+                    json.message !== '' &&
+                    !Object.prototype.hasOwnProperty.call(json.data, 'message')
+                ) {
+                    return {
+                        ...json.data,
+                        message: json.message
+                    };
+                }
+
+                return json.data;
+            }
+
+            return json || {};
+        };
+
         const api = (path, data = {}) => {
             return fetch(config.restUrl + path, {
                 method: 'POST',
@@ -104,7 +126,7 @@ $config = [
                     if (!response.ok || json.success === false) {
                         throw new Error(json.message || (json.data && json.data.message) || labels.failed);
                     }
-                    return json.data || json;
+                    return unwrapResponse(json);
                 });
             });
         };

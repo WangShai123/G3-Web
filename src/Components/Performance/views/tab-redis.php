@@ -24,7 +24,7 @@ echo Element::tip(
     </div>
 
     <h2>
-        <?php _e('Use Redis', 'G3'); ?>
+        <?php echo sprintf(__('%s %s', 'G3'), __('Use', 'G3'), 'Redis'); ?>
     </h2>
     <div class="j-tip is-default mt-2">
         <div class="tip-content">
