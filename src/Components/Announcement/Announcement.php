@@ -16,19 +16,25 @@ class Announcement extends Components {
     {
         $announcement  = __('Announcement', 'G3');
         $announcements = __('Announcements', 'G3');
+        $list          = __('List', 'G3');
+
+        $ss  = __('%s %s', 'G3');
+        $sss = __('%s %s %s', 'G3');
+
+        $addNew = __('Add New', 'G3');
 
         $labels = [
             'name'                  => $announcements,
             'singular_name'         => $announcement,
             'menu_name'             => $announcements,
             'name_admin_bar'        => $announcements,
-            'add_new'               => __('Add New', 'G3'),
-            'add_new_item'          => sprintf(__('Add New %s', 'G3'), $announcement),
+            'add_new'               => $addNew,
+            'add_new_item'          => sprintf($ss, $addNew, $announcement),
             'new_item'              => sprintf(__('New %s', 'G3'), $announcement),
-            'edit_item'             => sprintf(__('Edit %s', 'G3'), $announcement),
+            'edit_item'             => sprintf($ss, __('Edit'), $announcement),
             'view_item'             => sprintf(__('View %s', 'G3'), $announcement),
-            'all_items'             => sprintf(__('All %s', 'G3'), $announcement),
-            'search_items'          => sprintf(__('Search %s', 'G3'), $announcement),
+            'all_items'             => sprintf($ss, __('All', 'G3'), $announcement),
+            'search_items'          => sprintf($ss, __('Search'), $announcement),
             'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $announcement),
             'not_found'             => sprintf(__('No %s found.', 'G3'), $announcement),
             'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $announcement),
@@ -36,12 +42,12 @@ class Announcement extends Components {
             'set_featured_image'    => __('Set cover', 'G3'),
             'remove_featured_image' => __('Remove cover', 'G3'),
             'use_featured_image'    => __('Use as cover', 'G3'),
-            'archives'              => sprintf(__('%s Archives', 'G3'), $announcement),
+            'archives'              => sprintf($ss, $announcement, __('Archives')),
             'insert_into_item'      => sprintf(__('Insert into %s', 'G3'), $announcement),
             'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $announcement),
-            'filter_items_list'     => sprintf(__('Filter %s list', 'G3'), $announcement),
-            'items_list_navigation' => sprintf(__('%s list navigation', 'G3'), $announcements),
-            'items_list'            => sprintf(__('%s list', 'G3'), $announcements),
+            'filter_items_list'     => sprintf($sss, __('Filter', 'G3'), $announcements, $list),
+            'items_list_navigation' => sprintf($sss, $announcements, $list, __('Navigation')),
+            'items_list'            => sprintf($ss, $announcements, $list),
         ];
         register_post_type(
             $this->postType,
@@ -62,6 +68,7 @@ class Announcement extends Components {
     }
     protected function taxonomy()
     {
+        $categories = __('Categories');
         register_taxonomy(
             'announcement_category',
             $this->postType,
@@ -72,9 +79,9 @@ class Announcement extends Components {
                 'query_var'         => true,
                 'has_archive'       => true,
                 'labels'            => [
-                    'name'          => __('Categories'),
+                    'name'          => $categories,
                     'singular_name' => __('Category'),
-                    'menu_name'     => __('Categories'),
+                    'menu_name'     => $categories,
                 ],
             ]
         );

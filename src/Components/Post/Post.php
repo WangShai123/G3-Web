@@ -154,6 +154,7 @@ class Post extends Components {
             ]);
         }
     }
+
     public function toggleLocale($locale): string
     {
         $option = $this->option();

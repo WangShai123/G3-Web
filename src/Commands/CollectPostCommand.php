@@ -7,27 +7,21 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use JEALER\G3\Utilities\Image;
 use JEALER\G3\Utilities\Validator;
-use JEALER\G3\Utilities\Common;
 use RuntimeException;
 
-/**
- * 测试文章数据采集命令
- * 
- * @since 1.0.0
- * @author Wang Shai
- */
-class TaCommand extends Command {
+class CollectPostCommand extends Command {
     protected function configure()
     {
         $this
-            ->setName('G3:testPost')
-            ->setAliases(['testPost'])
-            ->setDescription('测试文章数据采集')
-            ->addOption('post_type', null, InputOption::VALUE_OPTIONAL, '要添加的 post_type 名称', 'post')
-            ->addOption('taxonomy', null, InputOption::VALUE_REQUIRED, '要添加的 taxonomy 名称')
+            ->setName('G3:collectPost')
+            ->setAliases(['collectPost'])
+            ->setDescription('文章数据采集')
+            ->addOption('post_type', null, InputOption::VALUE_OPTIONAL, '要添加的 post_type 别名')
+            ->addOption('taxonomy', null, InputOption::VALUE_REQUIRED, '要添加的 taxonomy 别名')
             ->addOption('term', null, InputOption::VALUE_REQUIRED, '要添加的 term 别名')
             ->addOption('author_id', null, InputOption::VALUE_REQUIRED, '用户 id')
             ->addOption('count', null, InputOption::VALUE_OPTIONAL, '要添加的文章数量', 1);
@@ -127,12 +121,23 @@ class TaCommand extends Command {
         $wpFile = __DIR__ . '/../../../../../wp-load.php';
         require_once $wpFile;
 
+        $client = new Client([
+            'timeout'         => 10,
+            'connect_timeout' => 3,
+            'headers'         => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+            ],
+        ]);
+
         // 循环请求 API 获取数据
         for ($i = 1; $i <= $loopCount; $i++) {
             $output->writeln("正在获取第 {$i} 条数据...");
 
             // 爬取数据
-            $htmlContent = file_get_contents($targetUrl);
+            // $htmlContent = file_get_contents($targetUrl);
+            // $crawler     = new Crawler($htmlContent);
+            $response    = $client->get($targetUrl);
+            $htmlContent = $response->getBody()->getContents();
             $crawler     = new Crawler($htmlContent);
 
             // 解析数据

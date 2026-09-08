@@ -16,7 +16,7 @@ class PostWidget extends WP_Widget {
     {
         parent::__construct(
             'post_widget',
-            __('Post List', 'G3'),
+            __('Posts list'),
             [
                 'classname'                   => 'widget-list post-widget',
                 'description'                 => __('Retrieve the data for the post list.', 'G3'),
@@ -60,7 +60,7 @@ class PostWidget extends WP_Widget {
     }
     public function form($instance)
     {
-        $title      = !empty($instance['title']) ? $instance['title'] : __('Posts List', 'G3');
+        $title      = !empty($instance['title']) ? $instance['title'] : __('Posts list');
         $category   = $instance['category'] ?? $this->category;
         $count      = $instance['count'] ?? $this->count;
         $type       = $instance['type'] ?? $this->type;

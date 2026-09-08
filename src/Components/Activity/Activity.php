@@ -7,31 +7,38 @@ class Activity extends Components {
     private string $postType = 'activity';
     protected function postType()
     {
+        $activity   = __('Activity', 'G3');
+        $activities = __('Activities', 'G3');
+        $list       = __('List', 'G3');
+
+        $ss  = __('%s %s', 'G3');
+        $sss = __('%s %s %s', 'G3');
+
         $labels = [
-            'name'               => __('Activities', 'G3'),
-            'singular_name'      => __('Activity', 'G3'),
-            'menu_name'          => __('Activities', 'G3'),
-            'name_admin_bar'     => __('Activity', 'G3'),
-            'add_new'            => __('Add New', 'G3'),
-            'add_new_item'       => __('Add New Activity', 'G3'),
-            'new_item'           => __('Add New', 'G3'),
-            'edit_item'          => __('Edit'),
-            'view_item'          => __('View'),
-            'all_items'          => __('All'),
-            'search_items'       => __('Search'),
-            'parent_item_colon'  => __('Parent'),
-            'not_found'          => __('No items found.'),
-            'not_found_in_trash' => __('No items found.'),
-            // 'featured_image'        => __('Cover', 'G3'),
-            // 'set_featured_image'    => __('Set cover', 'G3'),
-            // 'remove_featured_image' => __('Remove cover', 'G3'),
-            // 'use_featured_image'    => __('Use as cover', 'G3'),
-            'archives'           => __('Archives'),
-            'insert_into_item'   => __('Add'),
-            // 'uploaded_to_this_item' => __('UPloaded to this activity', 'G3'),
-            // 'filter_items_list'     => __('Filter activities list', 'G3'),
-            // 'items_list_navigation' => __('Activities list navigation', 'G3'),
-            // 'items_list'            => __('Activities list', 'G3'),
+            'name'                  => $activities,
+            'singular_name'         => $activity,
+            'menu_name'             => $activities,
+            'name_admin_bar'        => $activity,
+            'add_new'               => __('Add New', 'G3'),
+            'add_new_item'          => sprintf($ss, __('Add New', 'G3'), $activity),
+            'new_item'              => sprintf(__('New %s', 'G3'), $activity),
+            'edit_item'             => sprintf($ss, __('Edit'), $activity),
+            'view_item'             => sprintf(__('View %s', 'G3'), $activity),
+            'all_items'             => sprintf($ss, __('All', 'G3'), $activity),
+            'search_items'          => sprintf($ss, __('Search'), $activity),
+            'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $activity),
+            'not_found'             => sprintf(__('No %s found.', 'G3'), $activity),
+            'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $activity),
+            'featured_image'        => __('Cover', 'G3'),
+            'set_featured_image'    => __('Set cover', 'G3'),
+            'remove_featured_image' => __('Remove cover', 'G3'),
+            'use_featured_image'    => __('Use as cover', 'G3'),
+            'archives'              => sprintf($ss, $activity, __('Archives')),
+            'insert_into_item'      => sprintf(__('Insert into %s', 'G3'), $activity),
+            'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $activity),
+            'filter_items_list'     => sprintf($sss, __('Filter', 'G3'), $activity, $list),
+            'items_list_navigation' => sprintf($sss, $activity, $list, __('Navigation')),
+            'items_list'            => sprintf($ss, $activity, $list),
         ];
         register_post_type(
             $this->postType,
@@ -61,6 +68,7 @@ class Activity extends Components {
     }
     public function taxonomy()
     {
+        $categories = __('Categories');
         register_taxonomy(
             'activity_category',
             $this->postType,
@@ -71,18 +79,9 @@ class Activity extends Components {
                 'query_var'         => true,
                 'has_archive'       => true,
                 'labels'            => [
-                    'name'          => __('Categories'),
+                    'name'          => $categories,
                     'singular_name' => __('Category'),
-                    'menu_name'     => __('Categories'),
-                    // 'search_items'      => __('Search Categories', 'G3'),
-                    // 'not_found'         => __('No categories found.', 'G3'),
-                    // 'all_items'         => __('All Categories', 'G3'),
-                    // 'parent_item'       => __('Parent Category', 'G3'),
-                    // 'parent_item_colon' => __('Parent Category:', 'G3'),
-                    // 'edit_item'         => __('Edit Category', 'G3'),
-                    // 'update_item'       => __('Update Category', 'G3'),
-                    // 'add_new_item'      => __('Add New Category', 'G3'),
-                    // 'new_item_name'     => __('New Category Name', 'G3'),
+                    'menu_name'     => $categories,
                 ]
             ]
         );

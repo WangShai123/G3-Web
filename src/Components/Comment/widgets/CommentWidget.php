@@ -13,7 +13,7 @@ class CommentWidget extends WP_Widget {
     {
         parent::__construct(
             'comment_widget',
-            __('Comment List', 'G3'),
+            sprintf(__('%s %s', 'G3'), __('Comment'), __('List', 'G3')),
             [
                 'classname'                   => 'widget_comment',
                 'description'                 => __('Retrieve the data for the comment list.', 'G3'),
@@ -62,7 +62,7 @@ class CommentWidget extends WP_Widget {
         $news         = Components::hasComponent('News');
         $product      = Components::hasComponent('Product');
 
-        $title = !empty($instance['title']) ? $instance['title'] : __('Comment List', 'G3');
+        $title = !empty($instance['title']) ? $instance['title'] : sprintf(__('%s %s', 'G3'), __('Comment'), __('List', 'G3'));
         ?>
         <p>
             <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title'); ?></label>
@@ -75,7 +75,8 @@ class CommentWidget extends WP_Widget {
             </label>
             <select class="widefat" id="<?php echo $this->get_field_id('from'); ?>"
                 name="<?php echo $this->get_field_name('from'); ?>">
-                <option value="0" <?php selected($from, 0); ?>><?php echo sprintf(__('All %s', 'G3'), __('Comments')); ?>
+                <option value="0" <?php selected($from, 0); ?>>
+                    <?php echo sprintf(__('%s %s', 'G3'), __('All', 'G3'), __('Comments')); ?>
                 </option>
                 <option value="1" <?php selected($from, 1); ?>>
                     <?php echo sprintf(__('%s %s', 'G3'), __('Post'), __('Comments')); ?>

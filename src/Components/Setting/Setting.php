@@ -14,6 +14,7 @@ use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Response;
+use JEALER\G3\Utilities\Validator;
 use Override;
 use Redis;
 
@@ -75,8 +76,10 @@ class Setting extends Components {
     {
         Frontend::css('jui');
         Frontend::umd('jui');
-        Frontend::umd('g3.admin.notification');
         add_action('admin_footer', [$this, 'renderAdminNotificationConfig']);
+
+        if (Validator::screen('g3-web_page_automation-settings')) return;
+        Frontend::umd('g3.admin.notification');
     }
     protected function init(): void
     {

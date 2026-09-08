@@ -84,6 +84,8 @@ class Developer extends Components {
     }
     protected function adminPanels(): array
     {
+        $ss = __('%s %s', 'G3');
+
         return [
             $this->panel('developer-mode', __('Developer Mode', 'G3'))
                 ->tab('general', __('Settings'))
@@ -172,7 +174,7 @@ class Developer extends Components {
                 ->tab('cron', __('WP Cron'))
                 ->tab('theme', __('Build Theme', 'G3'))
 
-                ->tab('form', __('Form Demo', 'G3'))
+                ->tab('form', sprintf($ss, __('Form', 'G3'), __('Demo', 'G3')))
                 ->option(SystemService::FORM_OPTION_KEY, $this->formDefaults())
                 ->input('key1', __('Input field', 'G3'))
                 ->file('key3', __('File upload', 'G3'))
@@ -208,9 +210,9 @@ class Developer extends Components {
                 ->checkbox('key12', __('Only one option', 'G3'), ['0' => __('Enable', 'G3')], __('Tip', 'G3') . __(': if <code>checkbox</code> is not checked, it will not submit any value what means the data does not exist.', 'G3'))
                 ->switch('key13', __('Switch', 'G3'), __('Value') . ': 1 / 0')
 
-                ->tab('html', __('HTML Demo', 'G3'))
+                ->tab('html', sprintf($ss, 'HTML', __('Demo', 'G3')))
                 ->tab('help', __('Help'))
-                ->tab('thanks', __('Thanks'))
+                ->tab('thanks', __('Thanks', 'G3'))
         ];
     }
     protected function adminPanelPage(): string

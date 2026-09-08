@@ -16,7 +16,8 @@ class AnnouncementWidget extends WP_Widget {
             'customize_selective_refresh' => true,
             'show_instance_in_rest'       => true,
         ];
-        parent::__construct('announcement_widget', __('Announcement List', 'G3'), $widget_ops);
+        $text       = sprintf(__('%s %s', 'G3'), __('Announcement', 'G3'), __('List', 'G3'));
+        parent::__construct('announcement_widget', $text, $widget_ops);
         $this->count    = 5;
         $this->category = 0;
         $this->type     = 0;
@@ -53,7 +54,8 @@ class AnnouncementWidget extends WP_Widget {
 
     public function form($instance)
     {
-        $title      = !empty($instance['title']) ? $instance['title'] : __('Announcement List', 'G3');
+        $text       = sprintf(__('%s %s', 'G3'), __('Announcement', 'G3'), __('List', 'G3'));
+        $title      = !empty($instance['title']) ? $instance['title'] : $text;
         $category   = $instance['category'] ?? '';
         $categories = get_terms([
             'taxonomy'   => 'announcement_category',

@@ -16,7 +16,7 @@ echo Element::tip(
 <div class="mt-4 flex gap-2 justify-between">
     <div>
         <a href="<?php echo admin_url('admin.php?page=wechat-oa-menu-edit'); ?>" class="button button-primary">
-            <?php _e('Add New Menu', 'G3'); ?>
+            <?php _e('Create New Menu'); ?>
         </a>
     </div>
     <div class="flex gap-1 flex-wrap justify-end">

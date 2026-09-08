@@ -324,10 +324,10 @@ class DBService extends Service {
          *  - price: 售价
          *  - currency: 货币
          *  - sold: 已售数量
-         *  - type: 库存类型, 1: general, 2: digital, 3: membership
+         *  - type: 库存类型. 1: general, 2: digital, 3: membership
          *  - stock: 库存数量
          *  - track: 是否跟踪库存
-         *  - status: 状态, 0: inactive, 1: active
+         *  - status: 状态. 0: inactive, 1: active
          *  - weight: 重量
          *  - size: 尺寸
          *  - unit: 单位
@@ -356,7 +356,7 @@ class DBService extends Service {
                 `type` TINYINT NOT NULL DEFAULT 1,
                 `stock` INT NOT NULL DEFAULT 0,
                 `track` BOOLEAN NOT NULL DEFAULT TRUE,
-                `status` TINYINT DEFAULT 1,
+                `status` TINYINT NOT NULL DEFAULT 1,
 
                 -- physical attributes
                 `weight` DECIMAL(12,2) DEFAULT NULL,
@@ -386,12 +386,12 @@ class DBService extends Service {
          *  - id: 主键
          *  - name: 规格名称, 如: 颜色
          *  - key: 规格键名, 如: color
-         *  - is_global: 是否全局规格, 0: 不是, 1: 是
-         *  - scope: 使用范围, 0: all, 1: product, 2: category, 3: tag, 4: brand
+         *  - is_global: 是否全局规格. 0: 不是, 1: 是
+         *  - scope: 使用范围. 0: all, 1: product, 2: category, 3: tag, 4: brand
          *  - owner_ids: 归属 IDs，当非全局规格时
-         *  - status: 状态, 0: 禁用, 1: 启用
+         *  - status: 状态. 0: 禁用, 1: 启用
          *  - sort: 排序
-         *  - created: 创建时间
+         *  - created_at: 创建时间
          * 
          * @since 1.0.0
          */
@@ -524,16 +524,16 @@ class DBService extends Service {
          *  - order_code: 订单编号
          *  - buyer_id: 买家用户ID
          *  - seller_id: 卖家用户ID
-         *  - order_source: 订单来源, 1: 网页订单, 2: 手动补单, 3: 手机APP订单, 4: 抖音订单
-         *  - order_type: 订单类型（对应库存管理类型）, 1: product(商品), 2: tip(知识付费), 3: donate(赞赏), 4: membership(会员), 5: recharge(充值)
-         *  - order_status: 订单状态, 1: pending, 2: paid, 3: processing, 4: completed, 5: cancelled, 6: refunded, 0: trash
+         *  - order_source: 订单来源. 1: 网页订单, 2: 手动补单, 3: 手机APP订单, 4: 抖音订单
+         *  - order_type: 订单类型（对应库存管理类型）. 1: product(商品), 2: tip(知识付费), 3: donate(赞赏), 4: membership(会员), 5: recharge(充值)
+         *  - order_status: 订单状态. 1: pending, 2: paid, 3: processing, 4: completed, 5: cancelled, 6: refunded, 0: trash
          *  - total_amount: 订单总额
          *  - discount_amount: 优惠金额
          *  - final_amount: 实际应付金额
          *  - paid_amount: 已支付金额
          *  - coupon_id: 关联 优惠券ID
          *  - referrer_id: 关联 推荐人ID
-         *  - commission_status: 佣金状态, 1: pending, 2: settled, 3: cancelled
+         *  - commission_status: 佣金状态. 1: pending, 2: settled, 3: cancelled
          *  - wallet_used: 使用钱包余额支付的金额
          *  - third_party_order: 第三方订单号
          *  - address_id: 关联地址ID
@@ -735,7 +735,7 @@ class DBService extends Service {
          *  - id: 主键，流水ID
          *  - user_id: 用户ID
          *  - order_id: 订单ID
-         *  - type: 流水类型, 0: recharge, 1: order, 2: refund, 3: withdraw, 4: commission, 5: transfer
+         *  - type: 流水类型. 0: recharge, 1: order, 2: refund, 3: withdraw, 4: commission, 5: transfer
          *  - amount: 变动金额（正数代表进账，负数代表出账）
          *  - before_balance: 变动前余额
          *  - after_balance: 变动后余额
@@ -772,9 +772,9 @@ class DBService extends Service {
          *  - order_id: 订单ID
          *  - user_id: 用户ID
          *  - pay_amount: 支付金额
-         *  - pay_method: 支付方式, 0: 余额, 1: 微信, 2: 支付宝
+         *  - pay_method: 支付方式. 0: 余额, 1: 微信, 2: 支付宝
          *  - transaction_id: 第三方支付流水号
-         *  - status: 支付状态, 0: pending, 1: success, 2: failed, 3: refunded
+         *  - status: 支付状态. 0: pending, 1: success, 2: failed, 3: refunded
          *  - paid_at: 支付成功时间
          *  - raw_response: 原始回调数据（用于对账，JSON格式存储）
          * 
@@ -812,7 +812,7 @@ class DBService extends Service {
          *  - actual_amount: 实际到账金额
          *  - account_type: 提现账户类型
          *  - account_info: 提现账户信息（JSON存储，如卡号后四位、支付宝账号）加密存储
-         *  - status: 状态, 0: pending, 1: approved, 2: rejected, 3: paid
+         *  - status: 状态. 0: pending, 1: approved, 2: rejected, 3: paid
          *  - admin_remark: 管理员备注
          *  - applied_at: 申请时间
          *  - processed_at: 处理时间
@@ -895,8 +895,8 @@ class DBService extends Service {
          *  - user_id: 获得佣金的用户（分销商）ID
          *  - parent_id: 上级分销商（如果是二级分销）ID
          *  - amount: 佣金金额
-         *  - type: 佣金类型, 1: level1, 2: level2
-         *  - status: 状态, 0: pending, 1: settled, 2: locked, 3: cancelled
+         *  - type: 佣金类型. 1: level1, 2: level2
+         *  - status: 状态. 0: pending, 1: settled, 2: locked, 3: cancelled
          *  - triggered_at: 触发时间（订单完成时间）
          *  - settled_at: 结算时间
          * 
@@ -929,14 +929,14 @@ class DBService extends Service {
          * 营销与优惠券表
          *  - id: 主键, 优惠券ID
          *  - title: 优惠券名称
-         *  - type: 优惠券类型, 0: fixed 满减, 1: percent 折扣
+         *  - type: 优惠券类型. 0: fixed 满减, 1: percent 折扣
          *  - value: 优惠券值（如满100减10，则存10）
          *  - min_amount: 优惠券使用最低金额
          *  - total_count: 优惠券总发行量
          *  - used_count: 已领取数量
          *  - start_time: 有效开始时间
          *  - end_time: 有效结束时间
-         *  - product_scope: 优惠券使用范围, 0: all 全部商品, 2: single 指定商品, 3: category 指定分类, 4: brand 指定品牌
+         *  - product_scope: 优惠券使用范围. 0: all 全部商品, 2: single 指定商品, 3: category 指定分类, 4: brand 指定品牌
          * 
          * @since 1.0.0
          */
@@ -1037,10 +1037,10 @@ class DBService extends Service {
          * 邀请码表。存储邀请码信息，如邀请码、有效期、创建类型（生成/用户购买）、过期时间、状态（未使用/已使用）、创建用户id、创建时间、被邀请用户id、使用时间等
          *  - id: 主键
          *  - code: 邀请码
-         *  - source: 来源，1: 系统生成, 2: 用户购买
+         *  - source: 来源. 1: 系统生成, 2: 用户购买
          *  - start_time: 生效时间
          *  - end_time: 失效时间
-         *  - status: 状态，0: 未使用, 1: 已使用
+         *  - status: 状态. 0: 未使用, 1: 已使用
          *  - creator_id: 创建用户id
          *  - invitee_id: 被邀请用户id
          *  - created_at: 创建时间
@@ -1155,8 +1155,8 @@ class DBService extends Service {
          *  - msgid: 微信消息id
          *  - openid: 用户唯一标识
          *  - nickname: 用户昵称（可选）
-         *  - type: 消息类型: text/image/voice/video/location/link/event等
-         *  - content: 消息内容: 文本内容/事件描述/媒体ID/地理位置信息/链接信息等
+         *  - type: 消息类型. text/image/voice/video/location/link/event等
+         *  - content: 消息内容. 文本内容/事件描述/媒体ID/地理位置信息/链接信息等
          *  - created_at: 消息创建时间 UTC 时间
          * 
          * @since 1.0.0
@@ -1185,9 +1185,9 @@ class DBService extends Service {
          * 
          * 微信公众号应答表
          *  - id: 应答表字段id
-         *  - type: 应答类型: text/image/voice/video/location/link/event等
+         *  - type: 应答类型. text/image/voice/video/location/link/event等
          *  - content: 应答内容
-         *  - status: 应答状态: 1: enabled, 0: disabled, default: 1
+         *  - status: 应答状态. 1: enabled, 0: disabled, default: 1
          *  - created_at: 创建时间 UTC 时间
          *  - updated_at: 更新时间 UTC 时间
          * 
@@ -1436,11 +1436,11 @@ class DBService extends Service {
          *  - id: 主键
          *  - title: 标题
          *  - link: 链接
-         *  - target: 打开方式, 0: self, 1: blank
+         *  - target: 打开方式. 0: self, 1: blank
          *  - media: 媒体文件网络地址
          *  - location: 位置
          *  - sort: 排序
-         *  - status: 状态, 0: offline, 1: online
+         *  - status: 状态. 0: offline, 1: online
          *  - user_id: 创建人
          *  - created_at: 创建时间
          *  - updated_at: 更新时间
@@ -1468,5 +1468,4 @@ class DBService extends Service {
             dbDelta($sql);
         }
     }
-
 }

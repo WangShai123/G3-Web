@@ -38,7 +38,7 @@ $options = [
 ];
 ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo $id ? __('Edit') : __('Add New Menu', 'G3') ?></h1>
+    <h1 class="wp-heading-inline"><?php echo $id ? __('Edit') : __('Create New Menu') ?></h1>
     <a href="<?php echo admin_url('admin.php?page=wechat-oa&tab=menus'); ?>" class="page-title-action">
         <?php _e('Back') ?>
     </a>

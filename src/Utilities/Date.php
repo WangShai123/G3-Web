@@ -24,22 +24,22 @@ final class Date {
         return match (true) {
             // 1 分钟内
             $timeDiff < 60      => \sprintf(
-                _n('%s second ago', '%s seconds ago', $timeDiff, 'G3'),
+                _n('%d second ago', '%d seconds ago', $timeDiff, 'G3'),
                 $timeDiff
             ),
             // 1 小时内
             $timeDiff < 3600    => \sprintf(
-                _n('%s minute ago', '%s minutes ago', intdiv($timeDiff, 60), 'G3'),
+                _n('%d minute ago', '%d minutes ago', intdiv($timeDiff, 60), 'G3'),
                 intdiv($timeDiff, 60)
             ),
             // 1 天内
             $timeDiff < 86400   => \sprintf(
-                _n('%s hour ago', '%s hours ago', intdiv($timeDiff, 3600), 'G3'),
+                _n('%d hour ago', '%d hours ago', intdiv($timeDiff, 3600), 'G3'),
                 intdiv($timeDiff, 3600)
             ),
             // 1 月内（30天）
             $timeDiff < 2592000 => \sprintf(
-                _n('%s day ago', '%s days ago', intdiv($timeDiff, 86400), 'G3'),
+                _n('%d day ago', '%d days ago', intdiv($timeDiff, 86400), 'G3'),
                 intdiv($timeDiff, 86400)
             ),
 

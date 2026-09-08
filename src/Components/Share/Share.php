@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\ShareService;
+use JEALER\G3\Utilities\Element;
 use Override;
 
 class Share extends Components {
@@ -53,11 +54,11 @@ class Share extends Components {
                 ->tab('general', __('General'))
                 ->option(ShareService::OPTION_KEY, $this->default())
                 ->switch('enable', __('Content Distribution', 'G3'), __('Whether to display the content distribution section on the post edit page.', 'G3'))
-                ->switch('poster', __('Share via Poster', 'G3'))
                 ->switch('wechatTitle', sprintf(__('%s %s', 'G3'), __('WeChat', 'G3'), __('Title')), __('Customize the title that will be displayed when shared on WeChat.', 'G3'))
                 ->switch('wechatMediaLibrary', __('Wechat OA Media Library', 'G3'), __('When publishing post, the content will be automatically synchronized to the WeChat official account media library.', 'G3'))
                 ->switch('qqZone', sprintf(__('Share to %s', 'G3'), __('QQ Zone', 'G3')))
                 ->switch('douYin', sprintf(__('Share to %s', 'G3'), __('DouYin', 'G3')))
+                ->html('poster', __('Poster'), Element::description('<code>@todo: static method</code>'))
                 ->tab('account', __('Social Accounts', 'G3')),
         ];
     }

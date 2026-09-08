@@ -103,18 +103,25 @@ class Product extends Components {
         $product  = __('Product', 'G3');
         $products = __('Products', 'G3');
         $shop     = __('Shop', 'G3');
-        $labels   = [
+        $list     = __('List', 'G3');
+
+        $addNew = __('Add New', 'G3');
+
+        $ss  = __('%s %s', 'G3');
+        $sss = __('%s %s %s', 'G3');
+
+        $labels = [
             'name'                  => $products,
             'singular_name'         => $product,
             'menu_name'             => $shop,
             'name_admin_bar'        => $product,
-            'add_new'               => __('Add New', 'G3'),
-            'add_new_item'          => sprintf(__('Add New %s', 'G3'), $product),
+            'add_new'               => $addNew,
+            'add_new_item'          => sprintf($ss, $addNew, $products),
             'new_item'              => sprintf(__('New %s', 'G3'), $product),
-            'edit_item'             => sprintf(__('Edit %s', 'G3'), $product),
+            'edit_item'             => sprintf($ss, __('Edit'), $product),
             'view_item'             => sprintf(__('View %s', 'G3'), $product),
-            'all_items'             => sprintf(__('All %s', 'G3'), $products),
-            'search_items'          => sprintf(__('Search %s', 'G3'), $products),
+            'all_items'             => sprintf($ss, __('All', 'G3'), $products),
+            'search_items'          => sprintf($ss, __('Search'), $products),
             'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $product),
             'not_found'             => sprintf(__('No %s found.', 'G3'), $product),
             'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $product),
@@ -122,14 +129,14 @@ class Product extends Components {
             'set_featured_image'    => __('Set cover', 'G3'),
             'remove_featured_image' => __('Remove cover', 'G3'),
             'use_featured_image'    => __('Use as cover', 'G3'),
-            'archives'              => sprintf(__('%s Archives', 'G3'), $product),
+            'archives'              => sprintf($ss, $product, __('Archives')),
             'insert_into_item'      => sprintf(__('Insert into %s', 'G3'), $product),
             'uploaded_to_this_item' => sprintf(__('Uploaded to this %s', 'G3'), $product),
-            'filter_items_list'     => sprintf(__('Filter %s list', 'G3'), $products),
-            'items_list_navigation' => sprintf(__('%s list navigation', 'G3'), $products),
-            'items_list'            => sprintf(__('%s list', 'G3'), $products),
+            'filter_items_list'     => sprintf($sss, __('Filter', 'G3'), $products, $list),
+            'items_list_navigation' => sprintf($sss, $products, $list, __('Navigation')),
+            'items_list'            => sprintf($ss, $products, $list),
         ];
-        $args     = [
+        $args   = [
             'labels'             => $labels,
             'public'             => true,
             'publicly_queryable' => true,
@@ -156,6 +163,9 @@ class Product extends Components {
         $brands     = __('Brands', 'G3');
         $category   = __('Category');
         $categories = __('Categories');
+
+        $ss = __('%s %s', 'G3');
+
         register_taxonomy(
             'product_category',
             ['product'],
@@ -167,9 +177,9 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_category'],
                 'labels'            => [
-                    'name'          => sprintf(__('%s %s', 'G3'), $products, $categories),
-                    'singular_name' => sprintf(__('%s %s', 'G3'), $product, $category),
-                    'search_items'  => sprintf(__('Search %s', 'G3'), $categories),
+                    'name'          => sprintf($ss, $products, $categories),
+                    'singular_name' => sprintf($ss, $product, $category),
+                    'search_items'  => sprintf($ss, __('Search'), $categories),
                     'not_found'     => sprintf(__('No %s found.', 'G3'), $category),
                     'all_items'     => __('All Categories'),
                     'menu_name'     => $categories
@@ -187,16 +197,16 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_brand'],
                 'labels'            => [
-                    'name'              => sprintf(__('%s %s', 'G3'), $products, $brands),
-                    'singular_name'     => sprintf(__('%s %s', 'G3'), $product, $brand),
-                    'search_items'      => sprintf(__('Search %s', 'G3'), $brands),
+                    'name'              => sprintf($ss, $products, $brands),
+                    'singular_name'     => sprintf($ss, $product, $brand),
+                    'search_items'      => sprintf($ss, __('Search'), $brands),
                     'not_found'         => sprintf(__('No %s found.', 'G3'), $brand),
-                    'all_items'         => sprintf(__('All %s', 'G3'), $brands),
+                    'all_items'         => sprintf($ss, __('All', 'G3'), $brands),
                     'parent_item'       => sprintf(__('Parent %s', 'G3'), $brand),
                     'parent_item_colon' => sprintf(__('Parent %s', 'G3') . ':', $brand),
-                    'edit_item'         => sprintf(__('Edit %s', 'G3'), $brand),
-                    'update_item'       => sprintf(__('Update %s', 'G3'), $brand),
-                    'add_new_item'      => sprintf(__('Add New %s', 'G3'), $brand),
+                    'edit_item'         => sprintf($ss, __('Edit'), $brand),
+                    'update_item'       => sprintf($ss, __('Update'), $brand),
+                    'add_new_item'      => sprintf($ss, __('Add New', 'G3'), $brand),
                     'new_item_name'     => sprintf(__('New %s Name', 'G3'), $brand),
                     'menu_name'         => $brands
                 ]
@@ -398,11 +408,12 @@ class Product extends Components {
             $skuBaseData = [
                 'product_id'    => $postId,
                 'regular_price' => floatval($skuInfo['regular_price'] ?? 0),
+                'cost_price'    => floatval($skuInfo['cost_price'] ?? 0),
                 'price'         => floatval($skuInfo['price'] ?? 0),
-                'weight'        => floatval($skuInfo['weight'] ?? 0),
-                'unit'          => sanitize_text_field($skuInfo['unit'] ?? ''),
                 'stock'         => intval($skuInfo['stock'] ?? 0),
                 'sold'          => intval($skuInfo['sold'] ?? 0),
+                // 'weight'        => floatval($skuInfo['weight'] ?? 0),
+                // 'unit'          => sanitize_text_field($skuInfo['unit'] ?? ''),
                 'type'          => intval($skuInfo['type'] ?? 1),
             ];
 

@@ -211,7 +211,7 @@ class ProductService extends Service {
     public function createSkuCode(int $productId, int $typeId, string $prefix = 'G', string $separator = '-'): string
     {
         /**
-         * 临时策略: prefix + separator + typeId + separator + productId
+         * 临时策略: prefix + separator + typeId + separator + productId，供测试使用。待重构。
          * 例如: G-01-000123
          * 其中:
          *  - prefix: G
@@ -271,10 +271,14 @@ class ProductService extends Service {
      */
     public function createSku(array $data): bool|int
     {
-        if (!isset($data['product_id'])) {
+        if (
+            !isset($data['product_id'])
+            || !isset($data['type'])
+        ) {
             return false;
         }
-        if (!isset($data['sku_code']) || !$data['sku_code']) {
+
+        if (!isset($data['sku_code']) || trim($data['sku_code']) === '') {
             $data['sku_code'] = $this->createSkuCode($data['product_id'], $data['type']);
         }
 

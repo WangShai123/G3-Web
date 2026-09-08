@@ -9,7 +9,9 @@ wp_enqueue_script('media');
 Frontend::umd('g3.media.image');
 
 $t         = $_GET['t'] ?? '';
-$pageTitle = $t === 'new' ? __('Add Swiper', 'G3') : __('Edit Swiper', 'G3');
+$addNew    = sprintf(__('%s %s', 'G3'), __('Add New', 'G3'), __('Swiper', 'G3'));
+$edit      = sprintf(__('%s %s', 'G3'), __('Edit'), __('Swiper', 'G3'));
+$pageTitle = $t === 'new' ? $addNew : $edit;
 $id        = '';
 if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
     $id       = $_GET['id'];

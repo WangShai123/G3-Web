@@ -38,8 +38,7 @@ class Automation extends Components {
     {
         return [
             $this->panel('automation-settings', __('Automation', 'G3'))
-                ->tab('collection', __('Data Collection', 'G3'))
-            // ->option(SystemService::AUTOMATION_OPTION_KEY, SystemService::automationDefaultOption())
+                ->tab('collection', sprintf(__('%s %s', 'G3'), __('Posts'), __('Collection', 'G3')))
         ];
     }
 }

@@ -10,6 +10,8 @@ use Override;
 class Swiper extends Components {
     protected function adminMenu(): void
     {
+        $newSwiper = sprintf(__('%s %s', 'G3'), __('Add New', 'G3'), __('Swiper', 'G3'));
+
         add_submenu_page(
             'themes.php',
             __('Swiper', 'G3'),
@@ -21,8 +23,8 @@ class Swiper extends Components {
         );
         add_submenu_page(
             'themes.php',
-            __('Add Swiper', 'G3'),
-            __('Add Swiper', 'G3'),
+            $newSwiper,
+            $newSwiper,
             'manage_options',
             'swiper',
             [$this, 'editSwiper']
@@ -124,10 +126,10 @@ class Swiper extends Components {
                 Response::ajaxError(__('Slug: Only supports English Letter', 'G3'));
             }
 
-            $locations = get_option(SwiperService::LOCATION_OPTION_KEY, [
+            $locations       = get_option(SwiperService::LOCATION_OPTION_KEY, [
                 'home' => __('Home'),
             ]);
-            $locations = is_array($locations) ? $locations : ['home' => __('Home')];
+            $locations       = is_array($locations) ? $locations : ['home' => __('Home')];
             $locations[$key] = $name;
 
             $result = update_option(SwiperService::LOCATION_OPTION_KEY, $locations);

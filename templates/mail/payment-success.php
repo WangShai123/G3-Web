@@ -1,10 +1,11 @@
 <?php
 use JEALER\G3\Services\MailerService;
 
-$title   = sprintf(__('[%s] Payment successful', 'G3'), $siteName);
+$msg     = sprintf(__('[%s] Payment successful', 'G3'), $siteName);
+$title   = $msg;
 $content = sprintf(
     '<p>%s</p><p>%s</p>',
-    sprintf(__('[%s] Payment successful', 'G3'), $siteName),
+    $msg,
     __('You can sign in to your account to view the order details.', 'G3')
 );
 
