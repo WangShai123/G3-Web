@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\CustomerService;
@@ -95,7 +95,7 @@ class Setting extends Components {
         if ($v['online'] ?? '0' === '1' && $this->loader->admin()) {
             $ttl = $v['onlineDelay'] ?? 30;
             /** @var RedisService $redisService*/
-            $redisService = $this->container->get(RedisService::class);
+            $redisService = $this->service(RedisService::class);
             $redis        = $redisService->init();
             $cookie       = $_COOKIE[UserService::VISITOR_COOKIE] ?? '';
             if (!empty($cookie)) {
@@ -220,7 +220,7 @@ class Setting extends Components {
         $sources = [];
 
         /** @var CustomerService|null $customerService */
-        $customerService = $this->getService(CustomerService::class);
+        $customerService = $this->service(CustomerService::class);
         if ($customerService instanceof CustomerService && $customerService->enabled()) {
             $sources[] = [
                 'id'              => 'customer-service',
@@ -358,7 +358,7 @@ class Setting extends Components {
         }
 
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
         $postService->setExtra($post_id, [
             'seo_title'       => $_POST['g3_seo_title'] ?? '',
             'seo_description' => $_POST['g3_seo_description'] ?? '',
@@ -370,7 +370,7 @@ class Setting extends Components {
     {
         $id = $post->ID ?? 0;
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
         $seo         = $postService->getExtra($id);
         $title       = $seo['seo_title'] ?? '';
         $description = $seo['seo_description'] ?? '';
@@ -500,7 +500,7 @@ class Setting extends Components {
             }
 
             /** @var LLMService $service */
-            $service = $this->container->get(LLMService::class);
+            $service = $this->service(LLMService::class);
 
             $result = $service->writeStaticFiles();
             if ($result !== false) {
@@ -515,7 +515,7 @@ class Setting extends Components {
             }
 
             /** @var SitemapService $service */
-            $service = $this->container->get(SitemapService::class);
+            $service = $this->service(SitemapService::class);
 
             $service->writeStaticFiles();
 

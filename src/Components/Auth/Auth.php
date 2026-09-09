@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Admin\PanelRenderer;
 use JEALER\G3\Core\Container\Container;
@@ -148,7 +148,7 @@ class Auth extends Components {
             }
 
             /** @var AuthService $service */
-            $service = $this->container->get(AuthService::class);
+            $service = $this->service(AuthService::class);
 
             $successCodes = [];
             $failCount    = 0;
@@ -197,7 +197,7 @@ class Auth extends Components {
                 Response::ajaxIllegal();
             }
             /** @var AuthService $service */
-            $service = $this->getService(AuthService::class);
+            $service = $this->service(AuthService::class);
             $result  = $service->deleteInviteCode((int) $id);
             if ($result !== false) {
                 Response::ajaxDeleted();

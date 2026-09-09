@@ -1,14 +1,12 @@
 <?php
-namespace JEALER\G3\Core;
-
-use JEALER\G3\Components\Components;
+namespace JEALER\G3\Core\Components;
 use ReflectionClass;
 
 /**
  * Component runtime registry.
  *
  * ComponentLoader owns component creation; this registry owns component lookup
- * state. Components::$components is kept as a compatibility mirror only.
+ * state.
  */
 class ComponentRegistry {
 
@@ -42,8 +40,6 @@ class ComponentRegistry {
 
         $this->components[$key] = $component;
         $this->names[$key]      = $this->displayName($name, $component);
-
-        $this->syncLegacyCache($name, $component);
     }
 
     public function has(string $name): bool
@@ -111,15 +107,5 @@ class ComponentRegistry {
         }
 
         return (new ReflectionClass($component))->getShortName();
-    }
-
-    private function syncLegacyCache(string $name, Components $component): void
-    {
-        $shortName = (new ReflectionClass($component))->getShortName();
-        $key       = $this->normalizeName($name);
-
-        Components::$components[$key]       = $component;
-        Components::$components[$name]      = $component;
-        Components::$components[$shortName] = $component;
     }
 }

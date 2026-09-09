@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\ProductService;
@@ -15,14 +15,22 @@ use WP_Post;
 use Exception;
 
 class Product extends Components {
-    private ProductService $service;
+    private ProductService $productService;
     private PostService    $postService;
 
     protected function start()
     {
-        $this->service     = $this->container->get(ProductService::class);
-        $this->postService = $this->container->get(PostService::class);
+        $this->productService = $this->service(ProductService::class);
+        $this->postService    = $this->service(PostService::class);
     }
+
+    protected function hooks()
+    {
+        $this->filter([
+            'manage_edit-product_columns' => [[$this, 'productColumns'], 20, 1]
+        ]);
+    }
+
     private function optionDefaults(): array
     {
         return [
@@ -74,7 +82,7 @@ class Product extends Components {
     }
     public function renderSpecs(): void
     {
-        echo '<div class="wrap">';
+        echo '<div class="wrap"><h1>' . __('Specifications', 'G3') . '</h1>';
         $args = [
             'specifications' => __('Specifications', 'G3'),
             'options'        => __('Options', 'G3')
@@ -98,6 +106,21 @@ class Product extends Components {
                 ->rowClass('advanced'),
         ];
     }
+
+    public function productColumns(array $columns)
+    {
+        /**
+         * 1. unset columns
+         */
+        unset($columns['author'], $columns['tags']);
+
+        /**
+         * 2. add new columns
+         */
+
+        return $columns;
+    }
+
     protected function postType(): void
     {
         $product  = __('Product', 'G3');
@@ -177,8 +200,8 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_category'],
                 'labels'            => [
-                    'name'          => sprintf($ss, $products, $categories),
-                    'singular_name' => sprintf($ss, $product, $category),
+                    'name'          => $categories,
+                    'singular_name' => $category,
                     'search_items'  => sprintf($ss, __('Search'), $categories),
                     'not_found'     => sprintf(__('No %s found.', 'G3'), $category),
                     'all_items'     => __('All Categories'),
@@ -197,8 +220,8 @@ class Product extends Components {
                 'has_archive'       => true,
                 'rewrite'           => ['slug' => 'product_brand'],
                 'labels'            => [
-                    'name'              => sprintf($ss, $products, $brands),
-                    'singular_name'     => sprintf($ss, $product, $brand),
+                    'name'              => $brands,
+                    'singular_name'     => $brand,
                     'search_items'      => sprintf($ss, __('Search'), $brands),
                     'not_found'         => sprintf(__('No %s found.', 'G3'), $brand),
                     'all_items'         => sprintf($ss, __('All', 'G3'), $brands),
@@ -337,15 +360,15 @@ class Product extends Components {
         $property = $extra['property'] ?? [];
         $gallery  = $extra['gallery'] ?? [];
 
-        $specs       = $this->service->getSpecs();
+        $specs       = $this->productService->getSpecs();
         $specOptions = [];
-        $skus        = $this->service->getSkusByProductId($postId);
+        $skus        = $this->productService->getSkusByProductId($postId);
         if (!$skus) {
             $type = 1;
         } else {
             $type = $skus[0]['type'];
             foreach ($specs as $spec) {
-                $specOptions[$spec['id']] = $this->service->getSpecOptionsBySpecId($spec['id']);
+                $specOptions[$spec['id']] = $this->productService->getSpecOptionsBySpecId($spec['id']);
             }
         }
 
@@ -381,15 +404,15 @@ class Product extends Components {
     }
     public function deletedProduct($postId)
     {
-        $this->service->clearProductData($postId);
+        $this->productService->clearProductData($postId);
     }
     public function renderSkuMetabox(WP_POST $post): void
     {
-        echo '<div id="detail-app"><div id="sku-app"></div></div>';
+        echo '<div id="detail-app"><div id="sku-app" data-component></div></div>';
     }
     public function renderPropertiesMetabox(WP_POST $post): void
     {
-        echo '<div id="prop-app"></div>';
+        echo '<div id="prop-app" data-component></div>';
     }
     public function saveSku($postId): void
     {
@@ -398,11 +421,15 @@ class Product extends Components {
             return;
         }
 
-        $skuData = $_POST[$name];
+        $skuData        = $_POST[$name];
+        $productSpecIds = [];
+
+        $this->productService->deleteProductSpecRelation($postId);
 
         foreach ($skuData as $skuKey => $skuInfo) {
             // check if it's a valid SKU ID or a temporary key
             $isExistingSku = is_numeric($skuKey);
+            $skuSpecs      = isset($skuInfo['specs']) && is_array($skuInfo['specs']) ? $skuInfo['specs'] : [];
 
             // build SKU base data
             $skuBaseData = [
@@ -420,10 +447,12 @@ class Product extends Components {
             if ($isExistingSku) {
                 // update existing sku
                 $skuBaseData['id'] = $skuKey;
-                $skuId             = $this->service->updateSku($skuBaseData);
+                $skuId             = $this->productService->updateSku($skuBaseData);
             } else {
                 // create new sku
-                $skuId = $this->service->createSku($skuBaseData);
+                $skuBaseData['_specs']   = $skuSpecs;
+                $skuBaseData['_row_key'] = (string) $skuKey;
+                $skuId                   = $this->productService->createSku($skuBaseData);
             }
 
             // skip specs if sku creation/update failed
@@ -431,22 +460,28 @@ class Product extends Components {
                 continue;
             }
 
-            if (isset($skuInfo['specs']) && is_array($skuInfo['specs'])) {
-                // delete existing spec relations
-                $this->service->deleteSkuSpecRelations($skuId);
-                $this->service->deleteProductSpecRelation($postId);
+            $this->productService->deleteSkuSpecRelations($skuId);
 
-                // add new spec relations
-                foreach ($skuInfo['specs'] as $specId => $specOptionData) {
-                    if (is_numeric($specId) && isset($specOptionData['option_id']) && is_numeric($specOptionData['option_id'])) {
-                        $this->service->addSkuSpecRelation($skuId, $specId, $specOptionData['option_id']);
-                        $this->service->addProductSpecRelations($postId, $specId);
-                    }
+            foreach ($skuSpecs as $specId => $specOptionData) {
+                if (!is_array($specOptionData)) {
+                    continue;
+                }
+
+                $currentSpecId = (int) ($specOptionData['spec_id'] ?? $specId);
+                $specOptionId  = (int) ($specOptionData['option_id'] ?? 0);
+
+                if ($currentSpecId > 0 && $specOptionId > 0) {
+                    $this->productService->addSkuSpecRelation($skuId, $currentSpecId, $specOptionId);
+                    $productSpecIds[$currentSpecId] = $currentSpecId;
                 }
             }
         }
 
-        $this->service->clearProductCache($postId);
+        foreach ($productSpecIds as $specId) {
+            $this->productService->addProductSpecRelations($postId, $specId);
+        }
+
+        $this->productService->clearProductCache($postId);
     }
 
 
@@ -476,7 +511,7 @@ class Product extends Components {
                 'status'    => $fields['status'] ?? 1,
                 'sort'      => $fields['sort'] ?? 0,
             ];
-            $result = $this->service->updateSpec($data);
+            $result = $this->productService->updateSpec($data);
 
             if ($result === -1) {
                 Response::ajaxError(__('Name or Key already exists.', 'G3'));
@@ -498,11 +533,11 @@ class Product extends Components {
             ) {
                 Response::ajaxIllegal();
             }
-            $options = $this->service->getSpecOptionsBySpecId($id);
+            $options = $this->productService->getSpecOptionsBySpecId($id);
             if (count($options) !== 0) {
                 Response::ajaxError(__('Cannot delete this spec, it is used in some sku or options.', 'G3'));
             }
-            $result = $this->service->deleteSpec($id);
+            $result = $this->productService->deleteSpec($id);
             if ($result) {
                 Response::ajaxDeleted();
             } else {
@@ -532,7 +567,7 @@ class Product extends Components {
                 'status'  => $fields['status'] ?? 1,
             ];
 
-            $result = $this->service->updateSpecOption($data);
+            $result = $this->productService->updateSpecOption($data);
 
             if (is_wp_error($result)) {
                 Response::ajaxError($result->get_error_message());
@@ -608,7 +643,7 @@ class Product extends Components {
                 Response::ajaxIllegal();
             }
             try {
-                $options = $this->service->getSpecOptionsBySpecId($specId);
+                $options = $this->productService->getSpecOptionsBySpecId($specId);
 
                 wp_send_json_success([
                     'options' => $options
@@ -626,7 +661,7 @@ class Product extends Components {
                 Response::ajaxIllegal();
             }
             try {
-                $result = $this->service->deleteSku($id);
+                $result = $this->productService->deleteSku($id);
                 if ($result) {
                     Response::ajaxDeleted();
                 } else {

@@ -1,5 +1,5 @@
 <?php
-namespace JEALER\G3\Components;
+namespace JEALER\G3\Core\Components;
 use JEALER\G3\Utilities\System;
 
 class ComponentManager {

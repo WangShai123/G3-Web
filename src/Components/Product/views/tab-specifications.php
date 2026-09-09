@@ -14,9 +14,13 @@ $table->display();
         const langs = {
             en: {
                 keyExists: 'The key is duplicated, please change it.',
+                required: 'The field is required.',
+                only: 'The key must be unique and only contain letters, numbers, and underscores',
             },
             zh: {
                 keyExists: 'Key 已重复，请修改。',
+                required: '当前字段不可为空',
+                only: '唯一且仅支持字母、数字和下划线',
             }
         }
         const ts = (k) => t(k, langs)
@@ -38,7 +42,7 @@ $table->display();
                     payload: {
                         label: 'Key',
                         name: 'key',
-                        placeholder: '<?php _e('The unique and machine-readable name.'); ?>',
+                        placeholder: ts('only'),
                         required: true
                     }
                 },
@@ -70,6 +74,26 @@ $table->display();
                     }
                 },
             ],
+            validator: {
+                rules: {
+                    name: {
+                        required: true,
+                    },
+                    key: {
+                        required: true,
+                        noChinese: true,
+                    }
+                },
+                messages: {
+                    name: {
+                        required: ts('required'),
+                    },
+                    key: {
+                        noChinese: ts('only'),
+                        required: ts('required'),
+                    }
+                }
+            },
             onSubmit: (fields) => {
                 for (const key in fields) {
                     if (fields.hasOwnProperty(key) && fields[key] === '') {
@@ -96,10 +120,10 @@ $table->display();
             },
         }).build()
         const modal = createModal({
-            header: false,
             footer: false,
-            bgClose: true,
-            escClose: true,
+            text: {
+                title: '<?php _e('Specifications', 'G3'); ?>',
+            },
             content: form.element,
             onHidden: () => {
                 form.reset()

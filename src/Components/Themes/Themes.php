@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Components\Themes\Includes\Themes as ThemesClass;
 use JEALER\G3\Services\SystemService;
@@ -40,7 +40,7 @@ class Themes extends Components {
         $this->projects = $this->getProjects();
 
         if (class_exists(ThemesClass::class)) {
-            $this->container->get(ThemesClass::class);
+            $this->service(ThemesClass::class);
         } else {
             new WP_Error('G3_Themes_Error', 'JEALER\G3\Components\Themes\Includes\Themes class not found');
         }

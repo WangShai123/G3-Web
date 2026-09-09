@@ -1,5 +1,5 @@
 <?php
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Utilities\Date;
 

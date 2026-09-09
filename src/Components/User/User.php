@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Cache\SessionTokens;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use JEALER\G3\Services\UserService;
 use JEALER\G3\Services\SystemService;
@@ -122,7 +122,7 @@ class User extends Components {
         }
 
         /**  @var UserService $userService */
-        $userService = $this->container->get(UserService::class);
+        $userService = $this->service(UserService::class);
         $avatarUrl   = $userService->getCard($user_id)['avatar'] ?? '';
         $avatarUrl   = empty($avatarUrl) ? UserService::getDefaultAvatar() : $avatarUrl;
 

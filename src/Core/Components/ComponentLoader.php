@@ -1,7 +1,5 @@
 <?php
-namespace JEALER\G3\Core;
-use JEALER\G3\Components\ComponentManager;
-use JEALER\G3\Components\Components;
+namespace JEALER\G3\Core\Components;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\FactoryDefinition;
 use ReflectionFunction;

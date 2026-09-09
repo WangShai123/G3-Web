@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use Override;
 
 class Activity extends Components {

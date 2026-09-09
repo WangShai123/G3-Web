@@ -20,9 +20,13 @@ $specs = json_encode($specs);
         const langs = {
             en: {
                 keyExists: 'The key & sku_id relation is duplicated, please change it.',
+                required: 'The field is required.',
+                only: 'The key must be unique and only contain letters, numbers, and underscores',
             },
             zh: {
                 keyExists: 'Key和sku_id关系数据 已重复，请修改。',
+                required: '当前字段不可为空',
+                only: '唯一且仅支持字母、数字和下划线',
             }
         }
         const ts = (k) => t(k, langs)
@@ -44,7 +48,7 @@ $specs = json_encode($specs);
                     payload: {
                         label: 'Key',
                         name: 'key',
-                        placeholder: '<?php _e('The unique and machine-readable name.'); ?>',
+                        placeholder: ts('only'),
                         required: true
                     }
                 },
@@ -70,6 +74,26 @@ $specs = json_encode($specs);
                     }
                 }
             ],
+            validator: {
+                rules: {
+                    name: {
+                        required: true,
+                    },
+                    key: {
+                        required: true,
+                        pattern: /^[a-zA-Z0-9_]+$/,
+                    }
+                },
+                messages: {
+                    name: {
+                        required: ts('required'),
+                    },
+                    key: {
+                        required: ts('required'),
+                        pattern: ts('only'),
+                    }
+                }
+            },
             onSubmit: (fields) => {
                 for (const key in fields) {
                     if (fields.hasOwnProperty(key) && fields[key] === '') {
@@ -98,10 +122,10 @@ $specs = json_encode($specs);
         }).build()
 
         const modal = createModal({
-            header: false,
             footer: false,
-            bgClose: true,
-            escClose: true,
+            text: {
+                title: '<?php _e('Options', 'G3'); ?>',
+            },
             content: form.element,
             onHidden: () => {
                 form.reset()

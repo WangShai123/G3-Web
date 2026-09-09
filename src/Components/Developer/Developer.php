@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
 use JEALER\G3\Core\Router\Router;
@@ -172,6 +172,7 @@ class Developer extends Components {
                 ->tab('system', __('System', 'G3'))
                 ->tab('rewrite', __('Rewrite Rules', 'G3'))
                 ->tab('cron', __('WP Cron'))
+                ->tab('log', __('Logs', 'G3'))
                 ->tab('theme', __('Build Theme', 'G3'))
 
                 ->tab('form', sprintf($ss, __('Form', 'G3'), __('Demo', 'G3')))
@@ -227,20 +228,21 @@ class Developer extends Components {
     protected function hooks(): void
     {
         /** @var TemplateService */
-        $this->template = $this->container->get(TemplateService::class);
+        $this->template = $this->service(TemplateService::class);
 
         $this->filter([
-            'single_template'   => [[$this->template, 'singleTemplate'], 10, 3],
-            'category_template' => [[$this->template, 'categoryTemplate'], 10, 3],
-            'tag_template'      => [[$this->template, 'tagTemplate'], 10, 3],
-            'archive_template'  => [[$this->template, 'archiveTemplate'], 10, 3],
-            '404_template'      => [[$this->template, 'notFoundTemplate'], 10, 3],
+            'single_template'        => [[$this->template, 'singleTemplate'], 10, 3],
+            'category_template'      => [[$this->template, 'categoryTemplate'], 10, 3],
+            'tag_template'           => [[$this->template, 'tagTemplate'], 10, 3],
+            'archive_template'       => [[$this->template, 'archiveTemplate'], 10, 3],
+            '404_template'           => [[$this->template, 'notFoundTemplate'], 10, 3],
 
-            'map_meta_cap'      => [[$this, 'themeCustomizeHandle'], 20, 4],
-            'translations_api'  => [[$this, 'translationsApiHandle'], 10, 3],
-            'show_admin_bar'    => [[$this, 'adminBarHandle']],
-            'login_headerurl'   => [[$this, 'handleLoginHeaderUrl'], 10, 1],
-            'login_headertext'  => [[$this, 'handleLoginHeaderText'], 10, 1],
+            'map_meta_cap'           => [[$this, 'themeCustomizeHandle'], 20, 4],
+            'translations_api'       => [[$this, 'translationsApiHandle'], 10, 3],
+            'show_admin_bar'         => [[$this, 'adminBarHandle']],
+            'login_headerurl'        => [[$this, 'handleLoginHeaderUrl'], 10, 1],
+            'login_headertext'       => [[$this, 'handleLoginHeaderText'], 10, 1],
+            'edit_form_after_editor' => [[$this, 'newEditor'], 10, 1]
         ]);
 
         $this->subscribeAction('init', [$this, 'wpAutoUpdateHandle'], 1);
@@ -282,6 +284,13 @@ class Developer extends Components {
         $this->upgradeHandle();
         $this->themeInstallHandle();
     }
+
+    public function newEditor($post)
+    {
+        echo '<div id="g3-editor" data-post-id="' . esc_attr($post->ID) . '"></div>';
+        echo '<input type="hidden" name="content" id="g3-editor-content" value="' . esc_textarea($post->post_content) . '">';
+    }
+
     protected function adminMenu(): void
     {
         $this->adminMenuHandle();
@@ -473,7 +482,7 @@ class Developer extends Components {
         }
 
         /** @var Router $router */
-        $router = $this->container->get('router');
+        $router = $this->service('router');
         $result = $router->rebuildCache();
 
         if (is_wp_error($result)) {
@@ -540,7 +549,7 @@ class Developer extends Components {
     {
         if (isset($_POST['g3_migrate_views']) && current_user_can('manage_options')) {
             /** @var PostService $postService */
-            $postService = $this->container->get(PostService::class);
+            $postService = $this->service(PostService::class);
             $key         = defined('G3_OLD_POST_VIEW_META_KEY') ? G3_OLD_POST_VIEW_META_KEY : '';
             $result      = $postService->migrateViewCount($key);
             $success     = $result['success'] ?? false;

@@ -2,7 +2,7 @@
 
 namespace JEALER\G3\Components;
 
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 
 class Sms extends Components {
 

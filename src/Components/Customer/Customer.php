@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Core\Admin\Panel;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\CustomerService;
 use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Frontend;
@@ -132,7 +133,7 @@ class Customer extends Components {
     {
         $option  = $this->option();
         $z       = $this->z();
-        $service = $this->getService(CustomerService::class);
+        $service = $this->service(CustomerService::class);
         $working = $service instanceof CustomerService ? $service->withinWorkingHours() : true;
 
         return [
@@ -170,7 +171,7 @@ class Customer extends Components {
     }
     private function adminConfig(): array
     {
-        $service = $this->getService(CustomerService::class);
+        $service = $this->service(CustomerService::class);
 
         return [
             'restUrl'        => esc_url_raw(rest_url('api/admin/customer/v1')),

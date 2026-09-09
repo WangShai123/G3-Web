@@ -1,8 +1,8 @@
 <?php
 namespace JEALER\G3\Core\Rewrite;
 
-use JEALER\G3\Components\Components;
-use JEALER\G3\Core\ComponentRegistry;
+use JEALER\G3\Core\Components\Components;
+use JEALER\G3\Core\Components\ComponentRegistry;
 use JEALER\G3\Core\Container\Container;
 use ReflectionMethod;
 use Throwable;

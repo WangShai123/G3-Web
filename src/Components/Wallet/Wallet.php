@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Components;
 use JEALER\G3\Core\Admin\Panel;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\PaymentService;
 use Override;
 

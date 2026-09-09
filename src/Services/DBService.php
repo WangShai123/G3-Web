@@ -372,7 +372,7 @@ class DBService extends Service {
 
                 PRIMARY KEY (`id`),
                 KEY `idx_product_id` (`product_id`),
-                KEY `idx_sku_code` (`sku_code`),
+                UNIQUE KEY `uniq_sku_code` (`sku_code`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

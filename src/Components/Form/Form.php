@@ -1,18 +1,18 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\FormService;
 use JEALER\G3\Utilities\Response;
 use Override;
 
 class Form extends Components {
-    public array        $option   = [];
-    public string       $postType = 'form';
-    private FormService $service;
+    public array        $option      = [];
+    public string       $postType    = 'form';
+    private FormService $formService;
     protected function start(): void
     {
-        $this->service = $this->container->get(FormService::class);
+        $this->formService = $this->service(FormService::class);
     }
     private function default(): array
     {
@@ -90,7 +90,7 @@ class Form extends Components {
             if (!$id) {
                 Response::ajaxIllegal();
             }
-            $result = $this->service->delete($id);
+            $result = $this->formService->delete($id);
             if (!$result || is_wp_error($result)) {
                 Response::ajaxFailed();
             } else {
@@ -103,7 +103,7 @@ class Form extends Components {
             if (!$id || $status === false) {
                 Response::ajaxIllegal();
             }
-            $result = $this->service->updateStatus((int) $status, (int) $id);
+            $result = $this->formService->updateStatus((int) $status, (int) $id);
             if (!$result) {
                 Response::ajaxFailed();
             } else {

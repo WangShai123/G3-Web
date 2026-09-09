@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Components\Share;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\MenuService;
@@ -192,7 +192,7 @@ class Post extends Components {
     private function cleanExtraData($postId): void
     {
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
         $postService->deleteExtra($postId);
     }
     private function removeAutoP(): void
@@ -255,7 +255,7 @@ class Post extends Components {
         }
 
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
 
         // No Limit
         $e = $this->loader->admin() && ($intervalMinutes > 0);
@@ -307,7 +307,7 @@ class Post extends Components {
         $postId = $post->ID ?? 0;
 
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
         $data        = $postService->getExtra($postId);
 
         $viewCount     = $data['view_count'] ?? 0;
@@ -378,7 +378,7 @@ class Post extends Components {
         if (!$contentSubmitted && !$data) return;
 
         /** @var PostService $postService */
-        $postService = $this->container->get(PostService::class);
+        $postService = $this->service(PostService::class);
         if ($contentSubmitted) {
             $data['reading_time'] = $postService->calculateReadingTime($post->post_content);
         }
@@ -450,7 +450,7 @@ class Post extends Components {
         $position = max(0, (int) apply_filters('g3_filter_copyright_position', $position));
 
         /** @var CopyrightService $copyrightService */
-        $copyrightService = $this->container->get(CopyrightService::class);
+        $copyrightService = $this->service(CopyrightService::class);
         $cleanContent     = $copyrightService->clean($post->post_content);
         $length           = mb_strlen($cleanContent, 'UTF-8');
         if (empty($cleanContent) || $length < $position) {
@@ -531,7 +531,7 @@ class Post extends Components {
     public function showViewsColumn($column_name, $id): void
     {
         if ($column_name === 'views') {
-            echo $this->container->get(PostService::class)->getExtra($id)['view_count'] ?? 0;
+            echo $this->service(PostService::class)->getExtra($id)['view_count'] ?? 0;
         }
     }
 
@@ -551,7 +551,7 @@ class Post extends Components {
         // }
         if ($query->get('orderby') === 'views') {
             /** @var PostService $postService */
-            $postService = $this->container->get(PostService::class);
+            $postService = $this->service(PostService::class);
             $extTable    = $postService->extTable;
             global $wpdb;
 

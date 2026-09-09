@@ -59,6 +59,10 @@ class SpecsListTable extends WP_List_Table {
     }
     public function display(): void
     {
+        echo '
+        <ul class="subsubsub">
+            <li class="all"><a href="/wp-admin/edit.php?post_type=product&page=product_specifications" class="current" aria-current="page">' . __('All') . '<span class="count">（' . $this->count . '）</span></a></li>
+        </ul>';
         echo '<form id="list-form" method="post">';
         $this->search_box(__('Search'), 'specs');
         parent::display();

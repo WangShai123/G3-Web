@@ -197,6 +197,67 @@ class ProductService extends Service {
         return false;
     }
 
+    private function normalizeSkuCodeSpecs(array $specs): array
+    {
+        $normalized = [];
+
+        foreach ($specs as $specId => $specOptionData) {
+            if (!is_array($specOptionData)) {
+                continue;
+            }
+
+            $currentSpecId = (int) ($specOptionData['spec_id'] ?? $specId);
+            $specOptionId  = (int) ($specOptionData['option_id'] ?? 0);
+
+            if ($currentSpecId <= 0 || $specOptionId <= 0) {
+                continue;
+            }
+
+            $normalized[$currentSpecId] = [
+                'spec_id'        => $currentSpecId,
+                'spec_option_id' => $specOptionId,
+            ];
+        }
+
+        ksort($normalized, SORT_NUMERIC);
+
+        return array_values($normalized);
+    }
+
+    private function skuCodeExists(string $skuCode): bool
+    {
+        $table = $this->wpdb->prefix . self::SKU_TABLE;
+
+        return (bool) $this->wpdb->get_var(
+            $this->wpdb->prepare(
+                "SELECT id FROM {$table} WHERE sku_code = %s LIMIT 1",
+                $skuCode
+            )
+        );
+    }
+
+    private function uniqueSkuCode(string $skuCode): string
+    {
+        $skuCode = substr($skuCode, 0, 64);
+
+        if (!$this->skuCodeExists($skuCode)) {
+            return $skuCode;
+        }
+
+        for ($index = 2; $index < 1000; $index += 1) {
+            $suffix    = '-' . str_pad($index, 2, '0', STR_PAD_LEFT);
+            $candidate = substr($skuCode, 0, 64 - strlen($suffix)) . $suffix;
+
+            if (!$this->skuCodeExists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        $suffix = '-' . strtoupper(substr(hash('crc32b', uniqid('', true)), 0, 8));
+
+        return substr($skuCode, 0, 64 - strlen($suffix)) . $suffix;
+    }
+
     /**
      * create sku code
      * 
@@ -204,22 +265,14 @@ class ProductService extends Service {
      * 
      * @param int $productId
      * @param int $typeId
-     * @param string $prefix default 'G'
+     * @param array $specs SKU specs data
+     * @param string $rowKey submitted row key, used for SKU without specs
+     * @param string $prefix default 'G3'
      * @param string $separator default '-'
      * @return string
      */
-    public function createSkuCode(int $productId, int $typeId, string $prefix = 'G', string $separator = '-'): string
+    public function createSkuCode(int $productId, int $typeId, array $specs = [], string $rowKey = '', string $prefix = 'G3', string $separator = '-'): string
     {
-        /**
-         * 临时策略: prefix + separator + typeId + separator + productId，供测试使用。待重构。
-         * 例如: G-01-000123
-         * 其中:
-         *  - prefix: G
-         *  - typeId: 00, 如果不足2位，则前面补0 
-         *  - productId: 000000，如果不足6位，则前面补0
-         *  - separator: dash
-         */
-
         if ($productId <= 0) {
             throw new Exception("Invalid product ID: {$productId}. Must be greater than 0.");
         }
@@ -228,9 +281,22 @@ class ProductService extends Service {
             throw new Exception("Invalid type ID: {$typeId}. Must be greater than 0.");
         }
 
-        $skuCode = $prefix . "{$separator}" . str_pad($typeId, 2, '0', STR_PAD_LEFT) . "{$separator}" . str_pad($productId, 6, '0', STR_PAD_LEFT);
+        $skuSpecsCode = '';
+        $skuSpecs     = $this->normalizeSkuCodeSpecs($specs);
 
-        return $skuCode;
+        if ($skuSpecs) {
+            foreach ($skuSpecs as $spec) {
+                $skuSpecsCode .= 'S' . $spec['spec_id'] . 'O' . $spec['spec_option_id'];
+            }
+        } else {
+            $rowSegment   = strtoupper(substr(hash('crc32b', trim($rowKey) !== '' ? $rowKey : uniqid('', true)), 0, 5));
+            $skuSpecsCode = 'R' . $rowSegment;
+        }
+
+        // $skuCode = $prefix . $separator . 'T' . $typeId . 'P' . $productId . $skuSpecsCode;
+        $skuCode = $prefix . $separator . '0' . $typeId . '0' . $productId . $skuSpecsCode;
+
+        return $this->uniqueSkuCode($skuCode);
     }
 
     /**
@@ -278,8 +344,12 @@ class ProductService extends Service {
             return false;
         }
 
+        $skuSpecs = isset($data['_specs']) && is_array($data['_specs']) ? $data['_specs'] : [];
+        $rowKey   = (string) ($data['_row_key'] ?? '');
+        unset($data['_specs'], $data['_row_key']);
+
         if (!isset($data['sku_code']) || trim($data['sku_code']) === '') {
-            $data['sku_code'] = $this->createSkuCode($data['product_id'], $data['type']);
+            $data['sku_code'] = $this->createSkuCode($data['product_id'], $data['type'], $skuSpecs, $rowKey);
         }
 
         $table = $this->wpdb->prefix . self::SKU_TABLE;
@@ -575,49 +645,6 @@ class ProductService extends Service {
 
 
 
-
-    /**
-     * Get Product Base Data with Gallery
-     * 
-     * 获取商品基础数据+图册
-     * 
-     * @param int $postId
-     * @return array|null
-     */
-    public function getProduct(int $postId): array|null
-    {
-        $cacheKey = $postId;
-        $product  = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if ($product === false) {
-            $post = $this->postService->init($postId)->cache();
-
-            if (!$post || $post['post_type'] !== 'product') {
-                return null;
-            }
-
-            $gallery = $post['gallery'] ?? [];
-
-            if (!is_array($gallery)) {
-                $gallery = [];
-            }
-
-            $product = [
-                'id'         => $post['ID'],
-                'title'      => $post['post_title'],
-                'content'    => $post['post_content'],
-                'status'     => $post['post_status'],
-                'thumbnail'  => get_the_post_thumbnail_url($post['ID'], 'full'),
-                'gallery'    => $gallery,
-                'created_at' => $post['post_date'],
-                'updated_at' => $post['post_modified'],
-            ];
-
-            wp_cache_set($cacheKey, $product, self::CACHE_GROUP, DAY_IN_SECONDS);
-        }
-
-        return $product;
-    }
 
     /**
      * Get Global Specs

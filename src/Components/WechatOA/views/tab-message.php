@@ -1,5 +1,5 @@
 <?php
-use JEALER\G3\Components\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Components\WechatOA\Includes\WechatOAMessageListTable;

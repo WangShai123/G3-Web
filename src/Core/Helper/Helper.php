@@ -3,7 +3,7 @@ namespace JEALER\G3\Core\Helper;
 use JEALER\G3\Core\Router\Router;
 use JEALER\G3\Core\Router\RouteSource;
 use JEALER\G3\Core\Rewrite\RewriteRouter;
-use JEALER\G3\Core\ComponentLoader;
+use JEALER\G3\Core\Components\ComponentLoader;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\ValueDefinition;
 use JEALER\G3\Core\Container\FactoryDefinition;

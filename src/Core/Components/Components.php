@@ -1,6 +1,5 @@
 <?php
-namespace JEALER\G3\Components;
-use JEALER\G3\Core\ComponentRegistry;
+namespace JEALER\G3\Core\Components;
 use JEALER\G3\Core\Helper\Helper;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Container\FactoryDefinition;
@@ -19,37 +18,15 @@ abstract class Components {
      */
     protected ?Container $container = null;
 
+    /**
+     * @var PanelRenderer Panel renderer instance, used for rendering admin panels
+     */
     protected PanelRenderer $panelRenderer;
 
     /**
      * @var string component name (automatically inferred)
      */
     protected string $componentName;
-
-    /**
-     * @var array Loaded components instances. Key is component ID, value is component instance.
-     */
-    public static array $components = [];
-
-    /**
-     * @var string Component unique identifier.
-     */
-    protected string $componentId;
-
-    /**
-     * @var array Global component configuration.
-     */
-    protected static array $globalConfig = [];
-
-    /**
-     * @var array Component configuration.
-     */
-    private array $config = [];
-
-    /**
-     * @var bool Whether the component has been initialized.
-     */
-    protected bool $initialized = false;
 
     protected ?Helper $loader;
 
@@ -63,9 +40,31 @@ abstract class Components {
      */
     protected array $filterSubscriptions = [];
 
-    private ?array            $adminPanelDefinitions = null;
+    private ?array $adminPanelDefinitions = null;
+
     protected LoggerInterface $logger;
-    protected wpdb            $wpdb;
+
+    protected wpdb $wpdb;
+
+    /**
+     * @var string Component unique identifier.
+     */
+    // protected string $componentId;
+
+    /**
+     * @var array Global component configuration.
+     */
+    // protected static array $globalConfig = [];
+
+    /**
+     * @var array Component configuration.
+     */
+    // private array $config = [];
+
+    /**
+     * @var bool Whether the component has been initialized.
+     */
+    // protected bool $initialized = false;
 
     public function __construct()
     {
@@ -83,7 +82,13 @@ abstract class Components {
     private function getComponentName(): string
     {
         $className = (new ReflectionClass($this))->getShortName();
-        return strtolower($className);
+        // return strtolower($className);
+        return $className;
+    }
+
+    private function getComponentFullClassName(): string
+    {
+        return $this::class;
     }
 
     private function internalInit(): void
@@ -98,14 +103,15 @@ abstract class Components {
         $this->wpdb = $wpdb;
 
         // Component registration in the container
-        $serviceId = 'component.' . $this->componentName;
-        if (!$this->container->has($serviceId)) {
-            $this->container->setRawDefinition($serviceId, $this);
+        // $componentServiceId = 'component.' . $this->componentName;
+        $componentServiceId = $this->getComponentFullClassName();
+        if (!$this->container->has($componentServiceId)) {
+            $this->container->setRawDefinition($componentServiceId, $this);
         }
 
-        $this->loader = $this->container->get('loader');
+        $this->loader = $this->service('loader');
 
-        $this->panelRenderer = $this->container->get(PanelRenderer::class);
+        $this->panelRenderer = $this->service(PanelRenderer::class);
 
         $this->start();
         $this->hooks();
@@ -120,7 +126,7 @@ abstract class Components {
             $this->container->setRawDefinition(LoggerInterface::class, $logger);
         }
 
-        return $this->container->get(LoggerInterface::class);
+        return $this->service(LoggerInterface::class);
     }
 
     /**
@@ -131,7 +137,7 @@ abstract class Components {
      * @param string $serviceClass 服务类名
      * @return object|null
      */
-    protected function getService(string $serviceClass): ?object
+    protected function service(string $serviceClass): ?object
     {
         try {
             return $this->container->get($serviceClass);

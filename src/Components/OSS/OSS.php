@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Components;
+use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\COSService;
 use JEALER\G3\Services\OSSService;
 use Override;
@@ -14,8 +15,8 @@ class OSS extends Components {
     #[Override]
     protected function start(): void
     {
-        $this->ossService = $this->getService(OSSService::class);
-        $this->cosService = $this->getService(COSService::class);
+        $this->ossService = $this->service(OSSService::class);
+        $this->cosService = $this->service(COSService::class);
     }
 
     #[Override]
