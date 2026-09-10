@@ -24,16 +24,21 @@ class Post extends Components {
         $this->filter([
             'locale'                 => [[$this, 'toggleLocale'], 10, 1],
             'option_timezone_string' => [[$this, 'customTimezone'], 10, 1],
+            'pre_post_guid'          => [[$this, 'normalizeGuid'], 1, 1],
         ]);
         $this->action([
-            'save_post'            => [[$this, 'savePost'], 10, 2],
             'wp_update_nav_menu'   => [[$this, 'flushMenuCache'], 10, 1],
             'customize_save_after' => [[$this, 'flushMenuCache'], 10, 0],
             'switch_theme'         => [[$this, 'flushMenuCache'], 10, 0],
+            'save_post'            => [[$this, 'savePost'], 10, 2],
             'before_delete_post'   => [[$this, 'actionBeforeDelete'], 10, 1],
             'wp_footer'            => [[$this, 'renderFrontRoot']]
         ]);
+        $this->action([
+            'save_post' => [[$this, 'repairSavedGuid'], 20, 1],
+        ]);
     }
+
     private function default(): array
     {
         return [
@@ -383,6 +388,39 @@ class Post extends Components {
             $data['reading_time'] = $postService->calculateReadingTime($post->post_content);
         }
         $postService->setExtra($postId, $data);
+    }
+
+    public function normalizeGuid(string $guid): string
+    {
+        if ($guid === '') return '';
+
+        return html_entity_decode($guid, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    public function repairSavedGuid(int $postId): void
+    {
+        if (
+            (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+            || wp_is_post_revision($postId)
+            || wp_is_post_autosave($postId)
+        ) {
+            return;
+        }
+
+        $post = get_post($postId);
+        if (!$post || $post->guid === '') return;
+
+        $guid = $this->normalizeGuid($post->guid);
+        if ($guid === $post->guid) return;
+
+        $this->wpdb->update(
+            $this->wpdb->posts,
+            ['guid' => $guid],
+            ['ID' => $postId],
+            ['%s'],
+            ['%d']
+        );
+        clean_post_cache($postId);
     }
 
     public function flushMenuCache($menuId = null): void

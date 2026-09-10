@@ -7,5 +7,6 @@ return [
     'g3.widget'           => [G3_ASSETS_URL . '/css/g3.widget.min.css', ['jui'], '1.0.0'],
 
     'g3.admin'            => [G3_ASSETS_URL . '/css/g3.admin.min.css', ['jui'], '1.0.0'],
+    'g3.admin.editor'     => [G3_ASSETS_URL . '/css/g3.admin.editor.min.css', ['jui', 'g3.admin'], '1.0.0'],
     'g3.admin.customer'   => [G3_ASSETS_URL . '/css/g3.admin.customer.min.css', ['jui'], '1.0.0'],
 ];

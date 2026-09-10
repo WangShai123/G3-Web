@@ -47,9 +47,9 @@ class ProductService extends Service {
     }
     /**
      * render spec scope
-     * 
+     *
      * 渲染规格应用范围
-     * 
+     *
      * @param int $id
      * @return string
      */
@@ -67,9 +67,9 @@ class ProductService extends Service {
 
     /**
      * Render SKU TYPE
-     * 
+     *
      * 渲染SKU类型 1: general, 2: digital, 3: membership, 4: download
-     * 
+     *
      * @param int $typeId
      * @return string
      */
@@ -542,6 +542,38 @@ class ProductService extends Service {
     }
 
     /**
+     * Update SKU Status By Product ID
+     *
+     * 根据商品 ID 更新 SKU 状态
+     *
+     * @param int $productId
+     * @param int $status 0: inactive, 1: active
+     * @return bool|int
+     */
+    public function updateSkuStatusByProductId(int $productId, int $status): bool|int
+    {
+        if ($productId <= 0) {
+            return false;
+        }
+
+        $table  = $this->wpdb->prefix . self::SKU_TABLE;
+        $status = $status === 1 ? 1 : 0;
+        $result = $this->wpdb->update(
+            $table,
+            ['status' => $status],
+            ['product_id' => $productId],
+            ['%d'],
+            ['%d']
+        );
+
+        if ($result !== false) {
+            $this->clearProductCache($productId);
+        }
+
+        return $result;
+    }
+
+    /**
      * Get Specs By Sku ID
      * 
      * 获取 SKU 关联的规格组合 [ [spec_id=>1, option_id=>2, spec_name=>'颜色', option_name=>'红色'], [spec_id=>1, option_id=>3, spec_name=>'颜色', option_name=>'蓝色'] ] 
@@ -627,10 +659,65 @@ class ProductService extends Service {
      * clear product data while delete product post
      * 
      * @param int $postId
+     * @return bool
+     * @throws Exception if any database operation fails
      */
-    public function clearProductData(int $postId)
+    public function clearProductData(int $postId): bool
     {
-        //@todo delete product related data: sku, specs, cache...
+        if ($postId <= 0) {
+            return false;
+        }
+
+        $skuTable         = $this->wpdb->prefix . self::SKU_TABLE;
+        $productSpecTable = $this->wpdb->prefix . self::PRODUCT_SPECS_TABLE;
+        $relationTable    = $this->wpdb->prefix . self::SPECS_RELATIONS_TABLE;
+        $skuIds           = array_map(
+            'intval',
+            $this->wpdb->get_col(
+                $this->wpdb->prepare(
+                    "SELECT id FROM {$skuTable} WHERE product_id = %d",
+                    $postId
+                )
+            )
+        );
+
+        $this->wpdb->query('START TRANSACTION');
+
+        try {
+            if ($skuIds) {
+                $placeholders = implode(',', array_fill(0, count($skuIds), '%d'));
+                $result       = $this->wpdb->query(
+                    $this->wpdb->prepare(
+                        "DELETE FROM {$relationTable} WHERE sku_id IN ({$placeholders})",
+                        ...$skuIds
+                    )
+                );
+
+                if ($result === false) {
+                    throw new Exception("Failed to delete SKU spec relations from table: {$relationTable}");
+                }
+            }
+
+            $skuResult = $this->wpdb->delete($skuTable, ['product_id' => $postId], ['%d']);
+            if ($skuResult === false) {
+                throw new Exception("Failed to delete SKUs from table: {$skuTable}");
+            }
+
+            $productSpecResult = $this->wpdb->delete($productSpecTable, ['product_id' => $postId], ['%d']);
+            if ($productSpecResult === false) {
+                throw new Exception("Failed to delete product spec relations from table: {$productSpecTable}");
+            }
+
+            $this->wpdb->query('COMMIT');
+            $this->clearProductCache($postId);
+
+            return true;
+        }
+        catch (Exception $e) {
+            $this->wpdb->query('ROLLBACK');
+            error_log("Error clearing product data (ID: {$postId}): " . $e->getMessage());
+            return false;
+        }
     }
 
 

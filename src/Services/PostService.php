@@ -838,7 +838,7 @@ class PostService extends Service {
             'updated_at_local' => (string) ($post['post_modified'] ?? ''),
             'user_id'          => (int) ($post['post_author'] ?? 0),
             'title'            => (string) ($post['post_title'] ?? ''),
-            'url'              => (string) ($post['guid'] ?? ''),
+            'url'              => $this->postPermalink((int) ($post['ID'] ?? 0), (string) ($post['guid'] ?? '')),
             'content'          => (string) ($post['post_content'] ?? ''),
             'excerpt'          => wp_strip_all_tags($post['post_excerpt'] ?? '', true),
             'cover'            => get_the_post_thumbnail_url($post['ID']),
@@ -878,6 +878,15 @@ class PostService extends Service {
         }
 
         return Type::jsonToArray((string) $value);
+    }
+
+    private function postPermalink(int $postId, string $fallback = ''): string
+    {
+        if ($postId <= 0) return $fallback;
+
+        $permalink = get_permalink($postId);
+
+        return is_string($permalink) && $permalink !== '' ? $permalink : $fallback;
     }
 
     private function normalizeExtraForSave(array $data): array

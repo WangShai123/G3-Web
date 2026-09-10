@@ -29,6 +29,10 @@ class Product extends Components {
         $this->filter([
             'manage_edit-product_columns' => [[$this, 'productColumns'], 20, 1]
         ]);
+        $this->action([
+            'before_delete_post'     => [[$this, 'deleteProductData'], 10, 2],
+            'transition_post_status' => [[$this, 'syncSkuStatus'], 10, 3],
+        ]);
     }
 
     private function optionDefaults(): array
@@ -42,7 +46,6 @@ class Product extends Components {
     {
         add_action('save_post_product', [$this, 'saveSku']);
         add_filter('post_updated_messages', [$this, 'resetUpdatedMessages']);
-        add_action('deleted_post', [$this, 'deletedProduct']);
     }
     protected function adminMenu(): void
     {
@@ -402,10 +405,42 @@ class Product extends Components {
         wp_nonce_field(PostService::GALLERY_NAME . '_save', PostService::GALLERY_NAME . '_nonce');
         echo '<div id="gallery-app"></div>';
     }
-    public function deletedProduct($postId)
+
+    public function deleteProductData(int $postId, ?WP_Post $post = null): void
     {
+        if (!$this->isProductPost($postId, $post)) {
+            return;
+        }
+
         $this->productService->clearProductData($postId);
     }
+
+    public function syncSkuStatus(string $newStatus, string $oldStatus, WP_Post $post): void
+    {
+        $postId = (int) $post->ID;
+        if (!$this->isProductPost($postId, $post)) {
+            return;
+        }
+
+        if ($newStatus === 'publish' && $oldStatus !== 'publish') {
+            $this->productService->updateSkuStatusByProductId($postId, 1);
+            return;
+        }
+
+        if ($newStatus !== 'publish') {
+            $this->productService->updateSkuStatusByProductId($postId, 0);
+        }
+    }
+
+    private function isProductPost(int $postId, ?WP_Post $post = null): bool
+    {
+        if ($post instanceof WP_Post) {
+            return $post->post_type === 'product';
+        }
+
+        return get_post_type($postId) === 'product';
+    }
+
     public function renderSkuMetabox(WP_POST $post): void
     {
         echo '<div id="detail-app"><div id="sku-app" data-component></div></div>';

@@ -7,6 +7,7 @@ use JEALER\G3\Core\Router\Router;
 use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\TemplateService;
 use JEALER\G3\Utilities\Element;
+use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Response;
@@ -46,6 +47,7 @@ class Developer extends Components {
             'wpHead'          => '1',
             // 'gutenberg'       => '0',
             'editor'          => '0',
+            'highlight'       => '1',
             'adminTitle'      => '0',
             'adminLogo'       => '0',
             'toolsPage'       => '1',
@@ -106,7 +108,8 @@ class Developer extends Components {
                     '0' => 'TinyMCE',
                     '1' => __('Gutenberg'),
                     '2' => 'G3-' . __('Editor'),
-                ])
+                ], __('Recommended', 'G3') . ": G3-Editor.")
+                ->switch('highlight', __('Highlight'), __('Store the parsed HTML results directly.', 'G3'))
                 ->switch('adminTitle', 'WP ' . __('Title'))
                 ->switch('adminLogo', 'WP Logo')
                 ->switch('themeInstall', __('Theme') . ' ' . __('Install'))
@@ -231,18 +234,18 @@ class Developer extends Components {
         $this->template = $this->service(TemplateService::class);
 
         $this->filter([
-            'single_template'        => [[$this->template, 'singleTemplate'], 10, 3],
-            'category_template'      => [[$this->template, 'categoryTemplate'], 10, 3],
-            'tag_template'           => [[$this->template, 'tagTemplate'], 10, 3],
-            'archive_template'       => [[$this->template, 'archiveTemplate'], 10, 3],
-            '404_template'           => [[$this->template, 'notFoundTemplate'], 10, 3],
+            'single_template'   => [[$this->template, 'singleTemplate'], 10, 3],
+            'category_template' => [[$this->template, 'categoryTemplate'], 10, 3],
+            'tag_template'      => [[$this->template, 'tagTemplate'], 10, 3],
+            'archive_template'  => [[$this->template, 'archiveTemplate'], 10, 3],
+            '404_template'      => [[$this->template, 'notFoundTemplate'], 10, 3],
 
-            'map_meta_cap'           => [[$this, 'themeCustomizeHandle'], 20, 4],
-            'translations_api'       => [[$this, 'translationsApiHandle'], 10, 3],
-            'show_admin_bar'         => [[$this, 'adminBarHandle']],
-            'login_headerurl'        => [[$this, 'handleLoginHeaderUrl'], 10, 1],
-            'login_headertext'       => [[$this, 'handleLoginHeaderText'], 10, 1],
-            'edit_form_after_editor' => [[$this, 'newEditor'], 10, 1]
+            'map_meta_cap'      => [[$this, 'themeCustomizeHandle'], 20, 4],
+            'translations_api'  => [[$this, 'translationsApiHandle'], 10, 3],
+            'show_admin_bar'    => [[$this, 'adminBarHandle']],
+            'login_headerurl'   => [[$this, 'handleLoginHeaderUrl'], 10, 1],
+            'login_headertext'  => [[$this, 'handleLoginHeaderText'], 10, 1],
+            // 'edit_form_after_editor' => [[$this, 'newEditor'], 10, 1]
         ]);
 
         $this->subscribeAction('init', [$this, 'wpAutoUpdateHandle'], 1);
@@ -259,6 +262,7 @@ class Developer extends Components {
     {
         $this->adminTitleHandle();
         $this->gutenbergInAdmin();
+        $this->g3Editor();
         // If defined constant G3_HIDE_DEVELOPER_MODE and it's true, then hide developer mode menu
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
@@ -285,10 +289,127 @@ class Developer extends Components {
         $this->themeInstallHandle();
     }
 
-    public function newEditor($post)
+    public function g3Editor(): void
     {
-        echo '<div id="g3-editor" data-post-id="' . esc_attr($post->ID) . '"></div>';
-        echo '<input type="hidden" name="content" id="g3-editor-content" value="' . esc_textarea($post->post_content) . '">';
+        $option = $this->option();
+        if (($option['editor'] ?? '0') !== '2') {
+            return;
+        }
+
+        add_action('load-post.php', [$this, 'prepareG3EditorScreen']);
+        add_action('load-post-new.php', [$this, 'prepareG3EditorScreen']);
+        add_filter('wp_insert_post_data', [$this, 'saveG3EditorContent'], 10, 4);
+    }
+
+    public function prepareG3EditorScreen(): void
+    {
+        $postType = $this->currentG3EditorPostType();
+        if ($postType === null || !post_type_exists($postType)) {
+            return;
+        }
+
+        remove_post_type_support($postType, 'editor');
+
+        add_action('edit_form_after_title', [$this, 'newEditor'], 10, 1);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueG3EditorAssets'], 20);
+        add_action('admin_enqueue_scripts', [$this, 'dequeueWordPressEditorAssets'], 100);
+    }
+
+    public function newEditor($post): void
+    {
+        $postId  = (int) $post->ID;
+        $restUrl = esc_url_raw(rest_url('api/admin/editor/v1'));
+        $nonce   = wp_create_nonce('wp_rest');
+        $isEdit  = ($GLOBALS['pagenow'] ?? '') === 'post.php';
+        $html    = <<<HTML
+    <div id="g3-editor" data-post-id="$postId">
+      <template id="g3-editor-template">
+        <div class="j-toolbar-container">
+          <div class="j-toolbar"></div>
+        </div>
+        <div id="vanilla-jui-editor"  data-post-id="$postId"></div>
+        <input type="hidden" name="g3_editor_content" id="g3-editor-content" data-editor-html value="">
+      </template>
+    </div>
+HTML;
+        echo $html;
+
+        $option    = $this->option();
+        $highlight = ($option['highlight'] ?? '1') === '1' ? '1' : '0';
+
+        echo Frontend::configScript('g3-admin-editor-config', [
+            'postId'    => $postId,
+            'isEdit'    => $isEdit,
+            'restUrl'   => $restUrl,
+            'nonce'     => $nonce,
+            'highlight' => $highlight,
+            'endpoints' => [
+                'content' => '/content',
+            ],
+        ]);
+    }
+
+    public function enqueueG3EditorAssets(): void
+    {
+        wp_enqueue_media();
+        Frontend::esm('g3.admin.editor');
+        Frontend::css('g3.admin.editor');
+    }
+
+    public function dequeueWordPressEditorAssets(): void
+    {
+        foreach (['editor', 'quicktags', 'wplink', 'wp-tinymce', 'word-count'] as $handle) {
+            wp_dequeue_script($handle);
+        }
+
+        wp_dequeue_style('editor-buttons');
+    }
+
+    public function saveG3EditorContent(array $data, array $postarr, array $unsanitizedPostarr, bool $update): array
+    {
+        $option = $this->option();
+        if (($option['editor'] ?? '0') !== '2') {
+            return $data;
+        }
+
+        if (defined('REST_REQUEST') && constant('REST_REQUEST')) {
+            return $data;
+        }
+
+        if (isset($_POST['g3_editor_content'])) {
+            $content              = wp_unslash($_POST['g3_editor_content']);
+            $data['post_content'] = is_string($content) ? $content : '';
+            return $data;
+        }
+
+        $postId = (int) ($postarr['ID'] ?? 0);
+        if ($update && $postId > 0) {
+            $post = get_post($postId);
+            if ($post) {
+                $data['post_content'] = $post->post_content;
+            }
+        }
+
+        return $data;
+    }
+
+    private function currentG3EditorPostType(): ?string
+    {
+        if (isset($_GET['post'])) {
+            $post = get_post((int) $_GET['post']);
+            return $post ? $post->post_type : null;
+        }
+
+        if (isset($_POST['post_ID'])) {
+            $post = get_post((int) $_POST['post_ID']);
+            return $post ? $post->post_type : null;
+        }
+
+        if (isset($_GET['post_type'])) {
+            return sanitize_key(wp_unslash($_GET['post_type']));
+        }
+
+        return 'post';
     }
 
     protected function adminMenu(): void

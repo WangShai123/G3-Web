@@ -8,6 +8,7 @@ return [
     'vanilla-sse'            => [G3_PUBLIC_URL . '/w3lib/vanilla-sse/dist/index.js', [], '1.0.0', 'https://unpkg.com/vanilla-sse@latest/dist/index.js'],
     'vanilla-signal-i18n'    => [G3_PUBLIC_URL . '/w3lib/vanilla-signal-i18n/dist/index.js', ['vanilla-signal'], '1.1.2', 'https://unpkg.com/vanilla-i18n@latest/dist/index.js'],
     'vanilla-signal-query'   => [G3_PUBLIC_URL . '/w3lib/vanilla-signal-query/dist/index.js', ['vanilla-signal', 'vanilla-lru'], '1.1.7', 'https://unpkg.com/vanilla-query@latest/dist/index.js'],
+    'vanilla-jui'            => [G3_PUBLIC_URL . '/w3lib/vanilla-jui/dist/index.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.6.3', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
     'jui'                    => [G3_PUBLIC_URL . '/w3lib/vanilla-jui/dist/index.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.6.3', 'https://unpkg.com/vanilla-jui@latest/dist/index.js'],
 
     // build-in g3 modules
@@ -21,6 +22,7 @@ return [
     'g3.switch.language'     => [G3_ASSETS_URL . '/js/es/g3.switch.language.min.js', ['jui', 'vanilla-signal-i18n'], '1.0.0'],
     'g3.visitor'             => [G3_ASSETS_URL . '/js/es/g3.visitor.min.js', ['fingerprint'], '1.0.0'],
     'g3.waterfall'           => [G3_ASSETS_URL . '/js/es/g3.waterfall.min.js', [], '1.0.0'],
+    'g3.admin.editor'        => [G3_ASSETS_URL . '/js/es/g3.admin.editor.min.js', ['vanilla-jui', 'vanilla-signal', 'vanilla-signal-i18n'], '1.0.0'],
 
     /**
      * fingerprintjs
@@ -33,4 +35,5 @@ return [
      * @link https://unpkg.com/@zumer/snapdom@dev/dist/
      */
     'snapdom'                => [G3_JS_URL . '/es/snapdom.js', [], '2.24.1', 'https://unpkg.com/@zumer/snapdom/dist/snapdom.mjs'],
+
 ];

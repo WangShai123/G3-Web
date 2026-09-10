@@ -59,7 +59,9 @@ echo Element::tip(
     ?>
 
     <h2>
-        <?php _e('Recommended configuration', 'G3'); ?>
+        <?php
+        echo sprintf(__('%s %s', 'G3'), __('Recommended', 'G3'), __('Configuration', 'G3'));
+        ?>
     </h2>
     <p><?php _e('Use Redis\'s <b>LRU</b> eviction policy to avoid redundant cached data. Configure memory management in <code>redis.conf</code> to allow Redis to automatically evict infrequently used data:', 'G3'); ?>
     </p>
