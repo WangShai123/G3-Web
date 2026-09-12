@@ -8,6 +8,8 @@ use JEALER\G3\Utilities\Response;
 use Override;
 
 class Swiper extends Components {
+    private ?SwiperService $swiperService;
+
     protected function adminMenu(): void
     {
         $newSwiper = sprintf(__('%s %s', 'G3'), __('Add New', 'G3'), __('Swiper', 'G3'));
@@ -33,6 +35,7 @@ class Swiper extends Components {
             remove_submenu_page('themes.php', 'swiper');
         });
     }
+
     public function render(): void
     {
         echo '<div class="wrap">';
@@ -44,12 +47,16 @@ class Swiper extends Components {
         Element::tab('Swiper', 'swipers', $tabs);
         echo '</div>';
     }
+
     public function editSwiper(): void
     {
         @require_once __DIR__ . '/views/page-edit.php';
     }
+
     protected function ajax(): void
     {
+        $this->swiperService = $this->service(SwiperService::class);
+
         add_action('wp_ajax_edit_swiper', function () {
             if (!current_user_can('manage_options')) {
                 Response::ajaxForbidden();
@@ -98,12 +105,12 @@ class Swiper extends Components {
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
                 Response::ajaxUpdated();
-                SwiperService::clearLocationCache($location);
+                $this->swiperService->clearLocationCache($location);
             } else {
                 $result = $wpdb->update($table, $data, ['id' => $id]);
                 if ($result) {
-                    SwiperService::clearSwiperCache((int) $id);
-                    SwiperService::clearLocationCache($location);
+                    $this->swiperService->clearSwiperCache((int) $id);
+                    $this->swiperService->clearLocationCache($location);
                     Response::ajaxUpdated();
                 } else {
                     Response::ajaxFailed();
@@ -147,7 +154,7 @@ class Swiper extends Components {
             if (!$key) {
                 Response::ajaxError(__('Please fill in the complete data', 'G3'));
             }
-            $result = SwiperService::deleteLocations($key);
+            $result = $this->swiperService->deleteLocations($key);
             if ($result) {
                 Response::ajaxDeleted();
             } else {

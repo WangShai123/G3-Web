@@ -164,9 +164,10 @@ class NotificationService extends Service {
             ])) {
                 break;
             }
-            if ($events) {
-                $this->cleanupAcknowledgedEvents($redis, $channels, $afterId);
-            }
+            // SSE delivery is not business consumption. Multiple admin clients can
+            // subscribe to the same channel, so deleting here makes later clients
+            // miss events. Notifications are removed by explicit consume/read
+            // actions or by their TTL.
 
             if ($hasMoreEvents) {
                 continue;
@@ -356,60 +357,6 @@ class NotificationService extends Service {
 
         $row = json_decode($raw, true);
         return is_array($row) ? $row : null;
-    }
-
-    private function cleanupAcknowledgedEvents(Redis $redis, array $channels, int $afterId): void
-    {
-        if ($afterId <= 0) {
-            return;
-        }
-
-        foreach ($channels as $channel) {
-            $channel = $this->sanitizeChannel((string) $channel);
-            if ($channel === '') {
-                continue;
-            }
-
-            $ids = $redis->zRangeByScore(
-                $this->channelEventsKey($channel),
-                '-inf',
-                (string) $afterId,
-                ['limit' => [0, self::EVENT_GC_LIMIT]]
-            ) ?: [];
-
-            foreach ($ids as $id) {
-                $eventId = (int) $id;
-                if ($eventId <= 0 || $this->channelHasPendingSession($redis, $channel, $eventId)) {
-                    continue;
-                }
-
-                $this->deleteEvent($redis, $eventId, $channel);
-            }
-        }
-    }
-
-    private function channelHasPendingSession(Redis $redis, string $channel, int $eventId): bool
-    {
-        $sessionsKey = $this->channelSessionsKey($channel);
-        $now         = time();
-        $this->cleanupChannelSessions($redis, $sessionsKey, $now);
-
-        $tokens = $redis->zRangeByScore($sessionsKey, (string) $now, '+inf') ?: [];
-        foreach ($tokens as $token) {
-            $token   = (string) $token;
-            $session = $this->session($token, $redis);
-            if (!$session) {
-                $redis->zRem($sessionsKey, $token);
-                continue;
-            }
-
-            $sessionChannels = is_array($session['channels'] ?? null) ? $session['channels'] : [];
-            if (in_array($channel, $sessionChannels, true) && (int) ($session['after_id'] ?? 0) < $eventId) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function cleanupExpiredEvents(Redis $redis, array $channels = []): void
@@ -823,20 +770,29 @@ class NotificationService extends Service {
             echo "id: {$id}\n";
         }
 
-        $payload = $data['payload'] ?? $data;
-        $message = is_array($payload) ? $payload : ['value' => $payload];
-        // SSE events use one envelope shape so later vanilla-sse clients can share one parser.
-        $message['namespace']   = self::SSE_NAMESPACE;
-        $message['type']        = $event;
-        $message['channel']     = (string) ($data['channel'] ?? '');
-        $message['target_type'] = (string) ($data['target_type'] ?? '');
-        $message['target_id']   = (string) ($data['target_id'] ?? '');
-        $message['actor_type']  = (string) ($data['actor_type'] ?? '');
-        $message['actor_id']    = (string) ($data['actor_id'] ?? '');
-        $message['created_at']  = (string) ($data['created_at'] ?? '');
-        $message['payload']     = $payload;
-        echo 'event: ' . $event . "\n";
+        $message = $this->sseEnvelope($event, $data);
+        // vanilla-sse routes by data.namespace/data.type; keep the native SSE event name stable.
+        echo "event: message\n";
         echo 'data: ' . wp_json_encode($message, JSON_UNESCAPED_UNICODE) . "\n\n";
         flush();
+    }
+
+    private function sseEnvelope(string $event, array $data): array
+    {
+        $payload = $data['payload'] ?? $data;
+        $payload = is_array($payload) ? $payload : ['value' => $payload];
+
+        // Vanilla-sse requires a stable envelope: protocol fields stay top-level, business data stays in payload.
+        return [
+            'namespace'   => self::SSE_NAMESPACE,
+            'type'        => $event,
+            'channel'     => (string) ($data['channel'] ?? ''),
+            'target_type' => (string) ($data['target_type'] ?? ''),
+            'target_id'   => (string) ($data['target_id'] ?? ''),
+            'actor_type'  => (string) ($data['actor_type'] ?? ''),
+            'actor_id'    => (string) ($data['actor_id'] ?? ''),
+            'created_at'  => (string) ($data['created_at'] ?? ''),
+            'payload'     => $payload,
+        ];
     }
 }

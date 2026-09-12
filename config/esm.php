@@ -13,7 +13,7 @@ return [
 
     // build-in g3 modules
     'g3.comment'             => [G3_ASSETS_URL . '/js/es/g3.comment.min.js', ['vanilla-signal', 'jui', 'vanilla-signal-i18n', 'vanilla-create-storage'], '1.0.0'],
-    'g3.customer.service'    => [G3_ASSETS_URL . '/js/es/g3.customer-service.min.js', ['jui', 'vanilla-create-storage', 'vanilla-signal-i18n', 'vanilla-signal'], '1.0.0'],
+    'g3.customer.service'    => [G3_ASSETS_URL . '/js/es/g3.customer-service.min.js', ['jui', 'vanilla-create-storage', 'vanilla-signal-i18n', 'vanilla-signal', 'vanilla-sse'], '1.0.0'],
     'g3.form'                => [G3_ASSETS_URL . '/js/es/g3.form.min.js', ['jui', 'vanilla-signal-i18n'], '1.0.0'],
     'g3.login.modal'         => [G3_ASSETS_URL . '/js/es/g3.login.modal.min.js', ['jui'], '1.0.0'],
     'g3.login.oa'            => [G3_ASSETS_URL . '/js/es/g3.login.oa.min.js', ['vanilla-signal', 'vanilla-signal-i18n', 'vanilla-create-storage', 'jui'], '1.0.0'],

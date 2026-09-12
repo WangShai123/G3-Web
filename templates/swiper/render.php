@@ -1,9 +1,14 @@
 <?php
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SwiperService;
+use JEALER\G3\Utilities\Type;
 
+$container = Container::run();
+/** @var SwiperService $swiperService */
+$swiperService  = $container->get(SwiperService::class);
 $containerClass = $args['containerClass'] ?? 'j-swiper-container';
-$swipers        = SwiperService::queryByLocation($args['location']);
+$swipers        = $swiperService->queryByLocation($args['location']);
 $data           = [];
 if (!empty($swipers)) {
     foreach ($swipers as $swiper) {
@@ -25,7 +30,8 @@ echo '<div class="' . esc_attr($containerClass) . '"></div>';
 
 Frontend::css('jui');
 Frontend::esm('jui');
-$json = json_encode($args, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+// $json = json_encode($args, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+$json = Type::arrayToJson($args);
 
 $script = <<<HTML
 <script type="module">

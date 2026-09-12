@@ -73,8 +73,10 @@ class IMService extends Service {
 
         $conversationId = (int) $this->wpdb->insert_id;
         $this->ensureParticipant($conversationId, $identity);
+        $conversation = $this->getConversationRow($conversationId);
         $this->publishEvent(IM::EVENT_CONVERSATION_CREATED, $conversationId, null, $identity, [
             'conversation_id' => $conversationId,
+            'conversation'    => $conversation ? $this->formatConversation($conversation) : null,
         ], $type);
 
         return $conversationId;
@@ -382,7 +384,7 @@ class IMService extends Service {
                 'message_id' => $messageId,
             ], (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE));
             $this->cleanupReadEvents($conversationId, $messageId);
-            $this->cleanupReadNotifications($conversationId, $messageId, $conversation);
+            $this->cleanupReadNotifications($conversationId, $messageId, $conversation, $identity);
 
             return ['message_id' => $messageId];
         }
@@ -403,7 +405,7 @@ class IMService extends Service {
             'message_id' => $messageId,
         ], (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE));
         $this->cleanupReadEvents($conversationId, $messageId);
-        $this->cleanupReadNotifications($conversationId, $messageId, $conversation);
+        $this->cleanupReadNotifications($conversationId, $messageId, $conversation, $identity);
 
         return ['message_id' => $messageId];
     }
@@ -633,6 +635,7 @@ class IMService extends Service {
         $this->ensureParticipant($conversationId, $identity);
         $this->publishEvent(IM::EVENT_CONVERSATION_CREATED, $conversationId, null, $identity, [
             'conversation_id' => $conversationId,
+            'conversation'    => $this->formatConversation($row),
         ], $type);
 
         return $conversationId;
@@ -764,19 +767,17 @@ class IMService extends Service {
 
         $this->wpdb->query($this->wpdb->prepare(
             "INSERT INTO {$this->participantsTable}
-                (`conversation_id`, `actor_type`, `actor_id`, `user_id`, `role`, `nickname`, `avatar`, `last_seen_at`, `created_at`)
-             VALUES (%d, %s, %s, %d, %s, %s, %s, %s, %s)
+                (`conversation_id`, `actor_type`, `actor_id`, `user_id`, `role`, `last_seen_at`, `created_at`)
+             VALUES (%d, %s, %s, %d, %s, %s, %s)
              ON DUPLICATE KEY UPDATE
-                `nickname` = VALUES(`nickname`),
-                `avatar` = VALUES(`avatar`),
+                `user_id` = VALUES(`user_id`),
+                `role` = VALUES(`role`),
                 `last_seen_at` = VALUES(`last_seen_at`)",
             $conversationId,
             $identity['actor_type'],
             $identity['actor_id'],
             $identity['user_id'] ?: 0,
             $identity['role'],
-            $identity['display_name'],
-            $identity['avatar'],
             Date::utcDateTime(),
             Date::utcDateTime()
         ));
@@ -808,6 +809,11 @@ class IMService extends Service {
 
     private function publishEvent(string $type, ?int $conversationId, ?int $messageId, array $identity, array $payload, string $conversationType): void
     {
+        // IM SSE payloads are normalized here so consumers never infer ids from event-specific shapes.
+        $payload = array_merge([
+            'conversation_id' => $conversationId,
+            'message_id'      => $messageId,
+        ], $payload);
         $this->storeCachedEvent($type, $conversationId, $messageId, $identity, $payload);
 
         $meta = [
@@ -1320,8 +1326,6 @@ class IMService extends Service {
             'actor_id'             => (string) ($row['actor_id'] ?? ''),
             'user_id'              => isset($row['user_id']) ? (int) $row['user_id'] : null,
             'role'                 => sanitize_key((string) ($row['role'] ?? 'member')),
-            'nickname'             => isset($row['nickname']) ? (string) $row['nickname'] : null,
-            'avatar'               => isset($row['avatar']) ? (string) $row['avatar'] : null,
             'last_read_message_id' => (int) ($row['last_read_message_id'] ?? 0),
             'last_seen_at'         => $row['last_seen_at'] ?? null,
             'created_at'           => (string) ($row['created_at'] ?? Date::utcDateTime()),
@@ -1601,14 +1605,20 @@ class IMService extends Service {
         }
     }
 
-    private function cleanupReadNotifications(int $conversationId, int $messageId, ?array $conversation): void
+    private function cleanupReadNotifications(int $conversationId, int $messageId, ?array $conversation, array $identity): void
     {
         if ($conversationId <= 0 || $messageId <= 0) {
             return;
         }
 
         $conversationType = (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE);
-        $this->realtime()->cleanupReadMessageNotifications($conversationType, $conversationId, $messageId);
+        // Reading consumes only the reader-side reminders; deleting both channels would drop the peer's unread SSE event.
+        $this->realtime()->cleanupReadMessageNotifications(
+            $conversationType,
+            $conversationId,
+            $messageId,
+            (string) ($identity['role'] ?? '')
+        );
     }
 
     private function conversationMessagesKey(int $conversationId): string

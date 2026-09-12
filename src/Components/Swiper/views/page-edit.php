@@ -1,4 +1,5 @@
 <?php
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Services\SwiperService;
@@ -8,6 +9,10 @@ wp_enqueue_script('media-grid');
 wp_enqueue_script('media');
 Frontend::umd('g3.media.image');
 
+$container = Container::run();
+/** @var SwiperService $swiperService */
+$swiperService = $container->get(SwiperService::class);
+
 $t         = $_GET['t'] ?? '';
 $addNew    = sprintf(__('%s %s', 'G3'), __('Add New', 'G3'), __('Swiper', 'G3'));
 $edit      = sprintf(__('%s %s', 'G3'), __('Edit'), __('Swiper', 'G3'));
@@ -15,7 +20,7 @@ $pageTitle = $t === 'new' ? $addNew : $edit;
 $id        = '';
 if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
     $id       = $_GET['id'];
-    $item     = SwiperService::queryById($id);
+    $item     = $swiperService->queryById($id);
     $title    = $item['title'] ?? '';
     $media    = $item['media'] ?? '';
     $link     = $item['link'] ?? '';
@@ -77,10 +82,10 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                         <label for="target">
                             <select id="target" name="target" class="" title="<?php _e('Open Method', 'G3'); ?>">
                                 <option value="0" <?php selected($target, '0'); ?>>
-                                    <?php echo SwiperService::renderTarget(0); ?>
+                                    <?php echo $swiperService->renderTarget(0); ?>
                                 </option>
                                 <option value="1" <?php selected($target, '1'); ?>>
-                                    <?php echo SwiperService::renderTarget(1); ?>
+                                    <?php echo $swiperService->renderTarget(1); ?>
                                 </option>
                             </select>
                         </label>
@@ -152,10 +157,10 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                         <label for="status">
                             <select id="status" name="status" class="" title="<?php _e('Status', 'G3'); ?>">
                                 <option value="1" <?php selected($status, '1'); ?>>
-                                    <?php echo SwiperService::renderStatus(1); ?>
+                                    <?php echo $swiperService->renderStatus(1); ?>
                                 </option>
                                 <option value="0" <?php selected($status, '0'); ?>>
-                                    <?php echo SwiperService::renderStatus(0); ?>
+                                    <?php echo $swiperService->renderStatus(0); ?>
                                 </option>
                             </select>
                         </label>

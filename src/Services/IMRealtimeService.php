@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\IM\IM;
 use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Services\NotificationService;
 use WP_Error;
@@ -31,16 +32,22 @@ class IMRealtimeService extends Service {
         return $this->notification()->latestId($this->adminChannel($conversationType));
     }
 
-    public function cleanupReadMessageNotifications(string $conversationType, int $conversationId, int $messageId): int
+    public function cleanupReadMessageNotifications(string $conversationType, int $conversationId, int $messageId, string $readerRole): int
     {
         if ($conversationId <= 0 || $messageId <= 0) {
             return 0;
         }
 
-        return $this->notification()->cleanupConsumedMessageEvents([
-            $this->adminChannel($conversationType),
-            $this->viewerChannel($conversationId),
-        ], 'im_conversation', (string) $conversationId, $messageId);
+        $channel = in_array($readerRole, [IM::ROLE_AGENT, IM::ROLE_SYSTEM], true)
+            ? $this->adminChannel($conversationType)
+            : $this->viewerChannel($conversationId);
+
+        return $this->notification()->cleanupConsumedMessageEvents(
+            $channel,
+            'im_conversation',
+            (string) $conversationId,
+            $messageId
+        );
     }
 
     private function notification(): NotificationService

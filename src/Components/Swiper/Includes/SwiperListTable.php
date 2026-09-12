@@ -1,5 +1,6 @@
 <?php
 namespace JEALER\G3\Components\Swiper\Includes;
+use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Utilities\Type;
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
@@ -7,8 +8,10 @@ use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Date;
 
 class SwiperListTable extends WP_List_Table {
-    private array $columns;
-    private int   $perPage = 15;
+    private array          $columns;
+    private int            $perPage       = 15;
+    private ?Container     $container;
+    private ?SwiperService $swiperService;
     public function __construct($args = [])
     {
         parent::__construct([
@@ -16,6 +19,8 @@ class SwiperListTable extends WP_List_Table {
             'plural'   => 'swipers',
             'ajax'     => true
         ]);
+        $this->container     = Container::run();
+        $this->swiperService = $this->container->get(SwiperService::class);
     }
     public function get_columns(): array
     {
@@ -34,7 +39,7 @@ class SwiperListTable extends WP_List_Table {
     public function prepare_items(): void
     {
         $currentPage = $this->get_pagenum();
-        $totalItems  = SwiperService::count();
+        $totalItems  = $this->swiperService->count();
 
         $this->columns         = $this->get_columns();
         $hidden                = [];
@@ -51,11 +56,11 @@ class SwiperListTable extends WP_List_Table {
     {
         switch ($column_name) {
             case 'status':
-                return SwiperService::renderStatus($item->{$column_name});
+                return $this->swiperService->renderStatus($item->{$column_name});
             case 'media':
                 return $this->renderMedia($item, $column_name);
             case 'target':
-                return SwiperService::renderTarget($item->{$column_name});
+                return $this->swiperService->renderTarget($item->{$column_name});
             case 'link':
                 return $this->renderLink($item, $column_name);
             case 'location':
@@ -150,15 +155,13 @@ class SwiperListTable extends WP_List_Table {
         switch ($action) {
             case 'delete':
                 $msg = __('Deleted', 'G3');
-                SwiperService::deleteSwipers($ids);
+                $this->swiperService->deleteSwipers($ids);
                 break;
-
             case 'disable':
-                SwiperService::updateStatus($ids, 0);
+                $this->swiperService->updateStatus($ids, 0);
                 break;
-
             case 'enable':
-                SwiperService::updateStatus($ids, 1);
+                $this->swiperService->updateStatus($ids, 1);
                 break;
         }
         wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');

@@ -1,16 +1,21 @@
 <?php
 namespace JEALER\G3\Components\Swiper\Includes;
+use JEALER\G3\Core\Container\Container;
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
 
 class SwiperLocationTable extends WP_List_Table {
-    private string $key;
-    private array  $locations;
+    private string         $key;
+    private array          $locations;
+    private Container      $container;
+    private ?SwiperService $swiperService;
     public function __construct($args = [])
     {
         parent::__construct();
-        $this->key       = SwiperService::LOCATION_OPTION_KEY;
-        $this->locations = $this->getLocations();
+        $this->key           = SwiperService::LOCATION_OPTION_KEY;
+        $this->locations     = $this->getLocations();
+        $this->container     = Container::run();
+        $this->swiperService = $this->container->get(SwiperService::class);
     }
     public function get_columns()
     {
@@ -111,7 +116,7 @@ class SwiperLocationTable extends WP_List_Table {
                 if (!is_array($items)) {
                     $items = [$items];
                 }
-                $result = SwiperService::deleteLocations($items);
+                $result = $this->swiperService->deleteLocations($items);
                 if ($result) {
                     $msg = __('Deleted', 'G3');
                     wp_add_inline_script('jui', 'jui.Toast.success("' . $msg . '",1000);setTimeout(()=>{location.reload()},800)');

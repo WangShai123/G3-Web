@@ -1,9 +1,9 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 
-class SwiperService {
-    // Singleton instance
-    private static SwiperService $instance;
+class SwiperService extends Service {
+
     // Swiper table name
     const TABLE = 'g3_swipers';
     // Swiper Cache key
@@ -19,7 +19,7 @@ class SwiperService {
      * Get all swipers
      * @return array
      */
-    public static function getSwipers(): array
+    public function getSwipers(): array
     {
         $swipers = [];
         $swipers = wp_cache_get(self::CACHE_KEY, self::CACHE_GROUP);
@@ -33,20 +33,22 @@ class SwiperService {
         }
         return $swipers;
     }
+
     /**
      * get swipers count
      * @return int
      */
-    public static function count(): int
+    public function count(): int
     {
-        return count(self::getSwipers());
+        return count($this->getSwipers());
     }
+
     /**
      * Get one swiper data by id
      * @param int $id
      * @return array
      */
-    public static function queryById(int $id)
+    public function queryById(int $id): array
     {
         $data = wp_cache_get($id, self::CACHE_GROUP);
         if (false === $data) {
@@ -59,12 +61,13 @@ class SwiperService {
         }
         return $data;
     }
+
     /**
      * Get swipers query by location
      * @param string $location
      * @return array
      */
-    public static function queryByLocation(string $location)
+    public function queryByLocation(string $location)
     {
         $data = wp_cache_get($location, self::QUERY_CACHE_GROUP);
         if (false === $data) {
@@ -78,24 +81,28 @@ class SwiperService {
         }
         return $data;
     }
-    public static function clearSwipersCache(): bool
+
+    public function clearSwipersCache(): bool
     {
         return wp_cache_delete(self::CACHE_KEY, self::CACHE_GROUP);
     }
-    public static function clearSwiperCache(int $id): bool
+
+    public function clearSwiperCache(int $id): bool
     {
         return wp_cache_delete($id, self::CACHE_GROUP);
     }
-    public static function clearLocationCache(string $location): bool
+
+    public function clearLocationCache(string $location): bool
     {
         return wp_cache_delete($location, self::QUERY_CACHE_GROUP);
     }
+
     /**
      * Get swipers query by args
      * @param array $args
      * @return bool
      */
-    public static function query(array $args): bool
+    public function query(array $args): bool
     {
         $default  = [
             'location'        => 'home',
@@ -126,13 +133,14 @@ class SwiperService {
             return false;
         }
     }
+
     /**
      * Update swipers status by IDs
      * @param array $ids
      * @param int $status
      * @return bool|int
      */
-    public static function updateStatus(array $ids, int $status): bool|int
+    public function updateStatus(array $ids, int $status): bool|int
     {
         if (!is_array($ids) || !count($ids)) return false;
 
@@ -145,16 +153,17 @@ class SwiperService {
             )
         );
         foreach ($ids as $id) {
-            self::clearSwiperCache($id);
+            $this->clearSwiperCache($id);
         }
         return $result;
     }
+
     /**
      * Delete swipers by IDs
      * @param int|array $ids
      * @return bool|int
      */
-    public static function deleteSwipers(int|array $ids): bool|int
+    public function deleteSwipers(int|array $ids): bool|int
     {
         if (!$ids) return false;
 
@@ -173,21 +182,22 @@ class SwiperService {
         if ($result) {
             if (is_array($ids)) {
                 foreach ($ids as $id) {
-                    self::clearSwiperCache($id);
+                    $this->clearSwiperCache($id);
                 }
             } else {
-                self::clearSwiperCache($ids);
+                $this->clearSwiperCache($ids);
             }
-            self::clearSwipersCache();
+            $this->clearSwipersCache();
         }
         return $result;
     }
+
     /**
      * Delete swiper locations by keys
      * @param string|array $locations
      * @return bool
      */
-    public static function deleteLocations(string|array $locations): bool
+    public function deleteLocations(string|array $locations): bool
     {
         if (!$locations) return false;
 
@@ -206,21 +216,23 @@ class SwiperService {
         }
         return update_option(self::LOCATION_OPTION_KEY, $data);
     }
+
     /**
      * render swiper status
      * @param int $status
      * @return string
      */
-    public static function renderStatus(int $status): string
+    public function renderStatus(int $status): string
     {
         return $status == 1 ? __('Enable') : __('Disable');
     }
+
     /**
      * render swiper target
      * @param int $target
      * @return string
      */
-    public static function renderTarget(int $target): string
+    public function renderTarget(int $target): string
     {
         return $target === 1 ? __('New Tab', 'G3') : __('Current Tab', 'G3');
     }
