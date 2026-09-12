@@ -102,6 +102,9 @@ class CustomerService extends Service {
         if (!$this->enabled()) {
             return new WP_Error('customer_service_disabled', 'Customer service is disabled.', ['status' => 403]);
         }
+        if ($this->loginRequiredForCustomer()) {
+            return new WP_Error('login_required', 'Login is required.', ['status' => 401]);
+        }
 
         $identity              = $this->customerIdentity();
         $forceNew              = ($data['force_new'] ?? false) === true;
@@ -158,6 +161,9 @@ class CustomerService extends Service {
     {
         if (!$this->enabled()) {
             return new WP_Error('customer_service_disabled', 'Customer service is disabled.', ['status' => 403]);
+        }
+        if ($this->loginRequiredForCustomer()) {
+            return new WP_Error('login_required', 'Login is required.', ['status' => 401]);
         }
 
         $identity = $this->customerIdentity();
@@ -1253,13 +1259,13 @@ class CustomerService extends Service {
             $conversationId = (int) $id;
             $row            = $byId[(string) $conversationId] ?? null;
             if (!$row) {
-                $redis->zRem(self::CUSTOMER_CONVERSATION_SYNC_KEY, (string) $conversationId);
+                $this->deleteCachedCustomerConversationRow($redis, $conversationId);
                 $result['skipped']++;
                 continue;
             }
 
             if ($this->upsertCachedCustomerConversationRow($row)) {
-                $redis->zRem(self::CUSTOMER_CONVERSATION_SYNC_KEY, (string) $conversationId);
+                $this->deleteCachedCustomerConversationRow($redis, $conversationId);
                 $result['synced']++;
             } else {
                 $result['failed']++;
@@ -1483,6 +1489,17 @@ class CustomerService extends Service {
         foreach (array_unique(array_filter($keys)) as $key) {
             $redis->expire((string) $key, IMService::CACHE_TTL);
         }
+    }
+
+    private function deleteCachedCustomerConversationRow(Redis $redis, int $conversationId): void
+    {
+        if ($conversationId <= 0) {
+            return;
+        }
+
+        $redis->hDel(self::CUSTOMER_CONVERSATIONS_CACHE_KEY, (string) $conversationId);
+        $redis->zRem(self::CUSTOMER_CONVERSATION_INDEX_KEY, (string) $conversationId);
+        $redis->zRem(self::CUSTOMER_CONVERSATION_SYNC_KEY, (string) $conversationId);
     }
 
     private function cacheStorageEnabled(): bool
@@ -1718,6 +1735,12 @@ class CustomerService extends Service {
     private function isLoggedIn(): bool
     {
         return function_exists('is_user_logged_in') && is_user_logged_in();
+    }
+
+    private function loginRequiredForCustomer(): bool
+    {
+        // Server-side auth is required because disabled inputs can be bypassed by direct REST calls.
+        return ($this->option()['needAuth'] ?? self::defaultOption()['needAuth']) === '1' && !$this->isLoggedIn();
     }
 
     private function currentUserCan(string $capability): bool

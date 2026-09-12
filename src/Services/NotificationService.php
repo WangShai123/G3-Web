@@ -238,6 +238,75 @@ class NotificationService extends Service {
         return max(0, (int) $redis->get(self::EVENT_COUNTER_KEY));
     }
 
+    public function consumeEvents(array|int|string $eventIds): int
+    {
+        $redis = $this->redis();
+        if (!$redis) {
+            return 0;
+        }
+
+        $ids     = is_array($eventIds) ? $eventIds : [$eventIds];
+        $deleted = 0;
+        foreach (array_unique(array_map('intval', $ids)) as $eventId) {
+            if ($eventId <= 0) {
+                continue;
+            }
+
+            $this->deleteEvent($redis, $eventId);
+            $deleted++;
+        }
+
+        return $deleted;
+    }
+
+    public function cleanupConsumedMessageEvents(array|string $channels, string $targetType, string $targetId, int $messageId): int
+    {
+        if ($messageId <= 0) {
+            return 0;
+        }
+
+        $redis = $this->redis();
+        if (!$redis) {
+            return 0;
+        }
+
+        $channels = is_array($channels) ? $channels : [$channels];
+        $channels = array_values(array_filter(array_unique(array_map(fn($channel): string => $this->sanitizeChannel((string) $channel), $channels))));
+        if (!$channels) {
+            return 0;
+        }
+
+        $targetType = sanitize_key($targetType);
+        $targetId   = (string) $targetId;
+        $seen       = [];
+        $deleted    = 0;
+        foreach ($channels as $channel) {
+            $ids = $redis->zRange($this->channelEventsKey($channel), 0, -1) ?: [];
+            foreach ($ids as $id) {
+                $eventId = (int) $id;
+                if ($eventId <= 0 || isset($seen[$eventId])) {
+                    continue;
+                }
+
+                $seen[$eventId] = true;
+                $row = $this->eventRow($redis, $eventId);
+                if (!$row) {
+                    $this->deleteEvent($redis, $eventId, $channel);
+                    continue;
+                }
+                if (!$this->isConsumedMessageEvent($row, $targetType, $targetId, $messageId)) {
+                    continue;
+                }
+
+                // A read receipt consumes previous message reminders; they have no value after read.
+                $this->deleteEvent($redis, $eventId, (string) ($row['channel'] ?? $channel));
+                $deleted++;
+            }
+        }
+
+        return $deleted;
+    }
+
     private function fanout(Redis $redis, string $channel, int $eventId): void
     {
         $sessionsKey = $this->channelSessionsKey($channel);
@@ -267,7 +336,11 @@ class NotificationService extends Service {
 
     private function nextEventId(Redis $redis): int
     {
-        return (int) $redis->incr(self::EVENT_COUNTER_KEY);
+        $id = (int) $redis->incr(self::EVENT_COUNTER_KEY);
+        // Notification data is transient; the counter is reconstructable once event TTLs expire.
+        $redis->expire(self::EVENT_COUNTER_KEY, self::EVENT_TTL);
+
+        return $id;
     }
 
     private function eventRow(Redis $redis, int $eventId): ?array
@@ -381,6 +454,29 @@ class NotificationService extends Service {
         if ($channel !== '') {
             $redis->zRem($this->channelEventsKey($channel), (string) $eventId);
         }
+    }
+
+    private function isConsumedMessageEvent(array $row, string $targetType, string $targetId, int $messageId): bool
+    {
+        if ((string) ($row['target_type'] ?? '') !== $targetType || (string) ($row['target_id'] ?? '') !== $targetId) {
+            return false;
+        }
+        if ((string) ($row['event_type'] ?? '') !== 'message.created') {
+            return false;
+        }
+
+        $eventMessageId = $this->payloadMessageId($row);
+        return $eventMessageId > 0 && $eventMessageId <= $messageId;
+    }
+
+    private function payloadMessageId(array $row): int
+    {
+        $payload = Type::jsonToArray($row['payload'] ?? '');
+        if (isset($payload['message']) && is_array($payload['message'])) {
+            return (int) ($payload['message']['id'] ?? 0);
+        }
+
+        return (int) ($payload['message_id'] ?? 0);
     }
 
     private function replaceOwnedSession(Redis $redis, array $session): void
@@ -727,17 +823,18 @@ class NotificationService extends Service {
             echo "id: {$id}\n";
         }
 
-        $message = [
-            'namespace'   => self::SSE_NAMESPACE,
-            'type'        => $event,
-            'channel'     => (string) ($data['channel'] ?? ''),
-            'target_type' => (string) ($data['target_type'] ?? ''),
-            'target_id'   => (string) ($data['target_id'] ?? ''),
-            'actor_type'  => (string) ($data['actor_type'] ?? ''),
-            'actor_id'    => (string) ($data['actor_id'] ?? ''),
-            'created_at'  => (string) ($data['created_at'] ?? ''),
-            'payload'     => $data['payload'] ?? $data,
-        ];
+        $payload = $data['payload'] ?? $data;
+        $message = is_array($payload) ? $payload : ['value' => $payload];
+        // SSE events use one envelope shape so later vanilla-sse clients can share one parser.
+        $message['namespace']   = self::SSE_NAMESPACE;
+        $message['type']        = $event;
+        $message['channel']     = (string) ($data['channel'] ?? '');
+        $message['target_type'] = (string) ($data['target_type'] ?? '');
+        $message['target_id']   = (string) ($data['target_id'] ?? '');
+        $message['actor_type']  = (string) ($data['actor_type'] ?? '');
+        $message['actor_id']    = (string) ($data['actor_id'] ?? '');
+        $message['created_at']  = (string) ($data['created_at'] ?? '');
+        $message['payload']     = $payload;
         echo 'event: ' . $event . "\n";
         echo 'data: ' . wp_json_encode($message, JSON_UNESCAPED_UNICODE) . "\n\n";
         flush();

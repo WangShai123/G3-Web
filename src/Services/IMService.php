@@ -382,6 +382,7 @@ class IMService extends Service {
                 'message_id' => $messageId,
             ], (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE));
             $this->cleanupReadEvents($conversationId, $messageId);
+            $this->cleanupReadNotifications($conversationId, $messageId, $conversation);
 
             return ['message_id' => $messageId];
         }
@@ -402,6 +403,7 @@ class IMService extends Service {
             'message_id' => $messageId,
         ], (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE));
         $this->cleanupReadEvents($conversationId, $messageId);
+        $this->cleanupReadNotifications($conversationId, $messageId, $conversation);
 
         return ['message_id' => $messageId];
     }
@@ -1067,9 +1069,13 @@ class IMService extends Service {
 
         $redis->hSet(self::EVENTS_CACHE_KEY, (string) $eventId, $encoded);
         $redis->zAdd(self::EVENT_INDEX_KEY, $eventId, (string) $eventId);
+        $keys = [self::EVENTS_CACHE_KEY, self::EVENT_INDEX_KEY];
         if ($conversationId) {
-            $redis->zAdd($this->conversationEventsKey($conversationId), $eventId, (string) $eventId);
+            $conversationEventsKey = $this->conversationEventsKey($conversationId);
+            $redis->zAdd($conversationEventsKey, $eventId, (string) $eventId);
+            $keys[] = $conversationEventsKey;
         }
+        $this->touchCacheKeys($redis, $keys);
 
         return $eventId;
     }
@@ -1200,13 +1206,13 @@ class IMService extends Service {
             $conversationId = (int) $id;
             $row            = $byId[(string) $conversationId] ?? null;
             if (!$row) {
-                $redis->zRem(self::CONVERSATION_SYNC_KEY, (string) $conversationId);
+                $this->deleteCachedConversationRow($redis, ['id' => $conversationId]);
                 $result['skipped']++;
                 continue;
             }
 
             if ($this->upsertCachedConversationRow($row)) {
-                $redis->zRem(self::CONVERSATION_SYNC_KEY, (string) $conversationId);
+                $this->deleteCachedConversationRow($redis, $row);
                 $result['synced']++;
             } else {
                 $result['failed']++;
@@ -1230,13 +1236,13 @@ class IMService extends Service {
             $participantId = (int) $id;
             $row           = $byId[(string) $participantId] ?? null;
             if (!$row) {
-                $redis->zRem(self::PARTICIPANT_SYNC_KEY, (string) $participantId);
+                $this->deleteCachedParticipantRow($redis, ['id' => $participantId]);
                 $result['skipped']++;
                 continue;
             }
 
             if ($this->upsertCachedParticipantRow($row)) {
-                $redis->zRem(self::PARTICIPANT_SYNC_KEY, (string) $participantId);
+                $this->deleteCachedParticipantRow($redis, $row);
                 $result['synced']++;
             } else {
                 $result['failed']++;
@@ -1254,13 +1260,13 @@ class IMService extends Service {
             $messageId = (int) $id;
             $row       = $this->cachedMessageRow($messageId);
             if (!$row || $this->messageExists($messageId)) {
-                $redis->zRem(self::MESSAGE_SYNC_KEY, (string) $messageId);
+                $this->deleteCachedMessageRow($redis, $row ?: ['id' => $messageId]);
                 $result['skipped']++;
                 continue;
             }
 
             if ($this->insertCachedMessageRow($row)) {
-                $redis->zRem(self::MESSAGE_SYNC_KEY, (string) $messageId);
+                $this->deleteCachedMessageRow($redis, $row);
                 $result['synced']++;
             } else {
                 $result['failed']++;
@@ -1455,7 +1461,11 @@ class IMService extends Service {
             $redis->setnx($counterKey, (string) $maxId);
         }
 
-        return (int) $redis->incr($counterKey);
+        $id = (int) $redis->incr($counterKey);
+        // Cache counters are reconstructable from MySQL; TTL prevents permanent DB2 keys.
+        $redis->expire($counterKey, self::CACHE_TTL);
+
+        return $id;
     }
 
     private function nextCachedEventId(Redis $redis): int
@@ -1466,7 +1476,11 @@ class IMService extends Service {
             $redis->setnx(self::EVENT_COUNTER_KEY, (string) $maxId);
         }
 
-        return (int) $redis->incr(self::EVENT_COUNTER_KEY);
+        $id = (int) $redis->incr(self::EVENT_COUNTER_KEY);
+        // IM event IDs are transient cache IDs; no DB2 counter should live forever.
+        $redis->expire(self::EVENT_COUNTER_KEY, self::CACHE_TTL);
+
+        return $id;
     }
 
     private function nextCachedMessageSeq(Redis $redis, int $conversationId): int
@@ -1552,6 +1566,49 @@ class IMService extends Service {
         foreach (array_unique(array_filter($keys)) as $key) {
             $redis->expire((string) $key, self::CACHE_TTL);
         }
+    }
+
+    private function deleteCachedConversationRow(Redis $redis, array $row): void
+    {
+        $conversationId = (int) ($row['id'] ?? $row['conversation_id'] ?? 0);
+        if ($conversationId <= 0) {
+            return;
+        }
+
+        $redis->hDel(self::CONVERSATIONS_CACHE_KEY, (string) $conversationId);
+        $redis->zRem(self::CONVERSATION_INDEX_KEY, (string) $conversationId);
+        $redis->zRem(self::CONVERSATION_SYNC_KEY, (string) $conversationId);
+        if (!empty($row['type'])) {
+            $redis->zRem($this->conversationTypeKey((string) $row['type']), (string) $conversationId);
+        }
+    }
+
+    private function deleteCachedParticipantRow(Redis $redis, array $row): void
+    {
+        $participantId  = (int) ($row['id'] ?? 0);
+        $conversationId = (int) ($row['conversation_id'] ?? 0);
+        if ($participantId <= 0) {
+            return;
+        }
+
+        $redis->hDel(self::PARTICIPANTS_CACHE_KEY, (string) $participantId);
+        $redis->zRem(self::PARTICIPANT_SYNC_KEY, (string) $participantId);
+        if ($conversationId > 0) {
+            $redis->zRem($this->conversationParticipantsKey($conversationId), (string) $participantId);
+        }
+        if ($conversationId > 0 && !empty($row['actor_type']) && !empty($row['actor_id'])) {
+            $redis->del($this->participantActorKey($conversationId, (string) $row['actor_type'], (string) $row['actor_id']));
+        }
+    }
+
+    private function cleanupReadNotifications(int $conversationId, int $messageId, ?array $conversation): void
+    {
+        if ($conversationId <= 0 || $messageId <= 0) {
+            return;
+        }
+
+        $conversationType = (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE);
+        $this->realtime()->cleanupReadMessageNotifications($conversationType, $conversationId, $messageId);
     }
 
     private function conversationMessagesKey(int $conversationId): string
