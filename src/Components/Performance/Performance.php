@@ -100,17 +100,21 @@ HTML;
         }
 
         $targetGroups = [
+            'activity_category_relationships',
+            'announcement_category_relationships',
             'bookmark',
             'category_relationships',
             'comment',
             'comment_meta',
             'comment-queries',
             // 'default',
-            'nav_menu_relationships',
+            // 'nav_menu_relationships',
             'post_format_relationships',
             'post_meta',
             'post_tag_relationships',
             'posts',
+            'product_brand_relationships',
+            'product_category_relationships',
             'term_meta',
             'post-queries',
             'term-queries',
