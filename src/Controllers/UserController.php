@@ -12,10 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 class UserController extends Controller {
-    public function __construct(private UserPostActionService $postActionService)
-    {
-        parent::__construct();
-    }
+    public function __construct(private UserPostActionService $postActionService) {}
 
     // #[RestRouter(
     //     namespace: 'api/user',

@@ -224,7 +224,7 @@ class IMService extends Service {
             'conversation' => $eventConversation,
         ], (string) ($conversation['type'] ?? IM::TYPE_CUSTOMER_SERVICE));
 
-        return $message ?: new WP_Error('message_not_found', __('Message not found.', 'G3'), ['status' => 404]);
+        return $message ?: new WP_Error('message_not_found', 'Message not found.', ['status' => 404]);
     }
 
     public function messages(int $conversationId, int $afterId = 0, int $limit = 50): array

@@ -157,7 +157,7 @@ class OrdersListTable extends WP_List_Table {
             if ($result === false) {
                 return new WP_Error(
                     500,
-                    __('Failed to delete orders', 'G3')
+                    'Failed to delete orders.'
                 );
             }
         }

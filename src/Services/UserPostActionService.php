@@ -6,8 +6,8 @@ use WP_Error;
 use WP_Post;
 
 class UserPostActionService extends Service {
-    const TABLE              = 'g3_user_post_action';
-    const STATUS_CACHE_GROUP = 'g3_user_post_action';
+    const TABLE              = 'g3_users_posts_action';
+    const STATUS_CACHE_GROUP = 'g3_users_posts_action';
     private const ACTIONS            = [
         'like'     => true,
         'dislike'  => true,

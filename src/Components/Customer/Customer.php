@@ -95,14 +95,14 @@ class Customer extends Components {
                 ->input('guestName', __('Guest Name', 'G3'), __('Default display name for anonymous visitors.', 'G3'))
                 ->switch('needAuth', __('Auth', 'G3'), __('User needs to log in to use the service.', 'G3'))
                 ->number('heartbeatSeconds', __('Heartbeat', 'G3'), __('Heartbeat interval in seconds. It is only used to keep the SSE connection alive. Default: 45. Adviced range: 30-60.', 'G3'))
-                ->number('timeoutMinutes', __('Timeout', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason.', 'G3') . __(' Default') . ': 30.')
+                ->number('timeoutMinutes', __('Timeout', 'G3'), sprintf(__('%s %s', 'G3'), __('Minutes without messages before the system closes a conversation with timeout reason.', 'G3'), __('Default')) . ' 30.')
                 ->rowClass('advanced')
                 ->number('throttle', __('Throttle', 'G3'), sprintf(__('The frequency of %s transmission by users. The default setting is once every 5 seconds.', 'G3'), __('Message', 'G3')))
                 ->rowClass('advanced')
-                ->switch('cacheStorage', sprintf(__('%s %s', 'G3'), __('Cache', 'G3'), __('Storage', 'G3')), __('IM data is stored solely in the Redis cache. Use the queue service for regular data synchronization to the database.', 'G3'))
-                ->number('retentionDays', __('Retention Days', 'G3'), '<code>IMDataCleanerJob</code> ' . __('will remove data older than these days. Default: 180.', 'G3'))
+                ->switch('cacheStorage', sprintf(__('%s %s', 'G3'), __('Cache', 'G3'), __('Storage', 'G3')), __('IM data is stored solely in the Redis cache. Valid for 7 days. Use the queue service for regular data synchronization to the database.', 'G3'))
+                ->number('retentionDays', __('Retention Days', 'G3'), sprintf(__('%s %s %s', 'G3'), '<code>IMDataCleanerJob</code>', __('will remove data older than these days.', 'G3'), __('Default')) . ' 180.')
                 ->rowClass('advanced')
-                ->switch('icon', __('Icon'), __('Use a custom icon instead of the system default icon.', 'G3'))
+                ->switch('userPortal', sprintf(__('%s %s', 'G3'), __('Frontend', 'G3'), __('Portal', 'G3')), __('Custom Customer Service frontend portal for visitors.', 'G3') . ' ' . sprintf(__('For relevant rules, please refer to <a href="%s" target="_blank">the G3-Web online documentation</a>.', 'G3'), 'https://app.jealer.com/g3-web/'))
         ];
     }
     protected function adminPanelPage(): string
@@ -153,11 +153,13 @@ class Customer extends Components {
             'z'                => $z,
             'timeoutMinutes'   => (int) ($option['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes']),
             'throttle'         => $z ? max(0, (int) ($option['throttle'] ?? CustomerService::defaultOption()['throttle'])) : 0,
+            'needAuth'         => (bool) ($option['needAuth'] ?? CustomerService::defaultOption()['needAuth']) === '1',
             'labels'           => [
                 'open'        => __('Customer Service', 'G3'),
                 'close'       => __('Close'),
                 'send'        => __('Send', 'G3'),
                 'placeholder' => __('Type a message...', 'G3'),
+                'login'       => __('Login', 'G3'),
             ],
         ];
     }
@@ -182,7 +184,7 @@ class Customer extends Components {
             'eventId'        => $service instanceof CustomerService ? $service->latestEventId() : 0,
             'timeoutMinutes' => max(1, (int) ($this->option()['timeoutMinutes'] ?? CustomerService::defaultOption()['timeoutMinutes'])),
             'labels'         => [
-                'empty'         => __('No conversations', 'G3'),
+                'empty'         => sprintf(__('No %s', 'G3'), __('Conversations', 'G3')),
                 'placeholder'   => __('Leave a Reply'),
                 'send'          => __('Reply'),
                 'close'         => __('Close'),
@@ -194,7 +196,7 @@ class Customer extends Components {
                 'profile'       => sprintf(__('%s %s', 'G3'), __('User'), __('Profile', 'G3')),
                 'search'        => __('Search'),
                 'edit'          => __('Edit'),
-                'editTitle'     => __('Edit Conversation Title', 'G3'),
+                'editTitle'     => sprintf(__('%s %s %s', 'G3'), __('Edit'), __('Conversation', 'G3'), __('Title')),
                 'statusUpdated' => sprintf(__('%s %s', 'G3'), __('Status'), __('Updated', 'G3')),
                 'loadMore'      => __('Load More', 'G3'),
                 'loading'       => __('Loading more results... please wait.'),

@@ -17,6 +17,9 @@ package-lock.json
 package.json
 pnpm-lock.yaml
 vite.config.ts
+.oxfmtrc.json
+rsbuild.config.ts
+
 
 **/*.md
 !/README.md

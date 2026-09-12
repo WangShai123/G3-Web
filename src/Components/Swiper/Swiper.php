@@ -38,7 +38,7 @@ class Swiper extends Components {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . __('Swiper', 'G3') . '</h1>';
         $tabs = [
-            'swipers'   => __('Edit Swipers', 'G3'),
+            'swipers'   => sprintf(__('%s %s', 'G3'), __('Edit'), __('Swiper', 'G3')),
             'locations' => __('Manage Locations', 'G3'),
         ];
         Element::tab('Swiper', 'swipers', $tabs);

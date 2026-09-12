@@ -9,10 +9,7 @@ use JEALER\G3\Services\NotificationService;
 use WP_REST_Request;
 
 class NotificationController extends Controller {
-    public function __construct(private NotificationService $service)
-    {
-        parent::__construct();
-    }
+    public function __construct(private NotificationService $service) {}
 
     #[RestRouter(namespace: 'api/notify', route: 'v1/stream', methods: 'POST')]
     #[Middleware(RateLimitMiddleware::class, [120, 60])]

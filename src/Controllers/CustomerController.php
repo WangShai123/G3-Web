@@ -12,10 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 class CustomerController extends Controller {
-    public function __construct(private CustomerService $service)
-    {
-        parent::__construct();
-    }
+    public function __construct(private CustomerService $service) {}
 
     #[RestRouter(namespace: 'api/customer', route: 'v1/config', methods: 'GET')]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
@@ -133,8 +130,6 @@ class CustomerController extends Controller {
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function adminConversations(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        sleep(1);
-
         $result = $this->service->listConversations($request->get_json_params() ?: []);
         return is_wp_error($result) ? $result : $this->ok($result);
     }

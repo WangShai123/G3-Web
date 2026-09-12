@@ -13,10 +13,7 @@ use WP_REST_Response;
 
 class CommentController extends Controller {
 
-    public function __construct(private CommentService $service)
-    {
-        parent::__construct();
-    }
+    public function __construct(private CommentService $service) {}
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/config', methods: 'GET')]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
@@ -36,15 +33,12 @@ class CommentController extends Controller {
     #[Middleware(RateLimitMiddleware::class, [120, 60])]
     public function comments(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
-        // sleep(10000); // test
         $result = $this->service->list(
             (int) $request->get_param('post_id'),
             max(1, (int) ($request->get_param('page') ?: 1)),
             (string) ($request->get_param('sort') ?: 'latest'),
             max(0, (int) ($request->get_param('user_id') ?: 0))
         );
-
-        sleep(1);
 
         return is_wp_error($result) ? $result : $this->success($result);
     }
@@ -58,8 +52,6 @@ class CommentController extends Controller {
             max(1, (int) ($request->get_param('page') ?: 1)),
             max(0, (int) ($request->get_param('user_id') ?: 0))
         );
-
-        sleep(1);
 
         return is_wp_error($result) ? $result : $this->success($result);
     }

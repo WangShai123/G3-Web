@@ -93,11 +93,15 @@ final class Message {
     }
     public static function deleteConfirm(): string
     {
-        return __('Are you sure you want to delete it?', 'G3');
+        return sprintf(__('Are you sure you want to %s it?', 'G3'), __('Delete'));
     }
     public static function changeConfirm(): string
     {
-        return __('Are you sure you want to change it?', 'G3');
+        return sprintf(__('Are you sure you want to %s it?', 'G3'), __('Change'));
+    }
+    public static function closeConfirm(): string
+    {
+        return sprintf(__('Are you sure you want to %s it?', 'G3'), __('Close'));
     }
     public static function templateNotImplemented($name): string
     {

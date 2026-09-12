@@ -18,9 +18,9 @@ class ProductService extends Service {
     // Global Specs Options Table
     const SPECS_OPTIONS_TABLE = 'g3_specs_options';
     // Product Specs Relation Table
-    const PRODUCT_SPECS_TABLE = 'g3_product_specs';
+    const PRODUCT_SPECS_TABLE = 'g3_products_specs';
     // Sku Specs Relation Table
-    const SPECS_RELATIONS_TABLE = 'g3_sku_specs_relations';
+    const SPECS_RELATIONS_TABLE = 'g3_sku_specs_rels';
     // Product Cache Group
     const CACHE_GROUP       = 'g3_products';
     const SKU_CACHE_GROUP   = 'g3_products_sku';

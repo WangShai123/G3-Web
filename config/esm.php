@@ -23,6 +23,7 @@ return [
     'g3.visitor'             => [G3_ASSETS_URL . '/js/es/g3.visitor.min.js', ['fingerprint'], '1.0.0'],
     'g3.waterfall'           => [G3_ASSETS_URL . '/js/es/g3.waterfall.min.js', [], '1.0.0'],
     'g3.admin.editor'        => [G3_ASSETS_URL . '/js/es/g3.admin.editor.min.js', ['vanilla-jui', 'vanilla-signal', 'vanilla-signal-i18n'], '1.0.0'],
+    'g3.toc'                 => [G3_ASSETS_URL . '/js/es/g3.toc.min.js', ['jui'], '1.0.0'],
 
     /**
      * fingerprintjs

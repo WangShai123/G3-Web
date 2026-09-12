@@ -149,8 +149,8 @@ class Product extends Components {
             'all_items'             => sprintf($ss, __('All', 'G3'), $products),
             'search_items'          => sprintf($ss, __('Search'), $products),
             'parent_item_colon'     => sprintf(__('Parent %s', 'G3') . ':', $product),
-            'not_found'             => sprintf(__('No %s found.', 'G3'), $product),
-            'not_found_in_trash'    => sprintf(__('No %s found in trash.', 'G3'), $product),
+            'not_found'             => sprintf(__('No %s', 'G3'), $product),
+            'not_found_in_trash'    => sprintf(__('No %s', 'G3'), $product),
             'featured_image'        => __('Cover', 'G3'),
             'set_featured_image'    => __('Set cover', 'G3'),
             'remove_featured_image' => __('Remove cover', 'G3'),
@@ -206,7 +206,7 @@ class Product extends Components {
                     'name'          => $categories,
                     'singular_name' => $category,
                     'search_items'  => sprintf($ss, __('Search'), $categories),
-                    'not_found'     => sprintf(__('No %s found.', 'G3'), $category),
+                    'not_found'     => sprintf(__('No %s', 'G3'), $category),
                     'all_items'     => __('All Categories'),
                     'menu_name'     => $categories
                 ]
@@ -226,7 +226,7 @@ class Product extends Components {
                     'name'              => $brands,
                     'singular_name'     => $brand,
                     'search_items'      => sprintf($ss, __('Search'), $brands),
-                    'not_found'         => sprintf(__('No %s found.', 'G3'), $brand),
+                    'not_found'         => sprintf(__('No %s', 'G3'), $brand),
                     'all_items'         => sprintf($ss, __('All', 'G3'), $brands),
                     'parent_item'       => sprintf(__('Parent %s', 'G3'), $brand),
                     'parent_item_colon' => sprintf(__('Parent %s', 'G3') . ':', $brand),

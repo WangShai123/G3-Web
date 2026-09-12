@@ -20,7 +20,7 @@ $table->display();
         }
         $(document).on('click', '.close-order', (e) => {
             const order_id = $(e.currentTarget).data('id')
-            confirm('<?php _e('Are you sure you want to close it?', 'G3'); ?>', {
+            confirm('<?php echo Message::closeConfirm(); ?>', {
                 onConfirm: () => {
                     $.post(ajaxurl, {
                         action: 'g3_close_order',

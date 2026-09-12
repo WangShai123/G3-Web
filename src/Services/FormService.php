@@ -7,11 +7,11 @@ use WP_Error;
 use wpdb;
 
 class FormService extends Service {
-    const TABLE = 'g3_form';
+    const TABLE = 'g3_forms';
     private string $table;
-    const FORM_OPTION_KEY   = 'g3_option_form';
+    const FORM_OPTION_KEY   = 'g3_option_forms';
     const CACHE_GROUP       = 'g3_forms';
-    const QUERY_CACHE_GROUP = 'g3_form_queries';
+    const QUERY_CACHE_GROUP = 'g3_forms_queries';
     private array $allowedFields = ['name', 'content', 'email', 'ext', 'status'];
     public function __construct()
     {

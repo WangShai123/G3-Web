@@ -95,8 +95,8 @@ class Developer extends Components {
                 ->switch('wpAutoUpdate', __('WordPress Auto Update', 'G3'))
                 ->switch('wpCron', 'WP Cron')
                 ->switch('translationsApi', __('Translations API', 'G3'))
-                ->switch('themeEditor', sprintf(__('%s Editor', 'G3'), __('Themes')))
-                ->switch('pluginEditor', sprintf(__('%s Editor', 'G3'), __('Plugins')))
+                ->switch('themeEditor', sprintf(__('%s %s', 'G3'), __('Themes'), __('Editor', 'G3')))
+                ->switch('pluginEditor', sprintf(__('%s %s', 'G3'), __('Plugins'), __('Editor', 'G3')))
                 ->switch('siteHealth', __('Site Health', 'G3'))
                 ->switch('themeCustomize', __('Theme Customize', 'G3'))
                 ->switch('blockPatterns', __('Block Patterns', 'G3'))
@@ -376,9 +376,13 @@ HTML;
             return $data;
         }
 
-        if (isset($_POST['g3_editor_content'])) {
-            $content              = wp_unslash($_POST['g3_editor_content']);
+        $content = $this->g3EditorSubmittedContent($postarr, $unsanitizedPostarr);
+        if ($content !== null) {
             $data['post_content'] = is_string($content) ? $content : '';
+            return $data;
+        }
+
+        if (array_key_exists('post_content', $postarr) || array_key_exists('post_content', $unsanitizedPostarr)) {
             return $data;
         }
 
@@ -386,11 +390,23 @@ HTML;
         if ($update && $postId > 0) {
             $post = get_post($postId);
             if ($post) {
-                $data['post_content'] = $post->post_content;
+                $data['post_content'] = wp_slash($post->post_content);
             }
         }
 
         return $data;
+    }
+
+    private function g3EditorSubmittedContent(array $postarr, array $unsanitizedPostarr): ?string
+    {
+        foreach ([$unsanitizedPostarr, $postarr] as $source) {
+            if (array_key_exists('g3_editor_content', $source)) {
+                $content = $source['g3_editor_content'];
+                return is_string($content) ? $content : '';
+            }
+        }
+
+        return null;
     }
 
     private function currentG3EditorPostType(): ?string

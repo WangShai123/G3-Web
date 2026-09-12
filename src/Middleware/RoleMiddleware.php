@@ -3,6 +3,7 @@ namespace JEALER\G3\Middleware;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Middleware\RestAuthMiddleware;
 use JEALER\G3\Services\AuthService;
+use JEALER\G3\Utilities\Message;
 use WP_REST_Request;
 use WP_Error;
 
@@ -58,7 +59,7 @@ class RoleMiddleware implements MiddlewareInterface {
         if (empty($matched)) {
             return new WP_Error(
                 403,
-                __('Forbidden', 'G3'),
+                Message::forbidden(),
                 [
                     'status' => 403,
                 ]
@@ -82,7 +83,7 @@ class RoleMiddleware implements MiddlewareInterface {
 
         return new WP_Error(
             401,
-            __('Unauthorized', 'G3'),
+            Message::unauthorized(),
             ['status' => 401]
         );
     }

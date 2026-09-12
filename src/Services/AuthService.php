@@ -263,7 +263,7 @@ class AuthService extends Service {
         if (!$this->wechatOAService->available()) {
             return new WP_Error(
                 'wechat_unavailable',
-                __('WeChat service is not available.', 'G3')
+                'WeChat Feature is not available.'
             );
         }
 

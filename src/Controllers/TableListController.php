@@ -11,17 +11,15 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 class TableListController extends Controller {
-    public function __construct(private AuthService $auth)
-    {
-        parent::__construct();
-    }
+    private string $noAvailableMsg = 'Invitation Code Feature is not available.';
+    public function __construct(private AuthService $auth) {}
 
     #[RestRouter(namespace: 'api/admin/table-list', route: 'v1/invitation-codes', methods: 'POST')]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
     public function invitationCodes(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         if (!$this->auth->invitationCodeEnabled()) {
-            return new WP_Error('g3_invitation_code_disabled', __('Invitation code feature is not available.', 'G3'), ['status' => 403]);
+            return new WP_Error('g3_invitation_code_disabled', $this->noAvailableMsg, ['status' => 403]);
         }
 
         return $this->success($this->auth->invitationCodeTableList($this->payload($request)));
@@ -35,7 +33,7 @@ class TableListController extends Controller {
         $amount = (int) ($data['amount'] ?? 1);
 
         if (!$this->auth->invitationCodeEnabled()) {
-            return new WP_Error('g3_invitation_code_disabled', __('Invitation code feature is not available.', 'G3'), ['status' => 403]);
+            return new WP_Error('g3_invitation_code_disabled', $this->noAvailableMsg, ['status' => 403]);
         }
 
         if ($amount < 1 || $amount > 20) {
@@ -77,7 +75,7 @@ class TableListController extends Controller {
         $id   = (int) ($data['id'] ?? 0);
 
         if (!$this->auth->invitationCodeEnabled()) {
-            return new WP_Error('g3_invitation_code_disabled', __('Invitation code feature is not available.', 'G3'), ['status' => 403]);
+            return new WP_Error('g3_invitation_code_disabled', $this->noAvailableMsg, ['status' => 403]);
         }
 
         if ($id <= 0) {
@@ -100,7 +98,7 @@ class TableListController extends Controller {
         $ids  = is_array($data['ids'] ?? null) ? $data['ids'] : [];
 
         if (!$this->auth->invitationCodeEnabled()) {
-            return new WP_Error('g3_invitation_code_disabled', __('Invitation code feature is not available.', 'G3'), ['status' => 403]);
+            return new WP_Error('g3_invitation_code_disabled', $this->noAvailableMsg, ['status' => 403]);
         }
 
         if (!$ids) {

@@ -13,11 +13,7 @@ use WP_Error;
 
 class MenuController extends Controller {
 
-    public function __construct(
-        private MenuService $menuService,
-    )
-    {
-    }
+    public function __construct(private MenuService $menuService) {}
 
     /**
      * Get menu items by location.

@@ -1,10 +1,6 @@
 <?php
-
 namespace JEALER\G3\Controllers;
-
-use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Core\Router\Controller;
-use JEALER\G3\Service;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Middleware;
 use JEALER\G3\Core\Attributes\Schema;

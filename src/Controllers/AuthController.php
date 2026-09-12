@@ -138,8 +138,6 @@ class AuthController extends Controller {
             $user = get_user_by('login', $username);
         }
 
-        sleep(1);
-
         if (!$user || !wp_check_password($password, $user->data->user_pass, $user->ID)) {
             return new WP_Error(
                 401,
@@ -321,7 +319,7 @@ class AuthController extends Controller {
         if (!$valid) {
             return new WP_Error(
                 'error',
-                __('WeChat OA Subscription Login is not available', 'G3'),
+                'WeChat OA Subscription Login is not available',
                 ['status' => 404]
             );
         }
@@ -389,7 +387,7 @@ class AuthController extends Controller {
         if (!$valid) {
             return new WP_Error(
                 'error',
-                __('WeChat OA Subscription Login is not available', 'G3'),
+                'WeChat OA Subscription Login is not available',
                 ['status' => 404]
             );
         }
@@ -519,7 +517,7 @@ class AuthController extends Controller {
         if (!$this->authService->wechatOAService->available()) {
             return new WP_Error(
                 503,
-                __('WeChat service is not available.', 'G3'),
+                'WeChat service is not available.',
                 ['status' => 503]
             );
         }

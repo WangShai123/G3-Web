@@ -27,12 +27,12 @@ class WechatOAService extends Service {
     /**
      * Reply Table Name
      */
-    const REPLY_TABLE = 'g3_wechat_oa_reply';
+    const REPLY_TABLE = 'g3_wechat_oa_replies';
 
     /**
      * Keyword Table Name
      */
-    const KEYWORD_TABLE = 'g3_wechat_oa_reply_keyword';
+    const KEYWORD_TABLE = 'g3_wechat_oa_reply_keywords';
 
     /**
      * Option Key
@@ -1110,7 +1110,7 @@ class WechatOAService extends Service {
         $prepared = $wpdb->prepare($sql, $values);
 
         if (false === $wpdb->query($prepared)) {
-            throw new Exception(__('Batch insert keywords failed', 'G3'));
+            throw new Exception('Batch insert keywords failed.');
         }
     }
 
@@ -1761,7 +1761,7 @@ class WechatOAService extends Service {
         if (!$this->available()) {
             return new WP_Error(
                 'wechat_unavailable',
-                __('WeChat service is not available.', 'G3')
+                'WeChat Feature is not available.'
             );
         }
 

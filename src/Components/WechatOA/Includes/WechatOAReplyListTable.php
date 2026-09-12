@@ -96,7 +96,7 @@ class WechatOAReplyListTable extends WP_List_Table {
         // 获取选中的 reply_ids
         $replyIds = $_POST['reply_ids'] ?? [];
         if (empty($replyIds) || !is_array($replyIds)) {
-            $this->add_admin_notice(__('No items selected.', 'G3'), 'error');
+            $this->add_admin_notice(__('No Data Selected', 'G3'), 'error');
             return;
         }
         // 确保是整数数组

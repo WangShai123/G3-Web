@@ -10,17 +10,10 @@ use WP_REST_Response;
 
 class SystemController extends Controller {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     #[RestRouter(namespace: 'api/config', route: 'v1/site', methods: 'GET')]
     #[Middleware(RateLimitMiddleware::class, [20, 60])]
     public function site(WP_REST_Request $request): WP_REST_Response
     {
-        sleep(1);
-
         $result = [
             'name'         => get_bloginfo('name'),
             'desc'         => get_bloginfo('description'),

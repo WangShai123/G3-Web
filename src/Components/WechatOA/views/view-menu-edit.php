@@ -58,10 +58,14 @@ $options = [
             </tr>
             <!-- parent menu -->
             <tr class="item-input-long">
-                <th scope="row"><label for="parent"><?php _e('Parent Menu', 'G3'); ?></label></th>
+                <th scope="row">
+                    <label for="parent"><?php echo sprintf(__('Parent %s', 'G3'), __('Menu')); ?></label>
+                </th>
                 <td>
                     <fieldset>
-                        <legend class="screen-reader-text"><span><?php _e('Parent Menu', 'G3'); ?></span></legend>
+                        <legend class="screen-reader-text">
+                            <span><?php echo sprintf(__('Parent %s', 'G3'), __('Menu')); ?></span>
+                        </legend>
                         <label for="parent">
                             <select name="parent" id="parent">
                                 <option value="0"></option>

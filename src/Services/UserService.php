@@ -19,10 +19,10 @@ class UserService extends Service {
     const PREMIUM_OPTION_KEY        = 'g3_option_premiums';
     const MEMBERSHIP_OPTION_KEY     = 'g3_option_memberships';
     const DURATION_OPTION_KEY       = 'g3_option_durations';
-    const EXT_TABLE                 = 'g3_user_extra';
-    const CARD_TABLE                = 'g3_user_card';
-    const EXTRA_CACHE_GROUP         = 'g3_user_extra';
-    const CARD_CACHE_GROUP          = 'g3_user_card';
+    const EXT_TABLE                 = 'g3_users_extra';
+    const CARD_TABLE                = 'g3_users_card';
+    const EXTRA_CACHE_GROUP         = 'g3_users_extra';
+    const CARD_CACHE_GROUP          = 'g3_users_card';
     const SESSION_TOKEN_CACHE_GROUP = 'g3_session_tokens';
     const G3_LANG_COOKIE            = 'g3_user_language';
     const G3_TIMEZONE_COOKIE        = 'g3_user_timezone';

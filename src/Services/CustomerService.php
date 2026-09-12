@@ -41,14 +41,14 @@ class CustomerService extends Service {
             'workStart'        => '09:00',
             'workEnd'          => '18:00',
             'guestName'        => 'Guest',
-            'needAuth'         => '0',
+            'needAuth'         => '1',
             'retentionDays'    => 180,
             'heartbeatSeconds' => 45,
             'timeoutMinutes'   => 30,
             'fallbackMessage'  => 'The service is temporarily unavailable. Please try again later.',
             'throttle'         => 5,
             'cacheStorage'     => '0',
-            'icon'             => '1',
+            'userPortal'       => '0',
         ];
     }
 

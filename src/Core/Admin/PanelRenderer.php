@@ -112,7 +112,7 @@ final class PanelRenderer {
             add_settings_error(
                 'notice',
                 $saved ? 'updated' : 'notice-info',
-                $saved ? Message::updated() : __('No data changed', 'G3'),
+                $saved ? Message::updated() : __('No Data Changed', 'G3'),
                 $saved ? 'updated' : 'info'
             );
             settings_errors('notice');

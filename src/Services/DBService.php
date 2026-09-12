@@ -38,10 +38,10 @@ class DBService extends Service {
 
     /**
      * init User Table
-     *  - g3_user_extra          用户额外信息表
-     *  - g3_user_card           用户名片表
-     *  - g3_user_follow         用户关注表
-     *  - g3_user_wallet         用户钱包表
+     *  - g3_users_extra    用户额外信息表
+     *  - g3_users_card     用户名片表
+     *  - g3_users_follow   用户关注表
+     *  - g3_users_wallet   用户钱包表
      * 
      * @param wpdb $wpdb
      * @param string $charset
@@ -82,7 +82,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_extra';
+        $table = $wpdb->prefix . 'g3_users_extra';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
@@ -125,7 +125,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_card';
+        $table = $wpdb->prefix . 'g3_users_card';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
@@ -163,7 +163,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_follow';
+        $table = $wpdb->prefix . 'g3_users_follow';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL,
@@ -193,7 +193,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_wallet';
+        $table = $wpdb->prefix . 'g3_users_wallet';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
@@ -278,7 +278,7 @@ class DBService extends Service {
          *
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_post_action';
+        $table = $wpdb->prefix . 'g3_users_posts_action';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -303,8 +303,8 @@ class DBService extends Service {
      *  - g3_sku                 库存表
      *  - g3_specs               规格表
      *  - g3_specs_options       规格选项表
-     *  - g3_product_specs       产品规格关系表
-     *  - g3_sku_specs_relations 库存规格关系表
+     *  - g3_products_specs       产品规格关系表
+     *  - g3_sku_specs_rels 库存规格关系表
      * 
      * @param wpdb $wpdb
      * @param string $charset
@@ -461,7 +461,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_product_specs';
+        $table = $wpdb->prefix . 'g3_products_specs';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -486,7 +486,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_sku_specs_relations';
+        $table = $wpdb->prefix . 'g3_sku_specs_rels';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -719,8 +719,8 @@ class DBService extends Service {
     /**
      * Initialize the fund tables.
      *  - g3_fund_flow          资金流水表
-     *  - g3_payment_log        支付记录表
-     *  - g3_withdraw_apply     提现申请表
+     *  - g3_payment_logs       支付记录表
+     *  - g3_withdraw_applies   提现申请表
      * 
      * @param wpdb   $wpdb
      * @param string $charset
@@ -780,7 +780,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_payment_log';
+        $table = $wpdb->prefix . 'g3_payment_logs';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -819,7 +819,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_withdraw_apply';
+        $table = $wpdb->prefix . 'g3_withdraw_applies';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -844,12 +844,12 @@ class DBService extends Service {
 
     /**
      * Initialize marketing tables
-     *  - g3_distribution_relation  分销关系表
-     *  - g3_commission_log         佣金记录表
-     *  - g3_coupon                 优惠券表
-     *  - g3_user_coupon            用户优惠券表
-     *  - g3_ads                    广告表
-     *  - g3_invite_codes           邀请码表
+     *  - g3_distribution_rels  分销关系表
+     *  - g3_commission_logs    佣金记录表
+     *  - g3_coupons            优惠券表
+     *  - g3_users_coupons      用户优惠券表
+     *  - g3_ads                广告表
+     *  - g3_invite_codes       邀请码表  
      * 
      * @param wpdb $wpdb
      * @param string $charset
@@ -870,7 +870,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_distribution_relation';
+        $table = $wpdb->prefix . 'g3_distribution_rels';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -902,7 +902,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_commission_log';
+        $table = $wpdb->prefix . 'g3_commission_logs';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -973,7 +973,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_user_coupon';
+        $table = $wpdb->prefix . 'g3_users_coupon';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1083,7 +1083,7 @@ class DBService extends Service {
          *  - status: 状态
          *  - created_at: 创建时间
          */
-        $table = $wpdb->prefix . 'g3_form';
+        $table = $wpdb->prefix . 'g3_forms';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1107,8 +1107,8 @@ class DBService extends Service {
      * Initialize Wechat Table
      *  - g3_wechat_oa_menus            微信公众号菜单表
      *  - g3_wechat_oa_messages         微信公众号消息表
-     *  - g3_wechat_oa_reply            微信公众号应答表
-     *  - g3_wechat_oa_reply_keyword    微信公众号应答关键词表
+     *  - g3_wechat_oa_replies          微信公众号应答表
+     *  - g3_wechat_oa_reply_keywords    微信公众号应答关键词表
      * 
      * @param wpdb $wpdb
      * @param string $charset
@@ -1193,7 +1193,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_wechat_oa_reply';
+        $table = $wpdb->prefix . 'g3_wechat_oa_replies';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1218,7 +1218,7 @@ class DBService extends Service {
          * 
          * @since 1.0.0
          */
-        $table = $wpdb->prefix . 'g3_wechat_oa_reply_keyword';
+        $table = $wpdb->prefix . 'g3_wechat_oa_reply_keywords';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `reply_id` BIGINT UNSIGNED NOT NULL,

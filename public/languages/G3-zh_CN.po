@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: G3-Web\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-19 17:27+0000\n"
-"PO-Revision-Date: 2026-09-10 19:50+0000\n"
+"PO-Revision-Date: 2026-09-12 16:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -70,15 +70,18 @@ msgstr[0] "%s秒前"
 #: templates/user/register.php:202 templates/user/register.php:250
 #: templates/user/register.php:267 templates/user/register.php:328
 #: templates/user/register.php:336 templates/user/register.php:345
-#: src/Controllers/ContactController.php:66
-#: src/Controllers/SystemController.php:32
-#: src/Controllers/SystemController.php:33
+#: src/Controllers/ContactController.php:67
+#: src/Controllers/SystemController.php:25
+#: src/Controllers/SystemController.php:26
 #: src/Components/Developer/Developer.php:89
-#: src/Components/Developer/Developer.php:964
-#: src/Components/Developer/Developer.php:1044
-#: src/Components/Swiper/Swiper.php:13 src/Components/Security/Security.php:85
-#: src/Components/Auth/Auth.php:68 src/Components/Auth/Auth.php:69
-#: src/Components/Auth/Auth.php:70 src/Components/Activity/Activity.php:14
+#: src/Components/Developer/Developer.php:98
+#: src/Components/Developer/Developer.php:99
+#: src/Components/Developer/Developer.php:980
+#: src/Components/Developer/Developer.php:1060
+#: src/Components/Swiper/Swiper.php:13 src/Components/Swiper/Swiper.php:41
+#: src/Components/Security/Security.php:85 src/Components/Auth/Auth.php:68
+#: src/Components/Auth/Auth.php:69 src/Components/Auth/Auth.php:70
+#: src/Components/Activity/Activity.php:14
 #: src/Components/Comment/Comment.php:74 src/Components/Mail/Mail.php:89
 #: src/Components/User/User.php:70 src/Components/User/User.php:71
 #: src/Components/User/User.php:72 src/Components/User/User.php:149
@@ -101,15 +104,18 @@ msgstr[0] "%s秒前"
 #: src/Components/Setting/Setting.php:192
 #: src/Components/Performance/Performance.php:56
 #: src/Components/Announcement/Announcement.php:21
+#: src/Components/Customer/Customer.php:98
 #: src/Components/Customer/Customer.php:102
-#: src/Components/Customer/Customer.php:194
-#: src/Components/Customer/Customer.php:198 src/Components/Share/Share.php:58
+#: src/Components/Customer/Customer.php:105
+#: src/Components/Customer/Customer.php:196
+#: src/Components/Customer/Customer.php:200 src/Components/Share/Share.php:58
 #: src/Components/Share/Share.php:89
 #: src/Components/Swiper/views/page-edit.php:12
 #: src/Components/Swiper/views/page-edit.php:13
 #: src/Components/Post/widgets/PostWidget.php:76
 #: src/Components/Post/widgets/PostWidget.php:80
-#: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Post/widgets/TocWidget.php:52
+#: src/Components/Post/widgets/TocWidget.php:53
 #: src/Components/Comment/widgets/CommentWidget.php:16
 #: src/Components/Comment/widgets/CommentWidget.php:65
 #: src/Components/Comment/widgets/CommentWidget.php:74
@@ -143,28 +149,27 @@ msgstr "%s%s"
 #: src/Components/Activity/Activity.php:15
 #: src/Components/Product/Product.php:137
 #: src/Components/Announcement/Announcement.php:22
+#: src/Components/Customer/Customer.php:103
+#: src/Components/Customer/Customer.php:199
+#: src/Components/Post/widgets/TocWidget.php:51
+#: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
 #: src/Components/Mail/views/tab-test.php:56
 #: src/Components/Mail/views/tab-test.php:58
 #, php-format
 msgid "%s %s %s"
 msgstr "%s%s%s"
 
-#: src/Components/Developer/Developer.php:98
-#: src/Components/Developer/Developer.php:99
-#, php-format
-msgid "%s Editor"
-msgstr "%s编辑器"
-
-#: src/Components/Post/Post.php:649 src/Components/Post/Post.php:658
-#: src/Components/Post/Post.php:667 src/Components/Post/Post.php:676
-#: src/Components/Post/Post.php:685 src/Components/Post/Post.php:694
+#: src/Components/Post/Post.php:696 src/Components/Post/Post.php:705
+#: src/Components/Post/Post.php:714 src/Components/Post/Post.php:723
+#: src/Components/Post/Post.php:732 src/Components/Post/Post.php:741
 #: src/Components/Product/Product.php:248
 #: src/Components/Product/Product.php:259
 #, php-format
 msgid "%s Sidebar"
 msgstr "%s侧边栏"
 
-#: src/Components/Developer/Developer.php:989
+#: src/Components/Developer/Developer.php:1005
 msgid "."
 msgstr "。"
 
@@ -269,7 +274,7 @@ msgstr "后台、特殊文件、REST API不缓存"
 msgid "Administrator"
 msgstr "管理员"
 
-#: src/Components/Post/Post.php:142
+#: src/Components/Post/Post.php:147
 msgid ""
 "After being enabled, it will display the local time based on the user's time "
 "zone, rather than the time zone set in the system settings."
@@ -337,23 +342,16 @@ msgstr "应用监视器"
 msgid "Apply the configured image style to original image URLs."
 msgstr ""
 
-#: src/Utilities/Message.php:100
-msgid "Are you sure you want to change it?"
-msgstr "您确定要更改它吗？"
-
-#: src/Components/Orders/views/view-orders.php:23
-msgid "Are you sure you want to close it?"
-msgstr "您确定要关闭它吗？"
+#: src/Utilities/Message.php:96 src/Utilities/Message.php:100
+#: src/Utilities/Message.php:104
+#, php-format
+#| msgid "Are you sure you want to change it?"
+msgid "Are you sure you want to %s it?"
+msgstr "您确定要%s它吗？"
 
 #: src/Components/WechatOA/views/tab-menus.php:64
 msgid "Are you sure you want to create this menu for WeChat Official Account?"
 msgstr "您确认要创建微信公众号菜单吗？"
-
-#: src/Utilities/Message.php:96
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:53
-#| msgid "Are you sure you want to delete this menu?"
-msgid "Are you sure you want to delete it?"
-msgstr "您确定要删除它吗？"
 
 #: src/Components/WechatOA/views/tab-menus.php:91
 msgid "Are you sure you want to flush the menus online?"
@@ -373,12 +371,12 @@ msgid "Arrow"
 msgstr "箭头"
 
 #: src/Services/WechatOAService.php:1655
-#: src/Components/WechatOA/views/view-menu-edit.php:288
+#: src/Components/WechatOA/views/view-menu-edit.php:292
 msgid "Article ID"
 msgstr "图文 ID"
 
 #: src/Services/WechatOAService.php:1654
-#: src/Components/WechatOA/views/view-menu-edit.php:276
+#: src/Components/WechatOA/views/view-menu-edit.php:280
 msgid "Article URL"
 msgstr "图文 URL"
 
@@ -416,7 +414,7 @@ msgstr "已授权用户，每季度可以在直播中，获得一次免费的业
 msgid "Auto Backup"
 msgstr "自动备份"
 
-#: src/Components/Post/Post.php:136
+#: src/Components/Post/Post.php:141
 msgid ""
 "Automatically add your encoded & invisible brand mark in the article while "
 "saving to protect your content copyright."
@@ -443,10 +441,6 @@ msgstr "余额"
 msgid "Bank transfer fees"
 msgstr "银行转账费"
 
-#: src/Services/WechatOAService.php:1113
-msgid "Batch insert keywords failed"
-msgstr "批量插入关键词失败"
-
 #: src/Components/Auth/views/tab-general.php:5
 #: src/Components/WechatOA/views/tab-general.php:5
 #, php-format
@@ -455,7 +449,7 @@ msgid ""
 "href=\"%s\">%s</a> settings."
 msgstr "启用相关功能前，请确保完成相关 <a href=\"%s\">%s</a> 设置。"
 
-#: src/Components/Post/Post.php:138
+#: src/Components/Post/Post.php:143
 msgid ""
 "Before enabling the knowledge payment service, please ensure that payment "
 "and other related functional configurations have been completed."
@@ -537,8 +531,8 @@ msgid "Button"
 msgstr "按钮"
 
 #: src/Services/OrdersService.php:426
-msgid "Buyer ID"
-msgstr "买家 ID"
+msgid "Buyer"
+msgstr "买家"
 
 #: src/Components/Auth/views/tab-social.php:4
 #| msgid ""
@@ -598,7 +592,7 @@ msgstr "禁止删除该规格，因为它正被某sku或选项所使用。"
 msgid "Card"
 msgstr "卡"
 
-#: src/Components/Post/Post.php:802
+#: src/Components/Post/Post.php:850
 msgid "Card Menu"
 msgstr "卡片菜单"
 
@@ -624,7 +618,7 @@ msgid "Click <a href=\"%s\"><b>HERE</b></a> to activate."
 msgstr "点击 <a href=\"%s\"><b>此处</b></a> 来激活。"
 
 #: src/Services/WechatOAService.php:1645
-#: src/Components/WechatOA/views/view-menu-edit.php:168
+#: src/Components/WechatOA/views/view-menu-edit.php:172
 msgid "Click Event"
 msgstr "点击事件"
 
@@ -634,7 +628,7 @@ msgstr "点击事件"
 msgid "Click here to view \"%s\" search results."
 msgstr "点击此处浏览 [%s] 的搜索结果。"
 
-#: src/Components/Customer/Customer.php:193
+#: src/Components/Customer/Customer.php:195
 msgid "Closed"
 msgstr "已关闭"
 
@@ -704,7 +698,11 @@ msgstr "消费者"
 msgid "Contact us"
 msgstr "联系我们"
 
-#: templates/developer/w.php:106 src/Components/Post/Post.php:730
+#: src/Components/Post/widgets/TocWidget.php:51
+msgid "Container"
+msgstr "容器"
+
+#: templates/developer/w.php:106 src/Components/Post/Post.php:778
 #: src/Components/Share/Share.php:57
 msgid "Content Distribution"
 msgstr "内容分发"
@@ -713,15 +711,24 @@ msgstr "内容分发"
 msgid "Content Security Policy"
 msgstr "内容安全策略"
 
+#: src/Components/Customer/Customer.php:199
+msgid "Conversation"
+msgstr "会话"
+
+#: src/Components/Customer/Customer.php:187
+#| msgid "No conversations"
+msgid "Conversations"
+msgstr "会话"
+
 #: src/Components/Themes/views/page-general.php:25
 msgid "Copied to clipboard!"
 msgstr "成功复制到剪贴板！"
 
-#: src/Components/Post/Post.php:134
+#: src/Components/Post/Post.php:139
 msgid "Copyright Notice"
 msgstr "版权声明"
 
-#: src/Components/Post/Post.php:134
+#: src/Components/Post/Post.php:139
 msgid ""
 "Copyright notice to display on each post & page. Suggest: All publicly "
 "displayed data on this platform is sourced from the public internet and is "
@@ -733,14 +740,14 @@ msgid ""
 msgstr ""
 "版权声明将显示在每篇文章和页面。建议：本平台内的所有公开展示数据均来自于公开互联网，且仅做功能测试数据所用。它们并不代表本平台的观点。本平台对其文字、图片与其他内容的真实性、及时性、完整性和准确性以及其权利属性均不作任何保证和承诺，请访客和相关方自行核实。"
 
-#: src/Components/Post/Post.php:136
+#: src/Components/Post/Post.php:141
 msgid "Copyright Protection"
 msgstr "版权保护"
 
 #: src/Components/WechatOA/WechatOA.php:71
 #: src/Components/Setting/Setting.php:182
 #: src/Components/Post/widgets/PostWidget.php:85
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:39
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:40
 #: src/Components/Auth/views/tab-invitation.php:20
 #: src/Components/Comment/widgets/CommentWidget.php:115
 msgid "Count"
@@ -750,7 +757,7 @@ msgstr "数量"
 msgid "Counter input"
 msgstr "计数器输入框"
 
-#: src/Components/Post/Post.php:595 src/Components/Post/Post.php:616
+#: src/Components/Post/Post.php:642 src/Components/Post/Post.php:663
 #: src/Components/Activity/Activity.php:32
 #: src/Components/Product/Product.php:154
 #: src/Components/Setting/Setting.php:153
@@ -764,12 +771,12 @@ msgstr "创建成功"
 
 #: src/Components/Form/Includes/FormListTable.php:45
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:38
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:59
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:60
 msgid "Created At"
 msgstr "创建时间"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:37
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:58
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:59
 msgid "Creator"
 msgstr "创建者"
 
@@ -810,6 +817,10 @@ msgstr "自定义后台登录地址"
 msgid "Custom Code"
 msgstr "自定义代码"
 
+#: src/Components/Customer/Customer.php:105
+msgid "Custom Customer Service frontend portal for visitors."
+msgstr "自定义客服服务前端入口。"
+
 #: templates/developer/w.php:129
 msgid "Custom Email Template"
 msgstr "自定义邮件模板"
@@ -822,7 +833,7 @@ msgstr "自定义邮件模板"
 msgid "Custom Group"
 msgstr "自定义组"
 
-#: src/Components/Post/Post.php:711
+#: src/Components/Post/Post.php:759
 msgid "Custom interaction data"
 msgstr "自定义交互数据"
 
@@ -835,7 +846,7 @@ msgstr "自定义回复"
 #: src/Components/Customer/Customer.php:48
 #: src/Components/Customer/Customer.php:49
 #: src/Components/Customer/Customer.php:66
-#: src/Components/Customer/Customer.php:157
+#: src/Components/Customer/Customer.php:158
 msgid "Customer Service"
 msgstr "客服"
 
@@ -905,7 +916,7 @@ msgstr ""
 msgid "Define cache switch"
 msgstr "定义缓存开关"
 
-#: src/Components/Post/Post.php:132
+#: src/Components/Post/Post.php:137
 msgid ""
 "Defines how long a visit from the same user must wait before it counts as a "
 "new view."
@@ -933,7 +944,7 @@ msgid "Delete History Data"
 msgstr "删除历史数据"
 
 #: src/Utilities/Message.php:43 src/Controllers/AdminController.php:133
-#: src/Controllers/TableListController.php:92 src/Services/AuthService.php:498
+#: src/Controllers/TableListController.php:90 src/Services/AuthService.php:498
 #: src/Services/OrdersService.php:132
 #: src/Components/Announcement/Announcement.php:100
 #: src/Components/Developer/Includes/CronListTable.php:306
@@ -981,25 +992,25 @@ msgstr "描述"
 msgid "Design"
 msgstr "设计"
 
-#: src/Components/Post/Post.php:769
+#: src/Components/Post/Post.php:817
 msgid "Desktop Footer Menu"
 msgstr "桌面主题底部菜单"
 
-#: src/Components/Post/Post.php:770
+#: src/Components/Post/Post.php:818
 msgid "Desktop Footer Secondary Menu"
 msgstr "桌面主题底部次级菜单"
 
-#: src/Components/Post/Post.php:767
+#: src/Components/Post/Post.php:815
 msgid "Desktop Header Menu"
 msgstr "桌面主题头部菜单"
 
-#: src/Components/Post/Post.php:768
+#: src/Components/Post/Post.php:816
 msgid "Desktop Header Secondary Menu"
 msgstr "桌面主题头部次级菜单"
 
 #: templates/developer/w.php:136 src/Components/Developer/Developer.php:92
-#: src/Components/Developer/Developer.php:428
-#: src/Components/Developer/Developer.php:429
+#: src/Components/Developer/Developer.php:444
+#: src/Components/Developer/Developer.php:445
 #| msgid "Development Mode"
 msgid "Developer Mode"
 msgstr "开发者模式"
@@ -1034,7 +1045,7 @@ msgid ""
 "the speed of the backend access."
 msgstr "禁用WordPress自动更新相关功能，可以显著地提升管理后台的访问速度。"
 
-#: src/Components/Post/Post.php:324
+#: src/Components/Post/Post.php:329
 msgid "Dislike"
 msgstr "讨厌"
 
@@ -1042,9 +1053,17 @@ msgstr "讨厌"
 msgid "Display Items"
 msgstr "显示选项"
 
-#: src/Components/Post/Post.php:842
+#: src/Components/Post/widgets/TocWidget.php:18
+msgid "Display the table of contents for the current post."
+msgstr "显示当前文章的内容目录。"
+
+#: src/Components/Post/Post.php:890
 msgid "Display Type"
 msgstr "显示类型"
+
+#: src/Components/Post/widgets/TocWidget.php:53
+msgid "Distance"
+msgstr "距离"
 
 #: src/Components/Setting/Setting.php:469
 msgid "Documents"
@@ -1115,15 +1134,9 @@ msgid ""
 "Attribute."
 msgstr "通过 AOP 配置和AOP注解，轻松实现拦截、日志等切面逻辑。"
 
-#: src/Components/Customer/Customer.php:197
-msgid "Edit Conversation Title"
-msgstr "编辑会话标题"
-
-#: src/Components/Swiper/Swiper.php:41
-msgid "Edit Swipers"
-msgstr "编辑轮播图"
-
-#: templates/developer/w.php:107 src/Components/Developer/Developer.php:107
+#: templates/developer/w.php:107 src/Components/Developer/Developer.php:98
+#: src/Components/Developer/Developer.php:99
+#: src/Components/Developer/Developer.php:107
 msgid "Editor"
 msgstr "编辑器"
 
@@ -1148,7 +1161,7 @@ msgstr "邮件队列"
 msgid "Enable"
 msgstr "启用"
 
-#: src/Components/Post/Post.php:140
+#: src/Components/Post/Post.php:145
 msgid ""
 "Enable language switching based on user preferences. Only support Chinese "
 "and English."
@@ -1204,9 +1217,9 @@ msgstr "已过期"
 msgid "Extra Data"
 msgstr "扩展数据"
 
-#: src/Utilities/Message.php:77 src/Controllers/TableListController.php:61
-#: src/Controllers/TableListController.php:89 src/Services/AuthService.php:498
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:37
+#: src/Utilities/Message.php:77 src/Controllers/TableListController.php:59
+#: src/Controllers/TableListController.php:87 src/Services/AuthService.php:498
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:38
 msgid "Failed"
 msgstr "失败"
 
@@ -1224,30 +1237,26 @@ msgstr "复制失败！"
 msgid "Failed to delete order related data: %s."
 msgstr "删除订单关联数据失败：%s。"
 
-#: src/Components/Orders/Includes/OrdersListTable.php:160
-msgid "Failed to delete orders"
-msgstr "订单删除失败"
-
 #: src/Components/Setting/Setting.php:509
 msgid "Failed to generate LLM cache."
 msgstr "LLM缓存生成失败。"
 
-#: src/Components/Developer/Developer.php:654
+#: src/Components/Developer/Developer.php:670
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
 "%s."
 msgstr "无法创建对象缓存文件 object-cache.php，请检查当前文件目录的操作权限：%s"
 
-#: src/Controllers/AuthController.php:533
+#: src/Controllers/AuthController.php:531
 msgid "Failed to generate WeChat auth URL."
 msgstr "微信授权URL创建失败。"
 
-#: src/Controllers/TableListController.php:44 src/Components/Auth/Auth.php:147
+#: src/Controllers/TableListController.php:42 src/Components/Auth/Auth.php:147
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr "失败。建议一次性创建数量为1-20."
 
-#: src/Components/Post/Post.php:321
+#: src/Components/Post/Post.php:326
 msgid "Favorite"
 msgstr "收藏"
 
@@ -1258,6 +1267,12 @@ msgstr "功能"
 #: src/Components/Performance/widgets/MonitorWidget.php:105
 msgid "Feature Disabled"
 msgstr "该功能已被禁用"
+
+#: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
+#| msgid "Feature is not available"
+msgid "Feature is not available."
+msgstr "功能不可用。"
 
 #: src/Components/Setting/Setting.php:446
 #: src/Components/Setting/Setting.php:447
@@ -1322,21 +1337,21 @@ msgstr "金融"
 msgid "Flexible Payment Terms"
 msgstr "灵活的付款方式"
 
-#: src/Components/Developer/Developer.php:566
+#: src/Components/Developer/Developer.php:582
 msgid "Flush all the cache data."
 msgstr "清空所有缓存数据。"
 
-#: src/Components/Developer/Developer.php:548
+#: src/Components/Developer/Developer.php:564
 msgid "Flush and fix the rewrite rules."
 msgstr "修复刷新重写规则。"
 
-#: src/Components/Developer/Developer.php:560
+#: src/Components/Developer/Developer.php:576
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr "清空当前设置选项数据，并恢复成上一次备份的数据。备份文件目录："
 
-#: src/Components/Developer/Developer.php:565
+#: src/Components/Developer/Developer.php:581
 msgid "Flush Cache"
 msgstr "清空缓存"
 
@@ -1348,15 +1363,15 @@ msgstr "数据刷新"
 msgid "Flush Menus Online"
 msgstr "清空线上菜单"
 
-#: src/Components/Developer/Developer.php:553
+#: src/Components/Developer/Developer.php:569
 msgid "Flush REST routes cache"
 msgstr "刷新 REST 路由缓存"
 
-#: src/Components/Developer/Developer.php:547
+#: src/Components/Developer/Developer.php:563
 msgid "Flush Rewrite Rules"
 msgstr "刷新重写规则"
 
-#: src/Components/Developer/Developer.php:559
+#: src/Components/Developer/Developer.php:575
 msgid "Flush Setting Options"
 msgstr "刷新设置选项"
 
@@ -1364,7 +1379,7 @@ msgstr "刷新设置选项"
 msgid "Flushed"
 msgstr "刷新成功"
 
-#: src/Controllers/ThemeGeneratorController.php:91
+#: src/Controllers/ThemeGeneratorController.php:87
 #, php-format
 msgid "Folder exists: %s"
 msgstr "文件夹已存在：%s"
@@ -1405,6 +1420,13 @@ msgstr "关于对象缓存"
 msgid "For PHP OPCache"
 msgstr "对于 PHP OPCache"
 
+#: src/Components/Customer/Customer.php:105
+#, php-format
+msgid ""
+"For relevant rules, please refer to <a href=\"%s\" target=\"_blank\">the G3-"
+"Web online documentation</a>."
+msgstr "相关规则见 <a href=\"%s\" target=\"_blank\">G3-Web 在线文档</a>。"
+
 #: templates/developer/w.php:161
 msgid ""
 "For sales: G3-Web helps you easily build digital solutions that suit a "
@@ -1427,8 +1449,7 @@ msgstr "对于主题设计师：G3-Web 提供了一套全面的开发工具，�
 msgid "For Traditional Wordpress Theme"
 msgstr "关于传统WordPress主题"
 
-#: src/Middleware/RoleMiddleware.php:61 src/Utilities/Message.php:28
-#: src/Controllers/EditorController.php:30
+#: src/Utilities/Message.php:28 src/Controllers/EditorController.php:30
 #: src/Controllers/EditorController.php:65
 msgid "Forbidden"
 msgstr "禁止访问"
@@ -1467,7 +1488,7 @@ msgid ""
 "modify this path:"
 msgstr "从 PHP 配置文件（如 enable-php-83.conf）中确认和修改这个路径："
 
-#: templates/developer/w.php:107
+#: templates/developer/w.php:107 src/Components/Customer/Customer.php:105
 msgid "Frontend"
 msgstr "前端"
 
@@ -1513,7 +1534,7 @@ msgstr ""
 "G3-Web 会在 Redis 中建立 3 个数据库，分别用来缓存常规数据和队列任务。常规数据存储在数据库 0 中，队列任务存储在数据库 1 "
 "中，通知服务存储在数据库 2 中。"
 
-#: src/Components/Post/Post.php:800
+#: src/Components/Post/Post.php:848
 msgid "General Menu"
 msgstr "常规菜单"
 
@@ -1538,17 +1559,17 @@ msgid "Generate Cache"
 msgstr "生成缓存"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:92
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:38
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:39
 #: src/Components/Auth/views/tab-invitation.php:49
 #: src/Components/Auth/views/tab-invitation.php:50
 msgid "Generate Invitation Code"
 msgstr "生成邀请码"
 
-#: src/Components/Developer/Developer.php:570
+#: src/Components/Developer/Developer.php:586
 msgid "Generate object-cache.php"
 msgstr "生成 object-cache.php 文件"
 
-#: src/Components/Developer/Developer.php:571
+#: src/Components/Developer/Developer.php:587
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1574,17 +1595,21 @@ msgstr "访客"
 msgid "Guest Name"
 msgstr "访客名称"
 
-#: src/Components/Customer/Customer.php:189
+#: src/Components/Customer/Customer.php:191
 msgid "Handle"
 msgstr "处理"
 
-#: src/Components/Customer/Customer.php:190
+#: src/Components/Customer/Customer.php:192
 msgid "Handling"
 msgstr "处理中"
 
 #: src/Components/Setting/Setting.php:155
 msgid "Header Code"
 msgstr "页头区代码"
+
+#: src/Components/Post/widgets/TocWidget.php:52
+msgid "Headings"
+msgstr "标题"
 
 #: src/Components/Customer/Customer.php:97
 msgid "Heartbeat"
@@ -1663,19 +1688,19 @@ msgstr ""
 "如果您想使用定时任务，请使用 G3-Web 提供的 Queue 和 Job 服务，它是结合 systemd 或 supervisor "
 "的系统级的高性能和高可维护的功能。"
 
-#: src/Utilities/Message.php:82 src/Controllers/TableListController.php:84
-#: src/Controllers/TableListController.php:107
+#: src/Utilities/Message.php:82 src/Controllers/TableListController.php:82
+#: src/Controllers/TableListController.php:105
 msgid "Illegal request"
 msgstr "非法请求"
 
 #: src/Components/Customer/Customer.php:102
 #| msgid ""
-#| "Message data is stored solely in the Redis cache. Use the queue service "
-#| "for regular data synchronization to the database."
+#| "IM data is stored solely in the Redis cache(Valid for 7 days). Use the "
+#| "queue service for regular data synchronization to the database."
 msgid ""
-"IM data is stored solely in the Redis cache. Use the queue service for "
-"regular data synchronization to the database."
-msgstr "IM数据仅存储在缓存中。您需要使用队列服务，定时同步数据到数据库。"
+"IM data is stored solely in the Redis cache. Valid for 7 days. Use the queue "
+"service for regular data synchronization to the database."
+msgstr "IM数据存储在缓存中，仅7天有效。您需要使用队列服务，定时同步数据到数据库。"
 
 #: src/Components/OSS/OSS.php:80 src/Components/OSS/OSS.php:97
 msgid "Image Style"
@@ -1751,8 +1776,8 @@ msgstr "安装并激活 <a href=\"%s\">G3WebDesktop</a> 主题来预览桌面端
 msgid "Internal Endpoint"
 msgstr "内部端点"
 
-#: src/Controllers/AuthController.php:335
-#: src/Controllers/AuthController.php:403
+#: src/Controllers/AuthController.php:333
+#: src/Controllers/AuthController.php:401
 msgid "Invalid Hash"
 msgstr "非法Hash"
 
@@ -1772,40 +1797,25 @@ msgstr "链接地址不正确"
 msgid "Invalid settings request."
 msgstr "无效的设置请求。"
 
-#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:146
+#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:144
 msgid "Invalid username or password."
 msgstr "用户名或密码不正确。"
 
-#: src/Controllers/TableListController.php:69 src/Components/Auth/Auth.php:50
+#: src/Controllers/TableListController.php:67 src/Components/Auth/Auth.php:50
 #: src/Components/Auth/Auth.php:79 src/Components/Auth/Auth.php:173
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:36
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:57
+#: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:58
 msgid "Invitation Code"
 msgstr "邀请码"
-
-#: src/Controllers/TableListController.php:24
-#: src/Controllers/TableListController.php:38
-#: src/Controllers/TableListController.php:80
-#: src/Controllers/TableListController.php:103
-#: src/Components/Auth/Includes/InvitationCodeListTable.php:116
-msgid "Invitation code feature is not available."
-msgstr "邀请码功能不可用。"
-
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:9
-#| msgid ""
-#| "Invitation code is not available. Please set the invitation code as the "
-#| "registration code first."
-msgid ""
-"Invitation code feature is not available. Please set the invitation code as "
-"the registration code first."
-msgstr "邀请码功能不可用。请先设置邀请码为注册码。"
 
 #: src/Components/Auth/Auth.php:54
 msgid "Invite-Only Registration"
 msgstr "强制邀请码注册"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:42
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:63
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:64
 msgid "Invitee"
 msgstr "被邀请人"
 
@@ -1874,22 +1884,26 @@ msgstr ""
 msgid "Level Group"
 msgstr "等级组"
 
-#: src/Components/Developer/Developer.php:1028
+#: src/Components/Developer/Developer.php:1044
 #| msgid "G3 License Code"
 msgid "License Code"
 msgstr "授权码"
 
-#: src/Components/Developer/Developer.php:918
-#: src/Components/Developer/Developer.php:921
+#: src/Components/Developer/Developer.php:934
+#: src/Components/Developer/Developer.php:937
 msgid "License Expired"
 msgstr "授权已过期"
 
-#: src/Components/Post/Post.php:323
+#: src/Components/Post/Post.php:328
 msgid "Like"
 msgstr "喜欢"
 
+#: src/Components/Post/Post.php:124
+msgid "Limit"
+msgstr "限制"
+
 #: src/Services/WechatOAService.php:1656
-#: src/Components/WechatOA/views/view-menu-edit.php:300
+#: src/Components/WechatOA/views/view-menu-edit.php:304
 msgid "Limited Article URL"
 msgstr "受限图文URL"
 
@@ -1911,11 +1925,11 @@ msgstr "关联 SKU"
 msgid "List"
 msgstr "列表"
 
-#: src/Components/Post/Post.php:801
+#: src/Components/Post/Post.php:849
 msgid "List Card Menu"
 msgstr "列表卡片菜单"
 
-#: src/Components/Customer/Customer.php:199
+#: src/Components/Customer/Customer.php:201
 msgid "Load More"
 msgstr "加载更多"
 
@@ -1931,7 +1945,7 @@ msgid "Location"
 msgstr "位置"
 
 #: src/Services/WechatOAService.php:1651
-#: src/Components/WechatOA/views/view-menu-edit.php:240
+#: src/Components/WechatOA/views/view-menu-edit.php:244
 msgid "Location Selector"
 msgstr "位置选择器"
 
@@ -1952,6 +1966,7 @@ msgstr "已登录用户不缓存"
 #: src/Services/AuthService.php:656 src/Components/Auth/Auth.php:25
 #: src/Components/Auth/Auth.php:26 src/Components/Auth/Auth.php:44
 #: src/Components/Auth/Auth.php:75 src/Components/User/User.php:162
+#: src/Components/Customer/Customer.php:162
 msgid "Login"
 msgstr "登录"
 
@@ -2000,7 +2015,7 @@ msgid "Maximum number of search results returned. Default: 5."
 msgstr "搜索结果返回的最大数量。默认 5。"
 
 #: src/Services/WechatOAService.php:1653
-#: src/Components/WechatOA/views/view-menu-edit.php:264
+#: src/Components/WechatOA/views/view-menu-edit.php:268
 msgid "Media Library"
 msgstr "素材库"
 
@@ -2017,7 +2032,7 @@ msgstr "素材库"
 msgid "Membership"
 msgstr "会员"
 
-#: src/Components/Developer/Developer.php:948
+#: src/Components/Developer/Developer.php:964
 msgid "Membership Feature"
 msgstr "会员专属功能"
 
@@ -2033,7 +2048,7 @@ msgstr "会员类商品"
 msgid "Memory Usage"
 msgstr "内存占用"
 
-#: src/Components/Post/Post.php:812
+#: src/Components/Post/Post.php:860
 msgid "Menu Type"
 msgstr "菜单类型"
 
@@ -2061,10 +2076,6 @@ msgid ""
 "been disabled."
 msgstr "消息不可用。因为微信公众号消息存储功能已被禁用。"
 
-#: src/Services/IMService.php:227
-msgid "Message not found."
-msgstr "未发现消息。"
-
 #: src/Services/WechatOAService.php:603 src/Components/WechatOA/WechatOA.php:21
 msgid "Message received, thanks for your advice!"
 msgstr "消息已收到，感谢您的反馈。"
@@ -2077,11 +2088,11 @@ msgstr "消息"
 msgid "Messages replied automatically during non-working hours."
 msgstr "非工作时间自动回复的消息。"
 
-#: src/Components/Developer/Developer.php:575
+#: src/Components/Developer/Developer.php:591
 msgid "Migrate"
 msgstr "迁移"
 
-#: src/Components/Developer/Developer.php:576
+#: src/Components/Developer/Developer.php:592
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2089,7 +2100,7 @@ msgstr ""
 "如果你确实需要，请将<code>post_meta</code>表中的视图计数数据迁移到单独的<code>g3_posts_extra</code>表中。"
 
 #: src/Services/WechatOAService.php:1652
-#: src/Components/WechatOA/views/view-menu-edit.php:252
+#: src/Components/WechatOA/views/view-menu-edit.php:256
 msgid "Mini Program"
 msgstr "小程序"
 
@@ -2102,7 +2113,7 @@ msgid ""
 "timeout reason."
 msgstr "当若干分钟内无消息交互，系统将关闭超时会话。"
 
-#: src/Components/Post/Post.php:771
+#: src/Components/Post/Post.php:819
 msgid "Mobile Menu"
 msgstr "手机菜单"
 
@@ -2129,7 +2140,7 @@ msgstr "多主题"
 msgid "My"
 msgstr "我的"
 
-#: src/Services/PostService.php:1245
+#: src/Services/PostService.php:1254
 msgid "My Homepage"
 msgstr "我的主页"
 
@@ -2157,7 +2168,7 @@ msgstr "新%s名称"
 msgid "new comment moderation"
 msgstr "新的评论审核"
 
-#: src/Controllers/ContactController.php:91
+#: src/Controllers/ContactController.php:92
 #: src/Components/Setting/Setting.php:234
 msgid "New Message"
 msgstr "新消息"
@@ -2195,42 +2206,32 @@ msgstr ""
 msgid "Nickname"
 msgstr "昵称"
 
+#: src/Components/Post/Post.php:124 src/Components/Activity/Activity.php:30
 #: src/Components/Activity/Activity.php:31
-#: src/Components/Product/Product.php:153
-#: src/Components/Announcement/Announcement.php:40
-#, php-format
-msgid "No %s found in trash."
-msgstr "回收站里未发现%s。"
-
-#: src/Components/Activity/Activity.php:30
 #: src/Components/Product/Product.php:152
+#: src/Components/Product/Product.php:153
 #: src/Components/Product/Product.php:209
 #: src/Components/Product/Product.php:229
 #: src/Components/Announcement/Announcement.php:39
+#: src/Components/Announcement/Announcement.php:40
+#: src/Components/Customer/Customer.php:187
 #, php-format
-msgid "No %s found."
-msgstr "未发现%s。"
-
-#: src/Components/Customer/Customer.php:185
-msgid "No conversations"
-msgstr "无会话"
+msgid "No %s"
+msgstr "无%s"
 
 #: src/Core/Admin/PanelRenderer.php:115
 #: src/Components/Swiper/views/tab-locations.php:43
-msgid "No data changed"
+#| msgid "No data changed"
+msgid "No Data Changed"
 msgstr "无数据变更"
+
+#: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:99
+msgid "No Data Selected"
+msgstr "未选中任何数据"
 
 #: src/Components/Mail/Mail.php:73
 msgid "No Encryption"
 msgstr "不加密"
-
-#: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:99
-msgid "No items selected."
-msgstr "未选中任何数据"
-
-#: src/Components/Post/Post.php:119
-msgid "No Limit"
-msgstr "无限制"
 
 #: templates/developer/w.php:155
 msgid "No matter who you are, G3-Web has got you covered."
@@ -2251,7 +2252,7 @@ msgstr "无"
 msgid "Object Cache"
 msgstr "对象缓存"
 
-#: src/Components/Developer/Developer.php:662
+#: src/Components/Developer/Developer.php:678
 #| msgid "object_cache.php file already exists."
 msgid "object-cache.php file already exists."
 msgstr "对象缓存文件 object-cache.php 已存在。"
@@ -2270,11 +2271,15 @@ msgstr "公众号类型"
 msgid "Offline"
 msgstr "离线"
 
+#: src/Components/Post/widgets/TocWidget.php:53
+msgid "Offset"
+msgstr "偏移"
+
 #: templates/mail/site-admin-email-change.php:8
 msgid "Old"
 msgstr "旧"
 
-#: src/Components/Developer/Developer.php:930
+#: src/Components/Developer/Developer.php:946
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
@@ -2403,7 +2408,7 @@ msgstr "超过30个子系统组件"
 msgid "Override"
 msgstr "重写"
 
-#: src/Services/PostService.php:970 src/Services/PostService.php:977
+#: src/Services/PostService.php:979 src/Services/PostService.php:986
 #, php-format
 #| msgid "Page $s"
 msgid "Page %s"
@@ -2417,7 +2422,7 @@ msgstr "已支付"
 msgid "Paid Amount"
 msgstr "实付金额"
 
-#: src/Components/Post/Post.php:138
+#: src/Components/Post/Post.php:143
 msgid "Paid Reading"
 msgstr "付费阅读"
 
@@ -2430,14 +2435,11 @@ msgstr "参数缺失"
 #: src/Components/Product/Product.php:231
 #: src/Components/Product/Product.php:232
 #: src/Components/Announcement/Announcement.php:38
+#: src/Components/WechatOA/views/view-menu-edit.php:62
+#: src/Components/WechatOA/views/view-menu-edit.php:67
 #, php-format
 msgid "Parent %s"
 msgstr "父级%s"
-
-#: src/Components/WechatOA/views/view-menu-edit.php:61
-#: src/Components/WechatOA/views/view-menu-edit.php:64
-msgid "Parent Menu"
-msgstr "父级菜单"
 
 #: templates/developer/w.php:27
 msgid "Part of the advanced features need to be activated."
@@ -2460,7 +2462,7 @@ msgstr "支付"
 msgid "Payment"
 msgstr "支付"
 
-#: src/Components/Customer/Customer.php:192
+#: src/Components/Customer/Customer.php:194
 #: src/Components/Form/Includes/FormListTable.php:195
 #: src/Components/Form/views/page-list.php:45
 msgid "Pending"
@@ -2491,7 +2493,7 @@ msgid "Personal income tax rate"
 msgstr "个人所得税率"
 
 #: src/Services/WechatOAService.php:1649
-#: src/Components/WechatOA/views/view-menu-edit.php:216
+#: src/Components/WechatOA/views/view-menu-edit.php:220
 msgid "Photo or Album"
 msgstr "拍照或相册"
 
@@ -2512,11 +2514,11 @@ msgstr "请在设置后 <a href=\"%s\">刷新重写规则</a>。"
 msgid "Please enter a username or email address."
 msgstr "请输入您的用户名或邮箱地址。"
 
-#: src/Components/Developer/Developer.php:973
+#: src/Components/Developer/Developer.php:989
 msgid "Please enter a valid license code."
 msgstr "请输入正确的授权码。"
 
-#: src/Components/Developer/Developer.php:1035
+#: src/Components/Developer/Developer.php:1051
 #, php-format
 msgid ""
 "Please enter your G3 license code to activate G3 Web.<br>No License? Click "
@@ -2552,6 +2554,7 @@ msgid "Please set status data again"
 msgstr "请重新设置状态数据"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:116
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
 msgid "Please set the invitation code as the registration code first."
 msgstr "请先设置邀请码为注册码。"
 
@@ -2562,6 +2565,10 @@ msgstr "插件页"
 #: src/Components/Mail/Mail.php:71
 msgid "Port"
 msgstr "端口"
+
+#: src/Components/Customer/Customer.php:105
+msgid "Portal"
+msgstr "入口"
 
 #: src/Components/Mail/Mail.php:83
 msgid "post commented on"
@@ -2653,8 +2660,8 @@ msgstr "商品SKU"
 msgid "Products"
 msgstr "商品"
 
-#: src/Controllers/ContactController.php:66 src/Components/User/User.php:153
-#: src/Components/Customer/Customer.php:194
+#: src/Controllers/ContactController.php:67 src/Components/User/User.php:153
+#: src/Components/Customer/Customer.php:196
 #| msgid "My Profile"
 msgid "Profile"
 msgstr "资料"
@@ -2691,7 +2698,7 @@ msgstr "腾讯云"
 msgid "QQ Zone"
 msgstr "QQ空间"
 
-#: src/Controllers/AuthController.php:414
+#: src/Controllers/AuthController.php:412
 msgid "QRCode expired, Please refresh the page and try again."
 msgstr "二维码已过期，请刷新页面重试。"
 
@@ -2699,7 +2706,7 @@ msgstr "二维码已过期，请刷新页面重试。"
 msgid "Query"
 msgstr "查询"
 
-#: src/Controllers/AuthController.php:423
+#: src/Controllers/AuthController.php:421
 msgid "Quest pending"
 msgstr "请求等待中"
 
@@ -2717,7 +2724,7 @@ msgstr "快速创建完整项目结构的 G3 Web 主题工程。"
 msgid "Radio field"
 msgstr "单选框"
 
-#: src/Components/Post/Post.php:144
+#: src/Components/Post/Post.php:149
 msgid "Reading Time"
 msgstr "阅读时长"
 
@@ -2726,7 +2733,7 @@ msgstr "阅读时长"
 msgid "Real-Time"
 msgstr "实时"
 
-#: src/Components/Developer/Developer.php:554
+#: src/Components/Developer/Developer.php:570
 msgid "Rebuild the REST route cache file."
 msgstr "重建 REST 路由缓存文件。"
 
@@ -2758,7 +2765,7 @@ msgstr "Redis 是 G3-Web 的默认数据缓存驱动，我们期望您减少与�
 msgid "Referral Code"
 msgstr "推荐码"
 
-#: src/Components/Developer/Developer.php:1197
+#: src/Components/Developer/Developer.php:1213
 #| msgid "Refreshed!"
 msgid "Refreshed"
 msgstr "刷新成功"
@@ -2830,7 +2837,7 @@ msgstr "回复内容不能为空"
 msgid "Request body should be valid JSON."
 msgstr "请求体应该是有效的JSON。"
 
-#: templates/user/register.php:261 src/Components/Developer/Developer.php:1056
+#: templates/user/register.php:261 src/Components/Developer/Developer.php:1072
 #: src/Components/User/Includes/RoleListTable.php:183
 msgid "Reset"
 msgstr "重置"
@@ -2908,7 +2915,7 @@ msgstr "运行 wordpress 来处理请求"
 msgid "Sad Mod"
 msgstr "默哀模式"
 
-#: src/Controllers/SystemController.php:28
+#: src/Controllers/SystemController.php:21
 msgid "Safe Reminder"
 msgstr "安全提醒"
 
@@ -2921,12 +2928,12 @@ msgid "Save failed, please try again later"
 msgstr "保存失败，请稍后重试"
 
 #: src/Services/WechatOAService.php:1647
-#: src/Components/WechatOA/views/view-menu-edit.php:192
+#: src/Components/WechatOA/views/view-menu-edit.php:196
 msgid "Scan & Alert"
 msgstr "扫码&提醒"
 
 #: src/Services/WechatOAService.php:1646
-#: src/Components/WechatOA/views/view-menu-edit.php:180
+#: src/Components/WechatOA/views/view-menu-edit.php:184
 msgid "Scan Code"
 msgstr "扫码"
 
@@ -2937,6 +2944,7 @@ msgstr "扫码"
 msgid "Scheduled for:<strong>%1$s</strong>."
 msgstr "计划于:<strong>%1$s</strong>发布。"
 
+#: src/Components/Post/widgets/TocWidget.php:52
 #: src/Components/Product/Includes/SpecsListTable.php:32
 #: src/Components/Product/views/tab-specifications.php:64
 #: src/Components/Product/views/tab-specifications.php:180
@@ -2944,7 +2952,7 @@ msgid "Scope"
 msgstr "应用范围"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:107
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:31
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:32
 msgid "Search by Invitation Code"
 msgstr "按邀请码搜索"
 
@@ -2956,7 +2964,7 @@ msgstr "按订单号搜索"
 msgid "Search for: "
 msgstr "搜索："
 
-#: src/Services/PostService.php:1015 src/Services/PostService.php:1063
+#: src/Services/PostService.php:1024 src/Services/PostService.php:1072
 #, php-format
 #| msgid "Search Results for: %s"
 msgid "Search results for %s"
@@ -2977,7 +2985,11 @@ msgstr "安全"
 msgid "Select field"
 msgstr "选择器"
 
-#: src/Components/Customer/Customer.php:159
+#: src/Components/Post/widgets/TocWidget.php:51
+msgid "Selector"
+msgstr "选择器"
+
+#: src/Components/Customer/Customer.php:160
 #: src/Components/Mail/views/tab-test.php:58
 msgid "Send"
 msgstr "发送"
@@ -3040,7 +3052,7 @@ msgstr "按需设置最大内存，如：512MB."
 msgid "Setting Options"
 msgstr "设置选项"
 
-#: src/Components/Post/Post.php:322 src/Components/Share/Share.php:37
+#: src/Components/Post/Post.php:327 src/Components/Share/Share.php:37
 #: src/Components/Share/Share.php:38 src/Components/Share/Share.php:54
 msgid "Share"
 msgstr "分享"
@@ -3066,7 +3078,7 @@ msgstr "已配送"
 msgid "Shop"
 msgstr "商城"
 
-#: src/Components/Post/Post.php:772
+#: src/Components/Post/Post.php:820
 msgid "Shop Menu"
 msgstr "商城菜单"
 
@@ -3122,8 +3134,8 @@ msgstr "用户修改密码"
 #: src/Components/Swiper/views/page-edit.php:136
 #: src/Components/Swiper/views/page-edit.php:139
 #: src/Components/WechatOA/Includes/WechatOAMenuListTable.php:31
-#: src/Components/WechatOA/views/view-menu-edit.php:84
-#: src/Components/WechatOA/views/view-menu-edit.php:87
+#: src/Components/WechatOA/views/view-menu-edit.php:88
+#: src/Components/WechatOA/views/view-menu-edit.php:91
 msgid "Sort"
 msgstr "排序"
 
@@ -3211,6 +3223,7 @@ msgstr "支持"
 
 #: src/Components/Swiper/Swiper.php:13 src/Components/Swiper/Swiper.php:17
 #: src/Components/Swiper/Swiper.php:18 src/Components/Swiper/Swiper.php:39
+#: src/Components/Swiper/Swiper.php:41
 #: src/Components/Swiper/views/page-edit.php:12
 #: src/Components/Swiper/views/page-edit.php:13
 msgid "Swiper"
@@ -3237,7 +3250,7 @@ msgid "System Admin"
 msgstr "系统管理员"
 
 #: src/Services/WechatOAService.php:1648
-#: src/Components/WechatOA/views/view-menu-edit.php:204
+#: src/Components/WechatOA/views/view-menu-edit.php:208
 msgid "System Camera"
 msgstr "系统相机"
 
@@ -3248,6 +3261,10 @@ msgstr "系统邮件"
 #: src/Services/AuthService.php:532
 msgid "System Generated"
 msgstr "系统生成"
+
+#: src/Components/Post/widgets/TocWidget.php:51
+msgid "Target"
+msgstr "目标"
 
 #: src/Utilities/Element.php:44 src/Core/Admin/PanelRenderer.php:64
 #: src/Core/Admin/PanelRenderer.php:135
@@ -3503,7 +3520,7 @@ msgstr "当%s时，系统将发送邮件给用户。"
 msgid "The system will use SMTP to send emails."
 msgstr "系统将使用 SMTP 来发送邮件。"
 
-#: src/Utilities/Message.php:105
+#: src/Utilities/Message.php:109
 #, php-format
 msgid ""
 "The template \"%s\" is not implemented yet. Please complete your own theme."
@@ -3529,11 +3546,11 @@ msgid ""
 "the main theme will be used first by default."
 msgstr "您在 外观-主题 页面中配置的主题是系统的主主题。当对应多主题模式的选项为空时，默认优先使用主主题。"
 
-#: templates/user/register.php:309 src/Controllers/AuthController.php:253
+#: templates/user/register.php:309 src/Controllers/AuthController.php:251
 msgid "The two passwords do not match."
 msgstr "两次密码不匹配。"
 
-#: src/Controllers/SystemController.php:31
+#: src/Controllers/SystemController.php:24
 msgid "The URL you visited is illegal."
 msgstr "您正在访问不合法的网络地址。"
 
@@ -3635,7 +3652,7 @@ msgstr "超时"
 #: src/Components/Developer/Developer.php:214
 #: src/Components/Setting/Setting.php:474
 #: src/Components/Customer/Customer.php:73
-#: src/Components/WechatOA/views/view-menu-edit.php:150
+#: src/Components/WechatOA/views/view-menu-edit.php:154
 msgid "Tip"
 msgstr "提示"
 
@@ -3643,7 +3660,7 @@ msgstr "提示"
 msgid "Tip Order"
 msgstr "知识付费订单"
 
-#: src/Components/Post/Post.php:326
+#: src/Components/Post/Post.php:331
 msgid ""
 "Tip: You can customize the interaction data according to your operational "
 "needs."
@@ -3653,7 +3670,7 @@ msgstr "提示：您可以根据运营需求自定义交互数据。"
 msgid "Tips for First Time Users"
 msgstr "新用户提示"
 
-#: src/Components/Post/Post.php:117
+#: src/Components/Post/Post.php:122
 msgid "To add view statistics function to each post & page."
 msgstr "向所有内容和页面添加浏览量统计功能"
 
@@ -3686,18 +3703,16 @@ msgstr "翻译 API"
 msgid "Trash"
 msgstr "回收站"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:96
-#: src/Components/WechatOA/views/view-menu-edit.php:99
+#: src/Components/WechatOA/views/view-menu-edit.php:100
+#: src/Components/WechatOA/views/view-menu-edit.php:103
 msgid "Type"
 msgstr "类型"
 
-#: src/Components/Customer/Customer.php:160
+#: src/Components/Customer/Customer.php:161
 msgid "Type a message..."
 msgstr "输入消息..."
 
-#: src/Middleware/RoleMiddleware.php:85
-#: src/Middleware/RestAuthMiddleware.php:34 src/Utilities/Message.php:33
-#: src/Components/Share/views/metabox-share.php:12
+#: src/Utilities/Message.php:33 src/Components/Share/views/metabox-share.php:12
 #| msgid "Unauthorized."
 msgid "Unauthorized"
 msgstr "未授权"
@@ -3727,7 +3742,7 @@ msgstr "更新线上菜单"
 #: src/Components/Announcement/Announcement.php:99
 #: src/Components/Announcement/Announcement.php:101
 #: src/Components/Announcement/Announcement.php:111
-#: src/Components/Customer/Customer.php:198
+#: src/Components/Customer/Customer.php:200
 #: src/Components/Swiper/Includes/SwiperListTable.php:149
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:114
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:122
@@ -3762,10 +3777,6 @@ msgstr "使用"
 #, php-format
 msgid "Use %s instead of built-in %s"
 msgstr "使用 %s 代替内置的 %s"
-
-#: src/Components/Customer/Customer.php:105
-msgid "Use a custom icon instead of the system default icon."
-msgstr ""
 
 #: src/Components/Activity/Activity.php:35
 #: src/Components/Product/Product.php:157
@@ -3830,7 +3841,7 @@ msgid "Used"
 msgstr "已使用"
 
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:43
-#: src/Components/Auth/views/tab-invitation-ajax-backup.php:64
+#: src/Components/Auth/views/tab-invitation-ajax-backup.php:65
 msgid "Used At"
 msgstr "使用时间"
 
@@ -3860,69 +3871,69 @@ msgstr "当用户在通过微信客户端浏览您的网站时，可以自动完
 msgid "Users can subscribe your WeChat official account to complete the login."
 msgstr "用户通过订阅您的微信公众号来完成登录。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:174
+#: src/Components/WechatOA/views/view-menu-edit.php:178
 msgid "Users click and an event will be pushed to the developer server."
 msgstr "用户点击后会推送一个事件到开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:162
+#: src/Components/WechatOA/views/view-menu-edit.php:166
 msgid "Users click and jump directly to the specified web link."
 msgstr "用户点击后直接跳转到指定的网页链接。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:258
+#: src/Components/WechatOA/views/view-menu-edit.php:262
 msgid "Users click and jump to the specified mini program."
 msgstr "用户点击后跳转到指定的小程序。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:270
+#: src/Components/WechatOA/views/view-menu-edit.php:274
 #| msgid "Users click and return the media file of the specified id."
 msgid "Users click and return the media content of the specified id."
 msgstr "用户点击后返回指定id的素材。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:198
+#: src/Components/WechatOA/views/view-menu-edit.php:202
 msgid ""
 "Users click and scan code, the scan result will be pushed to the developer "
 "server, then popup a notify box with message \"Message receiving\"."
 msgstr "用户点击后会调起扫一扫功能，扫描完成后除了推送结果外，还会弹出“消息接收中”提示框。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:186
+#: src/Components/WechatOA/views/view-menu-edit.php:190
 msgid ""
 "Users click and scan code, the scan result will be pushed to the developer "
 "server."
 msgstr "用户点击后会调起扫一扫功能，扫描完成后将扫码结果推送给开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:246
+#: src/Components/WechatOA/views/view-menu-edit.php:250
 msgid ""
 "Users click and select a location from the Wechat map, the location "
 "information will be sent to the developer server."
 msgstr "用户点击后调起地理位置选择器，选择完成后将位置信息发送给开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:234
+#: src/Components/WechatOA/views/view-menu-edit.php:238
 msgid ""
 "Users click and select a photo from the Wechat album, the photo will be sent "
 "to the developer server."
 msgstr "用户点击后直接进入微信相册选择图片，选择完成后将图片发送给开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:210
+#: src/Components/WechatOA/views/view-menu-edit.php:214
 msgid ""
 "Users click and take a photo with the system camera, the photo will be sent "
 "to the developer server."
 msgstr "用户点击后调起系统相机拍照，拍照完成后将图片发送给开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:222
+#: src/Components/WechatOA/views/view-menu-edit.php:226
 msgid ""
 "Users click and take a photo, or select a photo from the album, the photo "
 "will be sent to the developer server."
 msgstr "用户点击后可以选择拍照或从相册选择图片，选择完成后将图片发送给开发者服务器。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:294
+#: src/Components/WechatOA/views/view-menu-edit.php:298
 msgid "Users click and view the article of the specified ID."
 msgstr "用户点击后跳转到指定ID的图文消息。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:306
+#: src/Components/WechatOA/views/view-menu-edit.php:310
 msgid ""
 "Users click and view the article of the specified URL with limited access."
 msgstr "用户点击后跳转到指定URL且特定权限控制的图文消息。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:282
+#: src/Components/WechatOA/views/view-menu-edit.php:286
 msgid "Users click and view the article of the specified URL."
 msgstr "用户点击后跳转到指定URL的图文消息。"
 
@@ -3936,7 +3947,7 @@ msgid ""
 "search for the content on the website and return the content."
 msgstr "用户在微信公众号里发送的信息，如果在自定义应答之外，系统会自动搜索并返回网站的内容。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:119
+#: src/Components/WechatOA/views/view-menu-edit.php:123
 #| msgid "Male"
 msgid "Value"
 msgstr "值"
@@ -3953,9 +3964,9 @@ msgstr "认证服务号"
 msgid "Verified Subscription Account"
 msgstr "认证订阅号"
 
-#: src/Components/Developer/Developer.php:1002
-#: src/Components/Developer/Developer.php:1021
-#: src/Components/Developer/Developer.php:1054
+#: src/Components/Developer/Developer.php:1018
+#: src/Components/Developer/Developer.php:1037
+#: src/Components/Developer/Developer.php:1070
 msgid "Verify License"
 msgstr "验证授权"
 
@@ -3963,8 +3974,8 @@ msgstr "验证授权"
 msgid "Verify OPcache Efficiency & Fill"
 msgstr "验证 OPcache 是否生效 & 是否装满"
 
-#: src/Services/WechatOAService.php:1644 src/Components/Post/Post.php:320
-#: src/Components/WechatOA/views/view-menu-edit.php:156
+#: src/Services/WechatOAService.php:1644 src/Components/Post/Post.php:325
+#: src/Components/WechatOA/views/view-menu-edit.php:160
 msgid "View"
 msgstr "浏览"
 
@@ -3982,7 +3993,7 @@ msgstr "查看%s"
 msgid "View count migration completed: %d records in %.2f seconds."
 msgstr "浏览量数据迁移完成：迁移了 %d 条记录，耗时 %.2f 秒。"
 
-#: src/Components/Post/Post.php:118
+#: src/Components/Post/Post.php:123
 msgid "View Interval"
 msgstr "浏览统计间隔"
 
@@ -3990,12 +4001,12 @@ msgstr "浏览统计间隔"
 msgid "View Product"
 msgstr "查看商品"
 
-#: src/Components/Post/Post.php:117
+#: src/Components/Post/Post.php:122
 #| msgid "Page view statistics"
 msgid "View Statistics"
 msgstr "浏览量统计"
 
-#: src/Components/Post/Post.php:526 src/Components/Post/Post.php:540
+#: src/Components/Post/Post.php:573 src/Components/Post/Post.php:587
 msgid "Views"
 msgstr "浏览量"
 
@@ -4003,15 +4014,15 @@ msgstr "浏览量"
 msgid "Views Migration"
 msgstr "浏览数迁移"
 
-#: src/Components/Post/Post.php:831
+#: src/Components/Post/Post.php:879
 msgid "Visible only when logged in"
 msgstr "仅登录可见"
 
-#: src/Components/Post/Post.php:832
+#: src/Components/Post/Post.php:880
 msgid "Visible only when not logged in"
 msgstr "仅未登录可见"
 
-#: src/Controllers/SystemController.php:33
+#: src/Controllers/SystemController.php:26
 msgid "Visiting"
 msgstr "访问"
 
@@ -4021,7 +4032,7 @@ msgstr "访问"
 msgid "Wallet"
 msgstr "钱包"
 
-#: src/Controllers/SystemController.php:30
+#: src/Controllers/SystemController.php:23
 msgid "Warning"
 msgstr "警告"
 
@@ -4045,7 +4056,7 @@ msgid "WeChat"
 msgstr "微信"
 
 #: src/Services/WechatOAService.php:1650
-#: src/Components/WechatOA/views/view-menu-edit.php:228
+#: src/Components/WechatOA/views/view-menu-edit.php:232
 msgid "WeChat Album"
 msgstr "微信相册"
 
@@ -4070,33 +4081,22 @@ msgstr "微信公众号"
 msgid "Wechat OA Media Library"
 msgstr "微信公众号素材库"
 
-#: src/Controllers/AuthController.php:324
-#: src/Controllers/AuthController.php:392
-#| msgid "WeChat OA Subscription login is not available"
-msgid "WeChat OA Subscription Login is not available"
-msgstr "微信公众号订阅登录未启用"
-
 #: src/Components/WechatOA/WechatOA.php:96
 msgid "Wechat Official Account service is not enabled"
 msgstr "微信公众号服务未启用"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:153
+#: src/Components/WechatOA/views/view-menu-edit.php:157
 #| msgid "Wechat Official Account supports 12 types of menu:"
 msgid "Wechat Official Account supports 13 types of menu:"
 msgstr "微信公众号支持 13 种菜单类型："
-
-#: src/Controllers/AuthController.php:522 src/Services/WechatOAService.php:1764
-#: src/Services/AuthService.php:266
-msgid "WeChat service is not available."
-msgstr "微信服务未启用。"
 
 #: src/Components/User/views/tab-duration.php:64
 #: src/Components/User/views/tab-duration.php:163
 msgid "Week"
 msgstr "周"
 
-#: templates/user/register.php:208 src/Components/Developer/Developer.php:1070
-#: src/Components/Developer/Developer.php:1071 src/Components/Mail/Mail.php:82
+#: templates/user/register.php:208 src/Components/Developer/Developer.php:1086
+#: src/Components/Developer/Developer.php:1087 src/Components/Mail/Mail.php:82
 #: src/Components/Mail/Mail.php:85 src/Components/Customer/Customer.php:75
 msgid "Welcome"
 msgstr "欢迎"
@@ -4165,7 +4165,7 @@ msgid ""
 "When the system encounters a fault, an automatic reply message will be sent."
 msgstr "当系统出现故障时，自动回复的消息。"
 
-#: src/Components/WechatOA/views/view-menu-edit.php:137
+#: src/Components/WechatOA/views/view-menu-edit.php:141
 msgid ""
 "When you want to jump to a mini program, you need to fill in the App ID of "
 "the mini program."
@@ -4204,8 +4204,8 @@ msgid "Whether to support the product of download type."
 msgstr "是否支持下载类型商品。"
 
 #: src/Components/Customer/Customer.php:103
-msgid "will remove data older than these days. Default: 180."
-msgstr "会自动删除超过此天数的数据。默认 180。"
+msgid "will remove data older than these days."
+msgstr "会自动删除超过此天数的数据。"
 
 #: src/Components/Customer/Customer.php:70
 msgid "Window Title"
@@ -4236,14 +4236,14 @@ msgstr "上班时间"
 msgid "Working Days"
 msgstr "工作日"
 
-#: src/Controllers/SystemController.php:29
+#: src/Controllers/SystemController.php:22
 msgid ""
 "You are about to leave this site, please note your account and security."
 msgstr "您即将离开本站，请注意您的账号和财产安全。"
 
-#: src/Components/Post/Post.php:651 src/Components/Post/Post.php:660
-#: src/Components/Post/Post.php:669 src/Components/Post/Post.php:678
-#: src/Components/Post/Post.php:687 src/Components/Post/Post.php:696
+#: src/Components/Post/Post.php:698 src/Components/Post/Post.php:707
+#: src/Components/Post/Post.php:716 src/Components/Post/Post.php:725
+#: src/Components/Post/Post.php:734 src/Components/Post/Post.php:743
 #: src/Components/Product/Product.php:250
 #: src/Components/Product/Product.php:261
 #, php-format
@@ -4304,7 +4304,7 @@ msgstr "您的G3-Web已经激活。"
 msgid "Your G3-Web expires in %s"
 msgstr "您的 G3-Web 过期时间：%s"
 
-#: src/Controllers/ContactController.php:99
+#: src/Controllers/ContactController.php:100
 msgid ""
 "Your message has been sent successfully. We will get back to you shortly."
 msgstr "您的消息已经发送成功。我们会尽快与您联系。"

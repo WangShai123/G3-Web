@@ -1,6 +1,7 @@
 <?php
 namespace JEALER\G3\Middleware;
 use JEALER\G3\Services\AuthService;
+use JEALER\G3\Utilities\Message;
 use WP_REST_Request;
 use WP_Error;
 
@@ -31,7 +32,7 @@ class RestAuthMiddleware implements MiddlewareInterface {
 
         return new WP_Error(
             401,
-            __('Unauthorized', 'G3'),
+            Message::unauthorized(),
             ['status' => 401]
         );
     }

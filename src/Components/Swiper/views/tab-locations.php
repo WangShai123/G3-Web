@@ -40,7 +40,7 @@ echo '</form>';
                 const newKey = (data.key || '').trim();
                 const newName = (data.name || '').trim();
                 if (String(key) === newKey && String(name) === newName) {
-                    warning('<?php _e('No data changed', 'G3'); ?>', 1500);
+                    warning('<?php _e('No Data Changed', 'G3'); ?>', 1500);
                     return;
                 }
                 $.post(ajaxurl, {

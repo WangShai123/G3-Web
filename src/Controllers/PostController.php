@@ -13,10 +13,7 @@ use WP_REST_Response;
 
 class PostController extends Controller {
 
-    public function __construct(private PostService $postService)
-    {
-        parent::__construct();
-    }
+    public function __construct(private PostService $postService) {}
 
     #[Schema([
         'type'       => 'object',
@@ -75,9 +72,9 @@ class PostController extends Controller {
 
         $result = $this->postService->query($params, $respect);
 
-        if (isset($params['paged']) && $params['paged'] > 1) {
-            sleep(1);
-        }
+        // if (isset($params['paged']) && $params['paged'] > 1) {
+        //     sleep(1);
+        // }
 
         return is_wp_error($result)
             ? $result

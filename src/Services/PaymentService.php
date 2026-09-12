@@ -6,7 +6,7 @@ class PaymentService extends Service {
     // Wallet Option Key
     const WALLET_OPTION_KEY = 'g3_option_wallet';
     // Payment Log Table
-    const TABLE = 'g3_payment_log';
+    const TABLE = 'g3_payment_logs';
 
     public function __construct()
     {

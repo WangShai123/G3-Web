@@ -82,7 +82,7 @@ class Post extends Components {
     }
     protected function admin(): void
     {
-        add_action('save_post', [$this, 'savePostPro'], 10, 2);
+        add_filter('wp_insert_post_data', [$this, 'copyrightProtectedContent'], 20, 4);
         add_action('admin_footer-post.php', [$this, 'modifyPostNewPage']);
         add_action('admin_footer-post-new.php', [$this, 'modifyPostNewPage']);
         add_filter('posts_where', [$this, 'enhanceAdminPostSearch'], 10, 2);
@@ -121,7 +121,7 @@ class Post extends Components {
                 ->option(PostService::OPTION_KEY, $this->default())
                 ->switch('enable', __('View Statistics', 'G3'), __('To add view statistics function to each post & page.', 'G3'))
                 ->select('viewInterval', __('View Interval', 'G3'), [
-                    '0'    => __('No Limit', 'G3'),
+                    '0'    => sprintf(__('No %s', 'G3'), __('Limit', 'G3')),
                     '1'    => __('a minute'),
                     '5'    => sprintf(__('%d minutes'), 5),
                     '10'   => sprintf(__('%d minutes'), 10),
@@ -344,7 +344,8 @@ class Post extends Components {
         $request          = wp_unslash($_POST);
         $data             = [];
         $contentSubmitted = array_key_exists('content', $request)
-            || array_key_exists('post_content', $request);
+            || array_key_exists('post_content', $request)
+            || array_key_exists('g3_editor_content', $request);
 
         $integerFields = [
             'g3_views_count'    => 'view_count',
@@ -427,54 +428,25 @@ class Post extends Components {
     {
         wp_cache_flush_group(MenuService::CACHE_GROUP);
     }
-    public function savePostPro($postId, $post): void
+    public function copyrightProtectedContent(array $data, array $postarr, array $unsanitizedPostarr, bool $update): array
     {
-        $this->copyrightProtected($postId, $post);
-    }
-    private function copyrightProtected($postId, $post): void
-    {
-        if (($this->option()['copyright'] ?? '0') !== '1') return;
+        if (($this->option()['copyright'] ?? '0') !== '1') return $data;
 
+        $postId     = (int) ($postarr['ID'] ?? 0);
+        $postType   = (string) ($data['post_type'] ?? $postarr['post_type'] ?? '');
+        $postStatus = (string) ($data['post_status'] ?? $postarr['post_status'] ?? '');
         if (
+            !$update ||
+            $postId <= 0 ||
             (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) ||
             wp_is_post_revision($postId) ||
             wp_is_post_autosave($postId) ||
-            ($post->post_status ?? '') === 'auto-draft' ||
+            $postStatus === 'auto-draft' ||
+            $postType === '' ||
+            $this->isCopyrightIgnoredPostType($postType) ||
             !current_user_can('edit_post', $postId)
         ) {
-            return;
-        }
-
-        // 获取文章对象，使用缓存
-        static $processed_posts = [];
-        if (isset($processed_posts[$postId])) {
-            return; // 避免重复处理
-        }
-        $processed_posts[$postId] = true;
-
-
-        $ignoreList       = [
-            'revision',
-            'nav_menu_item',
-            'attachment',
-            'customize_changeset',
-            'oembed_cache',
-            'user_request',
-            'wp_block',
-        ];
-        $customIgnoreList = [];
-
-        /**
-         * Custom Filter: g3_filter_copyright_ignore_list
-         * 
-         * @param array $customIgnoreList
-         * @return array
-         */
-        $customIgnoreList = apply_filters('g3_filter_copyright_ignore_list', $customIgnoreList);
-
-        $ignoreList = array_merge($ignoreList, $customIgnoreList);
-        if (in_array($post->post_type, $ignoreList, true)) {
-            return;
+            return $data;
         }
 
         $position = 100;
@@ -489,18 +461,21 @@ class Post extends Components {
 
         /** @var CopyrightService $copyrightService */
         $copyrightService = $this->service(CopyrightService::class);
-        $cleanContent     = $copyrightService->clean($post->post_content);
-        $length           = mb_strlen($cleanContent, 'UTF-8');
+        $content          = wp_unslash((string) ($data['post_content'] ?? ''));
+        $cleanContent     = $copyrightService->clean($content);
+        $length           = $copyrightService->visibleTextLength($cleanContent);
         if (empty($cleanContent) || $length < $position) {
-            return;
+            return $data;
         }
+
+        $postTitle = wp_unslash((string) ($data['post_title'] ?? ''));
 
         try {
             // payload
             $payload = Type::arrayToJson([
                 'site'  => home_url(),
                 'id'    => $postId,
-                'title' => $post->post_title,
+                'title' => $postTitle,
                 'time'  => time(),
             ]);
 
@@ -511,14 +486,18 @@ class Post extends Components {
              * @param WP_Post $post
              * @return string
              */
-            $payload = apply_filters('g3_filter_copyright_payload', $payload, $post);
+            if (has_filter('g3_filter_copyright_payload')) {
+                $post = $this->copyrightPayloadPost($postId, $postType, $postStatus, $postTitle, $content);
+                if ($post === null) return $data;
+                $payload = apply_filters('g3_filter_copyright_payload', $payload, $post);
+            }
 
             if ($payload === false) {
                 $this->logger->error('Copyright payload encoding failed.', [
                     'post_id' => $postId,
                     'payload' => $payload,
                 ]);
-                return;
+                return $data;
             }
 
             wp_cache_delete($postId, CopyrightService::CACHE_GROUP);
@@ -526,35 +505,65 @@ class Post extends Components {
             $newContent = $copyrightService->embed($cleanContent, $payload, $position);
 
             // check if the content has changed
-            if ($newContent === $post->post_content) {
+            if ($newContent === $content) {
                 $this->logger->info('Copyright Protection content has not changed, no need to update.', [
-                    'postType' => $post->post_type,
+                    'postType' => $postType,
                     'postId'   => $postId,
                 ]);
-                return;
+                return $data;
             }
 
-            $updated = wp_update_post([
-                'ID'           => $postId,
-                'post_content' => $newContent
-            ], true, false);
-
-            if (is_wp_error($updated)) {
-                $this->logger->error('Failed to update copyright protected post.', [
-                    'postType' => $post->post_type,
-                    'postId'   => $postId,
-                    'error'    => $updated->get_error_message(),
-                ]);
-            }
+            $data['post_content'] = wp_slash($newContent);
         }
         catch (Exception $e) {
             $this->logger->error('Exception in copyright protected post update.', [
-                'postType'  => $post->post_type,
+                'postType'  => $postType,
                 'postId'    => $postId,
                 'exception' => $e,
             ]);
         }
+
+        return $data;
     }
+
+    private function isCopyrightIgnoredPostType(string $postType): bool
+    {
+        $ignoreList       = [
+            'revision',
+            'nav_menu_item',
+            'attachment',
+            'customize_changeset',
+            'oembed_cache',
+            'user_request',
+            'wp_block',
+        ];
+        $customIgnoreList = [];
+
+        /**
+         * Custom Filter: g3_filter_copyright_ignore_list
+         *
+         * @param array $customIgnoreList
+         * @return array
+         */
+        $customIgnoreList = apply_filters('g3_filter_copyright_ignore_list', $customIgnoreList);
+
+        return in_array($postType, array_merge($ignoreList, $customIgnoreList), true);
+    }
+
+    private function copyrightPayloadPost(int $postId, string $postType, string $postStatus, string $postTitle, string $postContent): ?\WP_Post
+    {
+        $post = get_post($postId);
+        if (!$post instanceof \WP_Post) return null;
+
+        $post               = clone $post;
+        $post->post_type    = $postType;
+        $post->post_status  = $postStatus;
+        $post->post_title   = $postTitle;
+        $post->post_content = $postContent;
+
+        return $post;
+    }
+
     public function addViewsColumn(array $columns): array
     {
         $newColumns = [];
@@ -741,6 +750,7 @@ HTML;
     protected function widgets(): void
     {
         SidebarService::registerWidget('PostWidget', __DIR__);
+        SidebarService::registerWidget('TocWidget', __DIR__);
     }
     protected function metaBox(): void
     {

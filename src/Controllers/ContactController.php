@@ -23,6 +23,7 @@ class ContactController extends Controller {
         $this->formService   = $this->service(FormService::class);
         $this->mailerService = $this->service(MailerService::class);
     }
+
     #[RestRouter(
         namespace: 'api/contact',
         route: 'v1/form',

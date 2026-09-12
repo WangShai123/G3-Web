@@ -423,7 +423,7 @@ class OrdersService {
     private function validateOrderData(array $data): bool|WP_Error
     {
         $requiredFields = [
-            'buyer_id'     => __('Buyer ID', 'G3'),
+            'buyer_id'     => __('Buyer', 'G3') . ' ID',
             'order_source' => __('Order Source', 'G3'),
             'order_type'   => __('Order Type', 'G3'),
             'total_amount' => __('Total Amount', 'G3'),

@@ -30,6 +30,11 @@ class CopyrightService extends Service {
         return preg_replace(self::CLEAN_PATTERN, '', $text) ?? $text;
     }
 
+    public function visibleTextLength(string $html): int
+    {
+        return $this->walkVisibleText($html);
+    }
+
     public function embed(string $text, string $payload, int $position): string
     {
         $cleanText = $this->clean($text);
@@ -51,12 +56,80 @@ class CopyrightService extends Service {
             $invisibleStr .= $this->chars[$index];
         }
 
-        $length   = mb_strlen($cleanText, 'UTF-8');
+        $length   = $this->visibleTextLength($cleanText);
+        if ($length === 0) return $cleanText;
+
         $position = max(0, min($position, $length));
 
-        return mb_substr($cleanText, 0, $position, 'UTF-8') .
-            $invisibleStr .
-            mb_substr($cleanText, $position, null, 'UTF-8');
+        return $this->insertIntoVisibleText($cleanText, $invisibleStr, $position);
+    }
+
+    private function insertIntoVisibleText(string $html, string $insert, int $position): string
+    {
+        $insertAt = $this->walkVisibleText($html, $position);
+        if ($insertAt === null) return $html;
+
+        return mb_substr($html, 0, $insertAt, 'UTF-8') .
+            $insert .
+            mb_substr($html, $insertAt, null, 'UTF-8');
+    }
+
+    private function walkVisibleText(string $html, ?int $targetPosition = null): int|null
+    {
+        $length       = mb_strlen($html, 'UTF-8');
+        $offset       = 0;
+        $visibleCount = 0;
+        $lastTextEnd  = null;
+
+        if ($targetPosition === 0) {
+            while ($offset < $length && mb_substr($html, $offset, 1, 'UTF-8') === '<') {
+                $tagEnd = mb_strpos($html, '>', $offset, 'UTF-8');
+                if ($tagEnd === false) break;
+                $offset = $tagEnd + 1;
+            }
+
+            return $offset < $length ? $offset : null;
+        }
+
+        while ($offset < $length) {
+            if (mb_substr($html, $offset, 1, 'UTF-8') === '<') {
+                $tagEnd = mb_strpos($html, '>', $offset, 'UTF-8');
+                if ($tagEnd === false) {
+                    break;
+                }
+
+                $offset = $tagEnd + 1;
+                continue;
+            }
+
+            $char    = mb_substr($html, $offset, 1, 'UTF-8');
+            $charEnd = $offset + 1;
+
+            if ($char === '&') {
+                $entityEnd = mb_strpos($html, ';', $offset + 1, 'UTF-8');
+                $nextTag   = mb_strpos($html, '<', $offset + 1, 'UTF-8');
+                if ($entityEnd !== false && ($nextTag === false || $entityEnd < $nextTag)) {
+                    $entity = mb_substr($html, $offset, $entityEnd - $offset + 1, 'UTF-8');
+                    if (preg_match('/^&(?:#[0-9]+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]+);$/', $entity)) {
+                        $charEnd = $entityEnd + 1;
+                    }
+                }
+            }
+
+            $visibleCount++;
+            $offset      = $charEnd;
+            $lastTextEnd = $offset;
+
+            if ($targetPosition !== null && $visibleCount >= $targetPosition) {
+                return $offset;
+            }
+        }
+
+        if ($targetPosition !== null) {
+            return $lastTextEnd;
+        }
+
+        return $visibleCount;
     }
 
     public function extract(string $text): string

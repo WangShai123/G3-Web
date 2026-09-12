@@ -2,11 +2,12 @@
 use JEALER\G3\Services\AuthService;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Frontend;
+use JEALER\G3\Utilities\Message;
 
 $authOption = get_option(AuthService::OPTION_KEY, []);
 if (!is_array($authOption) || ($authOption['code'] ?? '') !== '1') {
     echo Element::tip(
-        __('Invitation code feature is not available. Please set the invitation code as the registration code first.', 'G3'),
+        sprintf(__('%s %s %s', 'G3'), __('Invitation Code', 'G3'), __('Feature is not available.', 'G3'), __('Please set the invitation code as the registration code first.', 'G3')),
         '',
         'danger',
         'mt-4'
@@ -50,7 +51,7 @@ $config = [
         'loading'           => __('Loading...'),
         'selectAction'      => __('Please select a bulk action.'),
         'selectRows'        => __('Please select at least one item.'),
-        'deleteConfirm'     => __('Are you sure you want to delete it?', 'G3'),
+        'deleteConfirm'     => Message::deleteConfirm(),
     ],
     'sortable'  => ['source', 'status'],
     'columns'   => [
