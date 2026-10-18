@@ -6,7 +6,6 @@ $message = sprintf(
     admin_url('admin.php?page=open-platform'),
     __('Open Platform', 'G3')
 );
-$message = '<div>' . $message . '</div>';
 echo Element::tip(
     $message,
     '',

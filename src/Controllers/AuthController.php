@@ -1,7 +1,6 @@
 <?php
 namespace JEALER\G3\Controllers;
 use JEALER\G3\Core\Router\Controller;
-use JEALER\G3\Service;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Middleware;
 use JEALER\G3\Core\Attributes\Schema;
@@ -86,7 +85,11 @@ class AuthController extends Controller {
             );
         }
 
-        $this->authService->doWPLogin($user);
+        // $this->authService->doWPLogin($user);
+        $result = $this->wpLogin($user->user_login, $password);
+        if (is_wp_error($result)) {
+            return new WP_Error('login_failed', $result->get_error_message(), ['status' => 403]);
+        }
 
         return rest_ensure_response([
             'success' => true,
@@ -148,7 +151,11 @@ class AuthController extends Controller {
             );
         }
 
-        $this->authService->doWPLogin($user);
+        // $this->authService->doWPLogin($user);
+        $result = $this->wpLogin($user->user_login, $password);
+        if (is_wp_error($result)) {
+            return new WP_Error('login_failed', $result->get_error_message(), ['status' => 403]);
+        }
 
         return rest_ensure_response([
             'success' => true,
@@ -259,7 +266,11 @@ class AuthController extends Controller {
         }
 
         $user = new WP_User($userId);
-        $this->authService->doWPLogin($user);
+        // $this->authService->doWPLogin($user);
+        $result = $this->wpLogin($user->user_login, $password);
+        if (is_wp_error($result)) {
+            return new WP_Error('login_failed', $result->get_error_message(), ['status' => 403]);
+        }
 
         return rest_ensure_response([
             'success' => true,
@@ -427,7 +438,7 @@ class AuthController extends Controller {
             return new WP_Error(400, 'Unauthorized');
         }
 
-        $this->authService->doWPLogin($user);
+        $this->authService->doWPLogin($user, true);
         delete_transient($cacheKey);
 
         return rest_ensure_response([
@@ -482,6 +493,16 @@ class AuthController extends Controller {
         ]);
     }
 
+    private function wpLogin(string $userLogin, string $password, bool $remember = false): WP_User|WP_Error
+    {
+        $credentials = [
+            'user_login'    => $userLogin,
+            'user_password' => $password,
+            'remember'      => $remember,
+        ];
+
+        return wp_signon($credentials, is_ssl());
+    }
 
 
 

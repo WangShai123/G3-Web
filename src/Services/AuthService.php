@@ -17,8 +17,8 @@ class AuthService extends Service {
     const string INVITE_CODE_TABLE = 'g3_invite_codes';
     // General Auth Option Key
     const OPTION_KEY = 'g3_option_auth';
-    // WeChat Auth Option Key
-    const WECHAT_OPTION_KEY     = 'g3_option_auth_wechat';
+    // Social Auth Option Key
+    const SOCIAL_OPTION_KEY     = 'g3_option_auth_social';
     const OPENID_META_KEY       = 'g3_wechat_openId';
     const WX_OPEN_ID_KEY        = 'wx_openId';
     const WX_UNION_ID_KEY       = 'wx_unionId';
@@ -52,8 +52,8 @@ class AuthService extends Service {
     public static function wechatDefaults(): array
     {
         return [
-            'subscribe' => '0',
-            'client'    => '0',
+            'wc_subscribe' => '0',
+            'wc_client'    => '0',
         ];
     }
 
@@ -184,7 +184,7 @@ class AuthService extends Service {
     public static function subscribeLoginAvailable(): bool
     {
         $loader = Container::run()->get('loader')->y();
-        $data   = get_option(AuthService::WECHAT_OPTION_KEY)['subscribe'] ?? false;
+        $data   = get_option(AuthService::SOCIAL_OPTION_KEY)['wc_subscribe'] ?? false;
         return ($data === '1' && $loader) ? true : false;
     }
 
@@ -357,13 +357,21 @@ class AuthService extends Service {
      * 
      * 执行 WordPress 用户登录
      *
-     * @param WP_User $user
+     * @param WP_User $user WordPress 用户对象
+     * @param bool $remember 是否记住登录状态
+     * @param bool|string $secure 是否使用安全的 Cookie
+     * @param string $token 自定义的登录令牌
      * @return void
      */
-    public function doWPLogin(WP_User $user): void
+    public function doWPLogin(
+        WP_User $user,
+        bool $remember = false,
+        bool|string $secure = '',
+        string $token = ''
+    ): void
     {
         wp_set_current_user($user->ID, $user->user_login);
-        wp_set_auth_cookie($user->ID);
+        wp_set_auth_cookie($user->ID, $remember, $secure, $token);
         do_action('wp_login', $user->user_login, $user);
 
         setcookie(UserService::USER_COOKIE, $user->ID, time() + 86400 * 365, '/');
@@ -657,7 +665,7 @@ class AuthService extends Service {
         } else {
             // load_template(G3_TEMPLATE_DIR . '/user/login-modal.php', true);
 
-            $subscribe = get_option(self::WECHAT_OPTION_KEY)['subscribe'] ?? false;
+            $subscribe = get_option(self::SOCIAL_OPTION_KEY)['wc_subscribe'] ?? false;
             if ($subscribe) {
                 Frontend::esm('g3.subscribe.modal');
             } else {

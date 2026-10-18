@@ -845,9 +845,9 @@ HTML;
             $type = sanitize_html_class($type);
 
             $type_options = [
-                ''               => __('General Menu', 'G3'),
-                'list-card-menu' => __('List Card Menu', 'G3'),
-                'card-menu'      => __('Card Menu', 'G3'),
+                ''          => __('General Menu', 'G3'),
+                'list-menu' => sprintf(__('%s %s', 'G3'), __('List', 'G3'), __('Menu')),
+                'card-menu' => __('Card Menu', 'G3'),
             ];
 
             /**

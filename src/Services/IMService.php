@@ -742,8 +742,6 @@ class IMService extends Service {
             }
 
             if (is_array($row)) {
-                $row['nickname']     = $identity['display_name'];
-                $row['avatar']       = $identity['avatar'];
                 $row['last_seen_at'] = $now;
             } else {
                 $row = [
@@ -753,8 +751,6 @@ class IMService extends Service {
                     'actor_id'             => $identity['actor_id'],
                     'user_id'              => $identity['user_id'] ?: null,
                     'role'                 => $identity['role'],
-                    'nickname'             => $identity['display_name'],
-                    'avatar'               => $identity['avatar'],
                     'last_read_message_id' => 0,
                     'last_seen_at'         => $now,
                     'created_at'           => $now,

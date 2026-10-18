@@ -163,11 +163,11 @@ class WechatOAMessageListTable extends WP_List_Table {
     {
         $actions = [
             'view'   => sprintf(
-                '<span data-id="%s" class="view-message cursor-pointer color-link">' . __('View') . '</span>',
+                '<span data-id="%s" class="view-message cursor-pointer fg-link">' . __('View') . '</span>',
                 $item->id
             ),
             'delete' => sprintf(
-                '<span data-id="%s" class="delete-message cursor-pointer color-error">' . __('Delete') . '</span>',
+                '<span data-id="%s" class="delete-message cursor-pointer fg-error">' . __('Delete') . '</span>',
                 $item->id
             )
         ];

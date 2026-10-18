@@ -1,7 +1,11 @@
 <?php
 use JEALER\G3\Utilities\Element;
 
-$message = __('By letting users subscribe the WeChat official account to automatically log in, it is an extremely effective operation tool for driving WeChat users and binding user relationships.', 'G3');
+$message = sprintf(
+    __('Before enabling related features, please ensure to complete the <a href="%s">%s</a> settings.', 'G3'),
+    admin_url('admin.php?page=open-platform'),
+    __('Open Platform', 'G3')
+);
 echo Element::tip(
     $message,
     '',

@@ -174,7 +174,7 @@ class ProjectListTable extends WP_List_Table {
         //@todo membership payment link generation
         $link = '@todo';
         return sprintf(
-            '<span class="copy-payLink color-link cursor-pointer" data-link="%s">%s</span>',
+            '<span class="copy-payLink fg-link cursor-pointer" data-link="%s">%s</span>',
             $link,
             __('Copy'),
         );
@@ -182,7 +182,7 @@ class ProjectListTable extends WP_List_Table {
     private function renderAction($item)
     {
         return sprintf(
-            '<span class="edit-project color-link cursor-pointer" data-name="%s" data-duration="%s" data-price="%s">%s</span> <span class="delete-project color-error cursor-pointer" data-id="%s">%s</span>',
+            '<span class="edit-project fg-link cursor-pointer" data-name="%s" data-duration="%s" data-price="%s">%s</span> <span class="delete-project fg-error cursor-pointer" data-id="%s">%s</span>',
             $item['name'],
             $item['duration'],
             $item['price'],

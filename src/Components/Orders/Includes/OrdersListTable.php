@@ -74,11 +74,22 @@ class OrdersListTable extends WP_List_Table {
             'buyer_id'     => get_userdata($item['buyer_id']) ? get_userdata($item['buyer_id'])->display_name : __('Unknown'),
             'order_source' => OrdersService::renderSource($item['order_source']),
             'order_type'   => OrdersService::renderType($item['order_type']),
-            'order_status' => OrdersService::renderStatus($item['order_status']),
+            'order_status' => $this->renderStatus($item['order_status']),
             'action'       => $this->renderAction($item),
             default        => $item[$column_name] ?? ''
         };
     }
+
+    private function renderStatus(int $status): string
+    {
+        $statusText = OrdersService::renderStatus($status);
+        return match ($status) {
+            2       => '<span class="mark-primary">' . $statusText . '</span>',
+            3       => '<span class="fg-warning">' . $statusText . '</span>',
+            default => $statusText
+        };
+    }
+
     public function column_cb($item): string
     {
         return sprintf(
@@ -227,7 +238,7 @@ class OrdersListTable extends WP_List_Table {
         $action = $this->_actions($item);
 
         return sprintf(
-            '<span class="view-order color-link cursor-pointer" data-id="%s">%s</span> %s',
+            '<span class="view-order fg-link cursor-pointer" data-id="%s">%s</span> %s',
             // $item['order_code'],
             $item['id'],
             __('View'),
@@ -243,9 +254,9 @@ class OrdersListTable extends WP_List_Table {
         $code       = '11231';
         return match ($item['order_status']) {
             '1'     => '<span class="close-order cursor-pointer" data-id="' . $id . '">' . __('Close') . '</span>',
-            '2'     => '<span class="ship-order color-purple cursor-pointer" data-id="' . $id . '">' . __('Deliver', 'G3') . '</span>',
-            '3'     => '<a class="track-order color-success cursor-pointer" href="' . $this->oneTrack($code) . '" target="_blank">' . __('Track', 'G3') . '</a>',
-            default => '<span class="delete-order color-error cursor-pointer" data-id="' . $id . '">' . __('Delete') . '</span>',
+            '2'     => '<span class="ship-order fg-purple cursor-pointer" data-id="' . $id . '">' . __('Deliver', 'G3') . '</span>',
+            '3'     => '<a class="track-order fg-success cursor-pointer" href="' . $this->oneTrack($code) . '" target="_blank">' . __('Track', 'G3') . '</a>',
+            default => '<span class="delete-order fg-error cursor-pointer" data-id="' . $id . '">' . __('Delete') . '</span>',
         };
     }
     private function ifInChina()

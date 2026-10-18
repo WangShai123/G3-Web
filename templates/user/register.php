@@ -256,7 +256,7 @@ get_header();
                 </fieldset>
 
                 <div class="form-buttons">
-                    <button id="g3-register-submit" class="j-button is-primary is-lg"
+                    <button id="g3-register-submit" class="j-button is-solid is-lg"
                         type="submit"><?php _e('Register'); ?></button>
                     <button type="reset" class="j-button is-ghost is-lg"><?php _e('Reset', 'G3'); ?></button>
                 </div>

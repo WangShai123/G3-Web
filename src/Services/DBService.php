@@ -9,11 +9,6 @@ class DBService extends Service {
     const IM_REDIS_DB           = 2;
     const NOTIFICATION_REDIS_DB = 3;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function initTables(): void
     {
         $charset = $this->wpdb->get_charset_collate();
@@ -50,7 +45,7 @@ class DBService extends Service {
     private function initUserTable(wpdb $wpdb, string $charset): void
     {
         /**
-         * WordPress Users
+         * WordPress Built-In Users
          * - ID
          * - user_login
          * - user_pass
@@ -197,10 +192,10 @@ class DBService extends Service {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `balance` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-                `frozen_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-                `total_recharge` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-                `total_withdraw` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `balance` BIGINT NOT NULL DEFAULT 0,
+                `frozen_amount` BIGINT NOT NULL DEFAULT 0,
+                `total_recharge` BIGINT NOT NULL DEFAULT 0,
+                `total_withdraw` BIGINT NOT NULL DEFAULT 0,
                 `created_at` DATETIME NOT NULL,
                 `updated_at` DATETIME DEFAULT NULL,
                 PRIMARY KEY (`user_id`),
@@ -346,15 +341,15 @@ class DBService extends Service {
                 `sku_code` VARCHAR(64) NOT NULL,
 
                 -- price & sold
-                `cost_price` DECIMAL(12,2) DEFAULT NULL,
-                `regular_price` DECIMAL(12,2) DEFAULT NULL,
-                `price` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `cost_price` BIGINT DEFAULT NULL,
+                `regular_price` BIGINT DEFAULT NULL,
+                `price` BIGINT NOT NULL DEFAULT 0,
                 `currency` VARCHAR(8) NOT NULL DEFAULT 'CNY',
-                `sold` INT NOT NULL DEFAULT 0,
+                `sold` BIGINT NOT NULL DEFAULT 0,
 
                 -- stock control
                 `type` TINYINT NOT NULL DEFAULT 1,
-                `stock` INT NOT NULL DEFAULT 0,
+                `stock` BIGINT NOT NULL DEFAULT 0,
                 `track` BOOLEAN NOT NULL DEFAULT TRUE,
                 `status` TINYINT NOT NULL DEFAULT 1,
 
@@ -561,16 +556,16 @@ class DBService extends Service {
                 -- 状态机
                 `order_status` TINYINT DEFAULT 1,
                 -- 金额体系
-                `total_amount` DECIMAL(12,2) NOT NULL,
-                `discount_amount` DECIMAL(12,2) DEFAULT 0.00,
-                `final_amount` DECIMAL(12,2) NOT NULL,
-                `paid_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+                `total_amount` BIGINT NOT NULL,
+                `discount_amount` BIGINT DEFAULT 0,
+                `final_amount` BIGINT NOT NULL,
+                `paid_amount` BIGINT NOT NULL DEFAULT 0,
                 -- 营销分销
                 `coupon_id` BIGINT UNSIGNED DEFAULT NULL,
                 `referrer_id` BIGINT UNSIGNED DEFAULT NULL,
                 `commission_status` TINYINT DEFAULT NULL,
                 -- 余额支付快照
-                `wallet_used` DECIMAL(12,2) DEFAULT NULL,
+                `wallet_used` BIGINT DEFAULT NULL,
                 -- 对账快照
                 `third_party_order` VARCHAR(100) DEFAULT NULL,
                 -- 地址快照
@@ -629,9 +624,9 @@ class DBService extends Service {
                 `product_title` VARCHAR(255) DEFAULT NULL,
                 `product_image` VARCHAR(255) DEFAULT NULL,
                 `spec_info` JSON DEFAULT NULL,
-                `quantity` INT NOT NULL DEFAULT 1,
-                `unit_price` DECIMAL(12,2) NOT NULL,
-                `total_price` DECIMAL(12,2) NOT NULL,
+                `quantity` BIGINT NOT NULL DEFAULT 1,
+                `unit_price` BIGINT NOT NULL,
+                `total_price` BIGINT NOT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_order_id` (`order_id`),
@@ -737,8 +732,8 @@ class DBService extends Service {
          *  - order_id: 订单ID
          *  - type: 流水类型. 0: recharge, 1: order, 2: refund, 3: withdraw, 4: commission, 5: transfer
          *  - amount: 变动金额（正数代表进账，负数代表出账）
-         *  - before_balance: 变动前余额
-         *  - after_balance: 变动后余额
+         *  - before: 变动前余额
+         *  - after: 变动后余额
          *  - remark: 备注
          *  - created_at: 创建时间
          * 
@@ -751,9 +746,9 @@ class DBService extends Service {
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `order_id` BIGINT UNSIGNED DEFAULT NULL,
                 `type` TINYINT NOT NULL,
-                `amount` DECIMAL(12,2) NOT NULL,
-                `before_balance` DECIMAL(12,2) NOT NULL,
-                `after_balance` DECIMAL(12,2) NOT NULL,
+                `amount` BIGINT NOT NULL,
+                `before` BIGINT NOT NULL,
+                `after` BIGINT NOT NULL,
                 `remark` VARCHAR(255) DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
@@ -769,14 +764,14 @@ class DBService extends Service {
          * 
          * 支付记录表
          *  - id: 主键
-         *  - order_id: 订单ID
+         *  - order_id: 订单ID，幂等键。
+         *  - trade_id: 第三方支付流水号
          *  - user_id: 用户ID
-         *  - pay_amount: 支付金额
-         *  - pay_method: 支付方式. 0: 余额, 1: 微信, 2: 支付宝
-         *  - transaction_id: 第三方支付流水号
+         *  - channel: 支付渠道. 0: 余额, 1: 微信, 2: 支付宝
+         *  - amount: 支付金额
          *  - status: 支付状态. 0: pending, 1: success, 2: failed, 3: refunded
+         *  - raw: 原始回调数据（用于对账，JSON格式存储）
          *  - paid_at: 支付成功时间
-         *  - raw_response: 原始回调数据（用于对账，JSON格式存储）
          * 
          * @since 1.0.0
          */
@@ -785,17 +780,17 @@ class DBService extends Service {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `order_id` BIGINT UNSIGNED DEFAULT NULL,
+                `trade_id` VARCHAR(255) DEFAULT NULL,
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `pay_amount` DECIMAL(12,2) NOT NULL,
-                `pay_method` TINYINT NOT NULL,
-                `transaction_id` VARCHAR(255) DEFAULT NULL,
+                `channel` TINYINT NOT NULL,
+                `amount` BIGINT NOT NULL,
                 `status` TINYINT NOT NULL,
+                `raw` JSON DEFAULT NULL,
                 `paid_at` DATETIME DEFAULT NULL,
-                `raw_response` JSON DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 KEY `idx_user_id` (`user_id`),
                 UNIQUE KEY `idx_order_id` (`order_id`),
-                UNIQUE KEY `idx_transaction_id` (`transaction_id`)
+                UNIQUE KEY `idx_trade_id` (`trade_id`)
             ) ENGINE=InnoDB $charset;";
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -824,9 +819,9 @@ class DBService extends Service {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `amount` DECIMAL(12,2) NOT NULL,
-                `fee` DECIMAL(12,2) NOT NULL,
-                `actual_amount` DECIMAL(12,2) NOT NULL,
+                `amount` BIGINT NOT NULL,
+                `fee` BIGINT NOT NULL,
+                `actual_amount` BIGINT NOT NULL,
                 `account_type` TINYINT NOT NULL,
                 `account_info` JSON NOT NULL,
                 `status` TINYINT NOT NULL,
@@ -909,7 +904,7 @@ class DBService extends Service {
                 `order_id` BIGINT UNSIGNED NOT NULL,
                 `user_id` BIGINT UNSIGNED NOT NULL,
                 `parent_id` BIGINT UNSIGNED NOT NULL,
-                `amount` DECIMAL(12, 2) NOT NULL,
+                `amount` BIGINT NOT NULL,
                 `type` TINYINT NOT NULL,
                 `status` TINYINT NOT NULL,
                 `triggered_at` DATETIME NOT NULL,
@@ -946,8 +941,8 @@ class DBService extends Service {
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `title` VARCHAR(255) NOT NULL,
                 `type` TINYINT NOT NULL,
-                `value` DECIMAL(12,2) NOT NULL,
-                `min_amount` DECIMAL(12,2) NOT NULL,
+                `value` BIGINT NOT NULL,
+                `min_amount` BIGINT NOT NULL,
                 `total_count` INT NOT NULL,
                 `used_count` INT NOT NULL,
                 `start_time` DATETIME NOT NULL,
@@ -1233,10 +1228,10 @@ class DBService extends Service {
 
     /**
      * Initialize IM tables.
-     *
-     * These tables are intentionally generic. Customer service uses
-     * conversation type `customer_service`; simple in-site IM can reuse the
-     * same conversation/message/participant model with another type.
+     *  - g3_im_messages            IM 消息表
+     *  - g3_im_participants        IM 参与表
+     *  - g3_im_conversations       IM 会话表
+     *  - g3_im_cs_conversations    客服会话表
      *
      * @param wpdb $wpdb
      * @param string $charset
@@ -1244,6 +1239,30 @@ class DBService extends Service {
      */
     private function initIMTable(wpdb $wpdb, string $charset): void
     {
+        /**
+         * IM Conversations Table
+         * 
+         * IM 会话表
+         *  - id: 主键, 会话ID
+         *  - type: 会话类型, 如 customer_service
+         *  - subject: 会话主题
+         *  - state: 会话状态, open/closed/archived
+         *  - priority: 优先级
+         *  - source: 会话来源, 如 web
+         *  - last_message_id: 最新消息ID
+         *  - last_msg_seq: 最新消息在会话内的序号
+         *  - last_msg_type: 最新消息类型
+         *  - last_msg_preview: 最新消息预览
+         *  - last_message_at: 最新消息时间
+         *  - ip_address: 创建会话时的客户端IP
+         *  - user_agent: 创建会话时的客户端 User-Agent
+         *  - meta: 会话扩展数据
+         *  - created_at: UTC 创建时间
+         *  - updated_at: UTC 更新时间
+         *  - closed_at: UTC 关闭时间
+         * 
+         * @since 1.0.0
+         */
         $table = $wpdb->prefix . 'g3_im_conversations';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -1273,7 +1292,29 @@ class DBService extends Service {
             dbDelta($sql);
         }
 
-        $table = $wpdb->prefix . 'g3_customer_conversations';
+        /**
+         * IM Customer Service Conversations Table
+         *
+         * 客服会话扩展表
+         *  - conversation_id: IM 会话ID, 对应 g3_im_conversations.id
+         *  - customer_user_id: 注册客户用户ID
+         *  - customer_guest_id: 访客客户ID
+         *  - assignee_user_id: 当前分配的客服用户ID
+         *  - status: 客服处理状态, pending/handling/closed
+         *  - close_reason: 关闭原因, 如 timeout/manual
+         *  - first_response_at: 客服首次响应时间
+         *  - last_customer_msg_at: 客户最近发言时间
+         *  - last_agent_msg_at: 客服最近发言时间
+         *  - unread_customer: 客户侧未读数
+         *  - unread_agent: 客服侧未读数
+         *  - meta: 客服会话扩展数据
+         *  - created_at: UTC 创建时间
+         *  - updated_at: UTC 更新时间
+         *  - closed_at: UTC 关闭时间
+         *
+         * @since 1.0.0
+         */
+        $table = $wpdb->prefix . 'g3_im_cs_conversations';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
                 `conversation_id` BIGINT UNSIGNED NOT NULL,
@@ -1300,6 +1341,23 @@ class DBService extends Service {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+
+        /**
+         * IM Participants Table
+         *
+         * IM 参与者表
+         *  - id: 主键, 参与记录ID
+         *  - conversation_id: IM 会话ID, 对应 g3_im_conversations.id
+         *  - actor_type: 参与者身份类型, user/guest/agent/system
+         *  - actor_id: 参与者业务身份ID
+         *  - user_id: 对应的 WordPress 用户ID
+         *  - role: 会话内角色, customer/agent/system/member
+         *  - last_read_message_id: 最后已读消息ID
+         *  - last_seen_at: 最近在线或已读时间
+         *  - created_at: UTC 创建时间
+         *
+         * @since 1.0.0
+         */
         $table = $wpdb->prefix . 'g3_im_participants';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -1309,8 +1367,6 @@ class DBService extends Service {
                 `actor_id` VARCHAR(64) NOT NULL,
                 `user_id` BIGINT UNSIGNED DEFAULT NULL,
                 `role` VARCHAR(24) NOT NULL DEFAULT 'member',
-                `nickname` VARCHAR(120) DEFAULT NULL,
-                `avatar` VARCHAR(255) DEFAULT NULL,
                 `last_read_message_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `last_seen_at` DATETIME DEFAULT NULL,
                 `created_at` DATETIME NOT NULL,
@@ -1323,6 +1379,27 @@ class DBService extends Service {
             dbDelta($sql);
         }
 
+        /**
+         * IM Messages Table
+         *
+         * IM 消息表
+         *  - id: 主键, 消息ID
+         *  - conversation_id: IM 会话ID, 对应 g3_im_conversations.id
+         *  - msg_seq: 消息在会话内的递增序号
+         *  - msg_type: 消息类型, 如 text/offline
+         *  - sender_type: 发送者身份类型, user/guest/agent/system
+         *  - sender_id: 发送者业务身份ID
+         *  - sender_user_id: 发送者对应的 WordPress 用户ID
+         *  - sender_name: 发送者显示名称
+         *  - content: 消息结构化内容
+         *  - preview: 消息预览文本
+         *  - search_text: 消息检索文本
+         *  - status: 消息状态, sending/sent/delivered/read
+         *  - created_at: UTC 创建时间
+         *  - deleted_at: UTC 删除时间
+         *
+         * @since 1.0.0
+         */
         $table = $wpdb->prefix . 'g3_im_messages';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -1442,11 +1519,12 @@ class DBService extends Service {
          *  - sort: 排序
          *  - status: 状态. 0: offline, 1: online
          *  - user_id: 创建人
-         *  - created_at: 创建时间
+         *  - created_at: 创建时间 (Deprecated)
          *  - updated_at: 更新时间
          * 
          * @since 1.0.0
          */
+        // `created_at` DATETIME NOT NULL,
         $table = $wpdb->prefix . 'g3_swipers';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") !== $table) {
             $sql = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -1455,12 +1533,11 @@ class DBService extends Service {
                 `link` VARCHAR(255) NOT NULL,
                 `target` TINYINT NOT NULL DEFAULT 0,
                 `media` VARCHAR(255) NOT NULL,
-                `location` VARCHAR(255) NOT NULL,
+                `location` VARCHAR(32) NOT NULL,
                 `sort` INT UNSIGNED NOT NULL DEFAULT 1,
                 `status` TINYINT NOT NULL,
                 `user_id` BIGINT UNSIGNED NOT NULL,
-                `created_at` DATETIME NOT NULL,
-                `updated_at` DATETIME DEFAULT NULL,
+                `updated_at` DATETIME NOT NULL,
                 PRIMARY KEY (`id`),
                 KEY `location` (`location`)
             ) ENGINE=InnoDB $charset;";

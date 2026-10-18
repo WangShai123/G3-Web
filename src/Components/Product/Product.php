@@ -6,8 +6,6 @@ use JEALER\G3\Services\PostService;
 use JEALER\G3\Services\ProductService;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Utilities\Element;
-use JEALER\G3\Utilities\Image;
-use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Response;
 use JEALER\G3\Utilities\Validator;
 use Override;
@@ -15,6 +13,7 @@ use WP_Post;
 use Exception;
 
 class Product extends Components {
+
     private ProductService $productService;
     private PostService    $postService;
 
@@ -27,7 +26,8 @@ class Product extends Components {
     protected function hooks()
     {
         $this->filter([
-            'manage_edit-product_columns' => [[$this, 'productColumns'], 20, 1]
+            'manage_edit-product_columns'        => [[$this, 'productColumns'], 20, 1],
+            'manage_product_posts_custom_column' => [[$this, 'productCustomColumn'], 10, 2],
         ]);
         $this->action([
             'before_delete_post'     => [[$this, 'deleteProductData'], 10, 2],
@@ -35,13 +35,13 @@ class Product extends Components {
         ]);
     }
 
-    private function optionDefaults(): array
+    protected function defaultOption(): array
     {
         return [
-            'cart'     => '1',
-            'download' => '1',
+            ProductService::OPTION_KEY => ProductService::optionDefaults(),
         ];
     }
+
     protected function admin(): void
     {
         add_action('save_post_product', [$this, 'saveSku']);
@@ -49,10 +49,15 @@ class Product extends Components {
     }
     protected function adminMenu(): void
     {
+        // $shop  = __('Shop', 'G3');
+        $shop  = __('Settings');
+        $specs = __('Specifications', 'G3');
+
         add_submenu_page(
-            'g3-settings',
-            __('Shop', 'G3'),
-            __('Shop', 'G3'),
+            // 'g3-settings',
+            'edit.php?post_type=product',
+            $shop,
+            $shop,
             'manage_options',
             'shop-settings',
             [$this, 'render'],
@@ -71,8 +76,8 @@ class Product extends Components {
         );
         add_submenu_page(
             'edit.php?post_type=product',
-            __('Specifications', 'G3'),
-            __('Specifications', 'G3'),
+            $specs,
+            $specs,
             'manage_options',
             'product_specifications',
             [$this, 'renderSpecs'],
@@ -85,9 +90,10 @@ class Product extends Components {
     }
     public function renderSpecs(): void
     {
-        echo '<div class="wrap"><h1>' . __('Specifications', 'G3') . '</h1>';
+        $specs = __('Specifications', 'G3');
+        echo '<div class="wrap"><h1>' . $specs . '</h1>';
         $args = [
-            'specifications' => __('Specifications', 'G3'),
+            'specifications' => $specs,
             'options'        => __('Options', 'G3')
         ];
         Element::tab('Product', 'specifications', $args);
@@ -100,10 +106,11 @@ class Product extends Components {
     protected function adminPanels(): array
     {
         return [
-            $this->panel('shop-settings', __('Shop', 'G3'))
+            $this->panel('shop-settings', sprintf(__('%s %s', 'G3'), __('Shop', 'G3'), __('Settings')))
                 ->tab('general', __('General'))
-                ->option(ProductService::OPTION_KEY, $this->optionDefaults())
-                ->switch('cart', __('Cart', 'G3'), __('Whether to enable cart feature.', 'G3'))
+                ->option(ProductService::OPTION_KEY, ProductService::optionDefaults())
+                ->number('safeStock', sprintf(__('%s %s', 'G3'), __('Safe', 'G3'), 'SKU'), __('The minimum stock quantity required to be considered as safe.', 'G3'))
+                ->switch('cart', __('Cart', 'G3'))
                 ->rowClass('advanced')
                 ->switch('download', __('Download', 'G3'), __('Whether to support the product of download type.', 'G3'))
                 ->rowClass('advanced'),
@@ -118,10 +125,44 @@ class Product extends Components {
         unset($columns['author'], $columns['tags']);
 
         /**
-         * 2. add new columns
+         * 2. add sku columns
          */
+        $newColumns = [];
 
-        return $columns;
+        foreach ($columns as $key => $label) {
+            // insert before comments
+            if ('views' === $key) {
+                $newColumns['sku'] = 'SKU';
+            }
+            $newColumns[$key] = $label;
+        }
+
+        if (!isset($newColumns['sku'])) {
+            $newColumns['sku'] = 'SKU';
+        }
+
+        return $newColumns;
+    }
+
+    public function productCustomColumn(string $columnName, int $postId)
+    {
+        if ('sku' === $columnName) {
+            $skuData = $this->productService->getSkusByProductId($postId);
+
+            $count        = 0;
+            $hasLowStock  = false;
+            $safeSkuStock = $this->option()['safeStock'] ?? 10;
+            foreach ($skuData as $sku) {
+                $stock  = isset($sku['stock']) ? (int) $sku['stock'] : 0;
+                $count += $stock;
+                if ($stock < $safeSkuStock) {
+                    $hasLowStock = true;
+                }
+            }
+
+            $class = $hasLowStock ? ' class="mark-error"' : '';
+            echo '<span' . $class . '>' . esc_html($count) . '</span>';
+        }
     }
 
     protected function postType(): void
@@ -181,6 +222,7 @@ class Product extends Components {
         ];
         register_post_type('product', $args);
     }
+
     protected function taxonomy(): void
     {
         $product    = __('Product', 'G3');

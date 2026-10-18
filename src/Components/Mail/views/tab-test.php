@@ -6,7 +6,7 @@ use JEALER\G3\Services\MailerService;
 use JEALER\G3\Utilities\Message;
 
 echo Element::tip(
-    sprintf('<div>' . __('Test Email will be sent according to <a href="%s">Performance Settings</a>.', 'G3') . '</div>', admin_url('admin.php?page=performance')),
+    sprintf(__('Test Email will be sent according to <a href="%s">Performance Settings</a>.', 'G3'), admin_url('admin.php?page=performance')),
     '',
     'default',
     'mt-4'

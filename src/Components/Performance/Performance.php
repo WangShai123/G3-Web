@@ -4,11 +4,17 @@ use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\SidebarService;
 use JEALER\G3\Services\SystemService;
+use JEALER\G3\Utilities\Frontend;
 use JEALER\G3\Utilities\Response;
 use Override;
 use WP_Query;
 
 class Performance extends Components {
+
+    protected function form()
+    {
+        Frontend::umd('g3.admin');
+    }
 
     protected function hooks()
     {
@@ -16,12 +22,14 @@ class Performance extends Components {
             'redis_cache_expiration' => [[$this, 'setAdminCacheTTL'], 10, 3],
         ]);
     }
+
     private function optionDefaults(): array
     {
         return [
             'email' => '0',
         ];
     }
+
     #[Override]
     protected function adminMenu(): void
     {
@@ -37,26 +45,12 @@ class Performance extends Components {
     }
     protected function adminPanels(): array
     {
-        $code       = '<code>define("G3_WP_BUILTIN_CACHE_TTL", 24);</code>';
-        $currentTTL = defined('G3_WP_BUILTIN_CACHE_TTL') ? sprintf(__('%d hours'), (int) G3_WP_BUILTIN_CACHE_TTL) : __('None');
-        $msg        = $this->description(sprintf(__('Configure the constant %s in <code>wp-config</code> to set cache expiration for some built-in functions in WordPress to avoid redundant junk data. Default: 24 hours. Current value: %s.', 'G3'), $code, $currentTTL));
-
-        $wpConfig = <<<HTML
-<code>define('AUTOMATIC_UPDATER_DISABLED', true);</code><br>
-<code>define('WP_AUTO_UPDATE_CORE', false);</code><br>
-<code>define('DISABLE_WP_CRON', true);</code>
-HTML;
-
         return [
             $this->panel('performance', __('Performance', 'G3'))
                 ->tab('general', __('General'))
                 ->option(SystemService::PERFORMANCE_OPTION_KEY, $this->optionDefaults())
                 ->switch('email', __('Email Queue', 'G3'), __('Before enabling this feature, please ensure that the relevant queue consumption function is already enabled. This is because, after this feature is enabled, SMTP emails will not be sent directly; instead, sending tasks will be pushed to a service queue, where systemd or supervisor will handle the consumption and execution. This will improve the system\'s concurrency and asynchronous processing capabilities.', 'G3'))
                 ->rowClass('advanced')
-                ->html('adminCache', sprintf(__('%s %s', 'G3'), __('Query', 'G3'), __('Cache', 'G3')), $msg)
-                ->rowClass('advanced')
-                ->html('wpConfig', 'wp-config', $this->description($wpConfig))
-                ->html('queue', __('Queue', 'G3'), $this->description(__('If you want to use scheduled tasks, please use the Queue and Job services provided by G3-Web, which combine systemd or supervisor for high-performance and highly maintainable system-level features.', 'G3')))
                 ->tab('cleaner', __('Junk Cleaner', 'G3'))
                 ->callback('draft', __('Draft'), fn() => $this->renderActions('draft'))
                 ->callback('auto-draft', __('Auto Draft'), fn() => $this->renderActions('auto-draft'))
@@ -66,7 +60,7 @@ HTML;
                 ->tab('redis', 'Redis')
                 ->tab('theme', __('Theme'))
                 ->tab('queue', __('Queue', 'G3'))
-                ->tab('consumer', __('Consumer', 'G3'))
+                ->tab('wp-config', 'wp-config')
         ];
     }
     private function description(string $description): string

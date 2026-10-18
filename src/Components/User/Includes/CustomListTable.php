@@ -142,12 +142,12 @@ class CustomListTable extends WP_List_Table {
         if (!isset($item['slug'])) return '';
 
         $delete = $item['slug'] !== 'vip' ? sprintf(
-            '<span class="delete-role color-error cursor-pointer" data-slug="%s">%s</span>',
+            '<span class="delete-role fg-error cursor-pointer" data-slug="%s">%s</span>',
             $item['slug'],
             __('Delete')
         ) : '';
         return sprintf(
-            '<span class="edit-role color-link cursor-pointer" data-name="%s" data-slug="%s">%s</span> %s',
+            '<span class="edit-role fg-link cursor-pointer" data-name="%s" data-slug="%s">%s</span> %s',
             $item['name'],
             $item['slug'],
             __('Edit'),

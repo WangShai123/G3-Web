@@ -2,7 +2,7 @@
 use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
-    sprintf('<div>' . __('In <a href="%s">the security settings</a>, you can choose to use G3-Sitemap instead of <a href="%s" target="_blank">the default WordPress sitemap</a>, as the default sitemap may expose sensitive user information.', 'G3') . '</div>', admin_url('admin.php?page=security'), home_url('wp-sitemap.xml')),
+    sprintf(__('In <a href="%s">the security settings</a>, you can choose to use G3-Sitemap instead of <a href="%s" target="_blank">the default WordPress sitemap</a>, as the default sitemap may expose sensitive user information.', 'G3'), admin_url('admin.php?page=security'), home_url('wp-sitemap.xml')),
     '',
     'default',
     'mt-4'

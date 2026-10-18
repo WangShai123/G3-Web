@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: G3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-12 16:49+0000\n"
+"POT-Creation-Date: 2026-09-26 11:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -23,7 +23,7 @@ msgid ""
 "strategy takes precedence over the backend application's caching strategy."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:183
+#: src/Components/Auth/Auth.php:185
 msgid "%d code generation failed."
 msgid_plural "%d codes generation failed."
 msgstr[0] ""
@@ -74,19 +74,21 @@ msgstr[1] ""
 #: src/Components/Developer/Developer.php:89
 #: src/Components/Developer/Developer.php:98
 #: src/Components/Developer/Developer.php:99
-#: src/Components/Developer/Developer.php:980
-#: src/Components/Developer/Developer.php:1060
-#: src/Components/Swiper/Swiper.php:13 src/Components/Swiper/Swiper.php:41
-#: src/Components/Security/Security.php:85 src/Components/Auth/Auth.php:68
-#: src/Components/Auth/Auth.php:69 src/Components/Auth/Auth.php:70
-#: src/Components/Activity/Activity.php:14
+#: src/Components/Developer/Developer.php:979
+#: src/Components/Developer/Developer.php:1060 src/Components/Form/Form.php:63
+#: src/Components/Swiper/Swiper.php:16 src/Components/Swiper/Swiper.php:45
+#: src/Components/Post/Post.php:849 src/Components/Security/Security.php:85
+#: src/Components/Auth/Auth.php:68 src/Components/Auth/Auth.php:69
+#: src/Components/Auth/Auth.php:70 src/Components/Activity/Activity.php:14
 #: src/Components/Comment/Comment.php:74 src/Components/Mail/Mail.php:89
 #: src/Components/User/User.php:70 src/Components/User/User.php:71
 #: src/Components/User/User.php:72 src/Components/User/User.php:149
 #: src/Components/User/User.php:150 src/Components/User/User.php:151
 #: src/Components/User/User.php:152 src/Components/User/User.php:153
-#: src/Components/User/User.php:154 src/Components/Product/Product.php:136
-#: src/Components/Product/Product.php:193
+#: src/Components/User/User.php:154 src/Components/Product/Product.php:109
+#: src/Components/Product/Product.php:112
+#: src/Components/Product/Product.php:177
+#: src/Components/Product/Product.php:235
 #: src/Components/WechatOA/WechatOA.php:67
 #: src/Components/WechatOA/WechatOA.php:69
 #: src/Components/WechatOA/WechatOA.php:71
@@ -94,22 +96,21 @@ msgstr[1] ""
 #: src/Components/WechatOA/WechatOA.php:74
 #: src/Components/WechatOA/WechatOA.php:80
 #: src/Components/Automation/Automation.php:41
-#: src/Components/Orders/Orders.php:28 src/Components/Orders/Orders.php:29
+#: src/Components/Orders/Orders.php:35 src/Components/Orders/Orders.php:36
 #: src/Components/Setting/Setting.php:153
 #: src/Components/Setting/Setting.php:160
 #: src/Components/Setting/Setting.php:167
 #: src/Components/Setting/Setting.php:176
 #: src/Components/Setting/Setting.php:192
-#: src/Components/Performance/Performance.php:56
 #: src/Components/Announcement/Announcement.php:21
-#: src/Components/Customer/Customer.php:98
-#: src/Components/Customer/Customer.php:102
+#: src/Components/Customer/Customer.php:96
+#: src/Components/Customer/Customer.php:104
 #: src/Components/Customer/Customer.php:105
-#: src/Components/Customer/Customer.php:196
-#: src/Components/Customer/Customer.php:200 src/Components/Share/Share.php:58
+#: src/Components/Customer/Customer.php:190
+#: src/Components/Customer/Customer.php:194 src/Components/Share/Share.php:58
 #: src/Components/Share/Share.php:89
-#: src/Components/Swiper/views/page-edit.php:12
-#: src/Components/Swiper/views/page-edit.php:13
+#: src/Components/Swiper/views/page-edit.php:17
+#: src/Components/Swiper/views/page-edit.php:18
 #: src/Components/Post/widgets/PostWidget.php:76
 #: src/Components/Post/widgets/PostWidget.php:80
 #: src/Components/Post/widgets/TocWidget.php:52
@@ -132,9 +133,14 @@ msgstr[1] ""
 #: src/Components/User/views/tab-projects.php:117
 #: src/Components/User/views/tab-duration.php:34
 #: src/Components/User/views/tab-duration.php:132
-#: src/Components/Orders/Includes/OrdersListTable.php:115
+#: src/Components/Orders/Includes/OrdersListTable.php:126
+#: src/Components/Performance/views/tab-redis.php:5
 #: src/Components/Performance/views/tab-redis.php:27
-#: src/Components/Performance/views/tab-redis.php:63
+#: src/Components/Performance/views/tab-redis.php:58
+#: src/Components/Performance/views/tab-redis.php:59
+#: src/Components/Performance/views/tab-redis.php:61
+#: src/Components/Performance/views/tab-redis.php:68
+#: src/Components/Performance/views/tab-wp-config.php:18
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:19
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:57
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:72
@@ -143,13 +149,14 @@ msgstr[1] ""
 msgid "%s %s"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:47 src/Components/Auth/Auth.php:75
+#: src/Components/Auth/Auth.php:47 src/Components/Auth/Auth.php:76
 #: src/Components/Activity/Activity.php:15
-#: src/Components/Product/Product.php:137
+#: src/Components/Product/Product.php:178
 #: src/Components/Announcement/Announcement.php:22
-#: src/Components/Customer/Customer.php:103
-#: src/Components/Customer/Customer.php:199
+#: src/Components/Customer/Customer.php:102
+#: src/Components/Customer/Customer.php:193
 #: src/Components/Post/widgets/TocWidget.php:51
+#: src/Components/Security/views/tab-nginx.php:5
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:116
 #: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
 #: src/Components/Mail/views/tab-test.php:56
@@ -161,13 +168,13 @@ msgstr ""
 #: src/Components/Post/Post.php:696 src/Components/Post/Post.php:705
 #: src/Components/Post/Post.php:714 src/Components/Post/Post.php:723
 #: src/Components/Post/Post.php:732 src/Components/Post/Post.php:741
-#: src/Components/Product/Product.php:248
-#: src/Components/Product/Product.php:259
+#: src/Components/Product/Product.php:290
+#: src/Components/Product/Product.php:301
 #, php-format
 msgid "%s Sidebar"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1005
+#: src/Components/Developer/Developer.php:1004
 msgid "."
 msgstr ""
 
@@ -187,7 +194,7 @@ msgid ""
 "WordPress."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:214
+#: src/Components/Developer/Developer.php:213
 msgid ""
 ": if <code>checkbox</code> is not checked, it will not submit any value what "
 "means the data does not exist."
@@ -229,15 +236,15 @@ msgstr ""
 msgid "Ad"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:13 src/Components/Activity/Activity.php:22
+#: src/Components/Swiper/Swiper.php:16 src/Components/Activity/Activity.php:22
 #: src/Components/Activity/Activity.php:23
-#: src/Components/Product/Product.php:134
-#: src/Components/Product/Product.php:235
+#: src/Components/Product/Product.php:175
+#: src/Components/Product/Product.php:277
 #: src/Components/Announcement/Announcement.php:24
-#: src/Components/Swiper/Includes/SwiperListTable.php:137
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:68
+#: src/Components/Swiper/Includes/SwiperListTable.php:142
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:73
 #: src/Components/Swiper/views/tab-locations.php:65
-#: src/Components/Swiper/views/page-edit.php:12
+#: src/Components/Swiper/views/page-edit.php:17
 #: src/Components/User/Includes/PremiumListTable.php:93
 #: src/Components/User/Includes/ProjectListTable.php:80
 #: src/Components/User/Includes/ManagerListTable.php:94
@@ -260,7 +267,7 @@ msgstr ""
 msgid "Admin Login URL"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:86
+#: src/Components/Performance/views/tab-fastcgi.php:88
 msgid "Admin panel, special files, and REST API are not cached"
 msgstr ""
 
@@ -286,12 +293,12 @@ msgid "Aliyun"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:27
-#: src/Components/Product/Product.php:149
-#: src/Components/Product/Product.php:230 src/Components/Orders/Orders.php:28
-#: src/Components/Orders/Orders.php:29
+#: src/Components/Product/Product.php:190
+#: src/Components/Product/Product.php:272 src/Components/Orders/Orders.php:35
+#: src/Components/Orders/Orders.php:36
 #: src/Components/Announcement/Announcement.php:36
 #: src/Components/Comment/widgets/CommentWidget.php:79
-#: src/Components/Orders/Includes/OrdersListTable.php:115
+#: src/Components/Orders/Includes/OrdersListTable.php:126
 msgid "All"
 msgstr ""
 
@@ -381,7 +388,7 @@ msgstr ""
 msgid "At least one keyword is required"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:47 src/Components/Customer/Customer.php:96
+#: src/Components/Auth/Auth.php:47 src/Components/Customer/Customer.php:101
 msgid "Auth"
 msgstr ""
 
@@ -395,8 +402,12 @@ msgid ""
 "the live broadcast."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:169
+#: src/Components/Developer/Developer.php:168
 msgid "Auto Backup"
+msgstr ""
+
+#: src/Components/Performance/views/tab-wp-config.php:38
+msgid "Automatically adapt to access Host address."
 msgstr ""
 
 #: src/Components/Post/Post.php:141
@@ -405,7 +416,7 @@ msgid ""
 "saving to protect your content copyright."
 msgstr ""
 
-#: src/Components/Form/Form.php:65
+#: src/Components/Form/Form.php:68
 msgid ""
 "Automatically send email to the system email when the form is submitted."
 msgstr ""
@@ -425,6 +436,7 @@ msgid "Bank transfer fees"
 msgstr ""
 
 #: src/Components/Auth/views/tab-general.php:5
+#: src/Components/Auth/views/tab-social.php:5
 #: src/Components/WechatOA/views/tab-general.php:5
 #, php-format
 msgid ""
@@ -438,7 +450,7 @@ msgid ""
 "and other related functional configurations have been completed."
 msgstr ""
 
-#: src/Components/Performance/Performance.php:54
+#: src/Components/Performance/Performance.php:52
 msgid ""
 "Before enabling this feature, please ensure that the relevant queue "
 "consumption function is already enabled. This is because, after this feature "
@@ -456,23 +468,23 @@ msgstr ""
 msgid "Between Credits"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:70
-#: src/Components/Security/views/tab-caddy.php:62
+#: src/Components/Security/views/tab-nginx.php:50
+#: src/Components/Security/views/tab-caddy.php:48
 msgid "Block access to all .log files. such as: wp-content/debug.log"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:58
-#: src/Components/Security/views/tab-caddy.php:54
+#: src/Components/Security/views/tab-nginx.php:43
+#: src/Components/Security/views/tab-caddy.php:43
 msgid "Block access to sensitive files or directories."
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:92
-#: src/Components/Security/views/tab-caddy.php:78
+#: src/Components/Security/views/tab-nginx.php:62
+#: src/Components/Security/views/tab-caddy.php:58
 msgid "Block access to wp-config.php"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:81
-#: src/Components/Security/views/tab-caddy.php:70
+#: src/Components/Security/views/tab-nginx.php:56
+#: src/Components/Security/views/tab-caddy.php:53
 msgid "Block access to XML-RPC"
 msgstr ""
 
@@ -480,8 +492,8 @@ msgstr ""
 msgid "Block Patterns"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:37
-#: src/Components/Security/views/tab-caddy.php:40
+#: src/Components/Security/views/tab-nginx.php:27
+#: src/Components/Security/views/tab-caddy.php:32
 msgid "Block User-Agent, such as: libredtail-http, python-httpx..."
 msgstr ""
 
@@ -489,17 +501,17 @@ msgstr ""
 msgid "Bound"
 msgstr ""
 
-#: src/Services/ProductService.php:63 src/Components/Product/Product.php:188
+#: src/Services/ProductService.php:73 src/Components/Product/Product.php:230
 #: src/Components/Product/views/tab-specifications.php:71
 #: src/Components/Product/views/tab-specifications.php:188
 msgid "Brand"
 msgstr ""
 
-#: src/Components/Product/Product.php:189
+#: src/Components/Product/Product.php:231
 msgid "Brands"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:179
+#: src/Components/Developer/Developer.php:178
 msgid "Build Theme"
 msgstr ""
 
@@ -511,15 +523,8 @@ msgstr ""
 msgid "Button"
 msgstr ""
 
-#: src/Services/OrdersService.php:426
+#: src/Services/OrdersService.php:417
 msgid "Buyer"
-msgstr ""
-
-#: src/Components/Auth/views/tab-social.php:4
-msgid ""
-"By letting users subscribe the WeChat official account to automatically log "
-"in, it is an extremely effective operation tool for driving WeChat users and "
-"binding user relationships."
 msgstr ""
 
 #: src/Components/Performance/views/tab-fastcgi.php:37
@@ -530,17 +535,18 @@ msgid ""
 msgstr ""
 
 #: src/Components/Setting/Setting.php:193
-#: src/Components/Performance/Performance.php:56
-#: src/Components/Customer/Customer.php:102
+#: src/Components/Customer/Customer.php:104
 #: src/Components/Developer/views/tab-system.php:61
+#: src/Components/Performance/views/tab-redis.php:5
+#: src/Components/Performance/views/tab-wp-config.php:18
 msgid "Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:167
+#: src/Components/Developer/Developer.php:166
 msgid "Cache Data"
 msgstr ""
 
-#: src/Services/OrdersService.php:137
+#: src/Services/OrdersService.php:128
 msgid "Cancelled"
 msgstr ""
 
@@ -548,11 +554,11 @@ msgstr ""
 msgid "Cannot delete this spec option, it is used in sku."
 msgstr ""
 
-#: src/Components/Product/Product.php:639
+#: src/Components/Product/Product.php:681
 msgid "Cannot delete this spec option, it is used in some SKUs."
 msgstr ""
 
-#: src/Components/Product/Product.php:573
+#: src/Components/Product/Product.php:615
 #: src/Components/Product/views/tab-specifications.php:199
 msgid "Cannot delete this spec, it is used in some sku or options."
 msgstr ""
@@ -565,19 +571,19 @@ msgstr ""
 msgid "Card Menu"
 msgstr ""
 
-#: src/Components/Product/Product.php:106
+#: src/Components/Product/Product.php:113
 msgid "Cart"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:202
+#: src/Components/Developer/Developer.php:201
 msgid "Change the direction"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:207
+#: src/Components/Developer/Developer.php:206
 msgid "Checkbox field"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:119
+#: src/Components/Developer/Developer.php:118
 msgid "Clean the data in wp head."
 msgstr ""
 
@@ -596,7 +602,7 @@ msgstr ""
 msgid "Click here to view \"%s\" search results."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:195
+#: src/Components/Customer/Customer.php:189
 msgid "Closed"
 msgstr ""
 
@@ -620,15 +626,16 @@ msgstr ""
 msgid "Community"
 msgstr ""
 
-#: src/Services/OrdersService.php:136
+#: src/Services/OrdersService.php:127
 msgid "Completed"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:68
+#: src/Components/Performance/views/tab-fastcgi.php:70
 msgid "Config as below in <code>Server {}</code> module:"
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:63
+#: src/Components/Security/views/tab-nginx.php:5
+#: src/Components/Performance/views/tab-redis.php:68
 #: src/Components/Performance/views/tab-fastcgi.php:45
 msgid "Configuration"
 msgstr ""
@@ -638,21 +645,9 @@ msgstr ""
 msgid "Configuration Guide"
 msgstr ""
 
-#: src/Components/Performance/Performance.php:42
-#, php-format
-msgid ""
-"Configure the constant %s in <code>wp-config</code> to set cache expiration "
-"for some built-in functions in WordPress to avoid redundant junk data. "
-"Default: 24 hours. Current value: %s."
-msgstr ""
-
-#: templates/user/register.php:250 src/Components/Form/views/page-list.php:103
+#: templates/user/register.php:250 src/Components/Form/views/page-list.php:104
 #: src/Components/WechatOA/views/tab-message.php:46
 msgid "Confirm"
-msgstr ""
-
-#: src/Components/Performance/Performance.php:69
-msgid "Consumer"
 msgstr ""
 
 #: templates/form/form.php:12 src/Components/Developer/views/tab-help.php:29
@@ -673,11 +668,11 @@ msgstr ""
 msgid "Content Security Policy"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:199
+#: src/Components/Customer/Customer.php:193
 msgid "Conversation"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:187
+#: src/Components/Customer/Customer.php:181
 msgid "Conversations"
 msgstr ""
 
@@ -713,13 +708,13 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:186
+#: src/Components/Developer/Developer.php:185
 msgid "Counter input"
 msgstr ""
 
 #: src/Components/Post/Post.php:642 src/Components/Post/Post.php:663
 #: src/Components/Activity/Activity.php:32
-#: src/Components/Product/Product.php:154
+#: src/Components/Product/Product.php:195
 #: src/Components/Setting/Setting.php:153
 #: src/Components/Announcement/Announcement.php:41
 msgid "Cover"
@@ -753,7 +748,7 @@ msgstr ""
 msgid "Currency"
 msgstr ""
 
-#: src/Services/SwiperService.php:225
+#: src/Services/SwiperService.php:237
 msgid "Current Tab"
 msgstr ""
 
@@ -805,7 +800,6 @@ msgstr ""
 #: src/Components/Customer/Customer.php:48
 #: src/Components/Customer/Customer.php:49
 #: src/Components/Customer/Customer.php:66
-#: src/Components/Customer/Customer.php:158
 msgid "Customer Service"
 msgstr ""
 
@@ -822,6 +816,9 @@ msgstr ""
 #: src/Components/Post/widgets/PostWidget.php:76
 #: src/Components/Comment/widgets/CommentWidget.php:74
 #: src/Components/Comment/widgets/CommentWidget.php:106
+#: src/Components/Performance/views/tab-redis.php:58
+#: src/Components/Performance/views/tab-redis.php:60
+#: src/Components/Performance/views/tab-redis.php:61
 #: src/Components/Announcement/widgets/AnnouncementWidget.php:72
 msgid "Data"
 msgstr ""
@@ -830,7 +827,7 @@ msgstr ""
 msgid "Data Flush Complete"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:67 src/Components/User/User.php:230
+#: src/Components/Swiper/Swiper.php:75 src/Components/User/User.php:230
 #: src/Components/User/User.php:266 src/Components/User/User.php:286
 #: src/Components/User/User.php:301 src/Components/User/User.php:322
 #: src/Components/User/User.php:337 src/Components/User/User.php:357
@@ -852,11 +849,11 @@ msgstr ""
 msgid "Days must be greater than 0"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:95
+#: src/Components/Customer/Customer.php:100
 msgid "Default display name for anonymous visitors."
 msgstr ""
 
-#: src/Components/Form/Form.php:68
+#: src/Components/Form/Form.php:71
 #, php-format
 msgid ""
 "Default fields: name, email, content.<p>Custom fields: You can customize "
@@ -864,7 +861,7 @@ msgid ""
 "submitting the request. See more details in the API documentation.</p>"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:70
+#: src/Components/Performance/views/tab-fastcgi.php:72
 msgid "Define cache switch"
 msgstr ""
 
@@ -885,8 +882,8 @@ msgstr ""
 msgid "Delay"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:154
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:119
+#: src/Components/Swiper/Swiper.php:163
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:124
 msgid "Delete Failed"
 msgstr ""
 
@@ -896,13 +893,13 @@ msgid "Delete History Data"
 msgstr ""
 
 #: src/Utilities/Message.php:43 src/Controllers/AdminController.php:133
-#: src/Controllers/TableListController.php:90 src/Services/AuthService.php:498
-#: src/Services/OrdersService.php:132
+#: src/Controllers/TableListController.php:90 src/Services/AuthService.php:506
+#: src/Services/OrdersService.php:123
 #: src/Components/Announcement/Announcement.php:100
 #: src/Components/Developer/Includes/CronListTable.php:306
-#: src/Components/Form/Includes/FormListTable.php:167
-#: src/Components/Swiper/Includes/SwiperListTable.php:152
-#: src/Components/Swiper/Includes/SwiperLocationTable.php:116
+#: src/Components/Form/Includes/FormListTable.php:166
+#: src/Components/Swiper/Includes/SwiperListTable.php:157
+#: src/Components/Swiper/Includes/SwiperLocationTable.php:121
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:175
 #: src/Components/User/Includes/PremiumListTable.php:114
 #: src/Components/User/Includes/ProjectListTable.php:132
@@ -913,11 +910,11 @@ msgstr ""
 #: src/Components/Product/Includes/SkuListTable.php:173
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:130
 #: src/Components/WechatOA/Includes/WechatOAMessageListTable.php:113
-#: src/Components/Orders/Includes/OrdersListTable.php:148
+#: src/Components/Orders/Includes/OrdersListTable.php:159
 msgid "Deleted"
 msgstr ""
 
-#: src/Components/Orders/Includes/OrdersListTable.php:246
+#: src/Components/Orders/Includes/OrdersListTable.php:257
 #: src/Components/Orders/views/view-orders.php:80
 msgid "Deliver"
 msgstr ""
@@ -926,13 +923,13 @@ msgstr ""
 msgid "Deliver Tracking Number"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:181
-#: src/Components/Developer/Developer.php:217
+#: src/Components/Developer/Developer.php:180
+#: src/Components/Developer/Developer.php:216
 msgid "Demo"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:26
-#: src/Components/Security/views/tab-caddy.php:29
+#: src/Components/Security/views/tab-nginx.php:21
+#: src/Components/Security/views/tab-caddy.php:24
 msgid "Deny direct access to PHP unmapped files."
 msgstr ""
 
@@ -961,8 +958,8 @@ msgid "Desktop Header Secondary Menu"
 msgstr ""
 
 #: templates/developer/w.php:136 src/Components/Developer/Developer.php:92
+#: src/Components/Developer/Developer.php:443
 #: src/Components/Developer/Developer.php:444
-#: src/Components/Developer/Developer.php:445
 msgid "Developer Mode"
 msgstr ""
 
@@ -970,7 +967,7 @@ msgstr ""
 msgid "Development"
 msgstr ""
 
-#: src/Services/ProductService.php:80
+#: src/Services/ProductService.php:90
 msgid "Digital Product"
 msgstr ""
 
@@ -978,7 +975,7 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-#: src/Components/Developer/views/tab-general.php:5
+#: src/Components/Developer/views/tab-general.php:4
 msgid ""
 "Disable some unused WordPress functions, make the admin panel clean, and "
 "avoid some mistakes."
@@ -990,7 +987,7 @@ msgid ""
 "information. Only admin can visit the build-in REST API."
 msgstr ""
 
-#: src/Components/Developer/views/tab-general.php:6
+#: src/Components/Developer/views/tab-general.php:5
 msgid ""
 "Disable WordPress auto update related functions, can significantly improve "
 "the speed of the backend access."
@@ -1020,7 +1017,7 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: src/Services/OrdersService.php:123
+#: src/Services/OrdersService.php:114
 msgid "Donate Order"
 msgstr ""
 
@@ -1030,11 +1027,11 @@ msgstr ""
 msgid "DouYin"
 msgstr ""
 
-#: src/Components/Product/Product.php:108
+#: src/Components/Product/Product.php:115
 msgid "Download"
 msgstr ""
 
-#: src/Services/ProductService.php:82
+#: src/Services/ProductService.php:92
 msgid "Download Product"
 msgstr ""
 
@@ -1086,7 +1083,7 @@ msgstr ""
 
 #: templates/developer/w.php:107 src/Components/Developer/Developer.php:98
 #: src/Components/Developer/Developer.php:99
-#: src/Components/Developer/Developer.php:107
+#: src/Components/Developer/Developer.php:106
 msgid "Editor"
 msgstr ""
 
@@ -1098,15 +1095,15 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: src/Components/Form/Form.php:65 src/Components/Comment/Comment.php:80
+#: src/Components/Form/Form.php:68 src/Components/Comment/Comment.php:80
 msgid "Email Notification"
 msgstr ""
 
-#: src/Components/Performance/Performance.php:54
+#: src/Components/Performance/Performance.php:52
 msgid "Email Queue"
 msgstr ""
 
-#: src/Utilities/Element.php:93 src/Components/Developer/Developer.php:214
+#: src/Utilities/Element.php:93 src/Components/Developer/Developer.php:213
 #: src/Components/OSS/OSS.php:68 src/Components/OSS/OSS.php:88
 msgid "Enable"
 msgstr ""
@@ -1153,7 +1150,7 @@ msgstr ""
 msgid "Event Replay"
 msgstr ""
 
-#: src/Services/AuthService.php:625
+#: src/Services/AuthService.php:633
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:253
 msgid "Expired"
 msgstr ""
@@ -1163,7 +1160,7 @@ msgid "Extra Data"
 msgstr ""
 
 #: src/Utilities/Message.php:77 src/Controllers/TableListController.php:59
-#: src/Controllers/TableListController.php:87 src/Services/AuthService.php:498
+#: src/Controllers/TableListController.php:87 src/Services/AuthService.php:506
 #: src/Components/Auth/views/tab-invitation-ajax-backup.php:38
 msgid "Failed"
 msgstr ""
@@ -1177,27 +1174,27 @@ msgstr ""
 msgid "Failed to copy!"
 msgstr ""
 
-#: src/Services/OrdersService.php:194
+#: src/Services/OrdersService.php:185
 #, php-format
 msgid "Failed to delete order related data: %s."
 msgstr ""
 
-#: src/Components/Setting/Setting.php:509
+#: src/Components/Setting/Setting.php:505
 msgid "Failed to generate LLM cache."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:670
+#: src/Components/Developer/Developer.php:669
 #, php-format
 msgid ""
 "Failed to generate object-cache.php file. Please check file permissions for "
 "%s."
 msgstr ""
 
-#: src/Controllers/AuthController.php:531
+#: src/Controllers/AuthController.php:552
 msgid "Failed to generate WeChat auth URL."
 msgstr ""
 
-#: src/Controllers/TableListController.php:42 src/Components/Auth/Auth.php:147
+#: src/Controllers/TableListController.php:42 src/Components/Auth/Auth.php:149
 msgid "Failed. It is recommended to generate 1-20 at a time."
 msgstr ""
 
@@ -1257,17 +1254,17 @@ msgstr ""
 msgid "File Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:184
+#: src/Components/Developer/Developer.php:183
 msgid "File upload"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:39
-#: src/Components/Product/Product.php:161
+#: src/Components/Product/Product.php:202
 #: src/Components/Announcement/Announcement.php:48
 msgid "Filter"
 msgstr ""
 
-#: src/Services/OrdersService.php:430
+#: src/Services/OrdersService.php:421
 #: src/Components/Orders/Includes/OrdersListTable.php:40
 msgid "Final Amount"
 msgstr ""
@@ -1280,25 +1277,25 @@ msgstr ""
 msgid "Flexible Payment Terms"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:582
+#: src/Components/Developer/Developer.php:581
 msgid "Flush all the cache data."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:564
+#: src/Components/Developer/Developer.php:563
 msgid "Flush and fix the rewrite rules."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:576
+#: src/Components/Developer/Developer.php:575
 msgid ""
 "Flush and restore setting options from the last auto-generated backup data. "
 "File:"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:581
+#: src/Components/Developer/Developer.php:580
 msgid "Flush Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:164
+#: src/Components/Developer/Developer.php:163
 msgid "Flush Data"
 msgstr ""
 
@@ -1306,15 +1303,15 @@ msgstr ""
 msgid "Flush Menus Online"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:569
+#: src/Components/Developer/Developer.php:568
 msgid "Flush REST routes cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:563
+#: src/Components/Developer/Developer.php:562
 msgid "Flush Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:575
+#: src/Components/Developer/Developer.php:574
 msgid "Flush Setting Options"
 msgstr ""
 
@@ -1402,10 +1399,9 @@ msgstr ""
 msgid "Forbidden: Rate limit exceeded. Please try later after %s seconds."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:181 src/Components/Form/Form.php:35
-#: src/Components/Form/Form.php:36 src/Components/Form/Form.php:44
-#: src/Components/Form/Form.php:45 src/Components/Form/Form.php:60
-#: src/Components/Form/Includes/FormListTable.php:175
+#: src/Components/Developer/Developer.php:180 src/Components/Form/Form.php:30
+#: src/Components/Form/Form.php:63
+#: src/Components/Form/Includes/FormListTable.php:173
 msgid "Form"
 msgstr ""
 
@@ -1425,7 +1421,7 @@ msgstr ""
 msgid "Free Online Documents"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:101
+#: src/Components/Performance/views/tab-fastcgi.php:103
 msgid ""
 "From the PHP configuration file (such as enable-php-83.conf), confirm and "
 "modify this path:"
@@ -1465,18 +1461,15 @@ msgstr ""
 msgid "G3-Web requires WordPress 6.5+. Please upgrade your WordPress version."
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:54
-msgid ""
-"G3-Web will create 3 databases in Redis to cache regular data and queue "
-"tasks. Regular data is stored in database 0, queue tasks are stored in "
-"database 1, and notification services are stored in database 2."
+#: src/Components/Performance/views/tab-redis.php:55
+msgid "G3-Web will create several databases in Redis."
 msgstr ""
 
 #: src/Components/Post/Post.php:848
 msgid "General Menu"
 msgstr ""
 
-#: src/Services/ProductService.php:79
+#: src/Services/ProductService.php:89
 msgid "General Product"
 msgstr ""
 
@@ -1502,11 +1495,11 @@ msgstr ""
 msgid "Generate Invitation Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:586
+#: src/Components/Developer/Developer.php:585
 msgid "Generate object-cache.php"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:587
+#: src/Components/Developer/Developer.php:586
 msgid ""
 "Generate the drop-in file <code><i>object-cache.php</i></code> in <code><i>"
 "wp-content</i></code> directory if it does not exist."
@@ -1522,19 +1515,19 @@ msgstr ""
 msgid "Global Spec"
 msgstr ""
 
-#: src/Services/CommentService.php:395 src/Services/CustomerService.php:1620
+#: src/Services/CommentService.php:395 src/Services/CustomerService.php:1637
 msgid "Guest"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:95
+#: src/Components/Customer/Customer.php:100
 msgid "Guest Name"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:191
+#: src/Components/Customer/Customer.php:185
 msgid "Handle"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:192
+#: src/Components/Customer/Customer.php:186
 msgid "Handling"
 msgstr ""
 
@@ -1546,11 +1539,11 @@ msgstr ""
 msgid "Headings"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:97
+#: src/Components/Customer/Customer.php:95
 msgid "Heartbeat"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:97
+#: src/Components/Customer/Customer.php:95
 msgid ""
 "Heartbeat interval in seconds. It is only used to keep the SSE connection "
 "alive. Default: 45. Adviced range: 30-60."
@@ -1558,6 +1551,10 @@ msgstr ""
 
 #: src/Components/Developer/Developer.php:103
 msgid "Help Link"
+msgstr ""
+
+#: src/Components/Performance/views/tab-wp-config.php:26
+msgid "Hide Developer Mode Menu"
 msgstr ""
 
 #: src/Components/Form/Includes/FormListTable.php:197
@@ -1601,14 +1598,7 @@ msgstr ""
 msgid "If the title is empty, the title of the post will be used."
 msgstr ""
 
-#: src/Components/Developer/views/tab-general.php:4
-msgid ""
-"If you want to hide the developer mode menu, define the constant <code>"
-"define(\"G3_HIDE_DEVELOPER_MODE\", true);</code> in <code>wp-config."
-"php</code>."
-msgstr ""
-
-#: src/Components/Performance/Performance.php:59
+#: src/Components/Performance/views/tab-queue.php:5
 msgid ""
 "If you want to use scheduled tasks, please use the Queue and Job services "
 "provided by G3-Web, which combine systemd or supervisor for high-performance "
@@ -1620,7 +1610,7 @@ msgstr ""
 msgid "Illegal request"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:102
+#: src/Components/Customer/Customer.php:104
 msgid ""
 "IM data is stored solely in the Redis cache. Valid for 7 days. Use the queue "
 "service for regular data synchronization to the database."
@@ -1630,7 +1620,7 @@ msgstr ""
 msgid "Image Style"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:185
+#: src/Components/Developer/Developer.php:184
 msgid "Image upload & preview"
 msgstr ""
 
@@ -1667,12 +1657,12 @@ msgid ""
 "subscribe the official account and visit."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:183
+#: src/Components/Developer/Developer.php:182
 msgid "Input field"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:37
-#: src/Components/Product/Product.php:159
+#: src/Components/Product/Product.php:200
 #: src/Components/Announcement/Announcement.php:46
 #, php-format
 msgid "Insert into %s"
@@ -1689,8 +1679,8 @@ msgstr ""
 msgid "Internal Endpoint"
 msgstr ""
 
-#: src/Controllers/AuthController.php:333
-#: src/Controllers/AuthController.php:401
+#: src/Controllers/AuthController.php:344
+#: src/Controllers/AuthController.php:412
 msgid "Invalid Hash"
 msgstr ""
 
@@ -1698,11 +1688,11 @@ msgstr ""
 msgid "Invalid IDs selected."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:73
+#: src/Components/Swiper/Swiper.php:81
 msgid "Invalid Image"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:76
+#: src/Components/Swiper/Swiper.php:84
 msgid "Invalid Link"
 msgstr ""
 
@@ -1710,12 +1700,12 @@ msgstr ""
 msgid "Invalid settings request."
 msgstr ""
 
-#: src/Controllers/AuthController.php:71 src/Controllers/AuthController.php:144
+#: src/Controllers/AuthController.php:70 src/Controllers/AuthController.php:147
 msgid "Invalid username or password."
 msgstr ""
 
 #: src/Controllers/TableListController.php:67 src/Components/Auth/Auth.php:50
-#: src/Components/Auth/Auth.php:79 src/Components/Auth/Auth.php:173
+#: src/Components/Auth/Auth.php:81 src/Components/Auth/Auth.php:175
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:36
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:116
 #: src/Components/Auth/views/tab-invitation-ajax-backup.php:10
@@ -1739,7 +1729,7 @@ msgid ""
 "for WordPress comments."
 msgstr ""
 
-#: src/Components/Form/Form.php:64 src/Components/Comment/Comment.php:73
+#: src/Components/Form/Form.php:67 src/Components/Comment/Comment.php:73
 msgid "Items Per Page"
 msgstr ""
 
@@ -1747,7 +1737,7 @@ msgstr ""
 msgid "JEALER"
 msgstr ""
 
-#: templates/developer/w.php:135 src/Components/Performance/Performance.php:60
+#: templates/developer/w.php:135 src/Components/Performance/Performance.php:54
 msgid "Junk Cleaner"
 msgstr ""
 
@@ -1796,8 +1786,8 @@ msgstr ""
 msgid "License Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:934
-#: src/Components/Developer/Developer.php:937
+#: src/Components/Developer/Developer.php:933
+#: src/Components/Developer/Developer.php:936
 msgid "License Expired"
 msgstr ""
 
@@ -1822,8 +1812,8 @@ msgstr ""
 msgid "Linked SKU"
 msgstr ""
 
-#: src/Components/Activity/Activity.php:12
-#: src/Components/Product/Product.php:132
+#: src/Components/Post/Post.php:849 src/Components/Activity/Activity.php:12
+#: src/Components/Product/Product.php:173
 #: src/Components/Announcement/Announcement.php:19
 #: src/Components/Comment/widgets/CommentWidget.php:16
 #: src/Components/Comment/widgets/CommentWidget.php:65
@@ -1832,11 +1822,7 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: src/Components/Post/Post.php:849
-msgid "List Card Menu"
-msgstr ""
-
-#: src/Components/Customer/Customer.php:201
+#: src/Components/Customer/Customer.php:195
 msgid "Load More"
 msgstr ""
 
@@ -1844,10 +1830,10 @@ msgstr ""
 msgid "Local Saving"
 msgstr ""
 
-#: src/Components/Swiper/Includes/SwiperListTable.php:28
-#: src/Components/Swiper/views/page-edit.php:91
-#: src/Components/Swiper/views/page-edit.php:94
-#: src/Components/Swiper/views/page-edit.php:97
+#: src/Components/Swiper/Includes/SwiperListTable.php:33
+#: src/Components/Swiper/views/page-edit.php:96
+#: src/Components/Swiper/views/page-edit.php:99
+#: src/Components/Swiper/views/page-edit.php:102
 msgid "Location"
 msgstr ""
 
@@ -1864,24 +1850,22 @@ msgstr ""
 msgid "Logged out"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:92
+#: src/Components/Performance/views/tab-fastcgi.php:94
 msgid "Logged-in users are not cached"
 msgstr ""
 
 #: templates/developer/w.php:124 templates/developer/w.php:125
 #: templates/user/register.php:270 templates/user/reset-password.php:34
-#: src/Services/AuthService.php:656 src/Components/Auth/Auth.php:25
-#: src/Components/Auth/Auth.php:26 src/Components/Auth/Auth.php:44
-#: src/Components/Auth/Auth.php:75 src/Components/User/User.php:162
-#: src/Components/Customer/Customer.php:162
+#: src/Services/AuthService.php:664 src/Components/Auth/Auth.php:76
+#: src/Components/User/User.php:162
 msgid "Login"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:77
+#: src/Components/Auth/Auth.php:78
 msgid "Login via Wechat Client"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:178
+#: src/Components/Developer/Developer.php:177
 msgid "Logs"
 msgstr ""
 
@@ -1890,7 +1874,7 @@ msgstr ""
 msgid "Low Intention"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:42
+#: src/Components/Swiper/Swiper.php:46
 msgid "Manage Locations"
 msgstr ""
 
@@ -1902,8 +1886,8 @@ msgstr ""
 msgid "Manager Group"
 msgstr ""
 
-#: src/Services/OrdersService.php:112 src/Components/Orders/Orders.php:37
-#: src/Components/Orders/Orders.php:38
+#: src/Services/OrdersService.php:103 src/Components/Orders/Orders.php:44
+#: src/Components/Orders/Orders.php:45
 #: src/Components/Orders/views/view-manual.php:2
 msgid "Manual Orders"
 msgstr ""
@@ -1939,15 +1923,15 @@ msgstr ""
 msgid "Membership"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:964
+#: src/Components/Developer/Developer.php:963
 msgid "Membership Feature"
 msgstr ""
 
-#: src/Services/OrdersService.php:124
+#: src/Services/OrdersService.php:115
 msgid "Membership Order"
 msgstr ""
 
-#: src/Services/ProductService.php:81
+#: src/Services/ProductService.php:91
 msgid "Membership Product"
 msgstr ""
 
@@ -1965,15 +1949,15 @@ msgstr ""
 #: src/Components/Customer/Customer.php:75
 #: src/Components/Customer/Customer.php:77
 #: src/Components/Customer/Customer.php:79
-#: src/Components/Customer/Customer.php:100
+#: src/Components/Customer/Customer.php:98
 msgid "Message"
 msgstr ""
 
-#: src/Services/IMService.php:139 src/Services/CustomerService.php:1566
+#: src/Services/IMService.php:141 src/Services/CustomerService.php:1583
 msgid "Message content cannot be empty."
 msgstr ""
 
-#: src/Services/IMService.php:142
+#: src/Services/IMService.php:144
 msgid "Message is too long."
 msgstr ""
 
@@ -1995,11 +1979,11 @@ msgstr ""
 msgid "Messages replied automatically during non-working hours."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:591
+#: src/Components/Developer/Developer.php:590
 msgid "Migrate"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:592
+#: src/Components/Developer/Developer.php:591
 msgid ""
 "Migrate views count data from <code>post_meta</code> table to the individual "
 "table <code>g3_posts_extra</code> if you actually need it."
@@ -2010,7 +1994,7 @@ msgstr ""
 msgid "Mini Program"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:98
+#: src/Components/Customer/Customer.php:96
 msgid ""
 "Minutes without messages before the system closes a conversation with "
 "timeout reason."
@@ -2020,7 +2004,7 @@ msgstr ""
 msgid "Mobile Menu"
 msgstr ""
 
-#: src/Services/OrdersService.php:113
+#: src/Services/OrdersService.php:104
 msgid "MobileApp Order"
 msgstr ""
 
@@ -2047,7 +2031,7 @@ msgstr ""
 msgid "My Homepage"
 msgstr ""
 
-#: src/Components/Product/Product.php:552
+#: src/Components/Product/Product.php:594
 msgid "Name or Key already exists."
 msgstr ""
 
@@ -2056,13 +2040,13 @@ msgid "New"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:24
-#: src/Components/Product/Product.php:146
+#: src/Components/Product/Product.php:187
 #: src/Components/Announcement/Announcement.php:33
 #, php-format
 msgid "New %s"
 msgstr ""
 
-#: src/Components/Product/Product.php:236
+#: src/Components/Product/Product.php:278
 #, php-format
 msgid "New %s Name"
 msgstr ""
@@ -2076,7 +2060,7 @@ msgstr ""
 msgid "New Message"
 msgstr ""
 
-#: src/Services/SwiperService.php:225
+#: src/Services/SwiperService.php:237
 msgid "New Tab"
 msgstr ""
 
@@ -2109,13 +2093,13 @@ msgstr ""
 
 #: src/Components/Post/Post.php:124 src/Components/Activity/Activity.php:30
 #: src/Components/Activity/Activity.php:31
-#: src/Components/Product/Product.php:152
-#: src/Components/Product/Product.php:153
-#: src/Components/Product/Product.php:209
-#: src/Components/Product/Product.php:229
+#: src/Components/Product/Product.php:193
+#: src/Components/Product/Product.php:194
+#: src/Components/Product/Product.php:251
+#: src/Components/Product/Product.php:271
 #: src/Components/Announcement/Announcement.php:39
 #: src/Components/Announcement/Announcement.php:40
-#: src/Components/Customer/Customer.php:187
+#: src/Components/Customer/Customer.php:181
 #, php-format
 msgid "No %s"
 msgstr ""
@@ -2137,7 +2121,7 @@ msgstr ""
 msgid "No matter who you are, G3-Web has got you covered."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:125
+#: src/Components/Swiper/views/page-edit.php:130
 #, php-format
 msgid ""
 "No Position Data Found. Please configure <a href=\"%s\">the Swiper "
@@ -2148,11 +2132,11 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: templates/developer/w.php:130 src/Components/Developer/Developer.php:172
+#: templates/developer/w.php:130 src/Components/Developer/Developer.php:171
 msgid "Object Cache"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:678
+#: src/Components/Developer/Developer.php:677
 msgid "object-cache.php file already exists."
 msgstr ""
 
@@ -2178,7 +2162,7 @@ msgstr ""
 msgid "Old"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:946
+#: src/Components/Developer/Developer.php:945
 #, php-format
 msgid ""
 "One more step. <a href=\"%s\">Verify your G3-Web authorization</a> to access "
@@ -2206,7 +2190,7 @@ msgstr ""
 msgid "Only one cloud storage service can be enabled at a time."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:214
+#: src/Components/Developer/Developer.php:213
 msgid "Only one option"
 msgstr ""
 
@@ -2214,10 +2198,10 @@ msgstr ""
 msgid "onSale"
 msgstr ""
 
-#: src/Components/Swiper/Includes/SwiperListTable.php:27
-#: src/Components/Swiper/views/page-edit.php:73
-#: src/Components/Swiper/views/page-edit.php:76
+#: src/Components/Swiper/Includes/SwiperListTable.php:32
 #: src/Components/Swiper/views/page-edit.php:78
+#: src/Components/Swiper/views/page-edit.php:81
+#: src/Components/Swiper/views/page-edit.php:83
 msgid "Open Method"
 msgstr ""
 
@@ -2225,6 +2209,7 @@ msgstr ""
 #: src/Components/OpenPlatform/OpenPlatform.php:26
 #: src/Components/OpenPlatform/OpenPlatform.php:44
 #: src/Components/Auth/views/tab-general.php:7
+#: src/Components/Auth/views/tab-social.php:7
 #: src/Components/WechatOA/views/tab-general.php:7
 msgid "Open Platform"
 msgstr ""
@@ -2260,7 +2245,7 @@ msgstr ""
 msgid "Optional. When configured, ECS RAM Role credentials are used first."
 msgstr ""
 
-#: src/Components/Product/Product.php:91
+#: src/Components/Product/Product.php:97
 #: src/Components/Product/Includes/SpecsListTable.php:30
 #: src/Components/Product/views/tab-options.php:127
 msgid "Options"
@@ -2270,19 +2255,17 @@ msgstr ""
 msgid "Order Code"
 msgstr ""
 
-#: src/Services/OrdersService.php:427
+#: src/Services/OrdersService.php:418
 msgid "Order Source"
 msgstr ""
 
-#: src/Services/OrdersService.php:428
+#: src/Services/OrdersService.php:419
 msgid "Order Type"
 msgstr ""
 
 #: templates/developer/w.php:114 templates/mail/payment-success.php:14
-#: src/Components/User/User.php:151 src/Components/Orders/Orders.php:18
-#: src/Components/Orders/Orders.php:19 src/Components/Orders/Orders.php:28
-#: src/Components/Orders/Orders.php:29
-#: src/Components/Orders/Includes/OrdersListTable.php:115
+#: src/Components/User/User.php:151 src/Components/Orders/Orders.php:15
+#: src/Components/Orders/Includes/OrdersListTable.php:126
 msgid "Orders"
 msgstr ""
 
@@ -2308,7 +2291,7 @@ msgstr ""
 msgid "Page %s"
 msgstr ""
 
-#: src/Services/OrdersService.php:134
+#: src/Services/OrdersService.php:125
 msgid "Paid"
 msgstr ""
 
@@ -2325,9 +2308,9 @@ msgid "Param missing"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:29
-#: src/Components/Product/Product.php:151
-#: src/Components/Product/Product.php:231
-#: src/Components/Product/Product.php:232
+#: src/Components/Product/Product.php:192
+#: src/Components/Product/Product.php:273
+#: src/Components/Product/Product.php:274
 #: src/Components/Announcement/Announcement.php:38
 #: src/Components/WechatOA/views/view-menu-edit.php:62
 #: src/Components/WechatOA/views/view-menu-edit.php:67
@@ -2356,13 +2339,13 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:194
+#: src/Components/Customer/Customer.php:188
 #: src/Components/Form/Includes/FormListTable.php:195
 #: src/Components/Form/views/page-list.php:45
 msgid "Pending"
 msgstr ""
 
-#: src/Services/OrdersService.php:133
+#: src/Services/OrdersService.php:124
 msgid "Pending Payment"
 msgstr ""
 
@@ -2372,13 +2355,13 @@ msgid ""
 "fingerprints."
 msgstr ""
 
-#: src/Components/Performance/Performance.php:30
-#: src/Components/Performance/Performance.php:31
-#: src/Components/Performance/Performance.php:51
+#: src/Components/Performance/Performance.php:38
+#: src/Components/Performance/Performance.php:39
+#: src/Components/Performance/Performance.php:49
 msgid "Performance"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:118
+#: src/Components/Developer/Developer.php:117
 msgid "Permalinks"
 msgstr ""
 
@@ -2391,7 +2374,7 @@ msgstr ""
 msgid "Photo or Album"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:98
+#: src/Components/Performance/views/tab-fastcgi.php:100
 msgid "PHP processing block"
 msgstr ""
 
@@ -2399,7 +2382,7 @@ msgstr ""
 msgid "php-fpm processes the response, returns the response to nginx"
 msgstr ""
 
-#: src/Components/Form/Form.php:63 src/Components/Security/Security.php:82
+#: src/Components/Form/Form.php:66 src/Components/Security/Security.php:82
 #, php-format
 msgid "Please <a href=\"%s\">flush rewrite rules</a> after setting."
 msgstr ""
@@ -2408,7 +2391,7 @@ msgstr ""
 msgid "Please enter a username or email address."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:989
+#: src/Components/Developer/Developer.php:988
 msgid "Please enter a valid license code."
 msgstr ""
 
@@ -2419,8 +2402,8 @@ msgid ""
 "<a href=\"%s\" target=\"_blank\">HERE</a> to get one!"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:70 src/Components/Swiper/Swiper.php:122
-#: src/Components/Swiper/Swiper.php:148
+#: src/Components/Swiper/Swiper.php:78 src/Components/Swiper/Swiper.php:131
+#: src/Components/Swiper/Swiper.php:157
 msgid "Please fill in the complete data"
 msgstr ""
 
@@ -2440,7 +2423,7 @@ msgstr ""
 msgid "Please select a bulk action."
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:67
+#: src/Components/Swiper/Swiper.php:75
 msgid "Please set status data again"
 msgstr ""
 
@@ -2449,7 +2432,7 @@ msgstr ""
 msgid "Please set the invitation code as the registration code first."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:117
+#: src/Components/Developer/Developer.php:116
 msgid "Plugins Page"
 msgstr ""
 
@@ -2469,7 +2452,7 @@ msgstr ""
 msgid "Post Extension"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:74
+#: src/Components/Performance/views/tab-fastcgi.php:76
 msgid "POST requests are not cached"
 msgstr ""
 
@@ -2484,8 +2467,8 @@ msgstr ""
 msgid "Premium Config"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:16
-#: src/Components/Security/views/tab-caddy.php:16
+#: src/Components/Security/views/tab-nginx.php:15
+#: src/Components/Security/views/tab-caddy.php:15
 msgid ""
 "Prevent query-string from containing PHP ini configuration override "
 "parameters."
@@ -2495,7 +2478,7 @@ msgstr ""
 msgid "Prevent XMLRPC Attacks"
 msgstr ""
 
-#: src/Components/Product/Product.php:310
+#: src/Components/Product/Product.php:352
 msgid "Preview Product"
 msgstr ""
 
@@ -2512,10 +2495,10 @@ msgstr ""
 msgid "Processed"
 msgstr ""
 
-#: src/Services/ProductService.php:60 src/Components/Product/Product.php:129
-#: src/Components/Product/Product.php:186
-#: src/Components/Product/Product.php:245
-#: src/Components/Product/Product.php:279
+#: src/Services/ProductService.php:70 src/Components/Product/Product.php:170
+#: src/Components/Product/Product.php:228
+#: src/Components/Product/Product.php:287
+#: src/Components/Product/Product.php:321
 #: src/Components/Comment/widgets/CommentWidget.php:99
 #: src/Components/Product/Includes/SkuListTable.php:28
 #: src/Components/Product/views/tab-specifications.php:68
@@ -2523,7 +2506,7 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
-#: src/Components/Product/Product.php:321
+#: src/Components/Product/Product.php:363
 msgid "Product Gallery"
 msgstr ""
 
@@ -2531,25 +2514,25 @@ msgstr ""
 msgid "Product List"
 msgstr ""
 
-#: src/Services/OrdersService.php:121
+#: src/Services/OrdersService.php:112
 msgid "Product Order"
 msgstr ""
 
-#: src/Components/Product/Product.php:337
+#: src/Components/Product/Product.php:379
 msgid "Product Properties"
 msgstr ""
 
-#: src/Components/Product/Product.php:329
+#: src/Components/Product/Product.php:371
 msgid "Product SKU"
 msgstr ""
 
-#: src/Components/Product/Product.php:130
-#: src/Components/Product/Product.php:187
+#: src/Components/Product/Product.php:171
+#: src/Components/Product/Product.php:229
 msgid "Products"
 msgstr ""
 
 #: src/Controllers/ContactController.php:67 src/Components/User/User.php:153
-#: src/Components/Customer/Customer.php:196
+#: src/Components/Customer/Customer.php:190
 msgid "Profile"
 msgstr ""
 
@@ -2585,21 +2568,17 @@ msgstr ""
 msgid "QQ Zone"
 msgstr ""
 
-#: src/Controllers/AuthController.php:412
+#: src/Controllers/AuthController.php:423
 msgid "QRCode expired, Please refresh the page and try again."
 msgstr ""
 
-#: src/Components/Performance/Performance.php:56
-msgid "Query"
-msgstr ""
-
-#: src/Controllers/AuthController.php:421
+#: src/Controllers/AuthController.php:432
 msgid "Quest pending"
 msgstr ""
 
-#: templates/developer/w.php:132 src/Components/Performance/Performance.php:59
-#: src/Components/Performance/Performance.php:68
+#: templates/developer/w.php:132 src/Components/Performance/Performance.php:62
 #: src/Components/Mail/views/tab-test.php:27
+#: src/Components/Performance/views/tab-redis.php:59
 msgid "Queue"
 msgstr ""
 
@@ -2607,7 +2586,7 @@ msgstr ""
 msgid "Quickly create a G3 Web theme project with complete architecture."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:195
+#: src/Components/Developer/Developer.php:194
 msgid "Radio field"
 msgstr ""
 
@@ -2620,7 +2599,7 @@ msgstr ""
 msgid "Real-Time"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:570
+#: src/Components/Developer/Developer.php:569
 msgid "Rebuild the REST route cache file."
 msgstr ""
 
@@ -2628,12 +2607,12 @@ msgstr ""
 msgid "Recharge"
 msgstr ""
 
-#: src/Services/OrdersService.php:125
+#: src/Services/OrdersService.php:116
 msgid "Recharge Order"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:111
-#: src/Components/Performance/views/tab-redis.php:63
+#: src/Components/Developer/Developer.php:110
+#: src/Components/Performance/views/tab-redis.php:68
 msgid "Recommended"
 msgstr ""
 
@@ -2652,11 +2631,15 @@ msgstr ""
 msgid "Referral Code"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1213
+#: src/Components/Developer/views/tab-log.php:14
+msgid "Refresh"
+msgstr ""
+
+#: src/Components/Developer/Developer.php:1219
 msgid "Refreshed"
 msgstr ""
 
-#: src/Services/OrdersService.php:138
+#: src/Services/OrdersService.php:129
 msgid "Refunded"
 msgstr ""
 
@@ -2677,13 +2660,13 @@ msgid "Regular Price"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:34
-#: src/Components/Product/Product.php:156
+#: src/Components/Product/Product.php:197
 #: src/Components/Announcement/Announcement.php:43
 msgid "Remove cover"
 msgstr ""
 
-#: src/Components/Security/views/tab-nginx.php:104
-#: src/Components/Security/views/tab-caddy.php:86
+#: src/Components/Security/views/tab-nginx.php:68
+#: src/Components/Security/views/tab-caddy.php:63
 msgid "Remove sensitive data from response headers, such as: X-Powered-By."
 msgstr ""
 
@@ -2729,13 +2712,13 @@ msgid "Reset Upload File Names"
 msgstr ""
 
 #. %s: date and time of the revision
-#: src/Components/Product/Product.php:290
+#: src/Components/Product/Product.php:332
 #: src/Components/Announcement/Announcement.php:103
 #, php-format
 msgid "Restored to version from %s."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:103
+#: src/Components/Customer/Customer.php:102
 msgid "Retention Days"
 msgstr ""
 
@@ -2767,13 +2750,13 @@ msgstr ""
 msgid "Rewrite Rule"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:165
-#: src/Components/Developer/Developer.php:176
+#: src/Components/Developer/Developer.php:164
+#: src/Components/Developer/Developer.php:175
 #: src/Components/Developer/Includes/RewriteRulesTable.php:11
 msgid "Rewrite Rules"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:166
+#: src/Components/Developer/Developer.php:165
 msgid "Route"
 msgstr ""
 
@@ -2793,6 +2776,10 @@ msgstr ""
 
 #: src/Components/Setting/Setting.php:151
 msgid "Sad Mod"
+msgstr ""
+
+#: src/Components/Product/Product.php:112
+msgid "Safe"
 msgstr ""
 
 #: src/Controllers/SystemController.php:21
@@ -2817,7 +2804,7 @@ msgstr ""
 msgid "Scan Code"
 msgstr ""
 
-#: src/Components/Product/Product.php:295
+#: src/Components/Product/Product.php:337
 #: src/Components/Announcement/Announcement.php:108
 #, php-format
 msgid "Scheduled for:<strong>%1$s</strong>."
@@ -2835,7 +2822,7 @@ msgstr ""
 msgid "Search by Invitation Code"
 msgstr ""
 
-#: src/Components/Orders/Includes/OrdersListTable.php:105
+#: src/Components/Orders/Includes/OrdersListTable.php:116
 msgid "Search by Order Code"
 msgstr ""
 
@@ -2859,7 +2846,7 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:188
+#: src/Components/Developer/Developer.php:187
 msgid "Select field"
 msgstr ""
 
@@ -2867,7 +2854,6 @@ msgstr ""
 msgid "Selector"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:160
 #: src/Components/Mail/views/tab-test.php:58
 msgid "Send"
 msgstr ""
@@ -2906,25 +2892,32 @@ msgstr ""
 msgid "Service Account"
 msgstr ""
 
+#: src/Components/Performance/views/tab-wp-config.php:12
+#, php-format
+msgid ""
+"Set cache expiration for some built-in functions in WordPress to avoid "
+"redundant junk data. Default: 24 hours. Current value: %s."
+msgstr ""
+
 #: src/Components/Activity/Activity.php:33
-#: src/Components/Product/Product.php:155
+#: src/Components/Product/Product.php:196
 #: src/Components/Announcement/Announcement.php:42
 msgid "Set cover"
 msgstr ""
 
+#: src/Components/Developer/Developer.php:160
 #: src/Components/Developer/Developer.php:161
-#: src/Components/Developer/Developer.php:162
 #, php-format
 msgid ""
 "Set the data which will be displayed in the %s area. It will display default "
 "data when empty."
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:69
+#: src/Components/Performance/views/tab-redis.php:74
 msgid "Set the maximum memory as needed, such as 512MB."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:168
+#: src/Components/Developer/Developer.php:167
 msgid "Setting Options"
 msgstr ""
 
@@ -2943,14 +2936,13 @@ msgstr ""
 msgid "Share to %s"
 msgstr ""
 
-#: src/Services/OrdersService.php:135
+#: src/Services/OrdersService.php:126
 msgid "Shipped"
 msgstr ""
 
-#: templates/developer/w.php:112 src/Components/Product/Product.php:54
-#: src/Components/Product/Product.php:55 src/Components/Product/Product.php:103
-#: src/Components/Product/Product.php:131
-#: src/Components/Product/Product.php:244
+#: templates/developer/w.php:112 src/Components/Product/Product.php:109
+#: src/Components/Product/Product.php:172
+#: src/Components/Product/Product.php:286
 msgid "Shop"
 msgstr ""
 
@@ -2976,7 +2968,7 @@ msgstr ""
 msgid "Slug Param only allows English letters, numbers, and underscores"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:126
+#: src/Components/Swiper/Swiper.php:135
 msgid "Slug: Only supports English Letter"
 msgstr ""
 
@@ -2993,7 +2985,7 @@ msgstr ""
 msgid "Social Accounts"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:73
+#: src/Components/Auth/Auth.php:74
 msgid "Social Login"
 msgstr ""
 
@@ -3005,9 +2997,9 @@ msgstr ""
 msgid "someone password changed"
 msgstr ""
 
-#: src/Components/Swiper/Includes/SwiperListTable.php:29
-#: src/Components/Swiper/views/page-edit.php:136
-#: src/Components/Swiper/views/page-edit.php:139
+#: src/Components/Swiper/Includes/SwiperListTable.php:34
+#: src/Components/Swiper/views/page-edit.php:141
+#: src/Components/Swiper/views/page-edit.php:144
 #: src/Components/WechatOA/Includes/WechatOAMenuListTable.php:31
 #: src/Components/WechatOA/views/view-menu-edit.php:88
 #: src/Components/WechatOA/views/view-menu-edit.php:91
@@ -3018,12 +3010,11 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: src/Components/Product/Product.php:652
+#: src/Components/Product/Product.php:694
 msgid "Spec option not found."
 msgstr ""
 
-#: src/Components/Product/Product.php:74 src/Components/Product/Product.php:75
-#: src/Components/Product/Product.php:88 src/Components/Product/Product.php:90
+#: src/Components/Product/Product.php:54 src/Components/Product/Product.php:93
 #: src/Components/Product/Includes/SpecOptionsListTable.php:29
 #: src/Components/Product/views/tab-specifications.php:125
 #: src/Components/Product/views/tab-options.php:58
@@ -3046,9 +3037,9 @@ msgstr ""
 
 #: src/Components/Form/Includes/FormListTable.php:44
 #: src/Components/Form/views/page-list.php:40
-#: src/Components/Swiper/views/page-edit.php:148
-#: src/Components/Swiper/views/page-edit.php:151
 #: src/Components/Swiper/views/page-edit.php:153
+#: src/Components/Swiper/views/page-edit.php:156
+#: src/Components/Swiper/views/page-edit.php:158
 #: src/Components/Product/Includes/SkuListTable.php:35
 #: src/Components/Product/Includes/SpecOptionsListTable.php:30
 #: src/Components/Product/views/tab-options.php:67
@@ -3066,7 +3057,7 @@ msgid "Stock"
 msgstr ""
 
 #: src/Components/WechatOA/WechatOA.php:69
-#: src/Components/Customer/Customer.php:102
+#: src/Components/Customer/Customer.php:104
 msgid "Storage"
 msgstr ""
 
@@ -3074,16 +3065,16 @@ msgstr ""
 msgid "Store Management"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:112
+#: src/Components/Developer/Developer.php:111
 msgid "Store the parsed HTML results directly."
 msgstr ""
 
-#: src/Components/Product/Product.php:293
+#: src/Components/Product/Product.php:335
 #: src/Components/Announcement/Announcement.php:106
 msgid "Submitted"
 msgstr ""
 
-#: templates/developer/w.php:125 src/Components/Auth/Auth.php:75
+#: templates/developer/w.php:125 src/Components/Auth/Auth.php:76
 #: src/Components/WechatOA/WechatOA.php:73
 msgid "Subscribe"
 msgstr ""
@@ -3092,19 +3083,23 @@ msgstr ""
 msgid "Subscription Account"
 msgstr ""
 
+#: src/Components/Security/views/tab-nginx.php:5
+msgid "Sucurity"
+msgstr ""
+
 #: templates/developer/w.php:121
 msgid "Support"
 msgstr ""
 
-#: src/Components/Swiper/Swiper.php:13 src/Components/Swiper/Swiper.php:17
-#: src/Components/Swiper/Swiper.php:18 src/Components/Swiper/Swiper.php:39
-#: src/Components/Swiper/Swiper.php:41
-#: src/Components/Swiper/views/page-edit.php:12
-#: src/Components/Swiper/views/page-edit.php:13
+#: src/Components/Swiper/Swiper.php:16 src/Components/Swiper/Swiper.php:20
+#: src/Components/Swiper/Swiper.php:21 src/Components/Swiper/Swiper.php:43
+#: src/Components/Swiper/Swiper.php:45
+#: src/Components/Swiper/views/page-edit.php:17
+#: src/Components/Swiper/views/page-edit.php:18
 msgid "Swiper"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:215
+#: src/Components/Developer/Developer.php:214
 msgid "Switch"
 msgstr ""
 
@@ -3112,7 +3107,7 @@ msgstr ""
 #: templates/developer/w.php:113 templates/developer/w.php:114
 #: templates/developer/w.php:115 templates/developer/w.php:117
 #: templates/developer/w.php:118 templates/developer/w.php:120
-#: templates/developer/w.php:122 src/Components/Developer/Developer.php:175
+#: templates/developer/w.php:122 src/Components/Developer/Developer.php:174
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-help.php:17
 #: src/Components/Developer/views/tab-html.php:52
@@ -3133,12 +3128,16 @@ msgstr ""
 msgid "System Email"
 msgstr ""
 
-#: src/Services/AuthService.php:532
+#: src/Services/AuthService.php:540
 msgid "System Generated"
 msgstr ""
 
 #: src/Components/Post/widgets/TocWidget.php:51
 msgid "Target"
+msgstr ""
+
+#: src/Components/Performance/views/tab-redis.php:59
+msgid "Tasks"
 msgstr ""
 
 #: src/Utilities/Element.php:44 src/Core/Admin/PanelRenderer.php:64
@@ -3149,6 +3148,8 @@ msgstr ""
 
 #: src/Components/Mail/Mail.php:89 src/Components/Mail/views/tab-test.php:56
 #: src/Components/Mail/views/tab-test.php:58
+#: src/Components/Performance/views/tab-wp-config.php:38
+#: src/Components/Performance/views/tab-wp-config.php:45
 msgid "Test"
 msgstr ""
 
@@ -3158,7 +3159,7 @@ msgid ""
 "Test Email will be sent according to <a href=\"%s\">Performance Settings</a>."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:187
+#: src/Components/Developer/Developer.php:186
 msgid "Textarea"
 msgstr ""
 
@@ -3168,11 +3169,11 @@ msgid ""
 "contributions to the world."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:219
+#: src/Components/Developer/Developer.php:218
 msgid "Thanks"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:213
+#: src/Components/Developer/Developer.php:212
 msgid "the <code>value</code> is an array."
 msgstr ""
 
@@ -3230,7 +3231,7 @@ msgstr ""
 msgid "The expiration of the invitation code."
 msgstr ""
 
-#: src/Components/Swiper/views/page-edit.php:197
+#: src/Components/Swiper/views/page-edit.php:201
 msgid "The field cannot be empty"
 msgstr ""
 
@@ -3241,7 +3242,7 @@ msgid ""
 msgstr ""
 
 #: src/Components/Comment/Comment.php:75
-#: src/Components/Customer/Customer.php:100
+#: src/Components/Customer/Customer.php:98
 #, php-format
 msgid ""
 "The frequency of %s transmission by users. The default setting is once every "
@@ -3278,6 +3279,10 @@ msgid ""
 "database."
 msgstr ""
 
+#: src/Components/Product/Product.php:112
+msgid "The minimum stock quantity required to be considered as safe."
+msgstr ""
+
 #: src/Components/Performance/views/tab-fastcgi.php:23
 msgid "The nginx server receives the user request"
 msgstr ""
@@ -3288,7 +3293,7 @@ msgid ""
 "server load capacity."
 msgstr ""
 
-#: src/Components/Form/Form.php:64
+#: src/Components/Form/Form.php:67
 msgid ""
 "The number of items displayed per page in the table list of admin panel."
 msgstr ""
@@ -3364,7 +3369,7 @@ msgstr ""
 msgid "The system will use SMTP to send emails."
 msgstr ""
 
-#: src/Utilities/Message.php:109
+#: src/Utilities/Message.php:113
 #, php-format
 msgid ""
 "The template \"%s\" is not implemented yet. Please complete your own theme."
@@ -3384,7 +3389,7 @@ msgid ""
 "the main theme will be used first by default."
 msgstr ""
 
-#: templates/user/register.php:309 src/Controllers/AuthController.php:251
+#: templates/user/register.php:309 src/Controllers/AuthController.php:258
 msgid "The two passwords do not match."
 msgstr ""
 
@@ -3437,16 +3442,19 @@ msgid ""
 "reduce server CPU load and memory consumption, please use it."
 msgstr ""
 
+#: src/Components/Security/views/tab-nginx.php:5
+#: src/Components/Performance/views/tab-redis.php:5
+#: src/Components/Performance/views/tab-wp-config.php:5
+#, php-format
+msgid "This tab is for %s advice."
+msgstr ""
+
 #: src/Components/Security/views/tab-caddy.php:5
 msgid "This tab is for Caddy security configuration advice."
 msgstr ""
 
 #: src/Components/Performance/views/tab-theme.php:5
 msgid "This tab is for hybrid theme development advice."
-msgstr ""
-
-#: src/Components/Security/views/tab-nginx.php:5
-msgid "This tab is for Nginx security configuration advice."
 msgstr ""
 
 #: src/Components/Performance/views/tab-opcache.php:5
@@ -3457,20 +3465,16 @@ msgstr ""
 msgid "This tab is for queue configuration and website performance advice."
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:5
-msgid "This tab is for Redis Cache advice."
-msgstr ""
-
 #: src/Services/AuthService.php:347
 msgid "This WeChat account is already bound to another user."
 msgstr ""
 
 #: src/Components/Comment/Comment.php:75
-#: src/Components/Customer/Customer.php:100
+#: src/Components/Customer/Customer.php:98
 msgid "Throttle"
 msgstr ""
 
-#: src/Services/OrdersService.php:114
+#: src/Services/OrdersService.php:105
 msgid "Tiktok Order"
 msgstr ""
 
@@ -3479,20 +3483,20 @@ msgstr ""
 msgid "Time Unit"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:98
+#: src/Components/Customer/Customer.php:96
 msgid "Timeout"
 msgstr ""
 
 #: templates/developer/w.php:18 src/Utilities/Element.php:692
+#: src/Components/Developer/Developer.php:212
 #: src/Components/Developer/Developer.php:213
-#: src/Components/Developer/Developer.php:214
 #: src/Components/Setting/Setting.php:474
 #: src/Components/Customer/Customer.php:73
 #: src/Components/WechatOA/views/view-menu-edit.php:154
 msgid "Tip"
 msgstr ""
 
-#: src/Services/OrdersService.php:122
+#: src/Services/OrdersService.php:113
 msgid "Tip Order"
 msgstr ""
 
@@ -3510,15 +3514,15 @@ msgstr ""
 msgid "To add view statistics function to each post & page."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:116
+#: src/Components/Developer/Developer.php:115
 msgid "Tools Page"
 msgstr ""
 
-#: src/Services/OrdersService.php:429
+#: src/Services/OrdersService.php:420
 msgid "Total Amount"
 msgstr ""
 
-#: src/Components/Orders/Includes/OrdersListTable.php:247
+#: src/Components/Orders/Includes/OrdersListTable.php:258
 msgid "Track"
 msgstr ""
 
@@ -3534,17 +3538,13 @@ msgstr ""
 msgid "Translations API"
 msgstr ""
 
-#: src/Components/Performance/Performance.php:63
+#: src/Components/Performance/Performance.php:57
 msgid "Trash"
 msgstr ""
 
 #: src/Components/WechatOA/views/view-menu-edit.php:100
 #: src/Components/WechatOA/views/view-menu-edit.php:103
 msgid "Type"
-msgstr ""
-
-#: src/Components/Customer/Customer.php:161
-msgid "Type a message..."
 msgstr ""
 
 #: src/Utilities/Message.php:33 src/Components/Share/views/metabox-share.php:12
@@ -3560,7 +3560,7 @@ msgstr ""
 msgid "Unsupported message type"
 msgstr ""
 
-#: src/Services/AuthService.php:590
+#: src/Services/AuthService.php:598
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:77
 msgid "Unused"
 msgstr ""
@@ -3571,13 +3571,13 @@ msgstr ""
 
 #: src/Utilities/Message.php:38 src/Controllers/AdminController.php:96
 #: src/Controllers/EditorController.php:80
-#: src/Components/Product/Product.php:280
+#: src/Components/Product/Product.php:322
 #: src/Components/Announcement/Announcement.php:98
 #: src/Components/Announcement/Announcement.php:99
 #: src/Components/Announcement/Announcement.php:101
 #: src/Components/Announcement/Announcement.php:111
-#: src/Components/Customer/Customer.php:200
-#: src/Components/Swiper/Includes/SwiperListTable.php:149
+#: src/Components/Customer/Customer.php:194
+#: src/Components/Swiper/Includes/SwiperListTable.php:154
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:114
 #: src/Components/WechatOA/Includes/WechatOAReplyListTable.php:122
 msgid "Updated"
@@ -3593,13 +3593,13 @@ msgid "Upload generated image sizes together with the original image."
 msgstr ""
 
 #: src/Components/Activity/Activity.php:38
-#: src/Components/Product/Product.php:160
+#: src/Components/Product/Product.php:201
 #: src/Components/Announcement/Announcement.php:47
 #, php-format
 msgid "Uploaded to this %s"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:80
+#: src/Components/Performance/views/tab-fastcgi.php:82
 msgid "URLs with query parameters are not cached"
 msgstr ""
 
@@ -3607,13 +3607,13 @@ msgstr ""
 msgid "Use"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:120
+#: src/Components/Developer/Developer.php:119
 #, php-format
 msgid "Use %s instead of built-in %s"
 msgstr ""
 
 #: src/Components/Activity/Activity.php:35
-#: src/Components/Product/Product.php:157
+#: src/Components/Product/Product.php:198
 #: src/Components/Announcement/Announcement.php:44
 msgid "Use as cover"
 msgstr ""
@@ -3632,7 +3632,7 @@ msgid ""
 "page routing, build pure front-end Web applications."
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:66
+#: src/Components/Performance/views/tab-redis.php:71
 msgid ""
 "Use Redis's <b>LRU</b> eviction policy to avoid redundant cached data. "
 "Configure memory management in <code>redis.conf</code> to allow Redis to "
@@ -3657,13 +3657,13 @@ msgid ""
 "same region."
 msgstr ""
 
-#: src/Components/Performance/views/tab-redis.php:73
+#: src/Components/Performance/views/tab-redis.php:78
 msgid ""
 "Use the LRU (Least Recently Used) strategy to automatically evict the least "
 "recently used key."
 msgstr ""
 
-#: src/Services/AuthService.php:590
+#: src/Services/AuthService.php:598
 #: src/Components/Auth/Includes/InvitationCodeListTable.php:77
 msgid "Used"
 msgstr ""
@@ -3677,11 +3677,11 @@ msgstr ""
 msgid "Useful Development Features"
 msgstr ""
 
-#: src/Services/AuthService.php:533
+#: src/Services/AuthService.php:541
 msgid "User Bought"
 msgstr ""
 
-#: src/Components/Customer/Customer.php:96
+#: src/Components/Customer/Customer.php:101
 msgid "User needs to log in to use the service."
 msgstr ""
 
@@ -3689,13 +3689,13 @@ msgstr ""
 msgid "User visits the website"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:77
+#: src/Components/Auth/Auth.php:78
 msgid ""
 "Users can complete the login automatically while browsing your website with "
 "Wechat client."
 msgstr ""
 
-#: src/Components/Auth/Auth.php:75
+#: src/Components/Auth/Auth.php:76
 msgid "Users can subscribe your WeChat official account to complete the login."
 msgstr ""
 
@@ -3786,7 +3786,7 @@ msgstr ""
 msgid "Verified Subscription Account"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:1018
+#: src/Components/Developer/Developer.php:1017
 #: src/Components/Developer/Developer.php:1037
 #: src/Components/Developer/Developer.php:1070
 msgid "Verify License"
@@ -3803,7 +3803,7 @@ msgstr ""
 
 #: templates/mail/payment-success.php:14
 #: src/Components/Activity/Activity.php:26
-#: src/Components/Product/Product.php:148
+#: src/Components/Product/Product.php:189
 #: src/Components/Announcement/Announcement.php:35
 #, php-format
 msgid "View %s"
@@ -3818,7 +3818,7 @@ msgstr ""
 msgid "View Interval"
 msgstr ""
 
-#: src/Components/Product/Product.php:304
+#: src/Components/Product/Product.php:346
 msgid "View Product"
 msgstr ""
 
@@ -3830,7 +3830,7 @@ msgstr ""
 msgid "Views"
 msgstr ""
 
-#: src/Components/Developer/Developer.php:173
+#: src/Components/Developer/Developer.php:172
 msgid "Views Migration"
 msgstr ""
 
@@ -3862,15 +3862,15 @@ msgid ""
 "wordpress themes."
 msgstr ""
 
-#: src/Services/OrdersService.php:111
+#: src/Services/OrdersService.php:102
 msgid "Web Order"
 msgstr ""
 
-#: src/Components/Performance/views/tab-fastcgi.php:65
+#: src/Components/Performance/views/tab-fastcgi.php:67
 msgid "Website Configuration"
 msgstr ""
 
-#: src/Components/Auth/Auth.php:75 src/Components/Share/Share.php:58
+#: src/Components/Auth/Auth.php:76 src/Components/Share/Share.php:58
 #: src/Components/Share/Share.php:89
 msgid "WeChat"
 msgstr ""
@@ -3912,9 +3912,9 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: templates/user/register.php:208 src/Components/Developer/Developer.php:1086
-#: src/Components/Developer/Developer.php:1087 src/Components/Mail/Mail.php:82
-#: src/Components/Mail/Mail.php:85 src/Components/Customer/Customer.php:75
+#: templates/user/register.php:208 src/Components/Developer/Developer.php:1083
+#: src/Components/Mail/Mail.php:82 src/Components/Mail/Mail.php:85
+#: src/Components/Customer/Customer.php:75
 msgid "Welcome"
 msgstr ""
 
@@ -3926,7 +3926,7 @@ msgstr ""
 msgid "Welcome message shown when a visitor opens the chat."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:133
+#: src/Components/Developer/Developer.php:132
 msgid "Welcome Panel"
 msgstr ""
 
@@ -3963,7 +3963,7 @@ msgid ""
 "WeChat official account media library."
 msgstr ""
 
-#: src/Components/Developer/Developer.php:170
+#: src/Components/Developer/Developer.php:169
 msgid ""
 "When the G3-Web plugin is uninstalled, the system will automatically backup "
 "related option configuration data, and clear the relevant option data in the "
@@ -4002,21 +4002,17 @@ msgid ""
 "Whether to display the content distribution section on the post edit page."
 msgstr ""
 
-#: src/Components/Product/Product.php:106
-msgid "Whether to enable cart feature."
-msgstr ""
-
 #: src/Components/Auth/Auth.php:54
 msgid ""
 "Whether to enforce mandatory invite-only registration, users without an "
 "invitation code cannot sign up."
 msgstr ""
 
-#: src/Components/Product/Product.php:108
+#: src/Components/Product/Product.php:115
 msgid "Whether to support the product of download type."
 msgstr ""
 
-#: src/Components/Customer/Customer.php:103
+#: src/Components/Customer/Customer.php:102
 msgid "will remove data older than these days."
 msgstr ""
 
@@ -4029,6 +4025,7 @@ msgid "Withdrawal"
 msgstr ""
 
 #: src/Components/Developer/Developer.php:95
+#: src/Components/Performance/views/tab-wp-config.php:30
 msgid "WordPress Auto Update"
 msgstr ""
 
@@ -4057,8 +4054,8 @@ msgstr ""
 #: src/Components/Post/Post.php:698 src/Components/Post/Post.php:707
 #: src/Components/Post/Post.php:716 src/Components/Post/Post.php:725
 #: src/Components/Post/Post.php:734 src/Components/Post/Post.php:743
-#: src/Components/Product/Product.php:250
-#: src/Components/Product/Product.php:261
+#: src/Components/Product/Product.php:292
+#: src/Components/Product/Product.php:303
 #, php-format
 msgid "You can add widgets to %s sidebar."
 msgstr ""
@@ -4075,7 +4072,7 @@ msgid ""
 "to improve user experience."
 msgstr ""
 
-#: src/Components/Form/Form.php:69
+#: src/Components/Form/Form.php:72
 msgid ""
 "You can customize the contact form template by overriding the template file "
 "<code>/templates/form/index.php</code>."

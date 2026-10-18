@@ -66,6 +66,7 @@ $table->display();
                     $.post(ajaxurl, {
                         action: 'g3_change_field_status',
                         id,
+                        old: status,
                         status: data.status,
                     }, function (res) {
                         if (res.success) {

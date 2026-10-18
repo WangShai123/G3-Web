@@ -1,11 +1,12 @@
 <?php
 namespace JEALER\G3\Services;
+use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Utilities\Type;
 use WP_Error;
 use Exception;
 use wpdb;
 
-class OrdersService {
+class OrdersService extends Service {
 
     /**
      * order table
@@ -92,18 +93,8 @@ class OrdersService {
      */
     const MAX_RETRY = 3;
 
-    /**
-     * WordPress database object
-     * 
-     * @var wpdb
-     */
-    private wpdb $wpdb;
+    const ORDER_STATUS_PAID = 2;
 
-    public function __construct()
-    {
-        global $wpdb;
-        $this->wpdb = $wpdb;
-    }
 
     public static function renderSource(int $id)
     {
@@ -129,14 +120,14 @@ class OrdersService {
     public static function renderStatus(int $id)
     {
         return match ($id) {
-            0       => __('Deleted', 'G3'),
-            1       => __('Pending Payment', 'G3'),
-            2       => __('Paid', 'G3'),
-            3       => __('Shipped', 'G3'),
-            4       => __('Completed', 'G3'),
-            5       => __('Cancelled', 'G3'),
-            6       => __('Refunded', 'G3'),
-            default => __('Unknown')
+            0                       => __('Deleted', 'G3'),
+            1                       => __('Pending Payment', 'G3'),
+            self::ORDER_STATUS_PAID => __('Paid', 'G3'),
+            3                       => __('Shipped', 'G3'),
+            4                       => __('Completed', 'G3'),
+            5                       => __('Cancelled', 'G3'),
+            6                       => __('Refunded', 'G3'),
+            default                 => __('Unknown')
         };
     }
 
@@ -792,5 +783,19 @@ class OrdersService {
         }
 
         return $address;
+    }
+
+    public function getPaidOrdersCount(): int
+    {
+        $count = wp_cache_get('paid_order_count', self::CACHE_GROUP);
+        if ($count !== false) {
+            return (int) $count;
+        }
+        $tableName = $this->wpdb->prefix . self::TABLE;
+        $count     = (int) $this->wpdb->get_var(
+            $this->wpdb->prepare("SELECT COUNT(*) FROM {$tableName} WHERE order_status = %d", self::ORDER_STATUS_PAID)
+        );
+        wp_cache_set('paid_order_count', $count, self::CACHE_GROUP);
+        return $count;
     }
 }

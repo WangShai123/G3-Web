@@ -78,7 +78,7 @@ class WechatOAMenuListTable extends WP_List_Table {
                 if ($column_name == 'action') {
                     echo "<td $attributes>";
                     echo "<a href='admin.php?page=wechat-oa-menu-edit&id={$item['id']}''>" . __('Edit') . "</a> - ";
-                    echo "<span class='action-delete cursor-pointer color-error' data-id='{$item['id']}'>" . __('Delete') . "</span>";
+                    echo "<span class='action-delete cursor-pointer fg-error' data-id='{$item['id']}'>" . __('Delete') . "</span>";
                     echo "</td>";
                 } else {
                     echo "<td $attributes>" . esc_html($item[$column_name]) . "</td>";

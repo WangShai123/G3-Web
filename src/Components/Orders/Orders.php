@@ -8,25 +8,32 @@ use Override;
 
 class Orders extends Components {
     private OrdersService $service;
-    protected function ready(): void
-    {
-        $this->service = Container::run()->use(OrdersService::class);
-    }
+
     protected function adminMenu(): void
     {
+        $this->service = Container::run()->get(OrdersService::class);
+        $orders        = __('Orders', 'G3');
+
+        $title     = $orders;
+        $paidCount = $this->service->getPaidOrdersCount();
+        if ($paidCount > 0) {
+            $title .= " <span class=\"g3-badge is-primary\">{$paidCount}</span>";
+        }
+
         add_menu_page(
-            __('Orders', 'G3'),
-            __('Orders', 'G3'),
+            $title,
+            $title,
             'manage_options',
             'orders',
             '__return_false',
             'dashicons-chart-bar',
             28
         );
+
         add_submenu_page(
             'orders',
-            sprintf(__('%s %s', 'G3'), __('All', 'G3'), __('Orders', 'G3')),
-            sprintf(__('%s %s', 'G3'), __('All', 'G3'), __('Orders', 'G3')),
+            sprintf(__('%s %s', 'G3'), __('All', 'G3'), $orders),
+            sprintf(__('%s %s', 'G3'), __('All', 'G3'), $orders),
             'manage_options',
             'orders',
             [$this, 'render'],
@@ -50,6 +57,8 @@ class Orders extends Components {
     }
     protected function ajax(): void
     {
+        $this->service = Container::run()->get(OrdersService::class);
+
         add_action('wp_ajax_g3_close_order', function () {
             $orderId = $_POST['order_id'];
             $result  = $this->service->closeOrder($orderId);

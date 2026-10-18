@@ -143,13 +143,12 @@ class FormListTable extends WP_List_Table {
     public function column_name($item): string
     {
         $actions = [
-            'view'  => sprintf('<span data-name="%s" data-content="%s" class="view-content color-link cursor-pointer">%s</span>', $item->{"name"}, $item->{"content"}, __('View')),
+            'view'  => sprintf('<span data-name="%s" data-content="%s" class="view-content fg-link cursor-pointer">%s</span>', $item->{"name"}, $item->{"content"}, __('View')),
             'reply' => sprintf(
                 '<a class="reply-field" href="mailto:%s?subject=%s&body=%s">%s</a>',
                 htmlspecialchars($item->{"email"}, ENT_QUOTES, 'UTF-8'),
                 urlencode($item->{"name"}),
                 urlencode($item->{"content"}),
-                // htmlspecialchars(__('Reply'), ENT_QUOTES, 'UTF-8')
                 __('Reply') . __('Email')
             ),
         ];
@@ -171,38 +170,39 @@ class FormListTable extends WP_List_Table {
     public function display(): void
     {
         $this->prepare_items();
-        echo '<div class="wrap"><h1 class="wp-heading-inline">
-' . __('Form', 'G3') . '</h1><hr class="wp-header-end"><form id="form-filter" method="post">';
+        $form = __('Form', 'G3');
+        echo '<div class="wrap"><h1 class="wp-heading-inline">' . $form . '</h1><hr class="wp-header-end"><form id="form-filter" method="post">';
         parent::display();
         echo '</form></div>';
         $this->process_bulk_actions();
     }
+
     private function renderExt($item, $column_name): string
     {
-        $ext = maybe_unserialize($item->{$column_name});
-        if (is_array($ext)) {
-            $output = '';
-            foreach ($ext as $key => $value) {
-                $output .= sprintf('<strong>%s:</strong> %s<br>', esc_html($key), esc_html($value));
-            }
-            return $output;
+        $ext = Type::jsonToArray($item->{$column_name});
+
+        if (empty($ext)) return '-';
+
+        $result = '';
+        foreach ($ext as $key => $value) {
+            $result .= sprintf('<strong>%s:</strong> %s<br>', esc_html($key), esc_html($value));
         }
-        return $item->{$column_name} ?? '-';
+        return $result;
     }
     private function renderStatus($item): string
     {
         return match ($item->status) {
             '0'     => '<span class="mark-error">' . __('Pending', 'G3') . '</span>',
             '1'     => '<span>' . __('Processed', 'G3') . '</span>',
-            '2'     => '<span class="mark-success">' . __('High Intention', 'G3') . '</span>',
-            '3'     => '<span class="mark-warning">' . __('Low Intention', 'G3') . '</span>',
+            '2'     => '<span class="fg-success">' . __('High Intention', 'G3') . '</span>',
+            '3'     => '<span class="fg-warning">' . __('Low Intention', 'G3') . '</span>',
             default => '<span>' . __('Unknown', 'G3') . '</span>',
         };
     }
     private function renderAction($item): string
     {
-        $change = '<span data-id="' . $item->id . '" data-status="' . $item->status . '" class="change-field-status color-link cursor-pointer">' . __('Change') . '</span> ';
-        $delete = '<span data-id="' . $item->id . '" class="delete-field color-error cursor-pointer">' . __('Delete') . '</span>';
+        $change = '<span data-id="' . $item->id . '" data-status="' . $item->status . '" class="change-field-status fg-link cursor-pointer">' . __('Change') . '</span> ';
+        $delete = '<span data-id="' . $item->id . '" class="delete-field fg-error cursor-pointer">' . __('Delete') . '</span>';
         return $change . $delete;
     }
 }

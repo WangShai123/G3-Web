@@ -6,6 +6,7 @@ return [
         'g3_option_dev_setting',
         'g3_option_mail',
         'g3_option_auth',
+        'g3_option_auth_social',
         'g3_option_op_wechatOA',
         'g3_option_aliyun_oss',
         'g3_option_qcloud_cos',

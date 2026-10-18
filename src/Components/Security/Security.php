@@ -131,7 +131,10 @@ class Security extends Components {
     private function disableWPLogin(): void
     {
         if (str_contains($_SERVER['REQUEST_URI'], 'wp-login.php') && !str_contains($_SERVER['REQUEST_URI'], 'action=logout')) {
-            wp_safe_redirect(home_url(), 302, 'G3');
+            // wp_safe_redirect(home_url(), 302, 'G3');
+            status_header(404);
+            header("X-Redirect-By: G3");
+            header("Location: " . home_url('404_not_found'), true, 302);
             exit;
         }
     }

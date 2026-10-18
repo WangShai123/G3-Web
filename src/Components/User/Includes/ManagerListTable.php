@@ -167,7 +167,7 @@ class ManagerListTable extends WP_List_Table {
             return '';
         }
         return sprintf(
-            '<span class="edit-role color-link cursor-pointer" data-name="%s" data-slug="%s">%s</span> <span class="delete-role color-error cursor-pointer" data-slug="%s">%s</span>',
+            '<span class="edit-role fg-link cursor-pointer" data-name="%s" data-slug="%s">%s</span> <span class="delete-role fg-error cursor-pointer" data-slug="%s">%s</span>',
             $item['name'],
             $item['slug'],
             __('Edit'),

@@ -2,7 +2,7 @@
 use JEALER\G3\Utilities\Element;
 
 echo Element::tip(
-    __('This tab is for Redis Cache advice.', 'G3'),
+    sprintf(__('This tab is for %s advice.', 'G3'), sprintf(__('%s %s', 'G3'), 'Redis', __('Cache', 'G3'))),
     '',
     'default',
     'mt-4'
@@ -49,14 +49,19 @@ echo Element::tip(
     <h2>
         Redis <?php _e('Database'); ?>
     </h2>
-    <?php
-    echo Element::tip(
-        __('G3-Web will create 3 databases in Redis to cache regular data and queue tasks. Regular data is stored in database 0, queue tasks are stored in database 1, and notification services are stored in database 2.', 'G3'),
-        false,
-        '',
-        'mt-2',
-    );
-    ?>
+    <div class="j-tip is-default mt-2">
+        <div class="tip-content">
+            <div>
+                <?php _e('G3-Web will create several databases in Redis.', 'G3'); ?>
+            </div>
+            <ol start="0" style="margin-bottom:0">
+                <li><?php echo sprintf(__('%s %s', 'G3'), __('General'), __('Data', 'G3')); ?></li>
+                <li><?php echo sprintf(__('%s %s', 'G3'), __('Queue', 'G3'), __('Tasks', 'G3')); ?></li>
+                <li><?php echo 'IM ' . __('Data', 'G3'); ?></li>
+                <li><?php echo sprintf(__('%s %s', 'G3'), __('Notifications'), __('Data', 'G3')); ?></li>
+            </ol>
+        </div>
+    </div>
 
     <h2>
         <?php
@@ -65,7 +70,7 @@ echo Element::tip(
     </h2>
     <p><?php _e('Use Redis\'s <b>LRU</b> eviction policy to avoid redundant cached data. Configure memory management in <code>redis.conf</code> to allow Redis to automatically evict infrequently used data:', 'G3'); ?>
     </p>
-    <pre>
+    <pre class="code-block">
 # <?php _e('Set the maximum memory as needed, such as 512MB.', 'G3'); ?>
 
 maxmemory 512mb

@@ -103,7 +103,6 @@ class Developer extends Components {
                 ->switch('helpLink', __('Help Link', 'G3'))
                 ->switch('adminBar', __('Admin Bar', 'G3'))
                 ->switch('emoji', 'Emoji')
-                // ->switch('gutenberg', 'Gutenberg')
                 ->select('editor', __('Editor', 'G3'), [
                     '0' => 'TinyMCE',
                     '1' => __('Gutenberg'),
@@ -1031,13 +1030,14 @@ HTML;
                 }
             }
             ?>
-            <div class="j-card" style="max-width: 440px;">
-                <div class="card-header">
-                    <span class="header-title">
+            <div
+                style="max-width:440px;padding:1rem;background-color:var(--ui-bg);color:var(--ui-fg);border:1px solid var(--ui-border);border-radius:var(--radius-md);box-shadow: var(--shadow-sm);">
+                <div style="font-size:var(--font-size-md);font-weight: var(--font-medium)">
+                    <span>
                         <?php echo __('Verify License', 'G3'); ?>
                     </span>
                 </div>
-                <form method="post" action="" class="j-form is-vertical is-item-vertical card-content">
+                <form method="post" action="" class="j-form" style="margin:1rem 0 0">
                     <?php wp_nonce_field('g3_license_verify', 'g3_license_nonce'); ?>
                     <fieldset class="form-field">
                         <label for="g3_code" class="field-legend is-required">
@@ -1066,13 +1066,12 @@ HTML;
                     </fieldset>
 
                     <div class="form-buttons" data-field-buttons="" style="justify-content: flex-start;">
-                        <button type="submit" class="j-button is-primary is-md" data-action="submit" id="submit"
+                        <button type="submit" class="j-button is-solid is-md" data-action="submit" id="submit"
                             name="submit"><?php echo __('Verify License', 'G3'); ?></button>
                         <button type="reset" class="j-button is-ghost is-md" data-action="reset">
                             <?php echo __('Reset', 'G3'); ?>
                         </button>
                     </div>
-
                 </form>
             </div>
 
@@ -1081,10 +1080,11 @@ HTML;
     }
     public function welcomePage()
     {
+        $title = __('Welcome', 'G3');
         add_submenu_page(
             "index.php",
-            __('Welcome', 'G3'),
-            __('Welcome', 'G3'),
+            $title,
+            $title,
             "read",
             "g3-welcome",
             function () {
@@ -1199,13 +1199,19 @@ HTML;
             }
         }
     }
+
     public function ajax(): void
     {
         if (defined('G3_HIDE_DEVELOPER_MODE') && constant('G3_HIDE_DEVELOPER_MODE')) {
             return;
         }
         add_action('wp_ajax_g3_flush_options', [$this, '_ajaxFlushOptions']);
+        add_action('wp_ajax_g3_developer_logs', [$this, '_ajaxDeveloperLogs']);
+        add_action('wp_ajax_g3_developer_log', [$this, '_ajaxDeveloperLog']);
+        add_action('wp_ajax_g3_delete_developer_log', [$this, '_ajaxDeleteDeveloperLog']);
+        add_action('wp_ajax_g3_clear_developer_logs', [$this, '_ajaxClearDeveloperLogs']);
     }
+
     public function _ajaxFlushOptions(): void
     {
         if (current_user_can('manage_options') && is_admin()) {
@@ -1214,5 +1220,239 @@ HTML;
         } else {
             Response::ajaxForbidden();
         }
+    }
+
+    public function _ajaxDeveloperLogs(): void
+    {
+        if (!$this->canManageDeveloperLogs()) {
+            Response::ajaxForbidden();
+        }
+
+        $type      = $this->requestLogType($_POST['type'] ?? null);
+        $requested = isset($_POST['file']) ? $this->requestLogFileName($_POST['file']) : null;
+        $payload   = $this->developerLogsPayload($requested, $type);
+
+        wp_send_json_success($payload);
+    }
+
+    public function _ajaxDeveloperLog(): void
+    {
+        if (!$this->canManageDeveloperLogs()) {
+            Response::ajaxForbidden();
+        }
+
+        $type = $this->requestLogType($_POST['type'] ?? null);
+        $file = isset($_POST['file']) ? $this->requestLogFileName($_POST['file']) : null;
+        if ($file === null) {
+            Response::ajaxParamMissing();
+        }
+
+        $path = $this->resolveLogFile($file, $type);
+        if ($path === null) {
+            Response::ajaxIllegal();
+        }
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            Response::ajaxFailed();
+        }
+
+        wp_send_json_success([
+            'file'    => $file,
+            'content' => $content,
+        ]);
+    }
+
+    public function _ajaxDeleteDeveloperLog(): void
+    {
+        if (!$this->canManageDeveloperLogs()) {
+            Response::ajaxForbidden();
+        }
+
+        $type = $this->requestLogType($_POST['type'] ?? null);
+        $file = isset($_POST['file']) ? $this->requestLogFileName($_POST['file']) : null;
+        if ($file === null) {
+            Response::ajaxParamMissing();
+        }
+
+        $path = $this->resolveLogFile($file, $type);
+        if ($path === null) {
+            Response::ajaxIllegal();
+        }
+
+        if (!unlink($path)) {
+            Response::ajaxFailed();
+        }
+
+        $payload            = $this->developerLogsPayload(null, $type);
+        $payload['message'] = Message::deleted();
+
+        wp_send_json_success($payload);
+    }
+
+    public function _ajaxClearDeveloperLogs(): void
+    {
+        if (!$this->canManageDeveloperLogs()) {
+            Response::ajaxForbidden();
+        }
+
+        $type = $this->requestLogType($_POST['type'] ?? null);
+
+        foreach ($this->developerLogFiles($type) as $file) {
+            $path = $this->resolveLogFile($file['name'], $type);
+            if ($path !== null && !unlink($path)) {
+                Response::ajaxFailed();
+            }
+        }
+
+        wp_send_json_success([
+            'files'   => [],
+            'current' => '',
+            'content' => '',
+            'message' => Message::deleted(),
+        ]);
+    }
+
+    private function canManageDeveloperLogs(): bool
+    {
+        return is_admin() && current_user_can('manage_options');
+    }
+
+    private function developerLogDirectory(): string
+    {
+        $contentDir = defined('WP_CONTENT_DIR')
+            ? WP_CONTENT_DIR
+            : dirname(__DIR__, 5);
+
+        return $contentDir . DIRECTORY_SEPARATOR . 'G3-Web' . DIRECTORY_SEPARATOR . 'logs';
+    }
+
+    private function debugLogFile(): string
+    {
+        $contentDir = defined('WP_CONTENT_DIR')
+            ? WP_CONTENT_DIR
+            : dirname(__DIR__, 5);
+
+        return $contentDir . DIRECTORY_SEPARATOR . 'debug.log';
+    }
+
+    private function developerLogFiles(string $type = 'g3'): array
+    {
+        if ($type === 'debug') {
+            $path = $this->debugLogFile();
+            if (!is_file($path)) {
+                return [];
+            }
+
+            return [
+                [
+                    'name'  => 'debug.log',
+                    'mtime' => filemtime($path) ?: 0,
+                    'size'  => filesize($path) ?: 0,
+                ]
+            ];
+        }
+
+        $directory = $this->developerLogDirectory();
+        if (!is_dir($directory)) {
+            return [];
+        }
+
+        $paths = glob($directory . DIRECTORY_SEPARATOR . '*.log');
+        if ($paths === false) {
+            return [];
+        }
+
+        $files = [];
+        foreach ($paths as $path) {
+            if (!is_file($path)) {
+                continue;
+            }
+
+            $files[] = [
+                'name'  => basename($path),
+                'mtime' => filemtime($path) ?: 0,
+                'size'  => filesize($path) ?: 0,
+            ];
+        }
+
+        usort($files, static function (array $a, array $b): int {
+            $time = $b['mtime'] <=> $a['mtime'];
+            return $time !== 0 ? $time : strnatcasecmp($b['name'], $a['name']);
+        });
+
+        return $files;
+    }
+
+    private function developerLogsPayload(?string $requested = null, string $type = 'g3'): array
+    {
+        $files   = $this->developerLogFiles($type);
+        $current = '';
+        $content = '';
+
+        if ($files !== []) {
+            $names   = array_column($files, 'name');
+            $current = $requested !== null && in_array($requested, $names, true)
+                ? $requested
+                : $files[0]['name'];
+
+            $path = $this->resolveLogFile($current, $type);
+            if ($path !== null) {
+                $read = file_get_contents($path);
+                if ($read !== false) {
+                    $content = $read;
+                }
+            }
+        }
+
+        return [
+            'files'   => $files,
+            'current' => $current,
+            'content' => $content,
+        ];
+    }
+
+    private function requestLogType(mixed $value): string
+    {
+        $type = is_scalar($value) ? (string) $value : '';
+        $type = wp_unslash($type);
+
+        return $type === '2' || $type === 'debug' ? 'debug' : 'g3';
+    }
+
+    private function requestLogFileName(mixed $value): ?string
+    {
+        $file = is_string($value) ? wp_unslash($value) : '';
+        $file = trim($file);
+
+        return preg_match('/^[A-Za-z0-9._-]+\.log$/', $file) === 1 ? $file : null;
+    }
+
+    private function resolveLogFile(string $file, string $type = 'g3'): ?string
+    {
+        if ($type === 'debug') {
+            if ($file !== 'debug.log') {
+                return null;
+            }
+
+            $path = $this->debugLogFile();
+            $real = realpath($path);
+
+            return $real !== false && is_file($real) ? $real : null;
+        }
+
+        $directory = $this->developerLogDirectory();
+        $realDir   = realpath($directory);
+        if ($realDir === false) {
+            return null;
+        }
+
+        $path = $realDir . DIRECTORY_SEPARATOR . $file;
+        $real = realpath($path);
+        if ($real === false || !is_file($real)) {
+            return null;
+        }
+
+        return str_starts_with($real, $realDir . DIRECTORY_SEPARATOR) ? $real : null;
     }
 }

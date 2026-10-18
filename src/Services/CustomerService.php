@@ -24,7 +24,7 @@ class CustomerService extends Service {
     protected function onInit(): void
     {
         $this->im                         = $this->container->get(IMService::class);
-        $this->customerConversationsTable = $this->wpdb->prefix . 'g3_customer_conversations';
+        $this->customerConversationsTable = $this->wpdb->prefix . 'g3_im_cs_conversations';
     }
 
     public static function defaultOption(): array

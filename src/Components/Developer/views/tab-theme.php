@@ -84,7 +84,7 @@ echo Element::tip(
         </fieldset>
 
         <div class="form-buttons">
-            <button type="button" class="j-button is-primary" id="createTheme"><?php echo __('Submit'); ?></button>
+            <button type="button" class="j-button is-solid" id="createTheme"><?php echo __('Submit'); ?></button>
             <button type="reset" class="j-button is-ghost"><?php echo __('Cancel'); ?></button>
         </div>
     </form>

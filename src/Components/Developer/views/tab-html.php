@@ -169,7 +169,7 @@ function _renderIconList(array $list)
                 if (item.classList.contains('loader')) {
                     svg.classList.add('animate-spin');
                 }
-                svg.classList.add('color-link');
+                svg.classList.add('fg-link');
             })
             listen(item, 'mouseout', () => {
                 const svg = q('svg', item);

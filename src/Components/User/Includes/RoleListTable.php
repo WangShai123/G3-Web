@@ -173,7 +173,7 @@ class RoleListTable extends WP_List_Table {
     {
         if ($item['slug'] === 'abandon' || $item['slug'] === 'beginner') {
             return sprintf(
-                '<span class="edit-role color-link cursor-pointer" data-name="%s" data-slug="%s" data-start="%s" data-end="%s">%s</span> <span class="reset-role cursor-pointer" data-slug="%s">%s</span>',
+                '<span class="edit-role fg-link cursor-pointer" data-name="%s" data-slug="%s" data-start="%s" data-end="%s">%s</span> <span class="reset-role cursor-pointer" data-slug="%s">%s</span>',
                 __($item['name'], 'G3'),
                 $item['slug'],
                 $item['credits'][0],
@@ -184,7 +184,7 @@ class RoleListTable extends WP_List_Table {
             );
         }
         return sprintf(
-            '<span class="edit-role color-link cursor-pointer" data-name="%s" data-slug="%s" data-start="%s" data-end="%s">%s</span> <span class="delete-role color-error cursor-pointer" data-slug="%s">%s</span>',
+            '<span class="edit-role fg-link cursor-pointer" data-name="%s" data-slug="%s" data-start="%s" data-end="%s">%s</span> <span class="delete-role fg-error cursor-pointer" data-slug="%s">%s</span>',
             $item['name'],
             $item['slug'],
             $item['credits'][0],

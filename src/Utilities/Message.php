@@ -103,6 +103,10 @@ final class Message {
     {
         return sprintf(__('Are you sure you want to %s it?', 'G3'), __('Close'));
     }
+    public static function confirmPrompt(): string
+    {
+        return __('Are you sure you want to do this?');
+    }
     public static function templateNotImplemented($name): string
     {
         return sprintf(

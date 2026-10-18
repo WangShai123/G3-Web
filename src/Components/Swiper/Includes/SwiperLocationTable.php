@@ -80,13 +80,13 @@ class SwiperLocationTable extends WP_List_Table {
         }
         $actions = [
             'view'   => sprintf(
-                '<span class="editLocation color-link cursor-pointer" data-key="%s" data-name="%s">%s</span>',
+                '<span class="editLocation fg-link cursor-pointer" data-key="%s" data-name="%s">%s</span>',
                 $item['key'],
                 $item['name'],
                 __('Edit')
             ),
             'delete' => sprintf(
-                '<span class="deleteLocation color-error cursor-pointer" data-key="%s" data-name="%s">%s</span>',
+                '<span class="deleteLocation fg-error cursor-pointer" data-key="%s" data-name="%s">%s</span>',
                 $item['key'],
                 $item['name'],
                 __('Delete')

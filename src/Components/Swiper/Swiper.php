@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components;
 use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Services\SwiperService;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\Element;
 use JEALER\G3\Utilities\Validator;
 use JEALER\G3\Utilities\Response;
@@ -97,11 +98,12 @@ class Swiper extends Components {
                 'sort'       => (int) $sort,
                 'status'     => (int) $status,
                 'user_id'    => $userId,
-                'updated_at' => gmdate('Y-m-d H:i:s'),
+                'updated_at' => Date::utcDateTime(),
             ];
 
             if (!$id) {
-                $data['created_at'] = gmdate('Y-m-d H:i:s');
+                // created_at removed from table.
+                // $data['created_at'] = Date::utcDateTime();
                 $wpdb->insert($table, $data);
                 $id = $wpdb->insert_id;
                 Response::ajaxUpdated();

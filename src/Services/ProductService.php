@@ -45,6 +45,16 @@ class ProductService extends Service {
         parent::__construct();
         $this->postService = $this->container->get(PostService::class);
     }
+
+    public static function optionDefaults(): array
+    {
+        return [
+            'safeStock' => '10',
+            'cart'      => '1',
+            'download'  => '1',
+        ];
+    }
+
     /**
      * render spec scope
      *

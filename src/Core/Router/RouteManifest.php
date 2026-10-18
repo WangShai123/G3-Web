@@ -2,6 +2,7 @@
 namespace JEALER\G3\Core\Router;
 use WP_Error;
 use Throwable;
+use RuntimeException;
 
 class RouteManifest {
     private const VERSION = 2;
@@ -135,7 +136,7 @@ class RouteManifest {
             }
         }
 
-        throw new \RuntimeException('Failed to write REST route cache file.');
+        throw new RuntimeException('Failed to write REST route cache file.');
     }
 
     /**
@@ -211,7 +212,7 @@ class RouteManifest {
                 continue;
             }
 
-            throw new \RuntimeException(sprintf(
+            throw new RuntimeException(sprintf(
                 'Duplicate REST controller class %s found in %s (%s) and %s (%s). Rename the theme controller class instead of overriding plugin controllers.',
                 $class['class'],
                 $seen[$class['class']]['file'],

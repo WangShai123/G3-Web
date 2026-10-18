@@ -490,10 +490,6 @@ class Setting extends Components {
     protected function ajax(): void
     {
         add_action('wp_ajax_g3_generate_llm', function () {
-            // if ((get_option(SystemService::LLM_OPTION_KEY)['llm'] ?? '1') !== '1') {
-            //     Response::ajaxError(__('LLM feature is disabled.', 'G3'));
-            // }
-
             $nonce = $_POST['nonce'] ?? '';
             if (!wp_verify_nonce($nonce, 'g3_generate_llm') || !current_user_can('manage_options')) {
                 Response::ajaxForbidden();

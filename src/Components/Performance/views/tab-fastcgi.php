@@ -42,11 +42,11 @@ echo Element::tip(
     <h2>
         <?php _e('Configuration Guide', 'G3'); ?>
     </h2>
-    <h4>Nginx <?php _e('Configuration', 'G3'); ?></h4>
+    <h3>Nginx <?php _e('Configuration', 'G3'); ?></h3>
     <p>
         <?php _e('You need to define the cache file storage directory, such as: ', 'G3'); ?><code>/www/cache/nginx</code>
     </p>
-    <pre># <?php _e('The cache files will be stored in the /www/cache/nginx directory, and the cache files will be distributed across two levels of subdirectories. The shared memory area is named WORDPRESS and has a size of 100MB. If a cache file is not accessed within 60 minutes, Nginx will automatically clean it up.', 'G3'); ?>
+    <pre class="code-block"># <?php _e('The cache files will be stored in the /www/cache/nginx directory, and the cache files will be distributed across two levels of subdirectories. The shared memory area is named WORDPRESS and has a size of 100MB. If a cache file is not accessed within 60 minutes, Nginx will automatically clean it up.', 'G3'); ?>
 
 fastcgi_cache_path /www/cache/nginx levels=1:2 keys_zone=WORDPRESS:100m inactive=60m;
 
@@ -60,14 +60,16 @@ fastcgi_cache_use_stale error timeout invalid_header http_500;
 
 # <?php _e('"Force Takeover" of cache control: Ignore the cache control header information returned by the backend PHP-FPM to ensure that Nginx\'s caching strategy takes precedence over the backend application\'s caching strategy.', 'G3'); ?>
 
-fastcgi_ignore_headers Cache-Control Expires Set-Cookie;</pre>
-    <h4>
+fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+</pre>
+
+    <h3>
         <?php _e('Website Configuration', 'G3'); ?>
-    </h4>
+    </h3>
     <p>
         <?php _e('Config as below in <code>Server {}</code> module:', 'G3'); ?>
     </p>
-    <pre># <?php _e('Define cache switch', 'G3'); ?>
+    <pre class="code-block"># <?php _e('Define cache switch', 'G3'); ?>
 
 set $skip_cache 0;
 

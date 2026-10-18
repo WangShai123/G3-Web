@@ -250,7 +250,7 @@ class SpecOptionsListTable extends WP_List_Table {
     private function renderAction($item): string
     {
         return sprintf(
-            '<span class="edit-spec-option color-link cursor-pointer" 
+            '<span class="edit-spec-option fg-link cursor-pointer" 
               data-id="%d" 
               data-name=\'%s\' 
               data-key=\'%s\' 
@@ -259,7 +259,7 @@ class SpecOptionsListTable extends WP_List_Table {
               data-count=\'%s\'
               >%s</span>
         |
-        <span class="delete-spec-option color-error cursor-pointer" data-id="%d" data-count="%s" %s>%s</span>',
+        <span class="delete-spec-option fg-error cursor-pointer" data-id="%d" data-count="%s" %s>%s</span>',
             (int) $item['id'],
             $item['name'],
             $item['key'],

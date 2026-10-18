@@ -156,11 +156,11 @@ class SkuListTable extends WP_List_Table {
     private function renderAction($item): string
     {
         return sprintf(
-            '<a class="view-sku color-link cursor-pointer" 
+            '<a class="view-sku fg-link cursor-pointer" 
               href="/wp-admin/edit.php?s=%d&post_status=all&post_type=product"
               data-id="%d" 
               >%s</a>
-        | <span class="delete-sku color-error cursor-pointer" data-id="%d">%s</span>',
+        | <span class="delete-sku fg-error cursor-pointer" data-id="%d">%s</span>',
             (int) $item['product_id'],
             (int) $item['id'],
             __('View'),

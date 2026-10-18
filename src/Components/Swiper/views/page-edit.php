@@ -191,7 +191,6 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 status: $('#status')
             };
 
-            // const required = ['title', 'media', 'link', 'sort'];
             const required = ['title', 'media', 'link', 'sort', 'target', 'location', 'status'];
             for (let i = 0; i < required.length; i++) {
                 const key = required[i];
@@ -204,10 +203,6 @@ if ($t === 'edit' && isset($_GET['id']) && $_GET['id'] !== '') {
                 }
                 fields[key] = val;
             }
-
-            // fields.target = fields.target.val();
-            // fields.location = fields.location.val();
-            // fields.status = fields.status.val();
 
             return fields;
         }

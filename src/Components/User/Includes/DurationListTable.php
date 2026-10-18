@@ -135,7 +135,7 @@ class DurationListTable extends WP_List_Table {
     private function renderAction($item)
     {
         return sprintf(
-            '<span class="edit-duration color-link cursor-pointer" data-name="%s" data-slug="%s" data-duration="%s">%s</span> <span class="delete-duration color-error cursor-pointer" data-slug="%s">%s</span>',
+            '<span class="edit-duration fg-link cursor-pointer" data-name="%s" data-slug="%s" data-duration="%s">%s</span> <span class="delete-duration fg-error cursor-pointer" data-slug="%s">%s</span>',
             $item['name'],
             $item['slug'],
             $item['duration'],

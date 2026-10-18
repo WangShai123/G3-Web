@@ -22,8 +22,8 @@ class Auth extends Components {
     {
         add_submenu_page(
             'g3-settings',
-            __('Login', 'G3'),
-            __('Login', 'G3'),
+            __('Log In'),
+            __('Log In'),
             'manage_options',
             'auth-settings',
             [$this, 'render'],
@@ -41,7 +41,7 @@ class Auth extends Components {
     protected function adminPanels(): array
     {
         return [
-            $this->panel('auth-settings', __('Login', 'G3'))
+            $this->panel('auth-settings', __('Log In'))
                 ->tab('general', __('General'))
                 ->option(AuthService::OPTION_KEY, AuthService::optionDefaults())
                 ->switch('override', sprintf(__('%s %s %s', 'G3'), __('Override', 'G3'), 'WP', __('Auth', 'G3')), __('Replace the native WordPress auth pages: login, registration, forget-password, and password-reset, with the G3-Auth page.', 'G3'))
@@ -70,12 +70,14 @@ class Auth extends Components {
                     '2' => sprintf(__('%s %s', 'G3'), __('Currency', 'G3'), __('Pay', 'G3')),
                 ], __('The payment method used to pay for the invitation code.', 'G3'))
                 ->input('price', __('Price', 'G3'), __('The price of the invitation code.', 'G3'))
+
                 ->tab('social', __('Social Login', 'G3'))
-                ->option(AuthService::WECHAT_OPTION_KEY, AuthService::wechatDefaults())
-                ->switch('subscribe', sprintf(__('%s %s %s', 'G3'), __('WeChat', 'G3'), __('Subscribe', 'G3'), __('Login', 'G3')), __('Users can subscribe your WeChat official account to complete the login.', 'G3'))
+                ->option(AuthService::SOCIAL_OPTION_KEY, AuthService::wechatDefaults())
+                ->switch('wc_subscribe', sprintf(__('%s %s %s', 'G3'), __('WeChat', 'G3'), __('Subscribe', 'G3'), __('Login', 'G3')), __('Users can subscribe your WeChat official account to complete the login.', 'G3'))
                 ->rowClass('advanced')
-                ->switch('client', __('Login via Wechat Client', 'G3'), __('Users can complete the login automatically while browsing your website with Wechat client.', 'G3'))
+                ->switch('wc_client', __('Login via Wechat Client', 'G3'), __('Users can complete the login automatically while browsing your website with Wechat client.', 'G3'))
                 ->rowClass('advanced')
+
                 ->tab('invitation', __('Invitation Code', 'G3'))
         ];
     }

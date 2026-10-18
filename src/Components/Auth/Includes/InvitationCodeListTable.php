@@ -69,7 +69,7 @@ class InvitationCodeListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'code'       => $item['status'] === '0' ? $item[$column_name] : '<del class="color-gray">' . $item[$column_name] . '</del>',
+            'code'       => $item['status'] === '0' ? $item[$column_name] : '<del class="fg-gray">' . $item[$column_name] . '</del>',
             'creator_id' => get_userdata($item['creator_id']) ? get_userdata($item['creator_id'])->display_name : __('Unknown'),
             'source'     => AuthService::renderCodeSource($item['source']),
             'created_at' => Date::dateTime(strtotime($item['created_at'])),
@@ -233,7 +233,7 @@ class InvitationCodeListTable extends WP_List_Table {
     {
 
         return sprintf(
-            '<span class="copy-code color-link cursor-pointer" data-code="%s">%s</span> <span class="delete-code color-error cursor-pointer" data-id="%s">%s</span>',
+            '<span class="copy-code fg-link cursor-pointer" data-code="%s">%s</span> <span class="delete-code fg-error cursor-pointer" data-id="%s">%s</span>',
             $item['code'],
             __('Copy'),
             $item['id'],

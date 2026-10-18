@@ -1,22 +1,34 @@
 <?php
 namespace JEALER\G3\Services;
 use JEALER\G3\Core\Service\Service;
+use JEALER\G3\Utilities\Date;
 use JEALER\G3\Utilities\System;
 use JEALER\G3\Utilities\Type;
 use WP_Error;
 use wpdb;
 
 class FormService extends Service {
+
     const TABLE = 'g3_forms';
     private string $table;
     const FORM_OPTION_KEY   = 'g3_option_forms';
     const CACHE_GROUP       = 'g3_forms';
     const QUERY_CACHE_GROUP = 'g3_forms_queries';
     private array $allowedFields = ['name', 'content', 'email', 'ext', 'status'];
+
     public function __construct()
     {
         parent::__construct();
         $this->table = $this->wpdb->prefix . self::TABLE;
+    }
+
+    public static function optionDefaults(): array
+    {
+        return [
+            'enable'  => '0',
+            'perPage' => '20',
+            'email'   => '1',
+        ];
     }
 
     public function create(array $data): int|WP_Error
@@ -42,7 +54,6 @@ class FormService extends Service {
             return new WP_Error('name_too_long', 'Name is too long (max 128 chars)', 400);
         }
         // check: content
-        // $content = wp_kses_post($data['content']);
         $content = sanitize_textarea_field($data['content']);
         // TEXT/MEDIUMTEXT fields
         if (strlen($content) > 65535) {
@@ -68,8 +79,8 @@ class FormService extends Service {
             'content'    => $content,
             'email'      => $email,
             'ip'         => $ip,
-            'created_at' => gmdate('Y-m-d H:i:s'),
             'status'     => 0,
+            'created_at' => Date::utcDateTime(),
         ];
 
         if ($ext !== null) {
@@ -84,10 +95,41 @@ class FormService extends Service {
         }
 
         $insertId = (int) $this->wpdb->insert_id;
-        // $this->setCache($insertId, array_merge(['id' => $insertId], $insertData));
+
         $this->flushQueryCache();
+        $this->increasePendingCount();
 
         return $insertId;
+    }
+
+    public function increasePendingCount(): int
+    {
+        $count = wp_cache_get('pending_count', self::CACHE_GROUP);
+        if ($count === false) {
+            $count = $this->wpdb->get_var(
+                $this->wpdb->prepare("SELECT COUNT(*) FROM {$this->table} WHERE status = 0")
+            );
+        } else {
+            $count = (int) $count + 1;
+        }
+        wp_cache_set('pending_count', $count, self::CACHE_GROUP);
+        return $count;
+    }
+
+    public function getPendingCount(): int
+    {
+        return (int) wp_cache_get('pending_count', self::CACHE_GROUP);
+    }
+
+    public function decreasePendingCount(): int
+    {
+        $count = wp_cache_get('pending_count', self::CACHE_GROUP);
+        if ($count === false || $count <= 0) {
+            return 0;
+        }
+        $count = (int) $count - 1;
+        wp_cache_set('pending_count', $count, self::CACHE_GROUP);
+        return $count;
     }
 
     public function getById(int $id): ?array
@@ -134,6 +176,7 @@ class FormService extends Service {
                 $this->deleteCache($id);
             }
         }
+
         $this->flushQueryCache();
 
         return $result;
@@ -201,6 +244,7 @@ class FormService extends Service {
         }
 
         $this->flushQueryCache();
+
         return true;
     }
 

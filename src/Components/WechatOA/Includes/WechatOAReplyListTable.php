@@ -194,13 +194,13 @@ class WechatOAReplyListTable extends WP_List_Table {
         $encodedContent  = json_encode($item['content'] ?? '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         $encodedKeywords = json_encode($item['keywords'] ?? '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         return sprintf(
-            '<span class="edit-reply color-link cursor-pointer" 
+            '<span class="edit-reply fg-link cursor-pointer" 
               data-id="%d" 
               data-keywords=\'%s\' 
               data-content=\'%s\' 
               data-status="%d">%s</span>
         |
-        <span class="delete-reply color-error cursor-pointer" data-id="%d">%s</span>',
+        <span class="delete-reply fg-error cursor-pointer" data-id="%d">%s</span>',
             (int) $item['id'],
             esc_attr($encodedKeywords),
             esc_attr($encodedContent),

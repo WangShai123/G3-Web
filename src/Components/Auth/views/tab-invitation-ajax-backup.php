@@ -146,7 +146,7 @@ $config = [
                         ...column,
                         render: (item, tableApi) => {
                             const code = tableApi.escapeHtml(item.code);
-                            return tableApi.renderHtml(item.status === '0' ? code : `<del class="color-gray">${code}</del>`);
+                            return tableApi.renderHtml(item.status === '0' ? code : `<del class="fg-gray">${code}</del>`);
                         }
                     };
                 }
@@ -155,8 +155,8 @@ $config = [
                     return {
                         ...column,
                         render: (item, tableApi) => tableApi.renderHtml(`
-                            <span class="copy-code color-link cursor-pointer" data-code="${tableApi.escapeAttr(item.code)}">${tableApi.escapeHtml(labels.copy)}</span>
-                            <span class="delete-code color-error cursor-pointer" data-id="${tableApi.escapeAttr(item.id)}">${tableApi.escapeHtml(labels.delete)}</span>
+                            <span class="copy-code fg-link cursor-pointer" data-code="${tableApi.escapeAttr(item.code)}">${tableApi.escapeHtml(labels.copy)}</span>
+                            <span class="delete-code fg-error cursor-pointer" data-id="${tableApi.escapeAttr(item.id)}">${tableApi.escapeHtml(labels.delete)}</span>
                         `)
                     };
                 }
