@@ -5,7 +5,7 @@ use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Middleware\RateLimitMiddleware;
-use JEALER\G3\Middleware\RestAuthMiddleware;
+use JEALER\G3\Middleware\NativeAuthMiddleware;
 use JEALER\G3\Services\PostService;
 use WP_Error;
 use WP_REST_Request;
@@ -15,6 +15,11 @@ class PostController extends Controller {
 
     public function __construct(private PostService $postService) {}
 
+    #[RestRouter(
+        namespace: 'api/v1',
+        route: 'posts/query',
+        methods: 'POST',
+    )]
     #[Schema([
         'type'       => 'object',
         'properties' => [
@@ -58,11 +63,6 @@ class PostController extends Controller {
         ],
         'required'   => ['post_type', 'posts_per_page']
     ])]
-    #[RestRouter(
-        namespace: 'api/posts',
-        route: 'v1/query',
-        methods: 'POST',
-    )]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function query(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
@@ -71,10 +71,6 @@ class PostController extends Controller {
         unset($params['respect']);
 
         $result = $this->postService->query($params, $respect);
-
-        // if (isset($params['paged']) && $params['paged'] > 1) {
-        //     sleep(1);
-        // }
 
         return is_wp_error($result)
             ? $result
@@ -90,12 +86,10 @@ class PostController extends Controller {
     }
 
     #[RestRouter(
-        namespace: 'api/posts',
-        route: 'v1/react',
+        namespace: 'api/v1',
+        route: 'posts/react',
         methods: 'POST',
     )]
-    #[Middleware(RestAuthMiddleware::class)]
-    #[Middleware(RateLimitMiddleware::class, [30, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [
@@ -105,6 +99,8 @@ class PostController extends Controller {
         ],
         'required'   => ['post_id', 'action', 'value']
     ])]
+    #[Middleware(NativeAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [30, 60])]
     public function react(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params() ?: [];
@@ -121,12 +117,10 @@ class PostController extends Controller {
     }
 
     #[RestRouter(
-        namespace: 'api/posts',
-        route: 'v1/actions/status',
+        namespace: 'api/v1',
+        route: 'posts/actions/status',
         methods: 'POST',
     )]
-    #[Middleware(RestAuthMiddleware::class)]
-    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [
@@ -134,6 +128,8 @@ class PostController extends Controller {
         ],
         'required'   => ['post_id']
     ])]
+    #[Middleware(NativeAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function actionStatus(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params() ?: [];

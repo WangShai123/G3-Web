@@ -5,7 +5,7 @@ use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Middleware\RateLimitMiddleware;
-use JEALER\G3\Middleware\RestAuthMiddleware;
+use JEALER\G3\Middleware\NativeAuthMiddleware;
 use JEALER\G3\Services\CommentService;
 use WP_Error;
 use WP_REST_Request;
@@ -57,7 +57,7 @@ class CommentController extends Controller {
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/comments', methods: 'POST')]
-    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(NativeAuthMiddleware::class)]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     #[Schema([
         'type'       => 'object',
@@ -76,7 +76,7 @@ class CommentController extends Controller {
     }
 
     #[RestRouter(namespace: 'api/comment', route: 'v1/reaction', methods: 'POST')]
-    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(NativeAuthMiddleware::class)]
     #[Middleware(RateLimitMiddleware::class, [60, 60])]
     #[Schema([
         'type'       => 'object',

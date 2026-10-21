@@ -6,7 +6,7 @@ use JEALER\G3\Core\Service\Service;
 use JEALER\G3\Cache\EasyWechat;
 use JEALER\G3\Services\SystemService;
 use JEALER\G3\Utilities\Message as Lang;
-use JEALER\G3\Utilities\Type;
+use JEALER\G3\Utilities\Str;
 use WP_Error;
 use Exception;
 use Closure;
@@ -1722,7 +1722,7 @@ class WechatOAService extends Service {
 
             $excerpt = $post->post_excerpt;
             if (empty($excerpt)) {
-                $excerpt = Type::truncate($post->post_content, 20);
+                $excerpt = Str::truncate($post->post_content, 20);
             }
 
             $articles[] = [

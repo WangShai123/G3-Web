@@ -225,7 +225,7 @@ class Setting extends Components {
             $sources[] = [
                 'id'              => 'customer-service',
                 'type'            => 'customer_message',
-                'sessionUrl'      => esc_url_raw(rest_url('api/admin/customer/v1/stream/session')),
+                'sessionUrl'      => esc_url_raw(rest_url('api/v1/admin/customer/stream/session')),
                 'afterId'         => $customerService->latestEventId(),
                 'events'          => ['message.created'],
                 'targetUrl'       => esc_url_raw(admin_url('admin.php?page=customer-service')),

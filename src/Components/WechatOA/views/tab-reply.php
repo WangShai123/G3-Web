@@ -159,7 +159,6 @@ $table->display();
             confirm('<?php echo Message::deleteConfirm(); ?>', {
                 onConfirm: () => {
                     $.ajax({
-                        // url: '<?php //echo Request::restApi('/api/v1/admin/wechat_oa/reply/delete'); ?>',
                         url: restUrl + '/api/v1/admin/wechat_oa/reply/delete',
                         type: 'POST',
                         contentType: 'application/json',

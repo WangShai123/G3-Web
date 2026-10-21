@@ -67,63 +67,6 @@ final class Type {
         };
     }
 
-    /**
-     * Truncate string with ellipsis
-     *
-     * 截断字符串并添加省略号
-     *
-     * @param string $string
-     * @param int $length
-     * @param string $ellipsis
-     * @return string
-     */
-    public static function truncate($string, $length = 50, $ellipsis = '...'): string
-    {
-        // Use multibyte functions for proper handling of UTF-8 characters
-        return mb_strlen($string) > $length
-            ? mb_substr($string, 0, $length) . $ellipsis
-            : $string;
-    }
-
-    /**
-     * Truncate HTML string with ellipsis
-     *
-     * 截断 HTML 字符串并添加省略号
-     *
-     * @param string $html
-     * @param int $length
-     * @param string $ellipsis
-     * @return string
-     */
-    public static function truncateHtml(string $html, int $length = 80, string $ellipsis = '…'): string
-    {
-        if (mb_strlen(strip_tags($html)) <= $length) {
-            return $html;
-        }
-        // Use wp_html_excerpt to safely truncate (will not cut off in the middle of a tag)
-        $truncated = wp_html_excerpt($html, $length, '');
-        // Auto close unclosed tags
-        $truncated = force_balance_tags($truncated);
-
-        return $truncated . $ellipsis;
-    }
-
-    /**
-     * Truncate content with ellipsis, strips all tags
-     *
-     * 截断内容并添加省略号，同时移除所有 HTML 标签
-     *
-     * @param  string $content
-     * @param  int $maxLength
-     * @param  string $ellipsis
-     * @return string
-     */
-    public static function stripContent(string $content, int $maxLength = 150, string $ellipsis = '…'): string
-    {
-        $content = wp_strip_all_tags($content);
-        return mb_strimwidth($content, 0, $maxLength, $ellipsis);
-    }
-
     public static function arrayOption(mixed $option): array
     {
         return is_array($option) ? $option : [];

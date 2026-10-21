@@ -6,14 +6,14 @@ use WP_REST_Request;
 use WP_Error;
 
 /**
- * Authentication Middleware for REST API
+ * Authentication Middleware for Native Auth
  * 
- * 针对REST API的权限检查中间件
+ * 针对WordPress默认的权限检查中间件
  * 
  * @since 1.0.0
  * @author Wang Shai
  */
-class RestAuthMiddleware implements MiddlewareInterface {
+class NativeAuthMiddleware implements MiddlewareInterface {
     public function __construct(private AuthService $service) {}
 
     public function handle(WP_REST_Request $request): bool|WP_Error

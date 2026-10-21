@@ -1,6 +1,6 @@
 <?php
 namespace JEALER\G3\Components\WechatOA\Includes;
-use JEALER\G3\Utilities\Type;
+use JEALER\G3\Utilities\Str;
 use WP_List_Table;
 use JEALER\G3\Services\WechatOAService;
 use JEALER\G3\Utilities\Date;
@@ -53,7 +53,7 @@ class WechatOAReplyListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'content'  => Type::truncateHtml($item['content'], 80),
+            'content'  => Str::truncateHtml($item['content'], 80),
             'keywords' => $item['keywords'] ?: '-',
             'type'     => $this->renderType($item),
             'status'   => $item['status'] ? __('Enabled') : __('Disabled'),

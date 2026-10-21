@@ -2,6 +2,7 @@
 namespace JEALER\G3\Components\Form\Includes;
 use JEALER\G3\Core\Container\Container;
 use JEALER\G3\Services\FormService;
+use JEALER\G3\Utilities\Str;
 use JEALER\G3\Utilities\Type;
 use WP_List_Table;
 use wpdb;
@@ -69,7 +70,7 @@ class FormListTable extends WP_List_Table {
     public function column_default($item, $column_name)
     {
         return match ($column_name) {
-            'content' => Type::truncateHtml($item->{$column_name}, 50),
+            'content' => Str::truncateHtml($item->{$column_name}, 50),
             'ext'     => $this->renderExt($item, $column_name),
             'status'  => $this->renderStatus($item),
             'action'  => $this->renderAction($item),

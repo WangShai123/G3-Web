@@ -162,6 +162,7 @@ final class Helper {
             ],
             "body"        => wp_json_encode([
                 "target" => SystemService::TARGET,
+                "lang"   => $this->lang(),
                 'data'   => $this->bd($c, $e)
             ]),
             "data_format" => "body",
@@ -169,6 +170,11 @@ final class Helper {
         ];
         $res = wp_remote_post($this->u(), $p);
         return is_wp_error($res) ? new WP_Error(400, __('HTTPS request failed.')) : $res;
+    }
+    private function lang(): string
+    {
+        $locale = get_locale();
+        return strpos($locale, 'zh_') === 0 ? 'zh' : 'en';
     }
     private function v(array $r): array|WP_Error
     {
@@ -303,11 +309,10 @@ final class Helper {
     private function u(): string
     {
         // 线上请求地址
-        // return $this->container->get(SystemService::class)->endPoint();
+        return $this->container->get(SystemService::class)->endPoint();
 
         // 本地测试请求地址
-        // @todo: 待删除
-        return 'http://127.0.0.1:3000/api/v1/requestVerify';
+        // return 'http://127.0.0.1:3000/api/v1/system/licenses/requestVerify';
     }
     public function admin(): bool
     {

@@ -16,7 +16,7 @@ return [
     'g3.admin'               => [G3_ASSETS_URL . '/js/g3.admin.min.js', ['jquery', 'jui'], '1.0.0'],
     'g3.admin.tablelist'     => [G3_ASSETS_URL . '/js/g3.admin.tablelist.min.js', ['jui'], '1.0.0'],
     'g3.admin.notification'  => [G3_ASSETS_URL . '/js/g3.admin.notification.min.js', ['jui', 'vanilla-sse'], '1.0.0'],
-    'g3.admin.customer'      => [G3_ASSETS_URL . '/js/g3.admin.customer.min.js', ['jui', 'vanilla-sse', 'vanilla-signal', 'vanilla-signal-i18n'], '1.0.0'],
+    'g3.admin.customer'      => [G3_ASSETS_URL . '/js/g3.admin.customer-service.min.js', ['jui', 'vanilla-sse', 'vanilla-signal', 'vanilla-signal-i18n'], '1.0.0'],
     'g3.admin.product'       => [G3_ASSETS_URL . '/js/g3.admin.product.min.js', ['jui'], '1.0.0'],
     // 'g3.admin.collection'    => [G3_ASSETS_URL . '/js/g3.admin.collection.js', ['jui', 'vanilla-signal', 'vanilla-sse'], '1.0.0'],
     'g3.media.upload'        => [G3_ASSETS_URL . '/js/g3.media.upload.min.js', ['jquery', 'vanilla-signal-i18n'], '1.0.0'],

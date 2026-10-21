@@ -5,7 +5,7 @@ use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Schema;
 use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Middleware\RateLimitMiddleware;
-use JEALER\G3\Middleware\RestAuthMiddleware;
+use JEALER\G3\Middleware\NativeAuthMiddleware;
 use JEALER\G3\Services\UserPostActionService;
 use WP_Error;
 use WP_REST_Request;
@@ -15,8 +15,8 @@ class UserController extends Controller {
     public function __construct(private UserPostActionService $postActionService) {}
 
     // #[RestRouter(
-    //     namespace: 'api/user',
-    //     route: 'v1/locale',
+    //     namespace: 'api/v1',
+    //     route: 'user/locale',
     //     methods: 'POST'
     // )]
     // #[Schema([
@@ -59,9 +59,7 @@ class UserController extends Controller {
     //     ]);
     // }
 
-    #[RestRouter(namespace: 'api/user', route: 'v1/post-actions', methods: 'POST')]
-    #[Middleware(RestAuthMiddleware::class)]
-    #[Middleware(RateLimitMiddleware::class, [60, 60])]
+    #[RestRouter(namespace: 'api/v1', route: 'user/post-actions', methods: 'POST')]
     #[Schema([
         'type'       => 'object',
         'required'   => ['action'],
@@ -71,6 +69,8 @@ class UserController extends Controller {
             'posts_per_page' => ['type' => 'integer'],
         ],
     ])]
+    #[Middleware(NativeAuthMiddleware::class)]
+    #[Middleware(RateLimitMiddleware::class, [60, 60])]
     public function postActions(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $params = $request->get_json_params() ?: [];

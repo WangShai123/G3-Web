@@ -3,7 +3,7 @@ namespace JEALER\G3\Components;
 use JEALER\G3\Core\Components\Components;
 use JEALER\G3\Core\Admin\Panel;
 use JEALER\G3\Services\SidebarService;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Str;
 use JEALER\G3\Utilities\Message;
 use JEALER\G3\Utilities\Option;
 use JEALER\G3\Utilities\Element;
@@ -25,7 +25,7 @@ class Security extends Components {
     {
         return [
             'login'       => '0',
-            'url'         => Common::hash(8),
+            'url'         => Str::hash(8),
             'upload'      => '1',
             'sitemap'     => '1',
             'userSiteMap' => '1',
@@ -79,7 +79,7 @@ class Security extends Components {
                 ->tab('general', __('General'))
                 ->option(SystemService::SECURITY_OPTION_KEY, $this->optionDefaults())
                 ->switch('login', __('Custom Admin Login', 'G3'), __('The system will replace <code>"wp-login.php"</code> with the new address <code>"/oa/$url"</code> below.', 'G3'))
-                ->input('url', __('Admin Login URL', 'G3'), __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Common::hash()))) . '</code> ' . sprintf(__('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=developer-mode&tab=flush'))
+                ->input('url', __('Admin Login URL', 'G3'), __('URL') . ': <code>' . esc_html(home_url('oa/' . (self::optionData()['url'] ?? Str::hash()))) . '</code> ' . sprintf(__('Please <a href="%s">flush rewrite rules</a> after setting.', 'G3'), '?page=developer-mode&tab=flush'))
                 ->switch('upload', __('Reset Upload File Names', 'G3'), __('Rename the currently uploaded file using a timestamp.', 'G3'))
                 ->rowClass('advanced')
                 ->switch('userSiteMap', sprintf(__('%s %s', 'G3'), __('Users'), __('Sitemap', 'G3')), __('Remove the default users sitemap module of WordPress to avoid exposing user ID and login name security risks.', 'G3'))
@@ -126,7 +126,7 @@ class Security extends Components {
     }
     public static function customAdminParam(): string
     {
-        return self::optionData()['url'] ?? Common::hash();
+        return self::optionData()['url'] ?? Str::hash();
     }
     private function disableWPLogin(): void
     {
@@ -151,7 +151,7 @@ class Security extends Components {
     public function uploadFilenameHandle($file)
     {
         if ((self::optionData()['upload'] ?? '1') === '1') {
-            $file['name'] = time() . Common::hash(4) . '_' . $file['name'];
+            $file['name'] = time() . Str::hash(4) . '_' . $file['name'];
         }
         return $file;
     }

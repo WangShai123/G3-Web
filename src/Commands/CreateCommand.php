@@ -9,7 +9,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use JEALER\G3\Service;
 use JEALER\G3\Utilities\Validator;
-use JEALER\G3\Utilities\Common;
+use JEALER\G3\Utilities\Str;
 use JEALER\G3\Services\ThemeGeneratorService;
 
 class CreateCommand extends Command {
@@ -50,14 +50,14 @@ class CreateCommand extends Command {
         $this
             ->setName(self::$defaultName)
             ->setAliases(['create'])
-            ->setDescription(Common::t('description', $this->lang, $this->messages))
-            ->addOption('name', null, InputOption::VALUE_OPTIONAL, Common::t('input_name', $this->lang, $this->messages))
-            ->addOption('folder', null, InputOption::VALUE_OPTIONAL, Common::t('input_folder', $this->lang, $this->messages))
-            ->addOption('author', null, InputOption::VALUE_OPTIONAL, Common::t('input_author', $this->lang, $this->messages))
-            ->addOption('author_uri', null, InputOption::VALUE_OPTIONAL, Common::t('input_author_uri', $this->lang, $this->messages))
-            ->addOption('url', null, InputOption::VALUE_OPTIONAL, Common::t('input_url', $this->lang, $this->messages))
-            ->addOption('description', null, InputOption::VALUE_OPTIONAL, Common::t('input_description', $this->lang, $this->messages))
-            ->addOption('theme_version', null, InputOption::VALUE_OPTIONAL, Common::t('input_theme_version', $this->lang, $this->messages));
+            ->setDescription(Str::t('description', $this->lang, $this->messages))
+            ->addOption('name', null, InputOption::VALUE_OPTIONAL, Str::t('input_name', $this->lang, $this->messages))
+            ->addOption('folder', null, InputOption::VALUE_OPTIONAL, Str::t('input_folder', $this->lang, $this->messages))
+            ->addOption('author', null, InputOption::VALUE_OPTIONAL, Str::t('input_author', $this->lang, $this->messages))
+            ->addOption('author_uri', null, InputOption::VALUE_OPTIONAL, Str::t('input_author_uri', $this->lang, $this->messages))
+            ->addOption('url', null, InputOption::VALUE_OPTIONAL, Str::t('input_url', $this->lang, $this->messages))
+            ->addOption('description', null, InputOption::VALUE_OPTIONAL, Str::t('input_description', $this->lang, $this->messages))
+            ->addOption('theme_version', null, InputOption::VALUE_OPTIONAL, Str::t('input_theme_version', $this->lang, $this->messages));
     }
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -71,43 +71,43 @@ class CreateCommand extends Command {
         // 1. Get parameters or interactive input
         $name = $input->getOption('name');
         if (!$name) {
-            $question = new Question(Common::t('input_name', $this->lang, $this->messages), 'new-g3-theme-' . time());
+            $question = new Question(Str::t('input_name', $this->lang, $this->messages), 'new-g3-theme-' . time());
             $name     = $helper->ask($input, $output, $question);
         }
 
         $folder = $input->getOption('folder');
         if (!$folder) {
-            $question = new Question(Common::t('input_folder', $this->lang, $this->messages), 'new-g3-' . time());
+            $question = new Question(Str::t('input_folder', $this->lang, $this->messages), 'new-g3-' . time());
             $folder   = $helper->ask($input, $output, $question);
         }
 
         $url = $input->getOption('url');
         if (!$url) {
-            $question = new Question(Common::t('input_url', $this->lang, $this->messages));
+            $question = new Question(Str::t('input_url', $this->lang, $this->messages));
             $url      = $helper->ask($input, $output, $question);
         }
 
         $description = $input->getOption('description');
         if (!$description) {
-            $question    = new Question(Common::t('input_description', $this->lang, $this->messages));
+            $question    = new Question(Str::t('input_description', $this->lang, $this->messages));
             $description = $helper->ask($input, $output, $question);
         }
 
         $author = $input->getOption('author');
         if (!$author) {
-            $question = new Question(Common::t('input_author', $this->lang, $this->messages));
+            $question = new Question(Str::t('input_author', $this->lang, $this->messages));
             $author   = $helper->ask($input, $output, $question);
         }
 
         $author_uri = $input->getOption('author_uri');
         if (!$author_uri) {
-            $question   = new Question(Common::t('input_author_uri', $this->lang, $this->messages));
+            $question   = new Question(Str::t('input_author_uri', $this->lang, $this->messages));
             $author_uri = $helper->ask($input, $output, $question);
         }
 
         $theme_version = $input->getOption('theme_version');
         if (!$theme_version) {
-            $question      = new Question(Common::t('input_theme_version', $this->lang, $this->messages), '0.0.1');
+            $question      = new Question(Str::t('input_theme_version', $this->lang, $this->messages), '0.0.1');
             $theme_version = $helper->ask($input, $output, $question);
         }
 
@@ -116,7 +116,7 @@ class CreateCommand extends Command {
         $themeBasePath = dirname(__DIR__, 4) . '/themes';
         $themePath     = $themeBasePath . '/' . $folder;
         if (file_exists($themePath)) {
-            $output->writeln("<error>" . Common::t('error_folder_exists', $this->lang, $this->messages) . $themePath . "</error>");
+            $output->writeln("<error>" . Str::t('error_folder_exists', $this->lang, $this->messages) . $themePath . "</error>");
             return Command::FAILURE;
         }
 
@@ -136,7 +136,7 @@ class CreateCommand extends Command {
 
         // continue
         $output->writeln('');
-        $output->writeln("<info>" . Common::t('msg_create_success', $this->lang, $this->messages) . $themePath . "</info>");
+        $output->writeln("<info>" . Str::t('msg_create_success', $this->lang, $this->messages) . $themePath . "</info>");
 
         $this->redirectTip($themePath, $output);
 
@@ -163,7 +163,7 @@ class CreateCommand extends Command {
 \____/_____/_/  |_/_____/_____/_/ |_|   \____//____/  
     </info>');
 
-        $welcome = Common::t('welcome', $this->lang, $this->messages);
+        $welcome = Str::t('welcome', $this->lang, $this->messages);
         $str     = '';
         foreach (mb_str_split($welcome) as $char) {
             $str .= $char;
@@ -181,7 +181,7 @@ class CreateCommand extends Command {
     private function redirectTip(string $themePath, OutputInterface $output): void
     {
         $output->writeln('');
-        $output->writeln('<info>' . Common::t('msg_redirect_tip', $this->lang, $this->messages) . '</info>');
+        $output->writeln('<info>' . Str::t('msg_redirect_tip', $this->lang, $this->messages) . '</info>');
         $output->writeln('<info>cd ' . $themePath . '</info>');
         $output->writeln('');
     }

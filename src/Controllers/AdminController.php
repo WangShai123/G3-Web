@@ -27,8 +27,8 @@ class AdminController extends Controller {
      * @return WP_Error|WP_REST_Response
      */
     #[RestRouter(
-        namespace: 'api/v1',
-        route: 'admin/queue/process',
+        namespace: 'api/v1/admin',
+        route: 'queue/process',
         methods: 'GET'
     )]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
@@ -65,8 +65,8 @@ class AdminController extends Controller {
      * @author Wang Shai
      */
     #[RestRouter(
-        namespace: 'api/v1',
-        route: 'admin/wechat_oa/reply/update',
+        namespace: 'api/v1/admin',
+        route: 'wechat_oa/reply/update',
         methods: 'POST'
     )]
     #[Middleware(RoleMiddleware::class, ['administrator'])]
@@ -106,12 +106,10 @@ class AdminController extends Controller {
      * @author Wang Shai
      */
     #[RestRouter(
-        namespace: 'api/v1',
-        route: 'admin/wechat_oa/reply/delete',
+        namespace: 'api/v1/admin',
+        route: 'wechat_oa/reply/delete',
         methods: 'POST'
     )]
-    #[Middleware(RoleMiddleware::class, ['administrator'])]
-    #[Middleware(RateLimitMiddleware::class, [10, 60])]
     #[Schema([
         'type'       => 'object',
         'properties' => [
@@ -119,6 +117,8 @@ class AdminController extends Controller {
         ],
         'required'   => ['id']
     ])]
+    #[Middleware(RoleMiddleware::class, ['administrator'])]
+    #[Middleware(RateLimitMiddleware::class, [10, 60])]
     public function deleteReply(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         $data = $request->get_json_params();

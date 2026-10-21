@@ -137,7 +137,7 @@ class Customer extends Components {
         $working = $service instanceof CustomerService ? $service->withinWorkingHours() : true;
 
         return [
-            'restUrl'          => esc_url_raw(rest_url('api/customer/v1')),
+            'restUrl'          => esc_url_raw(rest_url('api/v1')),
             'notifyRestUrl'    => esc_url_raw(rest_url('api/notify/v1')),
             'nonce'            => wp_create_nonce('wp_rest'),
             'audioUrl'         => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),
@@ -170,7 +170,7 @@ class Customer extends Components {
         $service = $this->service(CustomerService::class);
 
         return [
-            'restUrl'        => esc_url_raw(rest_url('api/admin/customer/v1')),
+            'restUrl'        => esc_url_raw(rest_url('api/v1/admin')),
             'notifyRestUrl'  => esc_url_raw(rest_url('api/admin/notify/v1')),
             'nonce'          => wp_create_nonce('wp_rest'),
             'audioUrl'       => esc_url_raw(G3_AUDIO_URL . '/new.mp3'),

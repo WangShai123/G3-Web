@@ -4,7 +4,7 @@ use JEALER\G3\Core\Router\Controller;
 use JEALER\G3\Core\Attributes\RestRouter;
 use JEALER\G3\Core\Attributes\Middleware;
 use JEALER\G3\Core\Attributes\Schema;
-use JEALER\G3\Middleware\RestAuthMiddleware;
+use JEALER\G3\Middleware\NativeAuthMiddleware;
 use JEALER\G3\Middleware\RoleMiddleware;
 use JEALER\G3\Middleware\RateLimitMiddleware;
 use JEALER\G3\Services\AuthService;
@@ -31,7 +31,7 @@ class AuthController extends Controller {
      */
     #[RestRouter(
         namespace: 'api/v1',
-        route: 'oa/admin/auth',
+        route: 'admin/auth/oa',
         methods: 'POST'
     )]
     #[Schema([
@@ -265,8 +265,7 @@ class AuthController extends Controller {
             return $userId;
         }
 
-        $user = new WP_User($userId);
-        // $this->authService->doWPLogin($user);
+        $user   = new WP_User($userId);
         $result = $this->wpLogin($user->user_login, $password);
         if (is_wp_error($result)) {
             return new WP_Error('login_failed', $result->get_error_message(), ['status' => 403]);
@@ -461,7 +460,7 @@ class AuthController extends Controller {
         route: 'auth/wechat/bind/qrcode',
         methods: 'POST'
     )]
-    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(NativeAuthMiddleware::class)]
     public function getBindQrCode(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $user = wp_get_current_user();
@@ -532,7 +531,7 @@ class AuthController extends Controller {
         methods: 'GET'
     )]
     #[Middleware(RateLimitMiddleware::class, [5, 60])]
-    #[Middleware(RestAuthMiddleware::class)]
+    #[Middleware(NativeAuthMiddleware::class)]
     public function getBindAuthUrl(WP_REST_Request $request): WP_Error|WP_REST_Response
     {
         if (!$this->authService->wechatOAService->available()) {

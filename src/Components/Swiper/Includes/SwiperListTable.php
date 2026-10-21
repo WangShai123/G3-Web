@@ -1,7 +1,7 @@
 <?php
 namespace JEALER\G3\Components\Swiper\Includes;
 use JEALER\G3\Core\Container\Container;
-use JEALER\G3\Utilities\Type;
+use JEALER\G3\Utilities\Str;
 use WP_List_Table;
 use JEALER\G3\Services\SwiperService;
 use JEALER\G3\Utilities\Validator;
@@ -175,7 +175,7 @@ class SwiperListTable extends WP_List_Table {
     {
         $link = $item->{$columnName};
         return Validator::isURL($link)
-            ? '<a href="' . $link . '" target="_blank">' . Type::truncateHtml($link, 50) . '</a>'
+            ? '<a href="' . $link . '" target="_blank">' . Str::truncateHtml($link, 50) . '</a>'
             : '-';
     }
     private function renderLocation($item, $columnName): string

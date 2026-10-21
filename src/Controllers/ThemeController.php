@@ -12,7 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-class ThemeGeneratorController extends Controller {
+class ThemeController extends Controller {
     public function __construct(private ThemeGeneratorService $service) {}
 
     /**

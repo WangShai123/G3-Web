@@ -4,16 +4,6 @@ use JEALER\G3\Services\SystemService;
 
 class ThemeGeneratorService {
     public static ThemeGeneratorService $instance;
-    public function __construct()
-    {
-    }
-    public static function run(): ThemeGeneratorService
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
 
     public function create(array $params): void
     {
